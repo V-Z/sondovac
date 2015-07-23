@@ -1,0 +1,578 @@
+# Functions required by probe design script
+
+# Version of the script
+SCRIPTVERSION=0.5
+# Web page of the script
+WEB="https://github.com/V-Z/sondovac/"
+
+# Define font styles
+BOLD=$(tput bold) # bold text
+UNDE=$(tput smul) # underlined text
+NUND=$(tput rmul) # cancel underlined text
+BLIN=$(tput blink) # blinking text
+NORM=$(tput sgr0) # back to normal text - resets colors, bold, blinking, reverse text
+# Text colors
+BLAB=$(tput setaf 0) # black text color
+REDB=$(tput setaf 1) # red text color
+GREB=$(tput setaf 2) # green text color
+YELB=$(tput setaf 3) # yellow text color
+BLUB=$(tput setaf 4) # blue text color
+MAGB=$(tput setaf 5) # magenta text color
+CYAB=$(tput setaf 6) # cyan text color
+WHIB=$(tput setaf 7) # white text color
+REVB=$(tput setaf 9) # reset default text color
+# Background colors
+BLAF=$(tput setab 0) # black background color
+REDF=$(tput setab 1) # red background color
+GREF=$(tput setab 2) # green background color
+YELF=$(tput setab 3) # yellow background color
+BLUF=$(tput setab 4) # blue background color
+MAGF=$(tput setab 5) # magenta background color
+CYAF=$(tput setab 6) # cyan background color
+WHIF=$(tput setab 7) # white background color
+REVF=$(tput setab 9) # reset default background color
+
+# Introductory message for users
+echo
+echo " ##############################################################################"
+echo " #                                                                            #"
+echo " #     ${BOLD}Sondovač${NORM} is a script to create orthologous low-copy nuclear probes     #"
+echo " #        from transcriptome and genome skim data for target enrichment       #"
+echo " #                                                                            #"
+echo " #       Copyright (C) 2015 R. Schmickl, A. Liston, V. Zeisek and others      #"
+echo " #                                                                            #"
+echo " #          When using this script, please, cite Schmickl et al. 2015         #"
+echo " #                                                                            #"
+echo " ##############################################################################"
+echo
+echo -e "\tThis is version $SCRIPTVERSION released 2015-mm-dd."
+echo -e "\tFor newest version check $WEB or"
+echo -e "\t\t$0 -u"
+echo -e "\tIn case of problems not covered in README for user support see"
+echo -e "\t\t$WEB"
+echo -e "\tFor basic usage see"
+echo -e "\t\t$0 -h"
+echo -e "\tFor detailed usage instructions see README or"
+echo -e "\t\t$0 -r"
+echo -e "\tFor detailed citation information see"
+echo -e "\t\t$0 -e"
+echo
+echo "This program is free software: you can redistribute it and/or modify it under"
+echo "the terms of the GNU General Public License as published by the Free Software"
+echo "Foundation, either version 3 of the License, or (at your option) any later"
+echo "version. For more information see LICENSE, https://www.gnu.org/licenses/gpl.html"
+echo "or $0 -l"
+echo
+echo "This program is distributed in the hope that it will be useful, but WITHOUT ANY"
+echo "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR"
+echo "A PARTICULAR PURPOSE. See the GNU General Public License for more details."
+echo
+echo "################################################################################"
+echo
+
+# Sometimes user must read something and confirm continuing...
+function confirmgo {
+  if [ "$STARTINI" == "I" ]; then
+    echo
+    echo "Press any key to continue... (or press ${BOLD}Ctrl${NORM}+${BOLD}C${NORM} to exit the script)"
+    read -n 1
+    echo
+    echo "Continuing..."
+    echo
+    fi
+  }
+
+# This version is not yet ready for daily usage...
+function devrelease {
+    if [ "$STARTINI" == "I" ]; then
+    echo
+    echo "${BOLD}Warning!${NORM} This is developmental, not fully tested version."
+    echo "You may encounter problems and some functions are still missing"
+    echo "Namely, support for Mac OS X and some major Linux distributions is not finished."
+    echo "Some functions for smoother and more comfortable user experience are missing."
+    echo "Please, report any issues and/or wishes to zeisek@natur.cuni.cz."
+    echo "We hope you enjoy the script, but, please, do not expect too much now. ;-)"
+    confirmgo
+    fi
+  }
+
+# Check availability of basic UNIX binaries
+function checktools {
+  { command -v $1 >/dev/null 2>&1 && echo "Command \"$1\" is available. OK."; } || {
+    echo "Error! Command\"$1\" is required but not installed! Aborting."
+    echo "Please, install \"$1\" and ensure it is in PATH."
+    echo "It should be readily available for any UNIX-based system (Linux, Mac OS X, BSD, ...)."
+    echo
+    exit 1
+    }
+  }
+
+# Function to update whole script
+function scriptupdater {
+  checktools curl
+  checktools grep
+  checktools cut
+  echo
+  echo "Checking for updates..."
+  { ONLINEVERSION=`curl -s https://raw.githubusercontent.com/V-Z/sondovac/master/.info | grep CURRENTVERSION | cut -f 2 -d "="`; } || {
+    echo
+    echo "Downloading of version information available on-line failed."
+    echo "Please, go to to $WEB and check for available version manually."
+    echo "Your current version is $SCRIPTVERSION."
+    echo
+    exit 1
+    }
+  echo
+  if [[ (( "$SCRIPTVERSION" < "$ONLINEVERSION" )) ]]; then
+    echo "Your version is $SCRIPTVERSION. On-line available version $ONLINEVERSION is newer."
+    echo "Would you like to install new version now? (Yes/No)"
+    read UPDATER
+    while :
+    do
+      case "$UPDATER" in
+	Y|y|YES|Yes|yes)
+	  checktools tar
+	  checktools unzip
+	  echo
+	  echo "Downloading newer version of the script..."
+	  NEWVERSION=`curl -s https://raw.githubusercontent.com/V-Z/sondovac/master/.info | grep NEWVERSION | cut -f 2 -d "="`
+	  curl -o sondovac.$ONLINEVERSION.zip $NEWVERSION || {
+	    echo
+	    echo "Downloading of new version available on-line failed."
+	    echo "Please, go to to $WEB and download and unpack new version manually."
+	    echo
+	    exit 1
+	    }
+	  echo
+	  tar xzvf sondovac.tar.gz
+	  echo
+	  echo "New version $ONLINEVERSION is available in directory"
+	  echo -e"\t\"$WORKDIR/${BOLD}sondovac${NORM}\"."
+	  echo "Please, replace current files by content of this directory and launch new version."
+	  echo
+	  break
+	  ;;
+	N|n|NO|No|no)
+	  echo
+	  echo "Please, go to $WEB and download and unpack newer script version manually."
+	  echo
+	  break
+	  ;;
+	*) echo "Wrong option. Use Y or N." && read UPDATER;;
+      esac
+    done
+    else
+      echo
+      echo "Your version of the script is the newest one (version $SCRIPTVERSION.)."
+      echo "See also README and in case of questions visit $WEB"
+      echo
+    fi
+  exit
+  }
+
+# Display license information
+function licenser {
+  checktools less
+  less $SCRIPTDIR/LICENSE || {
+    echo
+    echo "Error! Can not display file $SCRIPTDIR/LICENSE!"
+    echo "Is your installation correct? See https://www.gnu.org/licenses/gpl.html for GNU"
+    echo "GPL v.3 and $WEB to ensure you have all needed files."
+    echo
+    exit 1
+    }
+  echo
+  exit
+  }
+
+# Display README
+function readmeview {
+  checktools less
+  less $SCRIPTDIR/README || {
+    echo
+    echo "Error! Can not display file $SCRIPTDIR/README!"
+    echo "Is your installation correct?"
+    echo "See $WEB to ensure you have all needed files."
+    echo
+    exit 1
+    }
+  echo
+  exit
+  }
+
+# Display INSTALL
+function installview {
+  checktools less
+  less $SCRIPTDIR/INSTALL || {
+    echo
+    echo "Error! Can not display file $SCRIPTDIR/INSTALL!"
+    echo "Is your installation correct?"
+    echo "See $WEB to ensure you have all needed files."
+    echo
+    exit 1
+    }
+  echo
+  exit
+  }
+
+# Display detailed citation information
+function citationreference {
+  echo
+  echo "################################################################################"
+  echo
+  echo "When using Sondovač, please cite:"
+  echo "Schmickl et al 2015"
+  echo
+  echo "Please, cite also software used by Sondovač:"
+  echo "bam2fastq:"
+  echo "* None?"
+  echo "BLAT:"
+  echo "* None?"
+  echo "Bowtie2:"
+  echo "* Ben Langmead and Steven L. Salzberg"
+  echo "  Fast gapped-read alignment with Bowtie 2"
+  echo "  Nature Methods (2012) 9:357-359"
+  echo "  http://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html"
+  echo "CD-HIT:"
+  echo "* Weizhong Li, Lukasz Jaroszewski and Adam Godzik"
+  echo "  Clustering of highly homologous sequences to reduce the size of large"
+  echo "  protein databases"
+  echo "  Bioinformatics (2001) 17:282-283."
+  echo "  http://bioinformatics.oxfordjournals.org/content/17/3/282.short"
+  echo "* Weizhong Li, Lukasz Jaroszewski and Adam Godzik"
+  echo "  Tolerating some redundancy significantly speeds up clustering of large"
+  echo "  protein databases"
+  echo "  Bioinformatics (2002) 18:77-82"
+  echo "  http://bioinformatics.oxfordjournals.org/content/18/1/77.short"
+  echo "* Weizhong Li and Adam Godzik"
+  echo "  Cd-hit: a fast program for clustering and comparing large sets of"
+  echo "  protein or nucleotide sequences"
+  echo "  Bioinformatics (2006) 22:1658-1659"
+  echo "  http://bioinformatics.oxfordjournals.org/content/22/13/1658.short"
+  echo "* Limin Fu, Beifang Niu, Zhengwei Zhu, Sitao Wu and Weizhong Li"
+  echo "  CD-HIT: accelerated for clustering the next generation sequencing data"
+  echo "  Bioinformatics (2012) 28:3150-3152"
+  echo "  http://bioinformatics.oxfordjournals.org/content/28/23/3150.short"
+  echo "* Ying Huang, Beifang Niu, Ying Gao, Limin Fu and Weizhong Li"
+  echo "  CD-HIT Suite: a web server for clustering and comparing biological sequences"
+  echo "  Bioinformatics (2010) 26:680"
+  echo "  http://bioinformatics.oxfordjournals.org/content/26/5/680.short"
+  echo "* Beifang Niu, Limin Fu, Shulei Sun and Weizhong Li"
+  echo "  Artificial and natural duplicates in pyrosequencing reads of metagenomic data"
+  echo "  BMC Bioinformatics (2010) 11:187"
+  echo "  http://www.biomedcentral.com/1471-2105/11/187"
+  echo "* Weizhong Li, Limin Fu, Beifang Niu, Sitao Wu and John Wooley"
+  echo "  Ultrafast clustering algorithms for metagenomic sequence analysis"
+  echo "  Briefings in Bioinformatics (2012) 13(6):656-668"
+  echo "  http://bib.oxfordjournals.org/content/13/6/656.abstract"
+  echo "FASTX toolkit:"
+  echo "* None?"
+  echo "FLASH:"
+  echo "* Tanja Magoč and Steven L. Salzberg"
+  echo "  FLASH: fast length adjustment of short reads to improve genome assemblies"
+  echo "  Bioinformatics (2011) 27(21):2957-2963"
+  echo "  http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract"
+  echo "Picard:"
+  echo "* Currently there is no Picard paper."
+  echo "  You can cite Picard by referring to the website"
+  echo "    http://broadinstitute.github.io/picard"
+  echo "SAMtools:"
+  echo "* Tanja Magoč and Steven L. Salzberg"
+  echo "  FLASH: fast length adjustment of short reads to improve genome assemblies"
+  echo "  Bioinformatics (2011) 27(21):2957-2963"
+  echo "  http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract"
+  echo
+  echo "For more information see README, you can do so by"
+  echo -e "\t$0 -r"
+  echo "and/or visit $WEB"
+  echo
+  exit
+  }
+
+# Check operating system
+function oscheck {
+
+  OSCHECKS=`uname -s` || {
+    echo
+    echo "Command \"uname\" is not available on the system, is not in the PATH or the user"
+    echo "does not have permission to use it, so that operating system is not detectable."
+    echo "Assuming Linux."
+    echo "If this is not correct, you may experience problems during installation of"
+    echo "required software. If so, please, install required dependencies manually."
+    echo "See INSTALL for more details."
+    OS="Linux"
+    confirmgo
+    }
+
+  # Operating system
+  if [ -n $OSCHECKS ]; then
+    case "$OSCHECKS" in
+      Darwin|darwin) OS="Mac";;
+      Linux|linux) OS="Linux";;
+      CYGWIN*|MINGW32*|MSYS*|WIN32|cygwin*|msys*|mingw32*|win32) OS="Windows";;
+      *BSD*|*bsd*) OS="BSD";;
+      SOLARIS|Solaris|solaris|SUN*|Sun|sun*) OS="Solaris";;
+      *) echo
+	  echo "OS other than Linux, Mac OS X, BSD, Solaris or Windows or undetectable OS."
+	  echo "Assuming Linux."
+	  echo "If this is not correct, you may experience problems during installation"
+	  echo "of needed software. If so, please, install required dependencies manually."
+	  echo "See INSTALL for more details."
+	  OS="Linux"
+	  confirmgo
+	  ;;
+      esac
+    fi
+
+  # Warning for Windows users
+  if [ "$OS" == "Windows" ]; then
+    echo
+    echo "${BOLD}Warning!${NORM} Running this pipeline on Windows (native or any emulation)"
+    echo "is not supported, although it may be possible."
+    echo "We are not able to guarantee the pipeline to work."
+    echo "See INSTALL for more details."
+    echo "We wish you good luck. :-)"
+    confirmgo
+    fi
+
+  # Warning for BSD and Solaris users
+  if [ "$OS" == "BSD" -o "$OS" == "Solaris" ]; then
+    echo
+    echo "${BOLD}Warning!${NORM} Running this pipeline on any BSD or Solaris was not tested,"
+    echo "although it is supposed to work."
+    echo "We are not able to guarantee the pipeline to work."
+    echo "See INSTALL for more details."
+    echo "We wish you good luck. :-)"
+    confirmgo
+    fi
+
+  OSCHECKB=`uname -m` || {
+    echo
+    echo "Command \"uname\" is not available on the system, is not in the PATH or the user"
+    echo "does not have permission to use it, so that type of the CPU is not detectable."
+    echo "Assuming 64 bit CPU."
+    echo "If this is not correct, you may experience problems during installation"
+    echo "of needed software. If so, please, install required dependencies manually."
+    echo "See INSTALL for more details."
+    OSB="64b"
+    confirmgo; }
+
+  # 64 or 32 bit
+  if [ -n $OSCHECKB ]; then
+    case "$OSCHECKB" in
+      *x86_64*|*ia64*) OSB="64b";;
+      *i386*|*i486*|*i586*|*i686*) OSB="32b";;
+      *) echo "OS other than 64 or 32 bit or undetectable OS details."
+	  echo "Assuming 64 bit."
+	  echo "If this is not correct, you may experience problems during installation"
+	  echo "of needed software. If so, please, install required dependencies manually."
+	  echo "See INSTALL for more details."
+	  OSB="64b"
+	  confirmgo
+	  ;;
+      esac
+    fi
+
+  echo
+  echo "Current OS is $OS $OSB."
+  echo
+
+  # If on Linux, check distribution and notify user about possible need of compilation tools
+  if [ "$OS" == "Linux" ]; then
+    { DISTRIBUTION=`lsb_release -is` || DISTRIBUTION=`python -c 'import platform ; print (platform.dist()[0])'` || DISTRIBUTION=`python -c 'import platform ; print platform.dist()[0]'`; } || {
+      echo
+      echo "Unable to detect Linux version! Probably because command \"lsb_release\" is"
+      echo "missing, not in PATH or not available for current user. For some steps you may"
+      echo "need compilation tools (see INSTALL for details). Ensure you have those tools available."
+      confirmgo; }
+    if [ -n $OSCHECKS ]; then
+      case "$DISTRIBUTION" in
+	*[Ss][Uu][Ss][Ee]*)
+	  LINUX="SUSE"
+	  echo "Linux distribution is SUSE, openSUSE or derivative."
+	  PACKAGES=''
+	  # Check if all required packages are installed
+	  while read PACKAGENAME; do
+	    if rpm -qa | grep -q $PACKAGENAME; then
+	      echo "Package \"$PACKAGENAME\" is available. OK."
+	      else
+		PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
+	      fi
+	    done < $SCRIPTDIR/pkgs/packages-suse || {
+	      echo
+	      echo "Error! Can not check installed packages. Ensure following packages are installed:"
+	      cat $SCRIPTDIR/pkgs/packages-suse || {
+		echo "Error! Can not find file $SCRIPTDIR/pkgs/packages-suse"
+		echo "Go to $WEB and verify if your installation is correct."
+		echo
+		exit 1
+		}
+	      confirmgo
+	      }
+	  if [ -n "$PACKAGES" ]; then
+	    # Install missing packages
+	    sed -i 's/\./?/g' $PACKAGES
+	    echo "Packages \"$PACKAGES\" are missing."
+	    echo "Compilation may require to install them. Would you like to install them now?"
+	    echo "It requires administrative privileges. (Yes/No)"
+	    read SUSEI
+	    while :
+	    do
+	      case "$SUSEI" in
+		Y|y|YES|Yes|yes)
+		  echo "Installing required packages..."
+		  { sudo zypper in $PACKAGES || su -c 'zypper in $PACKAGES'; } || {
+		    echo
+		    echo "Installation of packages \"$PACKAGES\" failed."
+		    echo "Those packages may be required to install software used by Sondovač."
+		    echo "If so, install those packages manually. See INSTALL for details."
+		    confirmgo; }
+		  break
+		  ;;
+		N|n|NO|No|no)
+		  echo
+		  echo "You may need packages \"$PACKAGES\""
+		  echo "If compilation of some software required for the pipeline fails,"
+		  echo "install them manually. See INSTALL for details."
+		  confirmgo
+		  break
+		  ;;
+		*) echo "Wrong option. Use Y or N." && read SUSEI;;
+	      esac
+	    done
+	    else
+	      echo "Packages reguired for compilation are installed. OK."
+	    fi
+	  ;;
+	*[Uu]buntu*)
+	  LINUX=Ubuntu
+	  echo "Linux distribution is Ubuntu or derivative."
+	  PACKAGES=''
+	  # Check if all required packages are installed
+	  while read PACKAGENAME; do
+	    if dpkg-query -W $PACKAGENAME | grep -q ubuntu; then
+	      echo "Package \"$PACKAGENAME\" is available. OK."
+	      else
+		PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
+	      fi
+	    done < $SCRIPTDIR/pkgs/packages-ubuntu || {
+	      echo
+	      echo "Error! Can not check installed packages. Ensure following packages are installed:"
+	      cat $SCRIPTDIR/pkgs/packages-ubuntu || {
+		echo "Error! Can not find file $SCRIPTDIR/pkgs/packages-ubuntu"
+		echo "Go to $WEB and verify if your installation is correct."
+		echo
+		exit 1
+		}
+	      confirmgo
+	      }
+	  # Is some packages are missing, install them
+	  if [ -n "$PACKAGES" ]; then
+	    # Check if universe repository (not enabled by default) is available - it is required source for some packages
+	    if grep -q '^[^#].*universe.*' /etc/apt/sources.list; then
+	      echo "Repository \"universe\" is available. OK."
+	      else
+		echo
+		echo "Repository \"universe\" is required as source for some packages,"
+		echo "but it is not available. Adding it requires administrative privileges."
+		echo "Would you like to add it now? (Yes/No)"
+		read UNIVERSE
+		while :
+		do
+		  case "$UNIVERSE" in
+		    Y|y|YES|Yes|yes)
+		      echo "Adding universe repository..."
+		      { { sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe" && sudo apt-get update; } || { su -c 'add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"' && su -c 'apt-get update'; }; } || {
+			echo
+			echo "Adding of repository \"deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe\""
+			echo "failed. If packages from it are required for compilation, add this repository manually."
+			echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
+			confirmgo; }
+		      break
+		      ;;
+		    N|n|NO|No|no)
+		      echo
+		      echo "You may need some packages from this repository."
+		      echo "We recommend to add repository \"deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe\""
+		      echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
+		      confirmgo
+		      break
+		      ;;
+		    *) echo "Wrong option. Use Y or N." && read UNIVERSE;;
+		  esac
+		done
+		fi
+	      # Install missing packages
+	      echo "Packages \"$PACKAGES\" are missing."
+	      echo "Compilation may require to install them. Would you like to install them now?"
+	      echo "It requires administrative privileges. (Yes/No)"
+	      read UBUNTUI
+	      while :
+	      do
+		case "$UBUNTUI" in
+		  Y|y|YES|Yes|yes)
+		    echo "Installing required packages..."
+		    { { sudo apt-get update && sudo apt-get install $PACKAGES; } || { su -c 'apt-get update' && su -c 'apt-get install $PACKAGES'; }; } || {
+		      echo
+		      echo "Installation of packages \"$PACKAGES\" failed."
+		      echo "Those packages may be required to install software used by Sondovač."
+		      echo "If so, install those packages manually. See INSTALL for details."
+		      confirmgo; }
+		    break
+		    ;;
+		  N|n|NO|No|no)
+		    echo
+		    echo "You may need packages \"$PACKAGES\""
+		    echo "If compilation of some software required for the pipeline fails,"
+		    echo "install them manually. See INSTALL for details."
+		    confirmgo
+		    break
+		    ;;
+		  *) echo "Wrong option. Use Y or N." && read UBUNTUI;;
+		esac
+	      done
+	      else
+		echo "Packages reguired for compilation are installed. OK."
+	    fi
+	  ;;
+	# Another distros...
+	*) echo
+	    echo "Currently, only openSUSE and Ubuntu are supported. Support for another"
+	    echo "major Linux distributions is under development. For some steps you may"
+	    echo "need compilation tools (see INSTALL for details)."
+# 	    echo "Unknown Linux distribution, probably not openSUSE, SUSE, RedHat, Fedora,"
+# 	    echo "Centos, Scientific, Debian, Ubuntu, Linux Mint or derivatives. For some"
+# 	    echo "steps you may need compilation tools (see INSTALL for details)."
+	    echo "Ensure you have those tools available."
+	    confirmgo
+	    break
+	    ;;
+      esac
+      fi
+    fi
+
+  } # End of OS checking
+
+# Set variables for working directory and PATH
+function workdirpath {
+  # Check if there is bin directory, if not, create it
+  checktools pwd
+  WORKDIR=`pwd`
+  mkdir -p $WORKDIR/bin/bin || {
+    echo
+    echo "Can not create directory \"bin\" in directory \"$WORKDIR\"!"
+    echo "Do you have write permission for directory \"$WORKDIR\"?"
+    echo
+    exit 1
+    }
+  BIN=$WORKDIR/bin/bin
+  echo
+  echo "For future work consider adding \"$BIN\""
+  echo "to PATH as it will contain binaries of tools used in this pipeline."
+  echo "Alternatively, you can move whole \"$WORKDIR/bin\""
+  echo "to your preferred location, but ensure to move all files and keep relative paths."
+  confirmgo
+  cd $WORKDIR
+  # Add bin directory in current directory into PATH
+  PATH=$PATH:$BIN
+  }
