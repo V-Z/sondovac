@@ -1,10 +1,11 @@
-bin*
-pkgs*
-sample_data*
-src*
+bin
+pkgs
+sample_data
+src
 *~
 picard.sh
 tput_test.sh
 problemy
 contigs.tsv
 sequences.fasta
+git_instructions
