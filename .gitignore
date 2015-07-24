@@ -6,6 +6,3 @@ src
 picard.sh
 tput_test.sh
 problemy
-contigs.tsv
-sequences.fasta
-git_instructions

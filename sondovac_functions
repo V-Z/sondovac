@@ -576,3 +576,86 @@ function workdirpath {
   # Add bin directory in current directory into PATH
   PATH=$PATH:$BIN
   }
+
+# Function to check and read input files
+# Parameters: 1) parameter for particular file; 2) name (description) of input file; 3) variable for particular file (written into $CHECKFILEREADOUT)
+function readinputfile {
+  echo
+  CHECKFILEREAD=$3
+  if [ "$STARTINI" == "I" ]; then
+    if [ -z "$CHECKFILEREAD" ]; then
+      echo "Provide file name for $2 input file:"
+      while :
+	do
+	read CHECKFILEREAD
+	# Test if input file is readable
+	if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
+	  echo
+	  echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
+	  break
+	  else
+	    echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
+	  fi
+	done
+      else
+	echo "As input $2 file you provided via parameter ${BOLD}$1${NORM} file \"$CHECKFILEREAD\". Would you like to use it (Yes) or to provide new file (New)?"
+	read CHECKFILE
+	while :
+	do
+	  case "$CHECKFILE" in
+	    Y|y|YES|Yes|yes)
+	      echo "Keeping \"$CHECKFILEREAD\"..."
+	      echo
+	      if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
+		echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
+		else
+		  echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable! Provide new one:"
+		  while :
+		    do
+		    read CHECKFILEREAD
+		    # Test if input file is readable
+		    if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
+		      echo
+		      echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
+		      break
+		      else
+			echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
+		      fi
+		    done
+		fi
+	      break
+	      ;;
+	    N|n|NO|No|no|NEW|New|new)
+	      echo "Provide file name for new $2 input file:"
+	      while :
+		do
+		read CHECKFILEREAD
+		# Test if input file is readable
+		if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
+		  echo
+		  echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
+		  break
+		  else
+		    echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
+		  fi
+	      done
+	      break
+	      ;;
+	    *)
+	      echo "Wrong option. Use Y or N."
+	      read CHECKFILE
+	      ;;
+	  esac
+	  done
+      fi
+      else
+	if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
+	  echo
+	  echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
+	  else
+	    echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
+	    exit 1
+	  fi
+    fi
+    CHECKFILEREADOUT=$CHECKFILEREAD
+  }

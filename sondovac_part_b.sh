@@ -25,7 +25,7 @@ CHECKMODE=0
 STARTINI="I"
 
 # Parse initial arguments
-while getopts "hvulrpeinf:b:d:" START; do
+while getopts "hvulrpeinx:z:b:d:" START; do
   case "$START" in
     h|v)
       echo "Usage options:"
@@ -40,10 +40,11 @@ while getopts "hvulrpeinf:b:d:" START; do
       echo -e "\t-n\tRunning in non-interactive mode. User ${BOLD}must${NORM} provide at least five input files below:"
       echo -e "\tYou can use ${BOLD}only one${NORM} of parameters ${BOLD}-i${NORM} or ${BOLD}-n${NORM} (not both of them)"
       echo
-      echo -e "\tIf option ${BOLD}-f${NORM} is used and script is running in interactive mode, this value will be used as defaults, but may be later overridden."
+      echo -e "\tIf options ${BOLD}-x${NORM} and/or ${BOLD}-y${NORM} is used and script is running in interactive mode, those values will be used as defaults, but may be later overwritten."
       echo
       echo -e "\tOptions required for running in non-interactive mode:"
-      echo -e "\t-f\tInput file in FASTA format (output of Geneious assembly)"
+      echo -e "\t-xf\tInput file in TSV format (output of Geneious assembly)"
+      echo -e "\t-zf\tInput file in FASTA format (output of Geneious assembly)"
       echo
       echo -e "\tOther optional arguments (if not provided, default values are used):"
       echo -e "\t-b\tBait length"
@@ -79,7 +80,11 @@ while getopts "hvulrpeinf:b:d:" START; do
       STARTINI="N"
       CHECKMODE=$((CHECKMODE+1))
       ;;
-    f)
+    x)
+      TSVLIST=$OPTARG
+      echo "Input file: $TSVLIST"
+      ;;
+    z)
       SEQUENCES=$OPTARG
       echo "Input file: $SEQUENCES"
       ;;
@@ -245,16 +250,57 @@ function compilecdhit {
     esac
   done
   }
-echo "Rest not finished yet" && exit
+
 # Variables
 
-# Geneious output files are infiles here - statistics of contigs
-TSVLIST=$1
-# Geneious output files are infiles here - consensus and unused sequences
-SEQUENCES=$2
-# Sequences converted from FASTA to tabular format
-SEQUENCESTAB="${SEQUENCES%.*}.tsv"
+# Function to check and read input files
+# Parameters: 1) parameter for particular file; 2) name (description) of input file; 3) variable for particular file (written into $CHECKFILEREADOUT)
 
+# Geneious output files are infiles here - statistics of contigs
+CHECKFILEREADOUT=""
+readinputfile -f "Geneious output file - TSV" $TSVLIST
+TSVLIST=$CHECKFILEREADOUT
+CHECKFILEREADOUT=""
+
+# Geneious output files are infiles here - consensus and unused sequences
+readinputfile -c "Geneious output file - FASTA" $SEQUENCES
+SEQUENCES=$CHECKFILEREADOUT
+CHECKFILEREADOUT=""
+
+# Sequences converted from FASTA to tabular format
+SEQUENCESTAB="${SEQUENCES%.*}.tab"
+# Assembled sequences in TSV
+SEQUENCESTABASSE="${SEQUENCES%.*}_assembled.tab"
+# Unassembled sequences in TSV
+SEQUENCESTABUNAS="${SEQUENCESTAB%.*}_unassembled.tab"
+# Filtered probes
+SEQUENCESPROBES600="${SEQUENCES%.*}_probes_120-600bp.tab"
+# Numbers of usable contigs for joining
+SEQUENCESPROBES600FORJOIN="${SEQUENCESPROBES600%.*}_probes_120-600bp_fin_for_join"
+# All exons ≥120 bp
+SEQUENCESTABASSE120="${SEQUENCES%.*}_120bp_assembled_less_than_1kb_transcript_fin.tab"
+# Sorted exons ≥120 bp
+SEQUENCESTABASSE120SORT="${SEQUENCES%.*}_120bp_assembled_less_than_1kb_transcript_fin_sorted.tab"
+# Exons ≥120 bp and all assemblies making up genes of ≥600 bp
+SEQUENCESPROBES120600FIN="${SEQUENCES%.*}_probes_120-600bp_fin.tab"
+# Temporal files when converting from TAB to FASTA
+SEQUENCESPROBES120600MODIF="${SEQUENCES%.*}_probes_120-600bp_modified_fin.tab"
+SEQUENCESPROBES120600ASSEM="${SEQUENCES%.*}_probes_120-600bp_assembled_fin.fasta"
+SEQUENCESPROBES120600CONTIG="${SEQUENCES%.*}_probes_120-600bp_contig_fin.fasta"
+# Preliminary probe sequences
+PROBEPRELIM="${SEQUENCES%.*}_prelim_probe_seq.fasta"
+# Sequence similarity checked by CD-HIT
+PROBEPRELIMCDHIT="${SEQUENCES%.*}_similarity_test"
+# Assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
+PROBEPRELIMCDHIT2="${SEQUENCES%.*}_similarity_test2"
+# Extracted assemblies making up genes of ≥600 bp
+PROBEPRELIMFORJOIN="${SEQUENCES%.*}_similarity_test_assemblies_for_join"
+# Modified and sorted assemblies
+PROBEPRELIMSORT="${SEQUENCES%.*}_similarity_test_assemblies_sort.tab"
+# All exons ≥120 bp and all assemblies making up genes of ≥600 bp
+PROBEPRELIMFIN="${SEQUENCES%.*}_similarity_test_assemblies_fin.tab"
+# Probes in FASTA
+PROBESEQUENCES="${SEQUENCES%.*}_target_enrichment_probe_sequences.fasta"
 
 # Part 3: Assemble the obtained sequences in contigs (part B)
 
@@ -311,113 +357,149 @@ if egrep -q "# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[[
     TSVLIST2=$TSVLIST
   else
     echo "Input file $TSVLIST seems to contain more columns than required. Needed columns will be extracted."
-    geneious_column_separator.pl $TSVLIST || echo "Extraction failed. Please, do it manually. Required columns in $TSVLIST are \"# Sequences\", \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and \"Sequence Length\"."
+    $SCRIPTDIR/geneious_column_separator.pl $TSVLIST || {
+      echo
+      echo "${BOLD}Error!${NORM} Extraction failed. Aborting."
+      echo "Please, do it manually. Required columns in $TSVLIST are \"# Sequences\", \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and \"Sequence Length\"."
+      echo
+      exit 1
+      }
     TSVLIST2="${TSVLIST%.*}.columns.tsv"
     echo "File with extracted columns was saved as $TSVLIST2 for possible later usage"
   fi
 echo
-
+# { echo && echo "${BOLD}Error!${NORM} XXX failed. Aborting." && echo && exit 1; }
 # Check the statistics
 # Check total number of bp
 echo "Total number of base pairs:"
-{ cut -f6 $TSVLIST2 | awk '$1>119' | awk '{s+=$1}END{print s}'; } || { echo && echo "${BOLD}Error!${NORM} XXX failed. Aborting." && echo && exit 1; }
+{ cut -f6 $TSVLIST2 | awk '$1>119' | awk '{s+=$1}END{print s}'; } || { echo && echo "${BOLD}Error!${NORM} Checking statistics failed. Aborting." && echo && exit 1; }
 # Check number of contigs
 echo "Number of contigs:"
-{ cut -f6 $TSVLIST2 | awk '$1>119' | wc -l; } || { echo && echo "${BOLD}Error!${NORM} XXX failed. Aborting." && echo && exit 1; }
+{ cut -f6 $TSVLIST2 | awk '$1>119' | wc -l; } || { echo && echo "${BOLD}Error!${NORM} Checking number of contigs failed. Aborting." && echo && exit 1; }
 echo
 
 # Convert FASTA to TSV
 echo "Converting FASTA to TAB"
 # REWRITE!!!
-perl -e ' $count=0; $len=0; while(<>) { s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) { print "\n" } s/ |$/\t/; $count++; $_ .= "\t"; } else { s/ //g; $len += length($_) } print $_; } print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n"; ' $SEQUENCES > $SEQUENCESTAB || { echo && echo "${BOLD}Error!${NORM} XXX failed. Aborting." && echo && exit 1; }
-echo "Converted tabular format was saved as $SEQUENCESTAB for possible later usage" || { echo && echo "${BOLD}Error!${NORM} XXX failed. Aborting." && echo && exit 1; }
+perl -e ' $count=0; $len=0; while(<>) { s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) { print "\n" } s/ |$/\t/; $count++; $_ .= "\t"; } else { s/ //g; $len += length($_) } print $_; } print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n"; ' $SEQUENCES > $SEQUENCESTAB || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting." && echo && exit 1; }
+echo
 
+# Separate the assembled sequences
+echo "Separating assembled sequences"
+grep 'Contig' $SEQUENCESTAB > $SEQUENCESTABASSE
+echo
+# Separate the unassembled sequences
+echo "Separating unassembled sequences"
+grep -v 'Contig' $SEQUENCESTAB > $SEQUENCESTABUNAS
+echo
 
-# Separate the assembled and unassembled sequences:
-grep 'oxalis' oxalis.all-lengths.assembled+unassembled.lessthan1kbtranscript-hits_FINAL.tab > oxalis.all-lengths.assembled.lessthan1kbtranscript-hits_FINAL.tab
-# 41952 contigs (Aaron: 41952)
-grep -v 'oxalis' oxalis.all-lengths.assembled+unassembled.lessthan1kbtranscript-hits_FINAL.tab > oxalis.all-lengths.unassembled.lessthan1kbtranscript-hits_FINAL.tab
-# 46061 unassembled sequences (Aaron: 46061)
 # Filter the file with the assembled sequences – count the assemblies (the ones indicated with "Contig") making up genes of ≥960 bp / ≥600 bp, comprised of putative exons ≥120 bp
-awk '{print $1"\t"length($2)}' oxalis.all-lengths.assembled.lessthan1kbtranscript-hits_FINAL.tab | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | awk '{s+=$3;c++}END{print s}'
-awk '{print $1"\t"length($2)}' oxalis.all-lengths.assembled.lessthan1kbtranscript-hits_FINAL.tab | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | wc -l
-# 473 genes of ≥960 bp (exons ≥120 bp), total 638816 bp (Aaron: 473, total 638816 bp)
-awk '{print $1"\t"length($2)}' oxalis.all-lengths.assembled.lessthan1kbtranscript-hits_FINAL.tab | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
-awk '{print $1"\t"length($2)}' oxalis.all-lengths.assembled.lessthan1kbtranscript-hits_FINAL.tab | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
-# 1223 genes of ≥600 bp (exons ≥120 bp), total 1195988 bp (Aaron: 1223, total 1195988 bp)
-awk '{print $1"\t"length($2)}' oxalis.all-lengths.assembled.lessthan1kbtranscript-hits_FINAL.tab | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > oxalis.probes.120+600bp_FINAL.txt
-# Filter the file with the unassembled sequences:
-awk '{print $1"\t"length($2)}' oxalis.all-lengths.unassembled.lessthan1kbtranscript-hits_FINAL.tab | sed s/_/\\t/g | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>399' | wc -l
-# 33 unassembled sequences making up genes of ≥400 bp (Aaron: 32)
-awk '{print $1"\t"length($2)}' oxalis.all-lengths.unassembled.lessthan1kbtranscript-hits_FINAL.tab | sed s/_/\\t/g | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
-awk '{print $1"\t"length($2)}' oxalis.all-lengths.unassembled.lessthan1kbtranscript-hits_FINAL.tab | sed s/_/\\t/g | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
-# 1 unassembled sequence making up a gene of ≥600 bp (exons ≥120 bp), total 669 bp (Aaron: 1, total 669 bp)
+echo "Counting assembled sequences:"
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | awk '{s+=$3;c++}END{print s}'
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | wc -l
+echo
+# Genes of ≥960 bp (exons ≥120 bp), total bp
+echo "Genes of ≥960 bp (exons ≥120 bp), total bp:"
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
+echo
+# Genes of ≥600 bp (exons ≥120 bp), total bp
+echo "Genes of ≥600 bp (exons ≥120 bp), total bp:"
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > $SEQUENCESPROBES600
+echo
+# Filter the file with the unassembled sequences
+echo "Filtering the file with the unassembled sequences:"
+awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed s/_/\\t/g | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>399' | wc -l
+echo
+# Unassembled sequences making up genes of ≥400 bp
+echo "Unassembled sequences making up genes of ≥400 bp:"
+awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed s/_/\\t/g | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
+awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed s/_/\\t/g | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
+echo
 
 # Part 4: Create the final .fasta file for the Hyb-Seq probes.
 
-# Extract and sort the assemblies making up genes of ≥600 bp:
-sed s/^/Assembly_/ oxalis.probes.120+600bp_FINAL.txt | cut -f1 -d' ' | sort -k1,1 > oxalis.probes.120+600bp_FINAL.forjoin
-# Make a file with all exons ≥120 bp (as the sequence labels of my GENEIOUS file oxalis.all-lengths.assembled.lessthan1kbtranscript-hits_FINAL.tab looks slightly different from Aaron's, I changed them to his notation by replacing "no_N-1kb_hits_FINAL" with "no_N.no_1kb-hits" in a text editor and named the file oxalis.all-lengths.assembled.lessthan1kbtranscript-hits_AaronsFormat_FINAL.tab):
-awk '{print $1"\t"length($2)"\t"$2}' oxalis.all-lengths.assembled.lessthan1kbtranscript-hits_AaronsFormat_FINAL.tab | awk '$2>119' > oxalis.120bp+.assembled.lessthan1kbtranscript-hits_AaronsFormat_FINAL.tab
-# Make the assembly number the first field and sort (I modified Aaron's command as it didn't work for me):
-sed s/oxalis.blat.no_N.no_1kb-hits_//oxalis.120bp+.assembled.lessthan1kbtranscript-hits_AaronsFormat_FINAL.tab | sed s/_C/\\tC/ | sort -k1,1 > oxalis.120bp+.assembled.lessthan1kbtranscript-hits_AaronsFormat_sorted_FINAL.tab
-# Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp:
-join oxalis.probes.120+600bp_FINAL.forjoin oxalis.120bp+.assembled.lessthan1kbtranscript-hits_AaronsFormat_sorted_FINAL.tab > oxalis.probes.120+600bp_FINAL.tab
-# 5232 assemblies making up genes of ≥600 bp (exons ≥120 bp) (Aaron: 5232)
-# Convert .tab to .fasta (I modified Aaron's set of commands as it didn't work for me):
-sed s/' '/_/ oxalis.probes.120+600bp_FINAL.tab | sed s/' '/_/ > oxalis.probes.120+600bp_modified_FINAL.tab
-sed s/^/'>'/ oxalis.probes.120+600bp_modified_FINAL.tab | sed s/' '/\\n/ > oxalis.probes.120+600bp.assembled_FINAL.fsa
-# IMPORTANT: When I created the file of assemblies making up genes of ≥600 bp oxalis.probes.120+600bp_FINAL.forjoin, only the assemblies indicated by "Contig" were listed. Therefore, the remaining assemblies from oxalis.120bp+.assembled.lessthan1kbtranscript-hits_Aarons-Format_FINAL.tab have to be selected and added to the .fasta file of the probes:
-grep -v Contig oxalis.120bp+.assembled.lessthan1kbtranscript-hits_AaronsFormat_FINAL.tab | awk '$2>599' | sed s/^/'>'/ | sed s/\\t/_/ | sed s/\\t/\\n/ > oxalis.probes.120+600bp.contig0_FINAL.fsa
-# 16 assemblies (Aaron: 16)
+# Extract and sort the assemblies making up genes of ≥600 bp
+echo "Extracting and sorting the assemblies making up genes of ≥600 bp"
+sed s/^/Assembly_/ $SEQUENCESPROBES600 | cut -f1 -d' ' | sort -k1,1 > $SEQUENCESPROBES600FORJOIN
+echo
+# Make a file with all exons ≥120 bp
+echo "Selecting ≥120 bp exons"
+awk '{print $1"\t"length($2)"\t"$2}' $SEQUENCESTABASSE | awk '$2>119' > $SEQUENCESTABASSE120
+echo
+# Make the assembly number the first field and sort
+echo "Sorting exons ≥120 bp"
+sed 's/^.*\(Assembly\)/\1/' $SEQUENCESTABASSE120 | sed s/_C/\\tC/ | sort -k1,1 > $SEQUENCESTABASSE120SORT
+echo
+# Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
+echo "Selecting all exons ≥120 bp and all assemblies making up genes of ≥600 bp"
+join $SEQUENCESPROBES600FORJOIN $SEQUENCESTABASSE120SORT > $SEQUENCESPROBES120600FIN
+echo
+# Convert .tab to .fasta
+echo "Converting TAB to FASTA"
+sed 's/ /_/' $SEQUENCESPROBES120600FIN | sed 's/ /_/' > $SEQUENCESPROBES120600MODIF
+sed 's/^/>/' $SEQUENCESPROBES120600MODIF | tr " " "\n" > $SEQUENCESPROBES120600ASSEM
+# Remaining assemblies have to be selected and added to the .fasta file of the probes:
+grep -v Contig $SEQUENCESTABASSE120 | awk '$2>599' | sed 's/^/>/' | sed 's/\\t/_/' | tr " " "\n" > $SEQUENCESPROBES120600CONTIG
+echo
 # Combine the two .fasta files:
-cat oxalis.probes.120+600bp.assembled_FINAL.fsa oxalis.probes.120+600bp.contig0_FINAL.fsa > oxalis.probes.120+600bp_FINAL.fasta
-# 5248 assemblies making up genes of ≥600 bp (exons ≥120 bp), total 1207375 bp (Aaron: 5248 assemblies, 1207375 bp)
-# Note that for further file processing you need to modify the label of the 16 assemblies not indicated by "Contig". Remove "oxalis.blat.no_N.no_1kb-hits" and add "Contig_0" at the right position (between assembly number and assembly length). I did this in a text editor and named the file oxalis.probes.120+600bp.fasta.
+echo "Writing FASTA file with preliminary probe sequences"
+cat $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG > $PROBEPRELIM
+echo
+echo "Preliminary probe sequences saved as $PROBEPRELIM for possible later usage"
 
 # Part 5: Make the final quality control of the probe sequences before sending them to company for bait synthesis
 
-# Check for sequence similarity between the developed probe sequences with CD-HIT-EST:
-cd-hit-est -i oxalis.probes.120+600bp.fasta -o oxalis.probes.120+600bp.SimilarityTest_FINAL -c 0.9
-# One of the three outfiles is a .fasta file: oxalis.probes.120+600bp.SimilarityTest_FINAL
-# Adjust the number of assemblies making up genes of ≥600 bp as numerous assemblies were eliminated in the sequence similarity check. Consequently, there will be assemblies in the file oxalis.probes.120+600bp.SimilarityTest_FINAL which will not sum up to genes of ≥600 bp.
-# Rename oxalis.probes.120+600bp.SimilarityTest_FINAL to oxalis.probes.120+600bp.SimilarityTest_FINAL.fasta.
-# This file has to be converted to .txt:
-fasta2tab.pl oxalis.probes.120+600bp.SimilarityTest_FINAL.fasta > oxalis.probes.120+600bp.SimilarityTest_FINAL.txt
-# Count all assemblies, comprised of putative exons ≥120 bp:
-awk '{print $1"\t"length($2)}' oxalis.probes.120+600bp.SimilarityTest_FINAL.txt | awk '{s+=$2;c++}END{print s}'
-# total 1166757 bp of assemblies (also including the ones making up genes of <600 bp)
-# Count the assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp:
-awk '{print $1"\t"length($2)}' oxalis.probes.120+600bp.SimilarityTest_FINAL.txt | sed s/_/\\t/g | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
-awk '{print $1"\t"length($2)}' oxalis.probes.120+600bp.SimilarityTest_FINAL.txt | sed s/_/\\t/g | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
-# 1168 genes of ≥600 bp (exons ≥120 bp), total 1131805 bp
-awk '{print $1"\t"length($2)}' oxalis.probes.120+600bp.SimilarityTest_FINAL.txt | sed s/_/\\t/g | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > oxalis.probes.120+600bp_2ndFINAL.txt
-# Extract and sort the assemblies making up genes of ≥600 bp:
-sed s/^/Assembly_/ oxalis.probes.120+600bp_2ndFINAL.txt | cut -f1 -d' ' | sort -k1,1 > oxalis.probes.120+600bp_2ndFINAL.forjoin
-# Modify the assembly number and sort:
-sed s/_C/\\tC/ oxalis.probes.120+600bp.SimilarityTest_FINAL.txt | sort -k1,1 > oxalis.probes.120+600bp.SimilarityTest_sorted_FINAL.tab
-# Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp:
-join oxalis.probes.120+600bp_2ndFINAL.forjoin oxalis.probes.120+600bp.SimilarityTest_sorted_FINAL.tab > oxalis.probes.120+600bp_2ndFINAL.tab
-# Convert .tab to .fasta:
-sed s/' C'/_/ oxalis.probes.120+600bp_2ndFINAL.tab | sed s/ontig/Contig/ | sed s/^/'>'/ | sed s/' '/\\n/ > oxalis_HybSeqProbes.fasta
-# 4930 assemblies making up genes of ≥600 bp (exons ≥120 bp), total 1131805 bp
-# This is how I calculated the total number of base pairs:
-fasta2tab.pl oxalis_HybSeqProbes.fasta > oxalis_HybSeqProbes.txt
-awk '{print $1"\t"length($2)}' oxalis_HybSeqProbes.txt | awk '{s+=$2;c++}END{print s}'
+# Check for sequence similarity between the developed probe sequences with CD-HIT-EST
+echo "Checking sequence similarity between the developed probe sequences"
+cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCDHIT -c $CDHITSIM
+echo
+# One of the three outfiles is a FASTA file, it has to be converted to TAB
+echo "Converting FASTA to TAB"
+# REWRITE!!!
+perl -e ' $count=0; $len=0; while(<>) { s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) { print "\n" } s/ |$/\t/; $count++; $_ .= "\t"; } else { s/ //g; $len += length($_) } print $_; } print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n"; ' $PROBEPRELIMCDHIT > $PROBEPRELIMCDHIT.txt || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting." && echo && exit 1; }
+echo
+# Count all assemblies, comprised of putative exons ≥120 bp
+echo "Counting all assemblies, comprised of putative exons ≥120 bp:"
+awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | awk '{s+=$2;c++}END{print s}'
+echo
+# Count the assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
+echo "Counting the assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp:"
+awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed s/_/\\t/g | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
+awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed s/_/\\t/g | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
+echo
+echo "Writing those assemblies into temporal file"
+awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed s/_/\\t/g | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > $PROBEPRELIMCDHIT2
+echo
+# Extract and sort the assemblies making up genes of ≥600 bp
+echo "Extract and sort the assemblies making up genes of ≥600 bp:"
+sed s/^/Assembly_/ $PROBEPRELIMCDHIT2 | cut -f1 -d' ' | sort -k1,1 > $PROBEPRELIMFORJOIN
+echo
+# Modify the assembly number and sort
+echo "Modify the assembly number and sort"
+sed s/_C/\\tC/ $PROBEPRELIMCDHIT.txt | sort -k1,1 > $PROBEPRELIMSORT
+echo
+# Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
+echo "Joining all exons ≥120 bp and all assemblies making up genes of ≥600 bp"
+join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT > $PROBEPRELIMFIN
+echo
+# Convert TAB to FASTA
+ECHO "Converting TAB to FASTA"
+sed s/' C'/_/ $PROBEPRELIMFIN | sed s/ontig/Contig/ | sed s/^/'>'/ | sed s/' '/\\n/ > $PROBESEQUENCES
+echo
+# Calculating of the total number of base pairs
+echo "Calculating of the total number of base pairs"
+echo "Converting FASTA to TAB"
+# REWRITE!!!
+perl -e ' $count=0; $len=0; while(<>) { s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) { print "\n" } s/ |$/\t/; $count++; $_ .= "\t"; } else { s/ //g; $len += length($_) } print $_; } print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n"; ' $PROBESEQUENCES > $PROBESEQUENCESNUM || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting." && echo && exit 1; }
+echo
+echo "Total number of base pairs:"
+awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}'
+echo
 # Removing remaining cp/mt genes from probe set
-blat -t=dna -q=dna -out=pslx Ricinus_communis_reference.fsa oxalis_HybSeqProbes.fasta blat_targetEnrichment_probeSequences_plastidSequences.pslx
-# The resulting transcripts, such as below, should then be removed from the probe set.
-# In a last step repetitive regions have to be masked. I used REPEATMASKER (http://www.repeat-masker.org/cgi-bin/WEBRepeatMasker).
-# For a detailed introduction to REPEATMASKER see http://sebastien.tempel.free.fr/Boulot/UsingRepeat-Masker.pdf. I used the following settings:
-# Search engine: cross_match (often more sensitive than the other engines)
-# Speed / sensitivity: slow
-# DNA source: other, please specify; Populus trichocarpa
-# Return format: html
-# Return method: email
-# Masking options: repetitive sequences replaced by strings of N
-# Repeat options: mask interspersed and simple repeats
-# Matrix: RepeatMasker choice
-# Artifact check: skip bacterial insertion element check
-# Amongst the four results files there is a file with masked repetitive regions in .fasta (so-called masked file). Send this file (I renamed it to oxalis_HybSeqProbes_repeatsmasked.fasta) to MYcroarray for probe synthesis.
+blat -t=dna -q=dna -out=pslx Ricinus_communis_reference.fsa $PROBESEQUENCES blat_targetEnrichment_probeSequences_plastidSequences.pslx
+
+echo "Removing unneeded temporal files"
+rm $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESTABUNAS $SEQUENCESPROBES600 $SEQUENCESPROBES600FORJOIN $SEQUENCESTABASSE120 $SEQUENCESTABASSE120SORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM
 
 exit
