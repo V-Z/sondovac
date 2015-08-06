@@ -1,8 +1,6 @@
 bin
-pkgs
-sample_data
+pkgs/linux32b
+pkgs/linux64b
+pkgs/macosx
 src
 *~
-picard.sh
-tput_test.sh
-problemy

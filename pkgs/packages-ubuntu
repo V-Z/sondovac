@@ -1,0 +1,14 @@
+build-essential
+gcc
+g++
+cpp
+make
+checkinstall
+libpng??-dev
+zlib1g-dev
+openjdk-7-jre
+openjdk-7-jdk
+openjdk-7-source
+git
+ant
+pkg-config

@@ -1,0 +1,13 @@
+patterns-openSUSE-devel_basis
+gcc
+gcc-c++
+cpp
+make
+libpng16-devel
+zlib-devel
+gcc-java
+java-1_7_0-openjdk
+java-1_7_0-openjdk-devel
+git-core
+ant
+pkg-config

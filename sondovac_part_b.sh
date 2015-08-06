@@ -23,9 +23,17 @@ echo "This part processes assembly output from Geneious and produces the final l
 CHECKMODE=0
 # If not specifying explicitly otherwise (using -n), running in interactive mode
 STARTINI="I"
+# Bait length
+BAITL=120
+# CD-HIT sequence similarity
+CDHITSIM=0.9
+# Create empty variables for file names
+REFERENCECP=""
+TSVLIST=""
+SEQUENCES=""
 
 # Parse initial arguments
-while getopts "hvulrpeinx:z:b:d:" START; do
+while getopts "hvulrpeinc:x:z:b:d:" START; do
   case "$START" in
     h|v)
       echo "Usage options:"
@@ -40,11 +48,12 @@ while getopts "hvulrpeinx:z:b:d:" START; do
       echo -e "\t-n\tRunning in non-interactive mode. User ${BOLD}must${NORM} provide at least five input files below:"
       echo -e "\tYou can use ${BOLD}only one${NORM} of parameters ${BOLD}-i${NORM} or ${BOLD}-n${NORM} (not both of them)"
       echo
-      echo -e "\tIf options ${BOLD}-x${NORM} and/or ${BOLD}-y${NORM} is used and script is running in interactive mode, those values will be used as defaults, but may be later overwritten."
+      echo -e "\tIf options ${BOLD}-c${NORM}, ${BOLD}-x${NORM} and/or ${BOLD}-z${NORM} are used and script is running in interactive mode, those values will be used as defaults, but may be later overwritten."
       echo
       echo -e "\tOptions required for running in non-interactive mode:"
-      echo -e "\t-xf\tInput file in TSV format (output of Geneious assembly)"
-      echo -e "\t-zf\tInput file in FASTA format (output of Geneious assembly)"
+      echo -e "\t-c\tPlastom reference sequence in FASTA format"
+      echo -e "\t-x\tInput file in TSV format (output of Geneious assembly)"
+      echo -e "\t-z\tInput file in FASTA format (output of Geneious assembly)"
       echo
       echo -e "\tOther optional arguments (if not provided, default values are used):"
       echo -e "\t-b\tBait length"
@@ -79,6 +88,10 @@ while getopts "hvulrpeinx:z:b:d:" START; do
       echo "Running in non-interactive mode..."
       STARTINI="N"
       CHECKMODE=$((CHECKMODE+1))
+      ;;
+    c)
+      REFERENCECP=$OPTARG
+      echo "Plastom reference: $REFERENCECP"
       ;;
     x)
       TSVLIST=$OPTARG
@@ -148,9 +161,6 @@ checktools grep
 # Check if egrep is available
 checktools egrep
 
-# Check if geneious_column_separator.pl is available
-# checktools geneious_column_separator.pl
-
 # Check if awk is available
 checktools awk
 
@@ -162,6 +172,9 @@ checktools join
 
 # Check if cat is available
 checktools cat
+
+# Check if BLAT is available
+checkblat
 
 # Function to compile CD-HIT
 function compilecdhit {
@@ -256,14 +269,18 @@ function compilecdhit {
 # Function to check and read input files
 # Parameters: 1) parameter for particular file; 2) name (description) of input file; 3) variable for particular file (written into $CHECKFILEREADOUT)
 
-# Geneious output files are infiles here - statistics of contigs
+# Plastom reference in FASTA
 CHECKFILEREADOUT=""
-readinputfile -f "Geneious output file - TSV" $TSVLIST
+readinputfile -c "" $TSVLIST
+TSVLIST=$CHECKFILEREADOUT
+CHECKFILEREADOUT=""
+
+readinputfile -x "Geneious output file - TSV" $TSVLIST
 TSVLIST=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
 # Geneious output files are infiles here - consensus and unused sequences
-readinputfile -c "Geneious output file - FASTA" $SEQUENCES
+readinputfile -z "Geneious output file - FASTA" $SEQUENCES
 SEQUENCES=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
@@ -496,10 +513,24 @@ echo
 echo "Total number of base pairs:"
 awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}'
 echo
-# Removing remaining cp/mt genes from probe set
-blat -t=dna -q=dna -out=pslx Ricinus_communis_reference.fsa $PROBESEQUENCES blat_targetEnrichment_probeSequences_plastidSequences.pslx
+# Remove remaining cp/mt genes from probe set
+echo "Removing remaining cp/mt genes from probe set"
+blat -t=dna -q=dna -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCES.target_enrichment_probe_sequences_final.pslx
+echo
 
+# Remove temporal files
 echo "Removing unneeded temporal files"
 rm $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESTABUNAS $SEQUENCESPROBES600 $SEQUENCESPROBES600FORJOIN $SEQUENCESTABASSE120 $SEQUENCESTABASSE120SORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM
+echo
+
+echo "Success!"
+echo
+echo "Final output file was written as $PROBESEQUENCES.target_enrichment_probe_sequences_final.pslx"
+echo
+echo "This file contains the probe sequences"
+echo
+
+echo "Script exited successfully..."
+echo
 
 exit

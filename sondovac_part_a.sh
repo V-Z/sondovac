@@ -196,93 +196,6 @@ workdirpath
 
 # Check availability of all needed binaries
 
-# Function to compile BLAT
-function compileblat {
-  {
-  echo
-  checktools curl &&
-  checktools unzip &&
-  checktools make &&
-  checktools gcc &&
-  echo "Downloading BLAT source code" &&
-  if [ -z $MACHTYPE ]; then
-    echo
-    echo "Error! Variable \$MACHTYPE required by BLAT is missing. Trying to create it. If it fails, create global variable \$MACHTYPE manually, download binary or compile it on another comparable machine."
-    MACHTYPE=$HOME/bin/$OSB
-    else
-      echo
-      echo "BLAT binaries will be available in $HOME/bin/$MACHTYPE and $BIN (consider adding them into the PATH)."
-    fi &&
-  echo &&
-  curl -o blatSrc.zip https://users.soe.ucsc.edu/~kent/src/blatSrc.zip &&
-  unzip -nq blatSrc.zip &&
-  cd blatSrc &&
-  { mkdir -p $HOME/bin/$MACHTYPE || { echo && echo "Error! Can not create directory \"$HOME/bin/$MACHTYPE\" required by BLAT. Aborting." && echo && exit 1; }; } &&
-  PATH=$PATH:$HOME/bin/$MACHTYPE &&
-  { mkdir -p lib/$MACHTYPE || { echo && echo "Error! Can not create directory \"$(pwd)/lib/$MACHTYPE\" required by BLAT. Aborting." && echo && exit 1; }; } &&
-  echo "Compiling BLAT from source code" &&
-  make -s &&
-  cd $WORKDIR &&
-  cp -p $HOME/bin/$MACHTYPE/* $BIN/ &&
-  echo "\"BLAT\" is available. OK"
-  } || { echo "Compilation failed. Please go to https://users.soe.ucsc.edu/~kent/src/, download latest blatSrc*.zip, compile it and ensure it is in PATH" && exit 1; }
-  }
-
-# Check if BLAT is available
-{ command -v blat >/dev/null 2>&1 && echo "\"BLAT\" is available. OK."; } || {
-  echo
-  echo "BLAT is required but not installed or available in PATH."
-  echo
-  if [ "$STARTINI" == "I" ]; then
-    echo "Type \"S\" to compile BLAT from source available on https://users.soe.ucsc.edu/~kent/src/ (BLAT license does not allow redistributions, required if BLAT is not available for your system). Together with standard compilation tools BLAT requires libpng developmental files."
-    echo "Type \"D\" to download BLAT from http://hgdownload.cse.ucsc.edu/admin/exe/ automatically for your OS (BLAT license does not allow redistributions, available for 64 bit Linux and Mac OS X, recommended)."
-    echo "Type \"M\" for manual installation - script will exit and you will have to install BLAT yourselves. Check http://genome.ucsc.edu/FAQ/FAQblat.html for more information."
-    read BLAT
-    while :
-    do
-      case "$BLAT" in
-	S|s)
-	  compileblat
-	  break
-	  ;;
-	D|d) 
-	  if [ "$OS" == "Mac" ]; then
-	    {
-	    checktools curl &&
-	    echo "Downloading blat binary for $OS" &&
-	    curl -o blat http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/blat &&
-	    chmod +x blat &&
-	    mv blat $BIN/ &&
-	    echo "\"BLAT\" is available. OK"
-	    } || { echo && echo "Download of BLAT failed. Please, go to http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/ and download blat binary yourselves." && echo && exit 1; }
-	    break
-	    elif [[ "$OS" == "Linux" && "$OSB" == "64b" ]]; then
-	      {
-	      echo "Downloading blat binary for $OS" &&
-	      curl -o blat http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/blat &&
-	      chmod +x blat &&
-	      mv blat $BIN/ &&
-	      echo "\"BLAT\" is available. OK."
-	      } || { echo && echo "Download of BLAT failed. Please, go to http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/ and download blat binary yourselves." && echo && exit 1; }
-	      break
-	    elif [[ "$OS" == "Linux" && "$OSB" == "32b" ]]; then
-	      echo "BLAT binary is not provided for 32bit Linux."
-	      compileblat
-	    else
-	      echo "Unknown OS or OS without BLAT binary available."
-	      compileblat
-	    fi
-	    break
-	  ;;
-	M|m) echo "Please, go to http://genome.ucsc.edu/FAQ/FAQblat.html and download and install BLAT and ensure it is in PATH." && echo && exit 2;;
-	*) echo "Wrong option. Use S, D or M." && read BLAT;;
-      esac
-    done
-    else
-      exit 1
-  fi
-}
-
 # Check if cut is available
 checktools cut
 
@@ -294,6 +207,9 @@ checktools join
 
 # Check if sed is available
 checktools sed
+
+# Check if BLAT is available
+checkblat
 
 # Function to compile Bowtie2
 function compilebowtie {
@@ -322,7 +238,7 @@ function compilebowtie {
     echo "Type \"C\" to compile Bowtie2-2.2.5 from source available together with this script"
     echo "Type \"S\" to compile Bowtie2-2.2.5 from source code downloaded from http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.5/"
     echo "Type \"D\" to download Bowtie2-2.2.5 binary from http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.5/ for your OS"
-    echo "Type \"B\" to copy Bowtie2-2.2.2.5 binary available together with the script (available for Linux and Mac OS X)"
+    echo "Type \"B\" to copy Bowtie2-2.2.2.5 binary available together with the script (recommended, available for Linux and Mac OS X)"
     echo "Type \"M\" for manual installation - script will exit and you will have to install Bowtie2 yourselves"
     read BOWTIE
     while :
@@ -436,7 +352,7 @@ function compilesamtools {
     echo "Type \"C\" to compile Samtools-1.2 from source available together with this script. Makefile was modified not to require GNU ncurses library."
     echo "Type \"S\" to download latest developmental Samtools source from https://github.com/samtools/samtools/ and compile it. Compilation requires GNU ncurses library and is recommended only for advanced users."
     echo -e "\tIf compilation fails, check Samtools' INSTALL file for details and adjust its Makefile."
-    echo "Type \"B\" to copy Samtools-1.2 binary available together with the script (available for Linux and Mac OS X)"
+    echo "Type \"B\" to copy Samtools-1.2 binary available together with the script (recommended, available for Linux and Mac OS X)"
     echo "Type \"M\" for manual installation - script will exit and you will have to install Samtools yourselves."
     read SAMTOOLS
     while :
@@ -557,7 +473,7 @@ function compilebam2fastq {
     echo
     echo "Type \"C\" to compile bam2fastq from source available together with this script"
     echo "Type \"S\" to download bam2fastq source from http://gsl.hudsonalpha.org/information/software/bam2fastq and compile it"
-    echo "Type \"B\" to copy bam2fastq binary available together with the script (available for Linux and Mac OS X)"
+    echo "Type \"B\" to copy bam2fastq binary available together with the script (recommended, available for Linux and Mac OS X)"
     echo "Type \"M\" for manual installation - script will exit and you will have to install bam2fastq yourselves"
     read BAM2FASTQ
     while :
@@ -639,7 +555,7 @@ function compileflash {
     echo "Type \"C\" to compile FLASH from source available together with this script"
     echo "Type \"S\" to download FLASH source from http://sourceforge.net/projects/flashpage/ and compile it"
     echo "Type \"D\" to download FLASH binary from http://sourceforge.net/projects/flashpage/ (available only for Windows)"
-    echo "Type \"B\" to copy FLASH 1.2.11 binary available together with the script (available for Linux and Mac OS X)"
+    echo "Type \"B\" to copy FLASH 1.2.11 binary available together with the script (recommended, available for Linux and Mac OS X)"
     echo "Type \"M\" for manual installation - script will exit and you will have to install FLASH yourselves"
     read FLASH
     while :
@@ -750,7 +666,7 @@ function compilefastx {
     echo
     echo "Type \"C\" to compile FASTX-Toolkit from source available together with this script"
     echo "Type \"S\" to download FASTX-Toolkit source from http://hannonlab.cshl.edu/fastx_toolkit/ and compile it"
-    echo "Type \"B\" to FASTX-Toolkit 0.0.14 binary available together with the script (available for Linux and Mac OS X)"
+    echo "Type \"B\" to FASTX-Toolkit 0.0.14 binary available together with the script (recommended, available for Linux and Mac OS X)"
     echo "Type \"M\" for manual installation - script will exit and you will have to install FASTX-Toolkit yourselves"
     read FASTX
     while :
@@ -829,23 +745,28 @@ checktools cat
 # Check if perl is available
 checktools perl
 
+# Input data, transcriptomic data in FASTA format
 CHECKFILEREADOUT=""
 readinputfile -f "FASTA transcriptomic data" $INPUTFILE
 INPUTFILE=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
+# Input data, plastom reference in FASTA format
 readinputfile -c "FASTA reference plastom data" $REFERENCECP
 REFERENCECP=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
+# Input data, HybSeq reads in FASTQ, file 1
 readinputfile -m "FASTQ reads data file 1" $INPUTFQ1
 INPUTFQ1=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
+# Input data, HybSeq reads in FASTQ, file 2
 readinputfile -t "FASTQ reads data file 2" $INPUTFQ2
 INPUTFQ2=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
+# Input data, mitochondrion reference in FASTA
 readinputfile -q "FASTA reference mitochondrion data" $REFERENCEMT
 REFERENCEMT=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
@@ -922,13 +843,13 @@ echo "Filtering for unique transcripts:"
 echo
 echo "Filtered transcripts saved for possible later usage as $BLATOUT for possible later usage"
 
-# Make a list of these unique transcripts (names and sequences) and convert this file to .fasta
+# Make a list of these unique transcripts (names and sequences) and convert this file to FASTA
 echo
 echo "Making list of unique transcripts"
 cut -f 10 $BLATOUT | uniq -c | awk '{if($1==1){print $0}}' | awk '{print $2}' | awk '{printf "%05d\n", $0;}' > $UNIQUELIST || { echo && echo "${BOLD}Error!${NORM} Making list of unique transcripts failed. Aborting. Check if files $BLATOUT and $INPUTFILE are correct." && echo && exit 1; }
 echo
 
-# In order to use the join command the original transcriptome file has to be converted to .txt with JOINEDFA2TAB, the transcript numbers have to be adjusted and the file sorted:
+# In order to use the join command the original transcriptome file has to be converted to TXT, the transcript numbers have to be adjusted and the file sorted
 echo
 echo "Converting original data into TXT for subsequent joining"
 ### REWRITE !!!
@@ -940,7 +861,7 @@ echo
 # Apply the join command
 join -j1 $UNIQUELIST $SORTEDINPUT > $JOINEDTS || { echo && echo "${BOLD}Error!${NORM} Joining failed. Aborting. Check files $UNIQUELIST and $SORTEDINPUT if they have same number of lines." && echo && exit 1; }
 
-# Convert to .fasta
+# Convert to FASTA
 echo
 echo "Converting to FASTA"
 sed -r 's/ /\t/g' $JOINEDTS > $JOINEDTABS || { echo && echo "${BOLD}Error!${NORM} Conversion of $JOINEDTS to FASTA failed. Aborting. Check file $JOINEDTS." && echo && exit 1; }
@@ -970,7 +891,7 @@ bowtie2 -x $REFERENCECP2 -1 $INPUTFQ1 -2 $INPUTFQ2 -S $BOWTIE2CP || { echo && ec
 echo
 echo "Mapping finished"
 
-# Convert .sam to .bam with SAMTOOLS
+# Convert SAM to BAM with SAMTOOLS
 echo
 echo "Converting SAM to BAM. This may take longer time."
 samtools view -bT $REFERENCECP $BOWTIE2CP > $CPBAM || { echo && echo "${BOLD}Error!${NORM} Conversion of SAM to BAM with samtools failed. Aborting. Check files $REFERENCECP and $BOWTIE2CP." && echo && exit 1; }
@@ -1000,7 +921,7 @@ echo
 bowtie2 -x $REFERENCEMT2 -1 `echo $FASTQNOCP`_1.fq -2 `echo $FASTQNOCP`_2.fq -S $BOWTIE2MT || { echo && echo "${BOLD}Error!${NORM} Mapping mtDNA reads to reference mitochondrion with bowtie2 failed. Aborting. Check files $REFERENCEMT2, `echo $FASTQNOCP`_1.fq and `echo $FASTQNOCP`_2.fq." && echo && exit 1; }
 echo
 
-# Convert .sam to .bam with SAMTOOLS
+# Convert SAM to BAM with SAMTOOLS
 echo
 echo "Converting SAM to BAM. This may take longer time."
 samtools view -bT $REFERENCEMT $BOWTIE2MT > $MTBAM || { echo && echo "${BOLD}Error!${NORM} Conversion of SAM to BAM failed. Aborting. Check files $REFERENCEMT and $BOWTIE2MT." && echo && exit 1; }
@@ -1034,14 +955,14 @@ echo "Output saved as $BLATOUTFIN for possible later usage"
 
 # Part 3: Assemble the obtained sequences in contigs (part A)
 
-# This will be done in GENEIOUS. Modification of the .pslx file is needed (remove headers, select the field with the transcript (target) sequence names and the field with the query sequences, convert to .fasta)
+# This will be done in GENEIOUS. Modification of the PSLX file is needed (remove headers, select the field with the transcript (target) sequence names and the field with the query sequences, convert to FASTA)
 echo
 echo "Modifying PSLX BLAT output for usage in Geneious"
 { sed 1,5d $BLATOUTFIN | cut -f14,22 | awk '{n=split($2,a,",");for(i=1;i<=n;i++)print $1"_"NR"_"i,a[i]}' | sed s/^/'>'/ | sed s/' '/\\n/ > $BLATOUTFIN2; } || { echo && echo "${BOLD}Error!${NORM} Modifying PSLX BLAT output failed. Aborting. Check if file $BLATOUTFIN is correct." && echo && exit 1; }
 echo
 echo "Modified file saved as $BLATOUTFIN2 for possible later usage"
 
-# Convert .fasta to .tab
+# Convert FASTA to TAB
 echo
 echo "Converting FASTA to TAB"
 # REWRITE!!!
@@ -1061,20 +982,20 @@ echo
 echo "Listing transcripts with >$BLATSCORE BLAT scores"
 { awk '$1>"'"$BLATSCORE"'"' $TABLIST | awk '{print $2}' > $TABBLAT; } || { echo && echo "${BOLD}Error!${NORM} Listing of transcripts with >$BLATSCORE BLAT scores failed. Aborting. Check if file $TABLIST is correct." && echo && exit 1; }
 
-# Make a new .tab file without these transcripts
+# Make a new TAB file without these transcripts
 echo
 echo "Removing transcripts with >$BLATSCORE BLAT score"
 grep -v -f $TABBLAT $TAB > $TABREMOVED || { echo && echo "${BOLD}Error!${NORM} Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting. Check files $TABBLAT and $TAB" && echo && exit 1; }
 echo
 { awk '{print $1"\t"length($2)"\t"$2}' $TABREMOVED | awk '{sum+=$2}END{print sum}'; } || { echo && echo "${BOLD}Error!${NORM} XXX failed. Aborting." && echo && exit 1; }
 
-# Convert this .tab file to .fasta and remove the sequences with 'n'
+# Convert this TAB file to FASTA and remove the sequences with 'n'
 echo
 echo "Converting TAB to FASTA and removing sequences with \"n\""
 { grep -v n $TABREMOVED | sed s/^/'>'/ | sed s/\\t/\\n/ > $FINALA; } || { echo && echo "${BOLD}Error!${NORM} Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting. Check file $TABREMOVED." && echo && exit 1; }
 grep -v n $TABREMOVED | awk '{print $1"\t"length($2)}' | awk '{s+=$2;a++}END{print s}' || { echo && echo "${BOLD}Error!${NORM} Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting. Check file $TABREMOVED." && echo && exit 1; }
 
-# Remove unneeded temporal files - keep only *.pslx, *.fasta, *.bam
+# Remove unneeded temporal files - keep only *.pslx, *.fasta and *.bam
 echo "Removing unneeded temporal files"
 rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $REFERENCEMT2* $BOWTIE2MT $FLASHOUT* $TAB $TABLIST $TABBLAT $TABREMOVED
 

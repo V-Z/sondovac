@@ -10,7 +10,7 @@ default available for any Linux distribution, Mac OS X and any other UNIX-based
 operating system). You should use current operating system version supported by 
 upstream. Otherwise we will not be able to help you in case of problems. Older 
 operating systems can have different versions of shell and system libraries, 
-which can cause various problems.
+which can cause various problems and incompatibilities.
 Sondovač is using several scientific software packages (namely bam2fastq, BLAT, 
 Bowtie2, CD-HIT, FASTX toolkit, FLASH, htsjdk, libgtextutils, Picard and 
 SAMtools), and basic UNIX tools. Sondovač will check if those programs are 
@@ -64,8 +64,8 @@ Software links
 * GNU core utils - https://www.gnu.org/software/coreutils/coreutils.html
 * Java - https://www.java.com/
 * libpng - http://www.libpng.org/
-* SAMtools, htsjdk - http://www.htslib.org/
 * Picard - http://picard.sourceforge.net/
+* SAMtools, htsjdk - http://www.htslib.org/
 * Sondovač - https://github.com/V-Z/sondovac/
 * zlib - http://zlib.net/
 
@@ -76,8 +76,8 @@ not transferable among operating systems and/or hardware platforms.
 accessible through terminal of any UNIX-based operating system.
 * compilation - "Translation" of software application from source code (text 
 readable by human programmer) into binary form launchable by computer. It 
-requires special tools and it must be done for every operating system and 
-hardware platform.
+requires special tools and it usually must be done for every operating system 
+and hardware platform.
 * GNU - Major project providing free software widely used in many operating 
 systems, see https://gnu.org/
 * library - Pack of software tools and functions used by another applications.
@@ -90,12 +90,12 @@ features although on the first look they can look differently.
 based on UNIX, see https://www.apple.com/osx/
 * openSUSE - Popular Linux distribution, see https://www.opensuse.org/
 * operating system - Basic system running on your computer - typically MS 
-Windows (not supported by Sondovač, although it migh be working), Mac OS X or 
+Windows (not supported by Sondovač, although it might be working), Mac OS X or 
 some Linux distribution (Ubuntu and derivatives, openSUSE, SLE, Debian, Linux 
 Mint, Fedora, Centos, RedHat etc).
 * PATH - Directories in the computer where system is looking for installed 
-software (in UNIX-based system you can view it by command echo $PATH). If you 
-need to modify to manually, see documentation for your operating system.
+software (in UNIX-based system you can view it by command "echo $PATH"). If you 
+need to modify it manually, see documentation for your operating system.
 * script - Software application. It requires an interpret (application installed 
 on the computer able to launch scripts written in particular language), but the 
 application itself is portable among operating systems and hardware 
@@ -104,7 +104,7 @@ modify it.
 * shell - "The command line" - the interface to interact with software using 
 commands typed into terminal window.
 * Ubuntu - Popular Linux distribution, see http://www.ubuntu.com/
-* upstream - Developers usually support (e.g. fixing of bugs) only newer 
+* upstream - Developers usually support (e.g. by fixing of bugs) only newer 
 versions of an application. If you use older version and you encounter problem, 
 no one will probably help you. Moreover, using old versions of software can be 
 security risky because of security issues fixed in newer versions.

@@ -45,7 +45,7 @@ echo " #          When using this script, please, cite Schmickl et al. 2015     
 echo " #                                                                            #"
 echo " ##############################################################################"
 echo
-echo -e "\tThis is version $SCRIPTVERSION released 2015-mm-dd."
+echo -e "\tThis is version $SCRIPTVERSION released 2015-08-06."
 echo -e "\tFor newest version check $WEB or"
 echo -e "\t\t$0 -u"
 echo -e "\tIn case of problems not covered in README for user support see"
@@ -93,6 +93,13 @@ function devrelease {
     echo "Please, report any issues and/or wishes to zeisek@natur.cuni.cz."
     echo "We hope you enjoy the script, but, please, do not expect too much now. ;-)"
     confirmgo
+    else
+      echo "${BOLD}Warning!${NORM} This is developmental, not fully tested version."
+      echo "You may encounter problems and some functions are still missing"
+      echo "Namely, support for Mac OS X and some major Linux distributions is not finished."
+      echo "Some functions for smoother and more comfortable user experience are missing."
+      echo "Please, report any issues and/or wishes to zeisek@natur.cuni.cz."
+      echo "We hope you enjoy the script, but, please, do not expect too much now. ;-)"
     fi
   }
 
@@ -131,7 +138,6 @@ function scriptupdater {
     do
       case "$UPDATER" in
 	Y|y|YES|Yes|yes)
-	  checktools tar
 	  checktools unzip
 	  echo
 	  echo "Downloading newer version of the script..."
@@ -144,7 +150,7 @@ function scriptupdater {
 	    exit 1
 	    }
 	  echo
-	  tar xzvf sondovac.tar.gz
+	  unzip sondovac.$ONLINEVERSION.zip
 	  echo
 	  echo "New version $ONLINEVERSION is available in directory"
 	  echo -e"\t\"$WORKDIR/${BOLD}sondovac${NORM}\"."
@@ -393,9 +399,10 @@ function oscheck {
 	  PACKAGES=''
 	  # Check if all required packages are installed
 	  while read PACKAGENAME; do
-	    if rpm -qa | grep -q $PACKAGENAME; then
+	    if rpm -q --quiet $PACKAGENAME; then
 	      echo "Package \"$PACKAGENAME\" is available. OK."
 	      else
+		echo "Package \"$PACKAGENAME\" is missing. It will be installed."
 		PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
 	      fi
 	    done < $SCRIPTDIR/pkgs/packages-suse || {
@@ -411,7 +418,6 @@ function oscheck {
 	      }
 	  if [ -n "$PACKAGES" ]; then
 	    # Install missing packages
-	    sed -i 's/\./?/g' $PACKAGES
 	    echo "Packages \"$PACKAGES\" are missing."
 	    echo "Compilation may require to install them. Would you like to install them now?"
 	    echo "It requires administrative privileges. (Yes/No)"
@@ -532,7 +538,7 @@ function oscheck {
 		esac
 	      done
 	      else
-		echo "Packages reguired for compilation are installed. OK."
+		echo "Packages required for compilation are installed. OK."
 	    fi
 	  ;;
 	# Another distros...
@@ -575,6 +581,96 @@ function workdirpath {
   cd $WORKDIR
   # Add bin directory in current directory into PATH
   PATH=$PATH:$BIN
+  }
+
+# Function to compile BLAT
+function compileblat {
+  {
+  echo
+  checktools curl &&
+  checktools unzip &&
+  checktools make &&
+  checktools gcc &&
+  echo "Downloading BLAT source code" &&
+  if [ -z $MACHTYPE ]; then
+    echo
+    echo "Error! Variable \$MACHTYPE required by BLAT is missing."
+    echo "Trying to create it. If it fails, create global variable \$MACHTYPE manually, download binary or compile it on another comparable machine."
+    MACHTYPE=$HOME/bin/$OSB
+    else
+      echo
+      echo "BLAT binaries will be available in $HOME/bin/$MACHTYPE and $BIN (consider adding them into the PATH)."
+    fi &&
+  echo &&
+  curl -o blatSrc.zip https://users.soe.ucsc.edu/~kent/src/blatSrc.zip &&
+  unzip -nq blatSrc.zip &&
+  cd blatSrc &&
+  { mkdir -p $HOME/bin/$MACHTYPE || { echo && echo "Error! Can not create directory \"$HOME/bin/$MACHTYPE\" required by BLAT. Aborting." && echo && exit 1; }; } &&
+  PATH=$PATH:$HOME/bin/$MACHTYPE &&
+  { mkdir -p lib/$MACHTYPE || { echo && echo "Error! Can not create directory \"$(pwd)/lib/$MACHTYPE\" required by BLAT. Aborting." && echo && exit 1; }; } &&
+  echo "Compiling BLAT from source code" &&
+  make -s &&
+  cd $WORKDIR &&
+  cp -p $HOME/bin/$MACHTYPE/* $BIN/ &&
+  echo "\"BLAT\" is available. OK"
+  } || { echo "Compilation failed. Please go to https://users.soe.ucsc.edu/~kent/src/, download latest blatSrc*.zip, compile it and ensure it is in PATH" && exit 1; }
+  }
+
+# Check if BLAT is available
+function checkblat {
+  { command -v blat >/dev/null 2>&1 && echo "\"BLAT\" is available. OK."; } || {
+    echo
+    echo "BLAT is required but not installed or available in PATH."
+    echo
+    if [ "$STARTINI" == "I" ]; then
+      echo "Type \"S\" to compile BLAT from source available on https://users.soe.ucsc.edu/~kent/src/ (BLAT license does not allow redistributions; required if BLAT is not available for your system). Together with standard compilation tools BLAT requires libpng developmental files."
+      echo "Type \"D\" to download BLAT from http://hgdownload.cse.ucsc.edu/admin/exe/ automatically for your OS (BLAT license does not allow redistributions; available for 64 bit Linux and Mac OS X, recommended)."
+      echo "Type \"M\" for manual installation - script will exit and you will have to install BLAT yourselves. Check http://genome.ucsc.edu/FAQ/FAQblat.html for more information."
+      read BLAT
+      while :
+      do
+	case "$BLAT" in
+	  S|s)
+	    compileblat
+	    break
+	    ;;
+	  D|d)
+	    if [ "$OS" == "Mac" ]; then
+	      {
+	      checktools curl &&
+	      echo "Downloading blat binary for $OS" &&
+	      curl -o blat http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/blat &&
+	      chmod +x blat &&
+	      mv blat $BIN/ &&
+	      echo "\"BLAT\" is available. OK"
+	      } || { echo && echo "Download of BLAT failed. Please, go to http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/ and download blat binary yourselves." && echo && exit 1; }
+	      break
+	      elif [[ "$OS" == "Linux" && "$OSB" == "64b" ]]; then
+		{
+		echo "Downloading blat binary for $OS" &&
+		curl -o blat http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/blat &&
+		chmod +x blat &&
+		mv blat $BIN/ &&
+		echo "\"BLAT\" is available. OK."
+		} || { echo && echo "Download of BLAT failed. Please, go to http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/ and download blat binary yourselves." && echo && exit 1; }
+		break
+	      elif [[ "$OS" == "Linux" && "$OSB" == "32b" ]]; then
+		echo "BLAT binary is not provided for 32bit Linux."
+		compileblat
+	      else
+		echo "Unknown OS or OS without BLAT binary available."
+		compileblat
+	      fi
+	      break
+	    ;;
+	  M|m) echo "Please, go to http://genome.ucsc.edu/FAQ/FAQblat.html and download and install BLAT and ensure it is in PATH." && echo && exit 2;;
+	  *) echo "Wrong option. Use S, D or M." && read BLAT;;
+	esac
+      done
+      else
+	exit 1
+    fi
+  }
   }
 
 # Function to check and read input files
