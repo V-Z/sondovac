@@ -9,8 +9,7 @@ WEB="https://github.com/V-Z/sondovac/"
 BOLD=$(tput bold) # bold text
 UNDE=$(tput smul) # underlined text
 NUND=$(tput rmul) # cancel underlined text
-BLIN=$(tput blink) # blinking text
-NORM=$(tput sgr0) # back to normal text - resets colors, bold, blinking, reverse text
+NORM=$(tput sgr0) # back to normal text - resets colors, bold and reverse text
 # Text colors
 BLAB=$(tput setaf 0) # black text color
 REDB=$(tput setaf 1) # red text color
@@ -45,7 +44,7 @@ echo " #          When using this script, please, cite Schmickl et al. 2015     
 echo " #                                                                            #"
 echo " ##############################################################################"
 echo
-echo -e "\tThis is version $SCRIPTVERSION released 2015-08-06."
+echo -e "\tThis is version $SCRIPTVERSION released 2015-08-07."
 echo -e "\tFor newest version check $WEB or"
 echo -e "\t\t$0 -u"
 echo -e "\tIn case of problems not covered in README for user support see"
@@ -54,14 +53,12 @@ echo -e "\tFor basic usage see"
 echo -e "\t\t$0 -h"
 echo -e "\tFor detailed usage instructions see README or"
 echo -e "\t\t$0 -r"
-echo -e "\tFor detailed citation information see"
-echo -e "\t\t$0 -e"
 echo
 echo "This program is free software: you can redistribute it and/or modify it under"
 echo "the terms of the GNU General Public License as published by the Free Software"
 echo "Foundation, either version 3 of the License, or (at your option) any later"
 echo "version. For more information see LICENSE, https://www.gnu.org/licenses/gpl.html"
-echo "or $0 -l"
+echo "or \"$0 -l\""
 echo
 echo "This program is distributed in the hope that it will be useful, but WITHOUT ANY"
 echo "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR"
@@ -231,9 +228,12 @@ function citationreference {
   echo
   echo "Please, cite also software used by Sondovač:"
   echo "bam2fastq:"
-  echo "* None?"
+  echo "* http://gsl.hudsonalpha.org/information/software/bam2fastq"
   echo "BLAT:"
-  echo "* None?"
+  echo "* W. James Kent"
+  echo "  BLAT – the BLAST-like alignment tool"
+  echo "  Genome Research (2002) 12:656-664"
+  echo "  http://genome.cshlp.org/content/12/4/656.short"
   echo "Bowtie2:"
   echo "* Ben Langmead and Steven L. Salzberg"
   echo "  Fast gapped-read alignment with Bowtie 2"
@@ -272,16 +272,17 @@ function citationreference {
   echo "  Briefings in Bioinformatics (2012) 13(6):656-668"
   echo "  http://bib.oxfordjournals.org/content/13/6/656.abstract"
   echo "FASTX toolkit:"
-  echo "* None?"
+  echo "* A. Gordon and G. J. Hannon"
+  echo "  FASTX-Toolkit. FASTQ/A short-reads pre-processing tools"
+  echo "  2010"
+  echo "  http://hannonlab.cshl.edu/fastx_toolkit/"
   echo "FLASH:"
   echo "* Tanja Magoč and Steven L. Salzberg"
   echo "  FLASH: fast length adjustment of short reads to improve genome assemblies"
   echo "  Bioinformatics (2011) 27(21):2957-2963"
   echo "  http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract"
   echo "Picard:"
-  echo "* Currently there is no Picard paper."
-  echo "  You can cite Picard by referring to the website"
-  echo "    http://broadinstitute.github.io/picard"
+  echo "* http://broadinstitute.github.io/picard"
   echo "SAMtools:"
   echo "* Tanja Magoč and Steven L. Salzberg"
   echo "  FLASH: fast length adjustment of short reads to improve genome assemblies"
@@ -530,7 +531,8 @@ function oscheck {
 		    echo
 		    echo "You may need packages \"$PACKAGES\""
 		    echo "If compilation of some software required for the pipeline fails,"
-		    echo "install them manually. See INSTALL for details."
+		    echo "install them manually. See INSTALL for details. See also"
+		    echo "https://help.ubuntu.com/community/CompilingEasyHowTo"
 		    confirmgo
 		    break
 		    ;;

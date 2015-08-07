@@ -4,7 +4,8 @@ g++
 cpp
 make
 checkinstall
-libpng??-dev
+libpng++-dev
+libpng12-dev
 zlib1g-dev
 openjdk-7-jre
 openjdk-7-jdk
