@@ -852,8 +852,7 @@ echo
 # In order to use the join command the original transcriptome file has to be converted to TXT, the transcript numbers have to be adjusted and the file sorted
 echo
 echo "Converting original data into TXT for subsequent joining"
-### REWRITE !!!
-perl -e ' $count=0; $len=0; while(<>) { s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) { print "\n" } s/ |$/\t/; $count++; $_ .= "\t"; } else { s/ //g; $len += length($_) } print $_; } print "\n"; warn "\nConverted $count JOINEDFA records in $. lines to tabular format\nTotal sequence length: $len\n\n"; ' $INPUTFILE > $INPUTTAB || { echo && echo "${BOLD}Error!${NORM} Conversion of $INPUTFILE failed. Check if it is valid FASTA file. Aborting." && echo && exit 1; }
+fasta2tab $INPUTFILE $INPUTTAB || { echo && echo "${BOLD}Error!${NORM} Conversion of $INPUTFILE failed. Check if it is valid FASTA file. Aborting." && echo && exit 1; }
 echo
 echo "Sorting unique transcripts"
 { awk '{$1=sprintf("%05d", $1); print $0}' $INPUTTAB | sort > $SORTEDINPUT; } || { echo && echo "${BOLD}Error!${NORM} Sorting of unique transcripts failed. Aborting. Check if $INPUTFILE is correct FASTA file and check file $INPUTTAB." && echo && exit 1; }
@@ -965,8 +964,7 @@ echo "Modified file saved as $BLATOUTFIN2 for possible later usage"
 # Convert FASTA to TAB
 echo
 echo "Converting FASTA to TAB"
-# REWRITE!!!
-perl -e ' $count=0; $len=0; while(<>) { s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) { print "\n" } s/ |$/\t/; $count++; $_ .= "\t"; } else { s/ //g; $len += length($_) } print $_; } print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n"; ' $BLATOUTFIN2 > $TAB || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA to TAB failed. Aborting. Check if file $BLATOUTFIN2 is correct." && echo && exit 1; }
+fasta2tab $BLATOUTFIN2 $TAB || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA to TAB failed. Aborting. Check if file $BLATOUTFIN2 is correct." && echo && exit 1; }
 echo
 { awk '{print $1"\t"length($2)"\t"$2}' $TAB | awk '{sum+=$2}END{print sum}'; } || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA to TABConversion of FASTA to TAB failed. Aborting. Check if file $TAB is correct." && echo && exit 1; }
 

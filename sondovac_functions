@@ -757,3 +757,9 @@ function readinputfile {
     fi
     CHECKFILEREADOUT=$CHECKFILEREAD
   }
+
+# Function to convert FASTA to TAB
+# $1 is input file in FASTA, $2 output file in TAB
+function fasta2tab {
+  awk '/>/{if (x)print x;print;x="";next}{x=(!x)?$0:x$0;}END{print x;}' $1 | sed 's/>[[:blank:]]*/>/g' | sed 's/[[:blank:]]+/ /g' | tr "\n" "\t" | sed 's/\t>/\n>/g' | sed 's/^>//g' | sed 's/[[:blank:]]*$//g' > $2
+  }

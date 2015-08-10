@@ -397,8 +397,7 @@ echo
 
 # Convert FASTA to TSV
 echo "Converting FASTA to TAB"
-# REWRITE!!!
-perl -e ' $count=0; $len=0; while(<>) { s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) { print "\n" } s/ |$/\t/; $count++; $_ .= "\t"; } else { s/ //g; $len += length($_) } print $_; } print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n"; ' $SEQUENCES > $SEQUENCESTAB || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting." && echo && exit 1; }
+fasta2tab $SEQUENCES $SEQUENCESTAB || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting." && echo && exit 1; }
 echo
 
 # Separate the assembled sequences
@@ -473,8 +472,7 @@ cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCDHIT -c $CDHITSIM
 echo
 # One of the three outfiles is a FASTA file, it has to be converted to TAB
 echo "Converting FASTA to TAB"
-# REWRITE!!!
-perl -e ' $count=0; $len=0; while(<>) { s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) { print "\n" } s/ |$/\t/; $count++; $_ .= "\t"; } else { s/ //g; $len += length($_) } print $_; } print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n"; ' $PROBEPRELIMCDHIT > $PROBEPRELIMCDHIT.txt || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting." && echo && exit 1; }
+fasta2tab $PROBEPRELIMCDHIT $PROBEPRELIMCDHIT.txt || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting." && echo && exit 1; }
 echo
 # Count all assemblies, comprised of putative exons ≥120 bp
 echo "Counting all assemblies, comprised of putative exons ≥120 bp:"
@@ -507,8 +505,7 @@ echo
 # Calculating of the total number of base pairs
 echo "Calculating of the total number of base pairs"
 echo "Converting FASTA to TAB"
-# REWRITE!!!
-perl -e ' $count=0; $len=0; while(<>) { s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) { print "\n" } s/ |$/\t/; $count++; $_ .= "\t"; } else { s/ //g; $len += length($_) } print $_; } print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n"; ' $PROBESEQUENCES > $PROBESEQUENCESNUM || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting." && echo && exit 1; }
+fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting." && echo && exit 1; }
 echo
 echo "Total number of base pairs:"
 awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}'
