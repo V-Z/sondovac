@@ -31,12 +31,10 @@ Check file INSTALL for details.
 
 Basic usage
 ================================================================================
-The script is splited into two parts. The work-flow is as follows:
-1) sondova_part_a.sh: Analyzes FASTQ reads together with reference genome and
-   removes plastid and mitochodroial genes.
-2) Geneious: Note. You need copy of Geneious for this step. Visit 
-   http://www.geneious.com/ for details. It is used to assembly the rads.
-3) sondova_part_b.sh: It uses output of Geneious and produces final probes.
+The script is split into two parts. The workflow is as follows:
+1) sondova_part_a.sh: Processes FASTQ genome skim reads together with the FASTA transcriptome data. Removes plastid and mitochondrial reads based on FASTA reference sequences.
+2) Geneious: De novo assembles the genome skim reads. Note. You need a copy of Geneious for this step. Visit http://www.geneious.com/ for details.
+3) sondova_part_b.sh: Uses the output of Geneious to produce the final probes.
 
 Command-line parameters to run Sondovač
 --------------------------------------------------------------------------------
@@ -56,5 +54,5 @@ to enhance the script.
 
 Other questions not covered here
 ================================================================================
-Please, see https://github.com/V-Z/sondovac/ and feel free to to ask any 
-question and/or wish. The authors will do their best to help you.
+Please, see https://github.com/V-Z/sondovac/ and feel free to ask any 
+question and/or express any wish. The authors will do their best to help you.
