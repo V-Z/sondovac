@@ -936,7 +936,7 @@ echo
 echo
 echo "Combining paired-end reads"
 echo
-flash -M $FLASHM `echo $FASTQNOMT`_1.fq `echo $FASTQNOMT`_2.fq -o $FLASHOUT || { echo && echo "${BOLD}Error!${NORM} Combining paired-end reads failed. Aborting. Check files $FLASHM, `echo $FASTQNOMT`_1.fq and `echo $FASTQNOMT`_2.fq." && echo && exit 1; }
+flash -M $FLASHM `echo $FASTQNOMT`_1.fq `echo $FASTQNOMT`_2.fq -o $FLASHOUT || { echo && echo "${BOLD}Error!${NORM} Combining paired-end reads failed. Aborting. Check files $REFERENCEMT, `echo $FASTQNOMT`_1.fq and `echo $FASTQNOMT`_2.fq." && echo && exit 1; }
 echo
 
 # Convert FASTQ file to FASTA
