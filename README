@@ -1,4 +1,60 @@
-Details about the script, usage, and so on...
-
 Script summary
-A transcriptome assembly and paired-end genome skim raw data are combined to get hundreds of orthologous LCN loci. Enrichment of multi-copy loci is minimized by using unique transcripts only, which are obtained by comparing all transcripts and removing those sharing ≥90% sequence similarity using BLAT. Before matching the genome skim data against those unique transcripts, reads of plastid and mitochondrial origin are removed with Bowtie 2 utilizing reference sequences. Paired-end reads are subsequently combined with FLASH. These processed reads are matched against the unique transcripts sharing ≥85% sequence similarity with BLAT. Transcripts with >1000 BLAT hits, indicating repetitive elements, and BLAT hits containing masked nucleotides are removed before de novo assembly of the BLAT hits to larger contigs with Geneious, using the medium sensitivity / fast setting. After assembly, only those contigs that comprise exons of a minimum bait length (usually ≥120 bp in case of probe design for phylogenies) and have a certain minimum total locus length (multiple of the bait length, should not be too short in order to obtain sufficient phylogenetically informative signal; we recommend at least ≥600 bp) are retained. To ensure that probes do not target multiple similar loci, any probe sequences sharing ≥90% sequence similarity are removed using cd-hit-est, followed by a second filtering step for contigs containing exons of a minimum bait length and totaling minimum loci length (see comments above). To ensure that plastid sequences are absent from the probes, the probe sequences are matched against the plastome reference sharing ≥90% sequence similarity with BLAT and the hits removed from the probe set.
+================================================================================
+A transcriptome assembly and paired-end genome skim raw data are combined to get 
+hundreds of orthologous LCN loci. Enrichment of multi-copy loci is minimized by 
+using unique transcripts only, which are obtained by comparing all transcripts 
+and removing those sharing ≥90% sequence similarity using BLAT. Before matching 
+the genome skim data against those unique transcripts, reads of plastid and 
+mitochondrial origin are removed with Bowtie 2 utilizing reference sequences. 
+Paired-end reads are subsequently combined with FLASH. These processed reads are 
+matched against the unique transcripts sharing ≥85% sequence similarity with 
+BLAT. Transcripts with >1000 BLAT hits, indicating repetitive elements, and BLAT 
+hits containing masked nucleotides are removed before de novo assembly of the 
+BLAT hits to larger contigs with Geneious, using the medium sensitivity / fast 
+setting. After assembly, only those contigs that comprise exons of a minimum 
+bait length (usually ≥120 bp in case of probe design for phylogenies) and have a 
+certain minimum total locus length (multiple of the bait length, should not be 
+too short in order to obtain sufficient phylogenetically informative signal; we 
+recommend at least ≥600 bp) are retained. To ensure that probes do not target 
+multiple similar loci, any probe sequences sharing ≥90% sequence similarity are 
+removed using cd-hit-est, followed by a second filtering step for contigs 
+containing exons of a minimum bait length and totaling minimum loci length (see 
+comments above). To ensure that plastid sequences are absent from the probes, 
+the probe sequences are matched against the plastome reference sharing ≥90% 
+sequence similarity with BLAT and the hits removed from the probe set.
+
+
+Installation
+================================================================================
+Check file INSTALL for details.
+
+
+Basic usage
+================================================================================
+The script is splited into two parts. The work-flow is as follows:
+1) sondova_part_a.sh: Analyzes FASTQ reads together with reference genome and
+   removes plastid and mitochodroial genes.
+2) Geneious: Note. You need copy of Geneious for this step. Visit 
+   http://www.geneious.com/ for details. It is used to assembly the rads.
+3) sondova_part_b.sh: It uses output of Geneious and produces final probes.
+
+Command-line parameters to run Sondovač
+--------------------------------------------------------------------------------
+XXX
+
+Geneious details
+--------------------------------------------------------------------------------
+XXX
+
+
+License
+================================================================================
+The script is licensed under permissive open-source license allowing 
+redistribution and modifications. Check file LICENSE for details and feel free 
+to enhance the script.
+
+
+Other questions not covered here
+================================================================================
+Please, see https://github.com/V-Z/sondovac/ and feel free to to ask any 
+question and/or wish. The authors will do their best to help you.
