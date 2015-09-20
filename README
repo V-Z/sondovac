@@ -27,11 +27,35 @@ BLAT and the hits removed from the probe set.
 
 Software dependencies and installation
 ================================================================================
+Requirements to run Sondovač
+--------------------------------------------------------------------------------
+Sondovač is using several scientific software packages (namely bam2fastq, BLAT, 
+Bowtie2, CD-HIT, FASTX toolkit, FLASH, htsjdk, libgtextutils, Picard and 
+SAMtools), and basic UNIX tools. Sondovač will check if those programs are 
+installed - available in the PATH (i.e. if the shell application can locate and 
+launch respective binaries). If you have those packages installed (in current 
+versions), ensure that their binaries are in PATH. This should not be a problem 
+for basic tools available in any UNIX-based operating system, as basic 
+installation usually contains all needed tools. If you are lacking some of the 
+required tools, the script will notify you, and you will have to install them 
+manually. If this will be needed, check the documentation for your operating 
+system.
+If required scientific programs are not installed, Sondovač will offer you 
+installation. You can use precompiled binaries available together with the 
+script or (sometimes) from the web. This is the recommended way. In case you 
+would like to compile required software yourselve, the script will guide you 
+through this process. Anyway, it is recommended only for advanced users, as 
+compilation might sometimes be very tricky. It is currently fully implemented 
+only for the Linux distributions Ubuntu and openSUSE. Support for other Linux 
+distributions and Mac OS X will be added soon. For compilation you need Apache 
+Ant, GNU G++, GNU GCC, GIT, Java, libpng developmental files and zlib 
+developmental files. Ensure you have those tools available - they should be 
+readily available for any UNIX-based operating system.
 
-
+Geneious
 
 Check file INSTALL for further details.
-
+--------------------------------------------------------------------------------
 
 Basic usage
 ================================================================================
@@ -45,24 +69,52 @@ The script is split into two parts. The workflow is as follows:
 
 Command-line parameters to run Sondovač
 --------------------------------------------------------------------------------
-The transcriptome draft assembly of the cosmopolitan weed Oxalis corniculata L. from the 1KP initiative (accession JHCN) and genome skim raw data of an accession of southern African O. obtusa (accession J12) were combined to get hundreds of orthologous LCN loci. Enrichment of multi-copy loci was minimized by using unique transcripts only, which were obtained by comparing all transcripts and removing those sharing ≥90% sequence similarity using BLAT v.32x1 (Kent, 2002). Before matching the O. obtusa genome skim data against those unique transcripts, reads of plastid and mitochondrial origin were removed with Bowtie 2 (Langmead and Salzberg, 2012) utilizing Ricinus communis L. GenBank accessions NC_016736 and NC_015141 as references. Paired-end reads were subsequently combined with FLASH (Magoč and Salzberg, 2011). These processed reads were matched against the unique O. corniculata transcripts sharing ≥85% sequence similarity with BLAT. Transcripts with >1000 BLAT hits, indicating repetitive elements, and O. obtusa BLAT hits containing masked nucleotides were removed before de novo assembly of the O. obtusa BLAT hits to larger contigs with Geneious v.6.1.7 (Kearse et al., 2012), using the medium sensitivity / fast setting. After assembly, only those contigs that comprised exons ≥120 bp and had a total locus length ≥600 bp were retained. To ensure that probes did not target multiple similar loci, any probe sequences sharing ≥90% sequence similarity were removed using cd-hit-est v.4.5.4 (Li and Godzik, 2006), followed by a second filtering step for contigs containing exons ≥120 bp and totaling loci length ≥600 bp. To ensure that plastid sequences were absent from the probes, the probe sequences were matched against the Ricinus plastome reference sharing ≥90% sequence similarity with BLAT and the hits removed from the probe set. Ambiguous sites in the probe sequences, which were generated during assembly of the genome skim reads, were randomly replaced by one of the relevant nucleotides and stretches of up to 5N replaced by T. Tiling density 2☓ was used. The probe design pipeline is summarized in Table S2 (Supporting information).
-
-
-
-
-Optional arguments (if not provided, default values are used):
-1) Read length of paired-end reads (parameter -M of FLASH, see its manual for details)"
-      echo -e "\t\tDefault value: 250 (allowed values are 125, 150, 250 or 300)"
-      echo -e "\t-y\tBLAT score for identity between unique transcript and genome skimming data (parameter -minIdentity, check the BLAT manual for details)"
-      echo -e "\t\tDefault value: 85 (range from 1 to 100; if lower target enrichment might be much less efficient)"
-      echo -e "\t-s\tBLAT score (range from 100 to 100000; transcripts with higher score will be removed - very likely that these are repetitive elements)"
-      echo -e "\t\tDefault value: 1000"
-      echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-a, -y${NORM} or ${BOLD}-s${NORM} are not provided, default values are taken and it is not possible to change them later (not even in interactive mode)."
-      echoXXX
+Optional arguments (if not provided, default values are used), listed in the order of usage in the script:
+1) Removal of transcripts sharing a certain sequence similarity with BLAT:
+   parameter -minIdentity
+   default value: 90
+   allowed values: range from 1 to 100 (please consider the trade-off between orthology and number of remaining transcripts for probe design)
+2) Combination of paired-end genome skim reads with FLASH:
+   parameter -M
+   default value: 250
+   allowed values: 125, 150, 250, 300 (length of the paired-end reads)
+3) Matching of the unique transcripts and the filtered, combined genome skim reads sharing a certain sequence similarity with BLAT:
+   parameter -minIdentity
+   default value: 85
+   allowed values: range from 1 to 100 (please consider the trade-off between probe specificity and number of remaining matching sequences for probe design)
+4) Filtering of BLAT output with UNIX commands - choice of transcript or genome skim sequences for further processing:
+   parameter XXX
+   default value: XXX
+   allowed values: XXX (choice depends on whether you want to the probe sequences more similar to the transcripts or genome skim data; this depends on the extent of your phylogenetic study as well as the putative position of the taxa, from which the transcripts and genome skim data were obtained, herein)
+5) Filtering of BLAT output with UNIX commands - removal of transcripts with a high number of BLAT hits (indicating repetitive elements):
+   parameter XXX
+   default value: 1000
+   allowed values: range from 100 to 10000
+6a) Retention of those contigs that comprise exons ≥ bait length with UNIX commands:
+   parameter XXX
+   default value: 120
+   allowed values: 80, 100, 120 (bait length)
+6b) Retention of those contigs that have a certain total locus length with UNIX commands:
+   parameter XXX
+   default value: 600
+   allowed values: 600, 720, 840, 960, 1080, 1200 (please consider the trade-off between sequences with repetitve elements and number of remaining sequences for probe design)
+7) Removal of probe sequences sharing a certain sequence similarity with cd-hit-est:
+   parameter XXX
+   default value: 90
+   allowed values: range from 1 to 100
+   100-10000 
+8a) Retention of those contigs that comprise exons ≥ bait length with UNIX commands:
+   parameter XXX
+   default value: 120
+   allowed values: 80, 100, 120 (bait length)
+8b) Retention of those contigs that have a certain total locus length with UNIX commands:
+   parameter XXX
+   default value: 600
+   allowed values: 600, 720, 840, 960, 1080, 1200 (please consider the trade-off between sequences with repetitve elements and number of remaining sequences for probe design)
 
 Geneious details
 --------------------------------------------------------------------------------
-XXX
+medium sensitivity / fast setting
 
 
 License
