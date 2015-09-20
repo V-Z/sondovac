@@ -25,9 +25,12 @@ matched against the plastome reference sharing ≥90% sequence similarity with
 BLAT and the hits removed from the probe set.
 
 
-Installation
+Software dependencies and installation
 ================================================================================
-Check file INSTALL for details.
+
+
+
+Check file INSTALL for further details.
 
 
 Basic usage
@@ -42,7 +45,20 @@ The script is split into two parts. The workflow is as follows:
 
 Command-line parameters to run Sondovač
 --------------------------------------------------------------------------------
-XXX
+The transcriptome draft assembly of the cosmopolitan weed Oxalis corniculata L. from the 1KP initiative (accession JHCN) and genome skim raw data of an accession of southern African O. obtusa (accession J12) were combined to get hundreds of orthologous LCN loci. Enrichment of multi-copy loci was minimized by using unique transcripts only, which were obtained by comparing all transcripts and removing those sharing ≥90% sequence similarity using BLAT v.32x1 (Kent, 2002). Before matching the O. obtusa genome skim data against those unique transcripts, reads of plastid and mitochondrial origin were removed with Bowtie 2 (Langmead and Salzberg, 2012) utilizing Ricinus communis L. GenBank accessions NC_016736 and NC_015141 as references. Paired-end reads were subsequently combined with FLASH (Magoč and Salzberg, 2011). These processed reads were matched against the unique O. corniculata transcripts sharing ≥85% sequence similarity with BLAT. Transcripts with >1000 BLAT hits, indicating repetitive elements, and O. obtusa BLAT hits containing masked nucleotides were removed before de novo assembly of the O. obtusa BLAT hits to larger contigs with Geneious v.6.1.7 (Kearse et al., 2012), using the medium sensitivity / fast setting. After assembly, only those contigs that comprised exons ≥120 bp and had a total locus length ≥600 bp were retained. To ensure that probes did not target multiple similar loci, any probe sequences sharing ≥90% sequence similarity were removed using cd-hit-est v.4.5.4 (Li and Godzik, 2006), followed by a second filtering step for contigs containing exons ≥120 bp and totaling loci length ≥600 bp. To ensure that plastid sequences were absent from the probes, the probe sequences were matched against the Ricinus plastome reference sharing ≥90% sequence similarity with BLAT and the hits removed from the probe set. Ambiguous sites in the probe sequences, which were generated during assembly of the genome skim reads, were randomly replaced by one of the relevant nucleotides and stretches of up to 5N replaced by T. Tiling density 2☓ was used. The probe design pipeline is summarized in Table S2 (Supporting information).
+
+
+
+
+Optional arguments (if not provided, default values are used):
+1) Read length of paired-end reads (parameter -M of FLASH, see its manual for details)"
+      echo -e "\t\tDefault value: 250 (allowed values are 125, 150, 250 or 300)"
+      echo -e "\t-y\tBLAT score for identity between unique transcript and genome skimming data (parameter -minIdentity, check the BLAT manual for details)"
+      echo -e "\t\tDefault value: 85 (range from 1 to 100; if lower target enrichment might be much less efficient)"
+      echo -e "\t-s\tBLAT score (range from 100 to 100000; transcripts with higher score will be removed - very likely that these are repetitive elements)"
+      echo -e "\t\tDefault value: 1000"
+      echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-a, -y${NORM} or ${BOLD}-s${NORM} are not provided, default values are taken and it is not possible to change them later (not even in interactive mode)."
+      echoXXX
 
 Geneious details
 --------------------------------------------------------------------------------
