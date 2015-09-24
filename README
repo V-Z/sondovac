@@ -59,6 +59,7 @@ Geneious is a DNA alignment, assembly, and analysis software and one of the most
 Check file INSTALL for further details.
 --------------------------------------------------------------------------------
 
+
 Basic usage
 ================================================================================
 The workflow of Sondovač is summarized in the figure. Each step of Sondovač is colorcoded: Software is highlighted in yellow, a summary of each step is given in blue, and input/output of each step is depicted in green. The direction of the workflow is indicated by arrows. Optional removal of reads of mitochondrial origin from the genome skim data is marked by decoloration. The required input files of Sondovač are highlighted in bold.
@@ -88,77 +89,88 @@ C) sondova_part_b.sh: Covers steps 8 to 11 (see figure)
 
 Command-line parameters to run Sondovač
 --------------------------------------------------------------------------------
-Optional arguments (if not provided, default values are used), listed in the order of usage in the script:
-1) Removal of transcripts sharing a certain sequence similarity with BLAT:
-   parameter -minIdentity
-   default value: 90
-   allowed values: range from 1 to 100 (please consider the trade-off between orthology and number of remaining transcripts for probe design)
-2) Combination of paired-end genome skim reads with FLASH:
-   parameter -M
-   default value: 250
-   allowed values: 125, 150, 250, 300 (length of the paired-end reads)
-3) Matching of the unique transcripts and the filtered, combined genome skim reads sharing a certain sequence similarity with BLAT:
-   parameter -minIdentity
-   default value: 85
-   allowed values: range from 1 to 100 (please consider the trade-off between probe specificity and number of remaining matching sequences for probe design)
-4) Filtering of BLAT output with UNIX commands - choice of transcript or genome skim sequences for further processing:
-   parameter XXX
-   default value: XXX
-   allowed values: XXX (choice depends on whether you want to the probe sequences more similar to the transcripts or genome skim data; this depends on the extent of your phylogenetic study as well as the putative position of the taxa, from which the transcripts and genome skim data were obtained, herein)
-5) Filtering of BLAT output with UNIX commands - removal of transcripts with a high number of BLAT hits (indicating repetitive elements):
-   parameter XXX
-   default value: 1000
-   allowed values: range from 100 to 10000
-6a) Retention of those contigs that comprise exons ≥ bait length with UNIX commands:
-   parameter XXX
-   default value: 120
-   allowed values: 80, 100, 120 (bait length)
-6b) Retention of those contigs that have a certain total locus length with UNIX commands:
-   parameter XXX
-   default value: 600
-   allowed values: 600, 720, 840, 960, 1080, 1200 (please consider the trade-off between sequences with repetitve elements and number of remaining sequences for probe design)
-7) Removal of probe sequences sharing a certain sequence similarity with cd-hit-est:
-   parameter XXX
-   default value: 90
-   allowed values: range from 1 to 100
-   100-10000 
-8a) Retention of those contigs that comprise exons ≥ bait length with UNIX commands:
-   parameter XXX
-   default value: 120
-   allowed values: 80, 100, 120 (bait length)
-8b) Retention of those contigs that have a certain total locus length with UNIX commands:
-   parameter XXX
-   default value: 600
-   allowed values: 600, 720, 840, 960, 1080, 1200 (please consider the trade-off between sequences with repetitve elements and number of remaining sequences for probe design)
+In order to get on-line help type:
+./sondova_part_a.sh -h
+You will get the following list that is discussed below: 
+[-a Read length of paired-end genome skim reads (parameter -M of FLASH, see its manual for details)]
+[-c Plastome reference input file in FASTA format]
+[-e Citation information]
+[-f Transcriptome input file in FASTA format]
+[-i Interactive mode]
+[-l LICENSE for license information]
+[-m Mitochondriome reference input file in FASTA format]
+[-n Non-interactive mode]
+[-p INSTALL for detailed installation instructions]
+[-q Paired-end genome skim input file in FASTQ format (second file)]
+[-r README for detailed usage instructions]
+[-s Number of BLAT hits per transcript when matching unique transcripts and the filtered, combined genome skim reads]
+[-t Paired-end genome skim input file in FASTQ format (first file)]
+[-u Check for updates and download]
+[-y Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details)]
 
-Geneious details
+-a    Read length of paired-end genome skim reads (parameter -M of FLASH, see its manual for details)
+      Step 4 of Sondovač
+      Ensure to use a certain insert size of the genome skim genomic library in combination with an appropriate read length for sequencing in order to enable merging of the paired-end genome skim reads.
+      DEFAULT: 250
+      OPTIONS: 125, 150, 250, 300
+
+-c    Plastome reference input file in FASTA format
+      Plastome reference sequences from taxa up to the same order of the studied plant group are suitable (Straub et al., 2012).
+
+-e    Citation information
+
+-f    Transcriptome input file in FASTA format
+
+-i    Interactive mode
+      The script will on-demand ask for required input files, installation of missing software etc.
+      
+-l    LICENSE for license information
+
+-m    Mitochondriome reference input file in FASTA format
+      This step is facultative, as plant mitochondrial genomes have largely variable sizes and high rearrangement rates.
+
+-n    Non-interactive mode
+
+-p    INSTALL for detailed installation instructions
+
+-q    Paired-end genome skim input file in FASTQ format (second file)
+
+-r    README for detailed usage instructions
+
+-s    Number of BLAT hits per transcript when matching unique transcripts and the filtered, combined genome skim reads
+      Step 6.2 of Sondovač
+      Transcripts with a high number of BLAT hits, indicating repetitive elements, need to be removed from the putative probe sequences.
+      DEFAULT: 1,000
+      OPTIONS: values ranging from 100 to 10,000
+
+-t    Paired-end genome skim input file in FASTQ format (first file)
+
+-u    Check for updates and download
+      Check for updates and download them if needed and confirmed by user.
+
+-y    Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details)]
+      Step 5 of Sondovač
+      Consider the trade-off between probe specificity and number of remaining matching sequences for probe design. Sequence similarity is in percent.
+      DEFAULT: 85
+      OPTIONS: values ranging from 70 to 100
+      
+Geneious details (Step 7 of Sondovač)
 --------------------------------------------------------------------------------
-Geneious was tested with versions 6, 7 and 8). See http://www.geneious.com/ for download and purchase."
-echo "Import output file \"$FINALA\" (File | Import | From File...)."
-echo "Select the file and go to menu Tools | Align / Assemble | De Novo Assemble."
-echo "In \"Data\" frame select \"Assembe by 1st (...) Underscore\"."
-echo "In \"Method\" frame select Geneious Assembler (if you don't have other assemblers, this option might be missing) and \"Medium Sensitivity / Fast\" Sensitivity."
-echo "In \"Results\" frame check \"Save assembly report\", \"Save list of unused reads\", \"Save in sub-folder\", \"Save contigs\" (do not check \"Maximum\") and \"Save consensus sequences\"."
-echo "Do not trim. Otherwise keep defaults. Run it."
-echo "Geneious may warn about possible hanging because of big file. Do not use Geneious for other tasks during the assembly."
-echo
-echo "Select all resulting contigs (typically named \"* Contig #\") and export them (File | Export | Selected Documents...) as \"Tab-separated table values (*.tsv)\"."
-echo "Save following columns (Hold Ctrl key to mark more fields): \"# Sequences\", \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and \"Sequence Length\"."
-echo "If this option would be inaccessible for you, export all columns."
-echo
-echo "Select items \"Consensus Sequences\" and \"Unused Reads\" and export them as one FASTA."
-echo "Go to menu File | Export | Selected Documents... and choose FASTA file type."
-echo
-echo "Use exported files from Geneious as input for part B of the script (see README for details)."
-echo
-echo "Script exited successfully..."
-echo
+Geneious was tested with versions 6, 7 and 8.
 
+Import output file of part A of the script (sondova_part_a.sh) (File | Import | From File...).
 
+Select the file and go to menu Tools | Align / Assemble | De Novo Assemble.
+In \"Data\" frame select \"Assembe by 1st (...) Underscore\".
+In \"Method\" frame select Geneious Assembler (if you don't have other assemblers, this option might be missing) and \"Medium Sensitivity / Fast\" Sensitivity.
+In \"Results\" frame check \"Save assembly report\", \"Save list of unused reads\", \"Save in sub-folder\", \"Save contigs\" (do not check \"Maximum\") and \"Save consensus sequences\". Do not trim. Otherwise keep defaults. Run it.
+Geneious may warn about possible hanging because of big file. Do not use Geneious for other tasks during the assembly.
 
+Select all resulting contigs (typically named \"* Contig #\") and export them (File | Export | Selected Documents...) as \"Tab-separated table values (*.tsv)\". Save following columns (Hold Ctrl key to mark more fields): \"# Sequences\", \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and \"Sequence Length\". If this option would be inaccessible for you, export all columns.
 
+Select items \"Consensus Sequences\" and \"Unused Reads\" and export them as one FASTA. Go to menu File | Export | Selected Documents... and choose FASTA file type.
 
-medium sensitivity / fast setting
+Use exported files from Geneious as input for part B of the script (sondova_part_b.sh).
 
 
 License
