@@ -93,7 +93,9 @@ In order to get on-line help type:
 ./sondova_part_a.sh -h
 You will get the following list that is discussed below: 
 [-a Read length of paired-end genome skim reads (parameter -M of FLASH, see its manual for details)]
+[-b Minimum exon length]
 [-c Plastome reference input file in FASTA format]
+[-d Sequence similarity between probe sequences (parameter -c of cd-hit-est, see its manual for details)]
 [-e Citation information]
 [-f Transcriptome input file in FASTA format]
 [-i Interactive mode]
@@ -106,7 +108,9 @@ You will get the following list that is discussed below:
 [-s Number of BLAT hits per transcript when matching unique transcripts and the filtered, combined genome skim reads]
 [-t Paired-end genome skim input file in FASTQ format (first file)]
 [-u Check for updates and download]
+[-x Input file for sondova_part_b.sh in TSV format]
 [-y Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details)]
+[-z Input file for sondova_part_b.sh in FASTA format]
 
 -a    Read length of paired-end genome skim reads (parameter -M of FLASH, see its manual for details)
       Step 4 of Sondovač
@@ -114,8 +118,20 @@ You will get the following list that is discussed below:
       DEFAULT: 250
       OPTIONS: 125, 150, 250, 300
 
+-b    Minimum exon length
+      Steps 8 and 10 of Sondovač
+      The minimum exon length should not fall below the bait length in order to facilitate specific binding between genomic libraries and baits during hybridization.
+      DEFAULT: 120
+      OPTIONS: integers ranging from 120 to 200
+
 -c    Plastome reference input file in FASTA format
       Plastome reference sequences from taxa up to the same order of the studied plant group are suitable (Straub et al., 2012).
+
+-d    Sequence similarity between probe sequences (parameter -c of cd-hit-est, see its manual for details)
+      Step 9 of Sondovač
+      Too similar probe sequences will interact with each other during hybridization and thereby reduce enrichment efficiency.
+      DEFAULT: 0.9
+      OPTIONS: decimals ranging from 0.7 to 0.95
 
 -e    Citation information
 
@@ -141,18 +157,23 @@ You will get the following list that is discussed below:
       Step 6.2 of Sondovač
       Transcripts with a high number of BLAT hits, indicating repetitive elements, need to be removed from the putative probe sequences.
       DEFAULT: 1,000
-      OPTIONS: values ranging from 100 to 10,000
+      OPTIONS: integers ranging from 100 to 10,000
 
 -t    Paired-end genome skim input file in FASTQ format (first file)
 
 -u    Check for updates and download
       Check for updates and download them if needed and confirmed by user.
 
+-x    Input file for sondova_part_b.sh in TSV format
+
 -y    Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details)]
       Step 5 of Sondovač
       Consider the trade-off between probe specificity and number of remaining matching sequences for probe design. Sequence similarity is in percent.
-      DEFAULT: 85
-      OPTIONS: values ranging from 70 to 100
+      DEFAULT: 0.85
+      OPTIONS: decimals ranging from 0.7 to 1.0
+
+-z    Input file for sondova_part_b.sh in FASTA format
+
       
 Geneious details (Step 7 of Sondovač)
 --------------------------------------------------------------------------------
