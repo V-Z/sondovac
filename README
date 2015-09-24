@@ -5,7 +5,7 @@ get hundreds of orthologous LCN loci. Enrichment of multi-copy loci is
 minimized by using unique transcripts only, which are obtained by comparing all 
 transcripts and removing those sharing ≥90% sequence similarity using BLAT. 
 Before matching the genome skim data against those unique transcripts, reads of 
-plastid and mitochondrial origin are removed with Bowtie 2 utilizing reference 
+plastid (and mitochondrial) origin are removed with Bowtie 2, SAMtools and bam2fastq utilizing reference 
 sequences. Paired-end reads are subsequently combined with FLASH. These 
 processed reads are matched against the unique transcripts sharing ≥85% 
 sequence similarity with BLAT. Transcripts with >1000 BLAT hits, indicating 
@@ -52,20 +52,39 @@ Ant, GNU G++, GNU GCC, GIT, Java, libpng developmental files and zlib
 developmental files. Ensure you have those tools available - they should be 
 readily available for any UNIX-based operating system.
 
-Geneious
+Geneious (See http://www.geneious.com/ for download and purchase.)
+--------------------------------------------------------------------------------
+Geneious is a DNA alignment, assembly, and analysis software and one of the most common software platforms used in genomics. It is utilized for de novo assembly in Sondovač.
 
 Check file INSTALL for further details.
 --------------------------------------------------------------------------------
 
 Basic usage
 ================================================================================
-The script is split into two parts. The workflow is as follows:
-1) sondova_part_a.sh: Processes FASTQ genome skim reads together with the FASTA 
-   transcriptome data. Removes plastid and mitochondrial reads based on FASTA 
-   reference sequences.
-2) Geneious: De novo assembles the genome skim reads. Note. You need a copy of 
-   Geneious for this step. Visit http://www.geneious.com/ for details.
-3) sondova_part_b.sh: Uses the output of Geneious to produce the final probes.
+The workflow of Sondovač is summarized in the figure. Each step of Sondovač is colorcoded: Software is highlighted in yellow, a summary of each step is given in blue, and input/output of each step is depicted in green. The direction of the workflow is indicated by arrows. Optional removal of reads of mitochondrial origin from the genome skim data is marked by decoloration. The required input files of Sondovač are highlighted in bold.
+For comprehension improvement the steps of Sondovač are consecutively numbered.
+
+Sondovač has three parts: two script parts and an intermediate part using Geneious. The workflow is as follows:
+A) sondova_part_a.sh: Covers steps 1 to 6 (see figure)
+   1)    Removal of transcripts sharing ≥90% sequence similarity 
+   2)    Removal of reads of plastid origin
+   3)    Removal of reads of mitochondrial origin (facultative)
+   4)    Combination of paired-end reads
+   5)    Matching of the unique transcripts and the filtered, combined genome skim reads sharing ≥85% sequence similarity
+   6)    Filtering of BLAT output:
+   6.1)  Choice of transcript or genome skim sequences for further processing
+   6.2)  Removal of transcripts with >1000 BLAT hits
+   6.3)  Removal of transcript or genome skim BLAT hits [depending on the selection in (6.1)] containing masked nucleotides
+   Input files for sondova_part_a.sh are FASTA transcriptome data, FASTQ paired-end genome skim reads and a plastome (and mitochondriome) reference.
+B) Geneious: Covers step 7 (see figure)
+   7)    De novo assembly of the transcript or genome skim BLAT hits [depending on the selection in (6.1)] to larger contigs. Note. You need a copy of Geneious for this step. Visit http://www.geneious.com/ for details.
+   The input file for Geneious is the output of sondova_part_a.sh.
+C) sondova_part_b.sh: Covers steps 8 to 11 (see figure)
+   8)    Retention of those contigs that comprise exons ≥ bait length and have a certain total locus length
+   9)    Removal of probe sequences sharing ≥90% sequence similarity
+   10)   Retention of those contigs that comprise exons ≥ bait length and have a certain total locus length
+   11)   Removal of probe sequences sharing ≥90% sequence similarity with the plastome reference
+   The input file for sondova_part_b.sh is the Geneious output.
 
 Command-line parameters to run Sondovač
 --------------------------------------------------------------------------------
@@ -114,6 +133,31 @@ Optional arguments (if not provided, default values are used), listed in the ord
 
 Geneious details
 --------------------------------------------------------------------------------
+Geneious was tested with versions 6, 7 and 8). See http://www.geneious.com/ for download and purchase."
+echo "Import output file \"$FINALA\" (File | Import | From File...)."
+echo "Select the file and go to menu Tools | Align / Assemble | De Novo Assemble."
+echo "In \"Data\" frame select \"Assembe by 1st (...) Underscore\"."
+echo "In \"Method\" frame select Geneious Assembler (if you don't have other assemblers, this option might be missing) and \"Medium Sensitivity / Fast\" Sensitivity."
+echo "In \"Results\" frame check \"Save assembly report\", \"Save list of unused reads\", \"Save in sub-folder\", \"Save contigs\" (do not check \"Maximum\") and \"Save consensus sequences\"."
+echo "Do not trim. Otherwise keep defaults. Run it."
+echo "Geneious may warn about possible hanging because of big file. Do not use Geneious for other tasks during the assembly."
+echo
+echo "Select all resulting contigs (typically named \"* Contig #\") and export them (File | Export | Selected Documents...) as \"Tab-separated table values (*.tsv)\"."
+echo "Save following columns (Hold Ctrl key to mark more fields): \"# Sequences\", \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and \"Sequence Length\"."
+echo "If this option would be inaccessible for you, export all columns."
+echo
+echo "Select items \"Consensus Sequences\" and \"Unused Reads\" and export them as one FASTA."
+echo "Go to menu File | Export | Selected Documents... and choose FASTA file type."
+echo
+echo "Use exported files from Geneious as input for part B of the script (see README for details)."
+echo
+echo "Script exited successfully..."
+echo
+
+
+
+
+
 medium sensitivity / fast setting
 
 
