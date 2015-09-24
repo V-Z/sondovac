@@ -130,8 +130,8 @@ You will get the following list that is discussed below:
 -d    Sequence similarity between probe sequences (parameter -c of cd-hit-est, see its manual for details)
       Step 9 of Sondovač
       Too similar probe sequences will interact with each other during hybridization and thereby reduce enrichment efficiency.
-      DEFAULT: 0.9
-      OPTIONS: decimals ranging from 0.7 to 0.95
+      DEFAULT: 0.9 (highly recommended)
+      OPTIONS: decimals ranging from 0.85 to 0.95
 
 -e    Citation information
 
