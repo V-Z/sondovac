@@ -156,8 +156,8 @@ You will get the following list that is discussed below:
 -s    Number of BLAT hits per transcript when matching unique transcripts and the filtered, combined genome skim reads
       Step 6.2 of Sondovač
       Transcripts with a high number of BLAT hits, indicating repetitive elements, need to be removed from the putative probe sequences.
-      DEFAULT: 1,000
-      OPTIONS: integers ranging from 100 to 10,000
+      DEFAULT: 1000
+      OPTIONS: integers ranging from 100 to 10000
 
 -t    Paired-end genome skim input file in FASTQ format (first file)
 
@@ -166,7 +166,7 @@ You will get the following list that is discussed below:
 
 -x    Input file for sondova_part_b.sh in TSV format
 
--y    Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details)]
+-y    Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details)
       Step 5 of Sondovač
       Consider the trade-off between probe specificity and number of remaining matching sequences for probe design. Sequence similarity is in percent.
       DEFAULT: 0.85
@@ -182,14 +182,14 @@ Geneious was tested with versions 6, 7 and 8.
 Import output file of part A of the script (sondova_part_a.sh) (File | Import | From File...).
 
 Select the file and go to menu Tools | Align / Assemble | De Novo Assemble.
-In \"Data\" frame select \"Assembe by 1st (...) Underscore\".
-In \"Method\" frame select Geneious Assembler (if you don't have other assemblers, this option might be missing) and \"Medium Sensitivity / Fast\" Sensitivity.
-In \"Results\" frame check \"Save assembly report\", \"Save list of unused reads\", \"Save in sub-folder\", \"Save contigs\" (do not check \"Maximum\") and \"Save consensus sequences\". Do not trim. Otherwise keep defaults. Run it.
+In "Data" frame select "Assembe by 1st (...) Underscore".
+In "Method" frame select Geneious Assembler (if you don't have other assemblers, this option might be missing) and "Medium Sensitivity / Fast" Sensitivity.
+In "Results" frame check "Save assembly report", "Save list of unused reads", "Save in sub-folder", "Save contigs" (do not check "Maximum") and "Save consensus sequences". Do not trim. Otherwise keep defaults. Run it.
 Geneious may warn about possible hanging because of big file. Do not use Geneious for other tasks during the assembly.
 
-Select all resulting contigs (typically named \"* Contig #\") and export them (File | Export | Selected Documents...) as \"Tab-separated table values (*.tsv)\". Save following columns (Hold Ctrl key to mark more fields): \"# Sequences\", \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and \"Sequence Length\". If this option would be inaccessible for you, export all columns.
+Select all resulting contigs (typically named "* Contig #") and export them (File | Export | Selected Documents...) as "Tab-separated table values (*.tsv)". Save following columns (Hold Ctrl key to mark more fields): "# Sequences", "% Pairwise Identity", "Description", "Mean Coverage", "Name" and "Sequence Length". If this option would be inaccessible for you, export all columns.
 
-Select items \"Consensus Sequences\" and \"Unused Reads\" and export them as one FASTA. Go to menu File | Export | Selected Documents... and choose FASTA file type.
+Select items "Consensus Sequences" and "Unused Reads" and export them as one FASTA. Go to menu File | Export | Selected Documents... and choose FASTA file type.
 
 Use exported files from Geneious as input for part B of the script (sondova_part_b.sh).
 
