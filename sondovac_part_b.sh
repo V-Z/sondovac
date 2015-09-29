@@ -59,7 +59,7 @@ while getopts "hvulrpeinc:x:z:b:d:" START; do
       echo -e "\t-b\tBait length"
       echo -e "\t\tDefault value: 120 (optimal length for phylogeny, use integer between 120 and 200)"
       echo -e "\t-d\tSequence similarity between the developed probe sequences (parameter \"-c\" of cd-hit-est, see its manual for details)"
-      echo -e "\t\tDefault value: 0.9 (use decimal number ranging from 0 to 1)"
+      echo -e "\t\tDefault value: 0.9 (use decimal number ranging from 0.85 to 0.95)"
       echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-b${NORM} or ${BOLD}-d${NORM} are not provided, default values are taken and it is not possible to change them later (not even in interactive mode)."
       echo
       exit 2
@@ -107,18 +107,18 @@ while getopts "hvulrpeinc:x:z:b:d:" START; do
 	echo "Bait length: $BAITL"
 	else
 	  echo
-	  echo "Error! For parameter \"-b\" you did not provide an integer of range 120-200!"
+	  echo "Error! For parameter \"-b\" you did not provide an integer of range from 120 to 200!"
 	  echo
 	  exit 1
 	fi
       ;;
     d)
       CDHITSIM=$OPTARG
-      if [ "$(echo 0 '<=' $CDHITSIM | bc -l)" = 1 ] && [ "$(echo $CDHITSIM '<=' 1 | bc -l)" = 1 ]; then
+      if [ "$(echo 0.85 '<=' $CDHITSIM | bc -l)" = 1 ] && [ "$(echo $CDHITSIM '<=' 0.95 | bc -l)" = 1 ]; then
 	echo "Sequence similarity: $CDHITSIM"
       else
 	echo
-	echo "Error! For parameter \"-d\" you did not provide decimal number ranging from 0 to 1!"
+	echo "Error! For parameter \"-d\" you did not provide decimal number ranging from 0.85 to 0.95!"
 	echo
 	exit 1
       fi

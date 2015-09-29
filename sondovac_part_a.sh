@@ -68,7 +68,7 @@ while getopts "hvulrpeinf:c:m:t:q:a:y:s:" START; do
       echo -e "\t\tDefault value: 250 (allowed values are 125, 150, 250 or 300)"
       echo -e "\t-y\tBLAT score for identity between unique transcript and genome skimming data (parameter -minIdentity, check the BLAT manual for details)"
       echo -e "\t\tDefault value: 85 (range from 1 to 100; if lower target enrichment might be much less efficient)"
-      echo -e "\t-s\tBLAT score (range from 100 to 100000; transcripts with higher score will be removed - very likely that these are repetitive elements)"
+      echo -e "\t-s\tBLAT score (range from 100 to 10000; transcripts with higher score will be removed - very likely that these are repetitive elements)"
       echo -e "\t\tDefault value: 1000"
       echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-a, -y${NORM} or ${BOLD}-s${NORM} are not provided, default values are taken and it is not possible to change them later (not even in interactive mode)."
       echo
@@ -76,7 +76,7 @@ while getopts "hvulrpeinf:c:m:t:q:a:y:s:" START; do
       echo "$0 -i # Basic and the most simple usage"
       echo "$0 -i -f input.fa -t reads1.fastq -q reads2.fastq"
       echo "$0 -n -f input.fa -c referencecp.fa -m referencemt.fa -t reads1.fastq -q reads2.fastq"
-      echo "$0 -i -a 220 # Modify parameter ${BOLD}-a${NORM}, otherwise run interactively"
+      echo "$0 -i -a 300 # Modify parameter ${BOLD}-a${NORM}, otherwise run interactively"
       echo "$0 -n -f input.fa -c referencecp.fa -m referencemt.fa -t reads1.fastq -q reads2.fastq -y 90"
       echo "$0 -s 950 # Note interactive mode ${BOLD}-i${NORM} is implicit and does not need to be specified explicitly"
       echo
@@ -158,11 +158,11 @@ while getopts "hvulrpeinf:c:m:t:q:a:y:s:" START; do
     s)
       BLATSCORE=$OPTARG
       # Check if provided value makes sense
-      if [[ "$BLATSCORE" =~ ^[0-9]+$ ]] && [ "$BLATSCORE" -ge 100 -a "$BLATSCORE" -le 100000 ]; then
+      if [[ "$BLATSCORE" =~ ^[0-9]+$ ]] && [ "$BLATSCORE" -ge 100 -a "$BLATSCORE" -le 10000 ]; then
 	echo "BLAT score: $BLATSCORE"
 	else
 	  echo
-	  echo "Error! For parameter \"-s\" you did not provide an integer of range from 100 to 100000!"
+	  echo "Error! For parameter \"-s\" you did not provide an integer of range from 100 to 10000!"
 	  echo
 	  exit 1
 	fi
@@ -226,7 +226,7 @@ function compilebowtie {
   cd $WORKDIR &&
   echo &&
   echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\" and \"bowtie2-build-s\" are available. OK."
-  } || { echo && echo "Compilation failed. Please go to from http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.5/, download bowtie2-*-source.zip, compile it and ensure it is in PATH" && echo && exit 1; }
+  } || { echo && echo "Compilation failed. Please go to from http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.6/, download bowtie2-*-source.zip, compile it and ensure it is in PATH" && echo && exit 1; }
   }
 
 # Check if bowtie2 is available
@@ -235,17 +235,17 @@ function compilebowtie {
   echo >&2 "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\" and \"bowtie2-build-s\" are required but not installed or available in PATH."
   if [ "$STARTINI" == "I" ]; then
     echo
-    echo "Type \"C\" to compile Bowtie2-2.2.5 from source available together with this script"
-    echo "Type \"S\" to compile Bowtie2-2.2.5 from source code downloaded from http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.5/"
-    echo "Type \"D\" to download Bowtie2-2.2.5 binary from http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.5/ for your OS"
-    echo "Type \"B\" to copy Bowtie2-2.2.2.5 binary available together with the script (recommended, available for Linux and Mac OS X)"
+    echo "Type \"C\" to compile Bowtie2-2.2.6 from source available together with this script"
+    echo "Type \"S\" to compile Bowtie2-2.2.6 from source code downloaded from http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.6/"
+    echo "Type \"D\" to download Bowtie2-2.2.6 binary from http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.6/ for your OS"
+    echo "Type \"B\" to copy Bowtie2-2.2.2.6 binary available together with the script (recommended, available for Linux and Mac OS X)"
     echo "Type \"M\" for manual installation - script will exit and you will have to install Bowtie2 yourselves"
     read BOWTIE
     while :
     do
       case "$BOWTIE" in
 	C|c)
-	  compilebowtie $SCRIPTDIR/src/bowtie2-2.2.5
+	  compilebowtie $SCRIPTDIR/src/bowtie2-2.2.6
 	  break
 	  ;;
 	D|d)
@@ -255,34 +255,34 @@ function compilebowtie {
 	    checktools unzip
 	    echo
 	    echo "Bowtie binary for 32bit CPU is not available."
-	    compilebowtie $SCRIPTDIR/src/bowtie2-2.2.5
+	    compilebowtie $SCRIPTDIR/src/bowtie2-2.2.6
 	    elif [ "$OS" == "Linux" ]; then
 	      {
 	      echo "Downloading Bowtie2 binaries for $OS $OSB" &&
-	      curl -L -o bowtie2-2.2.5-linux-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.5/bowtie2-2.2.5-linux-x86_64.zip &&
-	      unzip -nq bowtie2-2.2.5-linux-x86_64.zip &&
-	      cp bowtie2-2.2.5/bowtie2* $BIN/ &&
+	      curl -L -o bowtie2-2.2.6-linux-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.6/bowtie2-2.2.6-linux-x86_64.zip &&
+	      unzip -nq bowtie2-2.2.6-linux-x86_64.zip &&
+	      cp bowtie2-2.2.6/bowtie2* $BIN/ &&
 	      echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\" and \"bowtie2-build-s\" are available. OK."
 	      } || { echo && echo "Download failed. Please, go to http://sourceforge.net/projects/bowtie-bio/files/bowtie2/ and download it manually" && echo && exit 1; }
 	    elif [ "$OS" == "Mac" ]; then
 	      {
 	      echo "Downloading Bowtie2 binaries for $OS $OSB" &&
-	      curl -L -o bowtie2-2.2.5-macos-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.5/bowtie2-2.2.5-macos-x86_64.zip &&
-	      unzip -nq bowtie2-2.2.5-macos-x86_64.zip &&
-	      cp bowtie2-2.2.5/bowtie2* $BIN/ &&
+	      curl -L -o bowtie2-2.2.6-macos-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.6/bowtie2-2.2.6-macos-x86_64.zip &&
+	      unzip -nq bowtie2-2.2.6-macos-x86_64.zip &&
+	      cp bowtie2-2.2.6/bowtie2* $BIN/ &&
 	      echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\" and \"bowtie2-build-s\" are available. OK."
 	      } || { echo && echo "Download failed. Please, go to http://sourceforge.net/projects/bowtie-bio/files/bowtie2/ and download it manually" && echo && exit 1; }
 	    elif [ "$OS" == "Windows" ]; then
 	      {
 	      echo "Downloading Bowtie2 binaries for $OS $OSB" &&
-	      curl -L -o bowtie2-2.2.5-mingw-win64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.5/bowtie2-2.2.5-mingw-win64.zip &&
-	      unzip -nq bowtie2-2.2.5-mingw-win64.zip &&
-	      cp bowtie2-2.2.5/bowtie2* $BIN/ &&
+	      curl -L -o bowtie2-2.2.6-mingw-win64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.6/bowtie2-2.2.6-mingw-win64.zip &&
+	      unzip -nq bowtie2-2.2.6-mingw-win64.zip &&
+	      cp bowtie2-2.2.6/bowtie2* $BIN/ &&
 	      echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\" and \"bowtie2-build-s\" are available. OK."
 	      } || { echo && echo "Download failed. Please, go to http://sourceforge.net/projects/bowtie-bio/files/bowtie2/ and download it manually" && echo && exit 1; }
 	    else
 	      echo "Unknown OS or OS without binary available"
-	      compilebowtie $SCRIPTDIR/src/bowtie2-2.2.5
+	      compilebowtie $SCRIPTDIR/src/bowtie2-2.2.6
 	    fi
 	  break
 	  ;;
@@ -292,9 +292,9 @@ function compilebowtie {
 	  checktools unzip
 	  echo
 	  echo "Downloading Bowtie2 source code"
-	  curl -L -o bowtie2-2.2.5-source.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.5/bowtie2-2.2.5-source.zip || { echo && echo "Download failed. Please, go to http://sourceforge.net/projects/bowtie-bio/files/bowtie2/ and download and install it manually" && echo && exit 1; }
-	  unzip -nq $WORKDIR/bowtie2-2.2.5-source.zip
-	  compilebowtie bowtie2-2.2.5
+	  curl -L -o bowtie2-2.2.6-source.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/2.2.6/bowtie2-2.2.6-source.zip || { echo && echo "Download failed. Please, go to http://sourceforge.net/projects/bowtie-bio/files/bowtie2/ and download and install it manually" && echo && exit 1; }
+	  unzip -nq $WORKDIR/bowtie2-2.2.6-source.zip
+	  compilebowtie bowtie2-2.2.6
 	  break
 	  ;;
 	B|b)
@@ -317,7 +317,7 @@ function compilebowtie {
 	    *) echo
 	      echo "Binary is not available for $OS $OSB. Going to compile it from source code."
 	      echo
-	      compilebowtie $SCRIPTDIR/src/bowtie2-2.2.5
+	      compilebowtie $SCRIPTDIR/src/bowtie2-2.2.6
 	      ;;
 	  esac
 	  break
