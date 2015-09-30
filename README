@@ -1,4 +1,27 @@
+Sondovač is a script to create orthologous low-copy nuclear probes from 
+transcriptome and genome skim data for target enrichment.
+
+
 Script summary
+================================================================================
+
+Phylogenetics benefits from using a large number of putatively independent 
+nuclear loci and their combination with other sources of information, such as 
+the plastid and mitochondrial genomes. Currently, target enrichment (sequence 
+capture) of hundreds of loci in combination with genome skimming is becoming 
+increasingly popular in phylogenetics. In animal phylogenomics non-exonic or 
+partly exonic ultraconserved elements and their quite variable flanking regions 
+are often utilized. For plant phylogenetics, low-copy nuclear (LCN) genes are 
+targeted due to the paucity of ultraconserved nuclear sequences. Due to 
+sequence divergence, target sequencing strategies for plant nuclear genomes are 
+largely lineage-specific, requiring the de novo design of target enrichment 
+probes. We developed a novel probe design pipeline for targeting orthologous 
+LCN loci for phylogenetic reconstruction by using genome skim and transcriptome 
+data. We implemented our software workflow in the user-friendly, automated and 
+interactive BASH script Sondovač.
+
+
+Pipeline - how the data are processed
 ================================================================================
 
 A transcriptome assembly and paired-end genome skim raw data are combined to 
@@ -6,45 +29,90 @@ get hundreds of orthologous LCN loci. Enrichment of multi-copy loci is
 minimized by using unique transcripts only, which are obtained by comparing all 
 transcripts and removing those sharing ≥90% sequence similarity using BLAT. 
 Before matching the genome skim data against those unique transcripts, reads of 
-plastid (and mitochondrial) origin are removed with Bowtie 2, SAMtools and bam2fastq utilizing reference 
-sequences. Paired-end reads are subsequently combined with FLASH. These 
-processed reads are matched against the unique transcripts sharing ≥85% 
-sequence similarity with BLAT. Transcripts with >1000 BLAT hits, indicating 
-repetitive elements, and BLAT hits containing masked nucleotides are removed 
-before de novo assembly of the BLAT hits to larger contigs with Geneious, using 
-the medium sensitivity / fast setting. After assembly, only those contigs that 
-comprise exons of a minimum bait length (usually ≥120 bp in case of probe 
-design for phylogenies) and have a certain minimum total locus length (multiple 
-of the bait length, should not be too short in order to obtain sufficient 
-phylogenetically informative signal; we recommend at least ≥600 bp) are 
-retained. To ensure that probes do not target multiple similar loci, any probe 
-sequences sharing ≥90% sequence similarity are removed using cd-hit-est, 
-followed by a second filtering step for contigs containing exons of a minimum 
-bait length and totaling minimum loci length (see comments above). To ensure 
-that plastid sequences are absent from the probes, the probe sequences are 
-matched against the plastome reference sharing ≥90% sequence similarity with 
-BLAT and the hits removed from the probe set.
+plastid (and mitochondrial) origin are removed with Bowtie 2, SAMtools and 
+bam2fastq utilizing reference sequences. Paired-end reads are subsequently 
+combined with FLASH. These processed reads are matched against the unique 
+transcripts sharing ≥85% sequence similarity with BLAT. Transcripts with >1000 
+BLAT hits, indicating repetitive elements, and BLAT hits containing masked 
+nucleotides are removed before de novo assembly of the BLAT hits to larger 
+contigs with Geneious, using the medium sensitivity / fast setting. After 
+assembly, only those contigs that comprise exons of a minimum bait length 
+(usually ≥120 bp in case of probe design for phylogenies) and have a certain 
+minimum total locus length (multiple of the bait length, should not be too 
+short in order to obtain sufficient phylogenetically informative signal; we 
+recommend at least ≥600 bp) are retained. To ensure that probes do not target 
+multiple similar loci, any probe sequences sharing ≥90% sequence similarity are 
+removed using cd-hit-est, followed by a second filtering step for contigs 
+containing exons of a minimum bait length and totaling minimum loci length (see 
+comments above). To ensure that plastid sequences are absent from the probes, 
+the probe sequences are matched against the plastome reference sharing ≥90% 
+sequence similarity with BLAT and the hits removed from the probe set. The 
+workflow of Sondovač is summarized in the Figure 1 in PDF manual.
+
+For comprehension improvement the steps of Sondovač are consecutively numbered.
+
+Sondovač has three parts: two script parts and an intermediate part using 
+Geneious. The workflow is as follows:
+
+A) sondovac_part_a.sh: Covers steps 1 to 6
+  1)   Removal of transcripts sharing ≥90% sequence similarity 
+  2)   Removal of reads of plastid origin
+  3)   Removal of reads of mitochondrial origin (optional)
+  4)   Combination of paired-end reads
+  5)   Matching of the unique transcripts and the filtered, combined genome 
+       skim reads sharing ≥85% sequence similarity
+  6)   Filtering of BLAT output:
+  6.1) Choice of transcript or genome skim sequences for further processing
+  6.2) Removal of transcripts with >1000 BLAT hits
+  6.3) Removal of transcript or genome skim BLAT hits [depending on the 
+       selection in (6.1)] containing masked nucleotides
+
+Input files for sondovac_part_a.sh are FASTA transcriptome data, FASTQ 
+paired-end genome skim reads and a plastome (and possible as well 
+mitochondriome) reference. The input file for Geneious is the output of 
+sondovac_part_a.sh
+
+B) Geneious: Covers step 7 (see below and PDF manual)
+  7)  De novo assembly of the transcript or genome skim BLAT hits [depending 
+      on the selection in (6.1)] to larger contigs. Note you need a copy of 
+      Geneious for this step.
+
+The output files of Geneious are input files for sondovac_part_b.sh.
+
+C) sondovac_part_b.sh: Covers steps 8 to 11
+  8)  Retention of those contigs that comprise exons ≥ bait length and have a 
+      certain total locus length
+  9)  Removal of probe sequences sharing ≥90% sequence similarity
+  10) Retention of those contigs that comprise exons ≥ bait length and have a 
+      certain total locus length
+  11) Removal of probe sequences sharing ≥90% sequence similarity with the 
+      plastome reference
+
+The output file of sondovac_part_b.sh is the final list of probes.
 
 
 Software dependencies and installation
 ================================================================================
+
 Requirements to run Sondovač
 --------------------------------------------------------------------------------
+
 Sondovač is using several scientific software packages (namely bam2fastq, BLAT, 
 Bowtie2, CD-HIT, FASTX toolkit, FLASH, htsjdk, libgtextutils, Picard and 
-SAMtools), and basic UNIX tools. Sondovač will check if those programs are 
-installed - available in the PATH (i.e. if the shell application can locate and 
-launch respective binaries). If you have those packages installed (in current 
-versions), ensure that their binaries are in PATH. This should not be a problem 
-for basic tools available in any UNIX-based operating system, as basic 
-installation usually contains all needed tools. If you are lacking some of the 
-required tools, the script will notify you, and you will have to install them 
-manually. If this will be needed, check the documentation for your operating 
-system.
+SAMtools - see required versions and links below), and basic UNIX tools. 
+Sondovač will check if those programs are installed - available in the PATH 
+(i.e. if the shell application can locate and launch respective binaries). If 
+you have those packages installed (in current versions), ensure their binaries 
+are in PATH. This should not be a problem for basic tools available in any 
+UNIX-based operating system, as basic installation usually contains all needed 
+tools. If you are lacking some of the required tools, the script will notify 
+you, and you will have to install them manually. If this will be needed, check 
+the documentation for your operating system.
+
 If required scientific programs are not installed, Sondovač will offer you 
 installation. You can use precompiled binaries available together with the 
 script or (sometimes) from the web. This is the recommended way. In case you 
-would like to compile required software yourselve, the script will guide you 
+would like to compile required software yourselves, the script will guide you 
 through this process. Anyway, it is recommended only for advanced users, as 
 compilation might sometimes be very tricky. It is currently fully implemented 
 only for the Linux distributions Ubuntu and openSUSE. Support for other Linux 
@@ -53,50 +121,60 @@ Ant, GNU G++, GNU GCC, GIT, Java, libpng developmental files and zlib
 developmental files. Ensure you have those tools available - they should be 
 readily available for any UNIX-based operating system.
 
-Geneious (See http://www.geneious.com/ for download and purchase.)
---------------------------------------------------------------------------------
-Geneious is a DNA alignment, assembly, and analysis software and one of the most common software platforms used in genomics. It is utilized for de novo assembly in Sondovač.
-
-Check file INSTALL for further details.
+Geneious
 --------------------------------------------------------------------------------
 
+Geneious is a DNA alignment, assembly, and analysis software and one of the 
+most common software platforms used in genomics. It is utilized for de novo 
+assembly in Sondovač. We plan to replace it by some free open-source command 
+line tool in some future release of Sondovač. Visit http://www.geneious.com/ 
+for download, purchase, installation and usage of Geneious.
 
-Basic usage
-================================================================================
-The workflow of Sondovač is summarized in the figure. Each step of Sondovač is colorcoded: Software is highlighted in yellow, a summary of each step is given in blue, and input/output of each step is depicted in green. The direction of the workflow is indicated by arrows. Optional removal of reads of mitochondrial origin from the genome skim data is marked by decoloration. The required input files of Sondovač are highlighted in bold.
-For comprehension improvement the steps of Sondovač are consecutively numbered.
+Geneious was tested with versions 6, 7 and 8.
 
-Sondovač has three parts: two script parts and an intermediate part using Geneious. The workflow is as follows:
-A) sondova_part_a.sh: Covers steps 1 to 6 (see figure)
-   1)    Removal of transcripts sharing ≥90% sequence similarity 
-   2)    Removal of reads of plastid origin
-   3)    Removal of reads of mitochondrial origin (facultative)
-   4)    Combination of paired-end reads
-   5)    Matching of the unique transcripts and the filtered, combined genome skim reads sharing ≥85% sequence similarity
-   6)    Filtering of BLAT output:
-   6.1)  Choice of transcript or genome skim sequences for further processing
-   6.2)  Removal of transcripts with >1000 BLAT hits
-   6.3)  Removal of transcript or genome skim BLAT hits [depending on the selection in (6.1)] containing masked nucleotides
-   Input files for sondova_part_a.sh are FASTA transcriptome data, FASTQ paired-end genome skim reads and a plastome (and mitochondriome) reference.
-B) Geneious: Covers step 7 (see figure)
-   7)    De novo assembly of the transcript or genome skim BLAT hits [depending on the selection in (6.1)] to larger contigs. Note. You need a copy of Geneious for this step. Visit http://www.geneious.com/ for details.
-   The input file for Geneious is the output of sondova_part_a.sh.
-C) sondova_part_b.sh: Covers steps 8 to 11 (see figure)
-   8)    Retention of those contigs that comprise exons ≥ bait length and have a certain total locus length
-   9)    Removal of probe sequences sharing ≥90% sequence similarity
-   10)   Retention of those contigs that comprise exons ≥ bait length and have a certain total locus length
-   11)   Removal of probe sequences sharing ≥90% sequence similarity with the plastome reference
-   The input file for sondova_part_b.sh is the Geneious output.
+Import output file of part A of the script (sondovac_part_a.sh): go to menu 
+File | Import | From File... This file is named as:
+YourInputFile_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa
+
+Select the file and go to menu Tools | Align / Assemble | De Novo Assemble.
+In "Data" frame select "Assembe by 1st (...) Underscore".
+In "Method" frame select Geneious Assembler (if you don't have other 
+assemblers, this option might be missing) and "Medium Sensitivity / Fast" 
+Sensitivity.
+
+In "Results" frame check "Save assembly report", "Save list of unused reads", 
+"Save in sub-folder", "Save contigs" (do not check "Maximum") and "Save 
+consensus sequences". Do not trim. Otherwise keep defaults. Run it.
+Geneious may warn about possible hanging because of big file. Do not use 
+Geneious for other tasks during the assembly. Running may take long time.
+
+Select all resulting contigs (typically named "* Contig #") and export them 
+(go to menu File | Export | Selected Documents...) as "Tab-separated table 
+values (*.tsv)". Save following columns (Hold Ctrl key to mark more fields): 
+"# Sequences", "% Pairwise Identity", "Description", "Mean Coverage", "Name" 
+and "Sequence Length". If this option would be inaccessible for you, export 
+all columns.
+
+Select items "Consensus Sequences" and "Unused Reads" and export them as one 
+FASTA. Go to menu File | Export | Selected Documents... and choose FASTA file 
+type.
+
+Use exported files from Geneious as input for part B of the script 
+(sondovac_part_b.sh).
+
 
 Command-line parameters to run Sondovač
---------------------------------------------------------------------------------
+================================================================================
+
 In order to get on-line help type:
-./sondova_part_a.sh -h
+./sondovac_part_a.sh -h
 You will get the following list that is discussed below: 
-[-a Read length of paired-end genome skim reads (parameter -M of FLASH, see its manual for details)]
+[-a Read length of paired-end genome skim reads (parameter -M of FLASH, see its 
+manual for details)]
 [-b Minimum exon length]
 [-c Plastome reference input file in FASTA format]
-[-d Sequence similarity between probe sequences (parameter -c of cd-hit-est, see its manual for details)]
+[-d Sequence similarity between probe sequences (parameter -c of cd-hit-est, 
+see its manual for details)]
 [-e Citation information]
 [-f Transcriptome input file in FASTA format]
 [-i Interactive mode]
@@ -106,31 +184,41 @@ You will get the following list that is discussed below:
 [-p INSTALL for detailed installation instructions]
 [-q Paired-end genome skim input file in FASTQ format (second file)]
 [-r README for detailed usage instructions]
-[-s Number of BLAT hits per transcript when matching unique transcripts and the filtered, combined genome skim reads]
+[-s Number of BLAT hits per transcript when matching unique transcripts and the 
+filtered, combined genome skim reads]
 [-t Paired-end genome skim input file in FASTQ format (first file)]
 [-u Check for updates and download]
-[-x Input file for sondova_part_b.sh in TSV format]
-[-y Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details)]
-[-z Input file for sondova_part_b.sh in FASTA format]
+[-x Input file for sondovac_part_b.sh in TSV format]
+[-y Sequence similiarity between unique transcripts and the filtered, combined 
+genome skim reads (parameter -minIdentity of BLAT, see its manual for details)]
+[-z Input file for sondovac_part_b.sh in FASTA format]
 
--a    Read length of paired-end genome skim reads (parameter -M of FLASH, see its manual for details)
+-a    Read length of paired-end genome skim reads (parameter -M of FLASH, see 
+its manual for details)
       Step 4 of Sondovač
-      Ensure to use a certain insert size of the genome skim genomic library in combination with an appropriate read length for sequencing in order to enable merging of the paired-end genome skim reads.
+      Ensure to use a certain insert size of the genome skim genomic library in 
+combination with an appropriate read length for sequencing in order to enable 
+merging of the paired-end genome skim reads.
       DEFAULT: 250
       OPTIONS: 125, 150, 250, 300
 
 -b    Minimum exon length
       Steps 8 and 10 of Sondovač
-      The minimum exon length should not fall below the bait length in order to facilitate specific binding between genomic libraries and baits during hybridization.
+      The minimum exon length should not fall below the bait length in order to 
+facilitate specific binding between genomic libraries and baits during 
+hybridization.
       DEFAULT: 120
       OPTIONS: integers ranging from 120 to 200
 
 -c    Plastome reference input file in FASTA format
-      Plastome reference sequences from taxa up to the same order of the studied plant group are suitable (Straub et al., 2012).
+      Plastome reference sequences from taxa up to the same order of the 
+studied plant group are suitable (Straub et al., 2012).
 
--d    Sequence similarity between probe sequences (parameter -c of cd-hit-est, see its manual for details)
+-d    Sequence similarity between probe sequences (parameter -c of cd-hit-est, 
+see its manual for details)
       Step 9 of Sondovač
-      Too similar probe sequences will interact with each other during hybridization and thereby reduce enrichment efficiency.
+      Too similar probe sequences will interact with each other during 
+hybridization and thereby reduce enrichment efficiency.
       DEFAULT: 0.9 (highly recommended)
       OPTIONS: decimals ranging from 0.85 to 0.95
 
@@ -139,12 +227,14 @@ You will get the following list that is discussed below:
 -f    Transcriptome input file in FASTA format
 
 -i    Interactive mode
-      The script will on-demand ask for required input files, installation of missing software etc.
+      The script will on-demand ask for required input files, installation of 
+missing software etc.
       
 -l    LICENSE for license information
 
 -m    Mitochondriome reference input file in FASTA format
-      This step is facultative, as plant mitochondrial genomes have largely variable sizes and high rearrangement rates.
+      This step is facultative, as plant mitochondrial genomes have largely 
+variable sizes and high rearrangement rates.
 
 -n    Non-interactive mode
 
@@ -154,9 +244,11 @@ You will get the following list that is discussed below:
 
 -r    README for detailed usage instructions
 
--s    Number of BLAT hits per transcript when matching unique transcripts and the filtered, combined genome skim reads
+-s    Number of BLAT hits per transcript when matching unique transcripts and 
+the filtered, combined genome skim reads
       Step 6.2 of Sondovač
-      Transcripts with a high number of BLAT hits, indicating repetitive elements, need to be removed from the putative probe sequences.
+      Transcripts with a high number of BLAT hits, indicating repetitive 
+elements, need to be removed from the putative probe sequences.
       DEFAULT: 1000
       OPTIONS: integers ranging from 100 to 10000
 
@@ -165,44 +257,37 @@ You will get the following list that is discussed below:
 -u    Check for updates and download
       Check for updates and download them if needed and confirmed by user.
 
--x    Input file for sondova_part_b.sh in TSV format
+-x    Input file for sondovac_part_b.sh in TSV format
 
--y    Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details)
+-y    Sequence similiarity between unique transcripts and the filtered, 
+combined genome skim reads (parameter -minIdentity of BLAT, see its manual for 
+details)
       Step 5 of Sondovač
-      Consider the trade-off between probe specificity and number of remaining matching sequences for probe design. Sequence similarity is in percent.
+      Consider the trade-off between probe specificity and number of remaining 
+matching sequences for probe design. Sequence similarity is in percent.
       DEFAULT: 85
       OPTIONS: integer ranging from 70 to 100
 
--z    Input file for sondova_part_b.sh in FASTA format
-
-      
-Geneious details (Step 7 of Sondovač)
---------------------------------------------------------------------------------
-Geneious was tested with versions 6, 7 and 8.
-
-Import output file of part A of the script (sondova_part_a.sh) (File | Import | From File...).
-
-Select the file and go to menu Tools | Align / Assemble | De Novo Assemble.
-In "Data" frame select "Assembe by 1st (...) Underscore".
-In "Method" frame select Geneious Assembler (if you don't have other assemblers, this option might be missing) and "Medium Sensitivity / Fast" Sensitivity.
-In "Results" frame check "Save assembly report", "Save list of unused reads", "Save in sub-folder", "Save contigs" (do not check "Maximum") and "Save consensus sequences". Do not trim. Otherwise keep defaults. Run it.
-Geneious may warn about possible hanging because of big file. Do not use Geneious for other tasks during the assembly.
-
-Select all resulting contigs (typically named "* Contig #") and export them (File | Export | Selected Documents...) as "Tab-separated table values (*.tsv)". Save following columns (Hold Ctrl key to mark more fields): "# Sequences", "% Pairwise Identity", "Description", "Mean Coverage", "Name" and "Sequence Length". If this option would be inaccessible for you, export all columns.
-
-Select items "Consensus Sequences" and "Unused Reads" and export them as one FASTA. Go to menu File | Export | Selected Documents... and choose FASTA file type.
-
-Use exported files from Geneious as input for part B of the script (sondova_part_b.sh).
+-z    Input file for sondovac_part_b.sh in FASTA format
 
 
 License
 ================================================================================
+
 The script is licensed under permissive open-source license allowing 
 redistribution and modifications. Check file LICENSE for details and feel free 
 to enhance the script.
 
 
-Other questions not covered here
+Citation
 ================================================================================
-Please, see https://github.com/V-Z/sondovac/ and feel free to ask any 
-question and/or express any wish. The authors will do their best to help you.
+
+When using Sondovač please cite Schmickl et al. See PDF manual for more details.
+
+
+Other questions not covered here and reporting problems
+================================================================================
+
+If you have any question or you encounter some problem, please, see 
+https://github.com/V-Z/sondovac/issues and feel free to ask any question 
+and/or express any wish. The authors will do their best to help you.
