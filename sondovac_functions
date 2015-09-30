@@ -291,7 +291,7 @@ function citationreference {
   echo
   echo "For more information see README, you can do so by"
   echo -e "\t$0 -r"
-  echo "and/or visit $WEB"
+  echo "and/or PDF manual and/or visit $WEB"
   echo
   exit
   }

@@ -67,7 +67,7 @@ while getopts "hvulrpeinf:c:m:t:q:a:y:s:" START; do
       echo -e "\t-a\tRead length of paired-end reads (parameter -M of FLASH, see its manual for details)"
       echo -e "\t\tDefault value: 250 (allowed values are 125, 150, 250 or 300)"
       echo -e "\t-y\tBLAT score for identity between unique transcript and genome skimming data (parameter -minIdentity, check the BLAT manual for details)"
-      echo -e "\t\tDefault value: 85 (range from 1 to 100; if lower target enrichment might be much less efficient)"
+      echo -e "\t\tDefault value: 85 (range from 70 to 100; if lower target enrichment might be much less efficient)"
       echo -e "\t-s\tBLAT score (range from 100 to 10000; transcripts with higher score will be removed - very likely that these are repetitive elements)"
       echo -e "\t\tDefault value: 1000"
       echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-a, -y${NORM} or ${BOLD}-s${NORM} are not provided, default values are taken and it is not possible to change them later (not even in interactive mode)."
@@ -146,7 +146,7 @@ while getopts "hvulrpeinf:c:m:t:q:a:y:s:" START; do
     y)
       BLATIDENT=$OPTARG
       # Check if provided value makes sense
-      if [[ "$BLATIDENT" =~ ^[0-9]+$ ]] && [ "$BLATIDENT" -ge 1 -a "$BLATIDENT" -le 100 ]; then
+      if [[ "$BLATIDENT" =~ ^[0-9]+$ ]] && [ "$BLATIDENT" -ge 70 -a "$BLATIDENT" -le 100 ]; then
 	echo "BLAT score for identity between unique transcripts and genome skimming data: $BLATIDENT"
 	else
 	  echo
