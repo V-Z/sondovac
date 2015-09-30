@@ -132,7 +132,7 @@ higher then noted. Generally, any current version should usually be fine.
 
 * Apache Ant 1.9.X - https://ant.apache.org/
 * bam2fastq 1.1.0 - http://gsl.hudsonalpha.org/information/software/bam2fastq
-* BASH 4.2.X - https://www.gnu.org/software/bash/bash.html
+* BASH v. > 3 - https://www.gnu.org/software/bash/bash.html
 * BLAT v.36 - http://genome.ucsc.edu/FAQ/FAQblat.html
 * Bowtie2 2.2.6 - http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
 * CD-HIT 4.6 - http://weizhongli-lab.org/cd-hit/
@@ -146,7 +146,7 @@ higher then noted. Generally, any current version should usually be fine.
 * libpng 1.6.X - http://www.libpng.org/
 * Picard v. > 1.137 - https://broadinstitute.github.io/picard/
 * SAMtools, htsjdk 1.2 - http://www.htslib.org/
-* Sondovač - https://github.com/V-Z/sondovac/
+* Sondovač - https://github.com/V-Z/sondovac/wiki
 * zlib 1.2.8 - http://zlib.net/
 
 

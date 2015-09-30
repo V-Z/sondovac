@@ -1,5 +1,6 @@
 Script summary
 ================================================================================
+
 A transcriptome assembly and paired-end genome skim raw data are combined to 
 get hundreds of orthologous LCN loci. Enrichment of multi-copy loci is 
 minimized by using unique transcripts only, which are obtained by comparing all 
@@ -169,8 +170,8 @@ You will get the following list that is discussed below:
 -y    Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details)
       Step 5 of Sondovač
       Consider the trade-off between probe specificity and number of remaining matching sequences for probe design. Sequence similarity is in percent.
-      DEFAULT: 0.85
-      OPTIONS: decimals ranging from 0.7 to 1.0
+      DEFAULT: 85
+      OPTIONS: integer ranging from 70 to 100
 
 -z    Input file for sondova_part_b.sh in FASTA format
 
