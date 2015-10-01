@@ -1,4 +1,6 @@
 bin
+manual/sondovac_manual.brf
+manual/sondovac_manual.kilepr
 manual/sondovac_manual.tex.backup
 pkgs/linux32b
 pkgs/linux64b

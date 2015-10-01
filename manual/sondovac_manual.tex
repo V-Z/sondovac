@@ -70,8 +70,8 @@
 \maketitle
 Sondovač is a script to create orthologous low-copy nuclear probes from transcriptome and genome skim data for target enrichment.
 \tableofcontents
-\listoftables
 \listoffigures
+\listoftables
 \vskip 1cm
 
 % Document body starts
@@ -99,7 +99,9 @@ Sondovač workflow is divided into three parts (see details at page~\pageref{pip
 A transcriptome assembly and paired-end genome skim raw data are combined to get hundreds of orthologous LCN loci. Enrichment of multi-copy loci is minimized by using unique transcripts only, which are obtained by comparing all transcripts and removing those sharing $\geq$90\% sequence similarity using BLAT. Before matching the genome skim data against those unique transcripts, reads of plastid (and mitochondrial) origin are removed with Bowtie 2, SAMtools and bam2fastq utilizing reference sequences. Paired-end reads are subsequently combined with FLASH. These processed reads are matched against the unique transcripts sharing $\geq$85\% sequence similarity with BLAT. Transcripts with $>$1000 BLAT hits, indicating repetitive elements, and BLAT hits containing masked nucleotides are removed before de novo assembly of the BLAT hits to larger contigs with Geneious, using the medium sensitivity / fast setting. After assembly, only those contigs that comprise exons of a minimum bait length (usually $\geq$120 bp in case of probe design for phylogenies) and have a certain minimum total locus length (multiple of the bait length, should not be too short in order to obtain sufficient phylogenetically informative signal; we recommend at least $\geq$600 bp) are retained. To ensure that probes do not target multiple similar loci, any probe sequences sharing $\geq$90\% sequence similarity are removed using cd-hit-est, followed by a second filtering step for contigs containing exons of a minimum bait length and totaling minimum loci length (see comments above). To ensure that plastid sequences are absent from the probes, the probe sequences are matched against the plastome reference sharing $\geq$90\% sequence similarity with BLAT and the hits removed from the probe set. The workflow of Sondovač is summarized in the Figure~\ref{pipeline-workflow}. The direction of the workflow is indicated by arrows. Optional removal of reads of mitochondrial origin from the genome skim data is marked by light background. The required input files of Sondovač are highlighted in bold.
 
 \begin{figure}[p]
+\begin{center}
 \includegraphics[width=15cm]{pipeline_workflow_grayscale.png}
+\end{center}
 \caption[Workflow of the probe design script Sondovač]{Workflow of the probe design script Sondovač. An overview on the main steps of Hyb-Seq are given in the top part of the figure; probe design is the first one. Each step of Sondovač is numbered and illustrated by three boxes each: Software is highlighted in dark gray, a summary of each step is given in medium gray, and input/output of each step is depicted in light gray. Optional removal of reads of mitochondrial origin from the genome skim data is marked by decoloration of the text. The required input files of Sondovač are highlighted in bold. The direction of the workflow is indicated by arrows.}
 \label{pipeline-workflow}
 \end{figure}
@@ -125,7 +127,7 @@ For comprehension improvement the steps of Sondovač are consecutively numbered.
 
   Input files for \texttt{sondovac$\_$part$\_$a.sh} are FASTA transcriptome data, FASTQ paired-end genome skim reads and a plastome (and possible as well mitochondriome) reference. The input file for Geneious is the output of \texttt{sondovac$\_$part$\_$a.sh}.
 
-  \item Geneious: Covers step 7 (see below and PDF manual).
+  \item Geneious: Covers step 7 (see page~\pageref{geneious}).
     \begin{enumerate}[label=\textbf{\arabic*.}, resume]
     \item De novo assembly of the transcript or genome skim BLAT hits [depending on the selection in (6.1)] to larger contigs. Note you need a copy of Geneious for this step.
     \end{enumerate}
@@ -147,7 +149,7 @@ For comprehension improvement the steps of Sondovač are consecutively numbered.
 \section{Installation of Sondovač}
 \label{install}
 
-Sondovač is simple BASH script, but it requires some software. The script will check for presence of all required software and if needed, it will offer installation. The most easy way is just to launch the script (see chapter \ref{script-start} at page \pageref{script-start}) and yet yourselves to be guided through whole needed process.
+Sondovač is simple BASH script, but it requires some software. The script will check for presence of all required software and if needed, it will offer installation. The most easy way is just to launch the script (see chapter \ref{script-start} at page \pageref{script-start}) and let yourselves to be guided through whole needed process.
 
 \subsection{Requirements to run Sondovač}
 
@@ -155,9 +157,37 @@ Sondovač is currently tested on the Linux distributions Ubuntu and openSUSE. Te
 
 In order to run Sondovač you need a UNIX-based operating system (preferably Linux or Mac OS X) equipped with BASH or compatible shell interpreter (this should be by default available for any Linux distribution, Mac OS X and any other UNIX-based operating system like Solaris, BSD and its variants etc). You should use the current operating system version supported by upstream. Otherwise we will not be able to help you in case of problems. Older operating systems can have different versions of shell and system libraries, which can cause various problems and incompatibilities.
 
-Sondovač is using several scientific software packages (namely bam2fastq, BLAT, Bowtie2, CD-HIT, FASTX toolkit, FLASH, htsjdk, libgtextutils, Picard and SAMtools -- see required versions and links below), and basic UNIX tools. Sondovač will check if those programs are installed -- available in the PATH (i.e. if the shell application can locate and launch respective binaries). If you have those packages installed (in current versions), ensure their binaries are in PATH. This should not be a problem for basic tools available in any UNIX-based operating system, as basic installation usually contains all needed tools. If you are lacking some of the required tools, the script will notify you, and you will have to install them manually. If this will be needed, check the documentation for your operating system.
+Sondovač is using several scientific software packages (namely bam2fastq, BLAT, Bowtie2, CD-HIT, FASTX toolkit, FLASH, htsjdk, libgtextutils, Picard and SAMtools -- see required versions and links, Table~\ref{software-links}), and basic UNIX tools. Sondovač will check if those programs are installed -- available in the PATH (i.e. if the shell application can locate and launch respective binaries). If you have those packages installed (in current versions), ensure their binaries are in PATH. This should not be a problem for basic tools available in any UNIX-based operating system, as basic installation usually contains all needed tools. If you are lacking some of the required tools, the script will notify you, and you will have to install them manually. If this will be needed, check the documentation for your operating system.
 
 If required scientific programs are not installed, Sondovač will offer you installation. You can use precompiled binaries available together with the script or (sometimes) from the web. This is the recommended way. In case you would like to compile required software yourselves, the script will guide you through this process. Anyway, it is recommended only for advanced users, as compilation might sometimes be very tricky. It is currently fully implemented only for the Linux distributions Ubuntu and openSUSE. Support for other Linux distributions and Mac OS X will be added soon. For compilation you need Apache Ant, GNU G++, GNU GCC, GIT, Java, libpng developmental files and zlib developmental files. Ensure you have those tools available -- they should be readily available for any UNIX-based operating system.
+
+\subsection{Installation of required software in Linux}
+
+XXX
+
+\subsubsection{openSUSE and SUSE Linux Enterprise}
+
+XXX
+
+\subsubsection{Debian and derivatives}
+
+XXX
+
+\subsubsection{Ubuntu and derivatives}
+
+XXX
+
+\subsubsection{Linux Mint}
+
+XXX
+
+\subsubsection{Fedora, RedHat, Centos and Scientific Linux}
+
+XXX
+
+\subsection{Installation of required software in Mac OS X}
+
+XXX
 
 \subsection{First launch of Sondovač}
 \label{script-start}
@@ -182,9 +212,9 @@ to see basic usage instructions. See chapter~\ref{script-usage} at page~\pageref
 \label{terminal}
 \end{figure}
 
-\subsubsection{Examples (see further for explanation of command line parameters)}
+\subsubsection{Examples}
 
-Basic and the most simple usage (running in interactive mode, see chapter~\ref{script-usage} at page~\pageref{script-usage}):
+See page~\pageref{script-usage} for explanation of command line parameters. Basic and the most simple usage (running in interactive mode, see chapter~\ref{script-usage} at page~\pageref{script-usage}):
 
 \begin{bashcode}
   ./sondovac_part_a.sh -i
@@ -241,8 +271,9 @@ If you are not familiar with the usage of command line, see some basic tutorial 
 \end{itemize}
 
 \subsection{Geneious}
+\label{geneious}
 
-For the part (2) user must have Geneious. Geneious is a DNA alignment, assembly, and analysis software and one of the most common software platforms used in genomics. It is utilized for de novo assembly in Sondovač. We plan to replace it by some free open-source command line tool in some future release of Sondovač. Visit \href{http://www.geneious.com/}{http://www.geneious.com/} for download, purchase, installation and usage of Geneious. It is very feature-rich application.
+For the part (2) user must have Geneious \citep{Meintjes2012}. Geneious is a DNA alignment, assembly, and analysis software and one of the most common software platforms used in genomics. It is utilized for de novo assembly in Sondovač. We plan to replace it by some free open-source command line tool in some future release of Sondovač. Visit \href{http://www.geneious.com/}{http://www.geneious.com/} for download, purchase, installation and usage of Geneious. It is very feature-rich application.
 
 Geneious was tested with versions 6, 7 and 8.
 
@@ -289,25 +320,26 @@ zlib & 1.2.8 & \href{http://zlib.net/}{http://zlib.net/}
 \end{table}
 
 \begin{description}
- \item[BLAT] Kent: BLAT -- the BLAST-like alignment tool, \href{http://genome.cshlp.org/content/12/4/656.short}{http://genome.cshlp.org/content/12/4/656.short}
- \item[Bowtie2] Langmead and Salzberg: Fast gapped-read alignment with Bowtie 2, \href{http://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html}{http://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html}
+ \item[BLAT] \citet{Kent2002}: BLAT -- the BLAST-like alignment tool, \href{http://genome.cshlp.org/content/12/4/656.short}{http://genome.cshlp.org/content/12/4/656.short}
+ \item[Bowtie2] \citet{Langmead2012}: Fast gapped-read alignment with Bowtie 2, \href{http://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html}{http://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html}
  \item[CD-HIT] There are several papers describing CD-HIT:
   \begin{itemize}
-    \item Li et al: Clustering of highly homologous sequences to reduce the size of large protein databases, \href{http://bioinformatics.oxfordjournals.org/content/17/3/282.short}{http://bioinformatics.oxfordjournals.org/content/17/3/282.short}
-    \item Li et al: Tolerating some redundancy significantly speeds up clustering of large protein databases, \href{http://bioinformatics.oxfordjournals.org/content/18/1/77.short}{http://bioinformatics.oxfordjournals.org/content/18/1/77.short}
-    \item Li and Godzik: Cd-hit: a fast program for clustering and comparing large sets of protein or nucleotide sequences, \href{http://bioinformatics.oxfordjournals.org/content/22/13/1658.short}{http://bioinformatics.oxfordjournals.org/content/22/13/1658.short}
-    \item Fu et al: CD-HIT: accelerated for clustering the next generation sequencing data, \href{http://bioinformatics.oxfordjournals.org/content/28/23/3150.short}{http://bioinformatics.oxfordjournals.org/content/28/23/3150.short}
-    \item Huang et al: CD-HIT Suite: a web server for clustering and comparing biological sequences, \href{http://bioinformatics.oxfordjournals.org/content/26/5/680.short}{http://bioinformatics.oxfordjournals.org/content/26/5/680.short}
-    \item Niu et al: Artificial and natural duplicates in pyrosequencing reads of metagenomic data, \href{http://www.biomedcentral.com/1471-2105/11/187}{http://www.biomedcentral.com/1471-2105/11/187}
-    \item Li et al: Ultrafast clustering algorithms for metagenomic sequence analysis, \href{http://bib.oxfordjournals.org/content/13/6/656.abstract}{http://bib.oxfordjournals.org/content/13/6/656.abstract}
+    \item \citet{Li2001}: Clustering of highly homologous sequences to reduce the size of large protein databases, \href{http://bioinformatics.oxfordjournals.org/content/17/3/282.short}{http://bioinformatics.oxfordjournals.org/content/17/3/282.short}
+    \item \citet{Li2002}: Tolerating some redundancy significantly speeds up clustering of large protein databases, \href{http://bioinformatics.oxfordjournals.org/content/18/1/77.short}{http://bioinformatics.oxfordjournals.org/content/18/1/77.short}
+    \item \citet{Li2006}: Cd-hit: a fast program for clustering and comparing large sets of protein or nucleotide sequences, \href{http://bioinformatics.oxfordjournals.org/content/22/13/1658.short}{http://bioinformatics.oxfordjournals.org/content/22/13/1658.short}
+    \item \citet{Fu2012}: CD-HIT: accelerated for clustering the next generation sequencing data, \href{http://bioinformatics.oxfordjournals.org/content/28/23/3150.short}{http://bioinformatics.oxfordjournals.org/content/28/23/3150.short}
+    \item \citet{Huang2010}: CD-HIT Suite: a web server for clustering and comparing biological sequences, \href{http://bioinformatics.oxfordjournals.org/content/26/5/680.short}{http://bioinformatics.oxfordjournals.org/content/26/5/680.short}
+    \item \citet{Niu2010}: Artificial and natural duplicates in pyrosequencing reads of metagenomic data, \href{http://www.biomedcentral.com/1471-2105/11/187}{http://www.biomedcentral.com/1471-2105/11/187}
+    \item \citet{Li2012b}: Ultrafast clustering algorithms for metagenomic sequence analysis, \href{http://bib.oxfordjournals.org/content/13/6/656.abstract}{http://bib.oxfordjournals.org/content/13/6/656.abstract}
    \end{itemize}
- \item[FASTX toolkit] Gordon and Hannon: FASTX-Toolkit. FASTQ/A short-reads pre-processing tools, \href{http://hannonlab.cshl.edu/fastx_toolkit/}{http://hannonlab.cshl.edu/fastx$\_$toolkit/}
- \item[FLASH] Magoč and Salzberg: FLASH: fast length adjustment of short reads to improve genome assemblies, \href{http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract}{http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract}
+ \item[FASTX toolkit] \citet{Gordon2010}: FASTX-Toolkit. FASTQ/A short-reads pre-processing tools, \href{http://hannonlab.cshl.edu/fastx_toolkit/}{http://hannonlab.cshl.edu/fastx$\_$toolkit/}
+ \item[FLASH] \citet{Magoc2011}: FLASH: fast length adjustment of short reads to improve genome assemblies, \href{http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract}{http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract}
+ \item[Geneious] \citet{Meintjes2012}: Geneious Basic: An integrated and extendable desktop software platform for the organization and analysis of sequence data, \href{http://bioinformatics.oxfordjournals.org/cgi/doi/10.1093/bioinformatics/bts199}{http://bioinformatics.oxfordjournals.org/cgi/doi/10.1093/bioinformatics/bts199}
  \item[SAMtools] There are several papers describing SAMtools:
   \begin{itemize}
-   \item Li et al.: The Sequence alignment/map (SAM) format and SAMtools, \href{http://bioinformatics.oxfordjournals.org/content/25/16/2078.abstract}{http://bioinformatics.oxfordjournals.org/content/25/16/2078.abstract}
-   \item Li: A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data, \href{http://bioinformatics.oxfordjournals.org/content/27/21/2987.abstract}{http://bioinformatics.oxfordjournals.org/content/27/21/2987.abstract}
-   \item Li et al: Improving SNP discovery by base alignment quality, \href{http://bioinformatics.oxfordjournals.org/content/27/8/1157.short}{http://bioinformatics.oxfordjournals.org/content/27/8/1157.short}
+   \item \citet{Li2009}: The Sequence alignment/map (SAM) format and SAMtools, \href{http://bioinformatics.oxfordjournals.org/content/25/16/2078.abstract}{http://bioinformatics.oxfordjournals.org/content/25/16/2078.abstract}
+   \item \citet{Li2011}: A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data, \href{http://bioinformatics.oxfordjournals.org/content/27/21/2987.abstract}{http://bioinformatics.oxfordjournals.org/content/27/21/2987.abstract}
+   \item \citet{Li2011a}: Improving SNP discovery by base alignment quality, \href{http://bioinformatics.oxfordjournals.org/content/27/8/1157.short}{http://bioinformatics.oxfordjournals.org/content/27/8/1157.short}
   \end{itemize}
  \item[Sondovač] Schmickl et al
 \end{description}
@@ -326,7 +358,7 @@ zlib & 1.2.8 & \href{http://zlib.net/}{http://zlib.net/}
 \item[Mac OS X] Popular operating system produced by Apple. The system kernel is based on UNIX, see \href{https://www.apple.com/osx/}{https://www.apple.com/osx/}.
 \item[openSUSE] Popular Linux distribution, see \href{https://www.opensuse.org/}{https://www.opensuse.org/}.
 \item[Operating system] Basic system running on your computer -- typically MS Windows (not supported by Sondovač, although it might be working), Mac OS X or some Linux distribution (Ubuntu and derivatives, openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.).
-\item[Parameter(s)] Option(s) passed to any function/command line application to modify its usage. Some can be required, some are optional and some can be used only in particular cases. In case of shell applications, parameters are usually given in way like "application -X", "application -\-parameter", "application -Param SomeValue" and so on. See manual for particular application (e.g. "man application"), in case of Sondovač see XXX. % Link to commands
+\item[Parameter(s)] Option(s) passed to any function/command line application to modify its usage. Some can be required, some are optional and some can be used only in particular cases. In case of shell applications, parameters are usually given in way like "application -X", "application -\-parameter", "application -Param SomeValue" and so on. See manual for particular application (e.g. "man application"), in case of Sondovač see page~\pageref{script-usage}.
 \item[PATH] Directories in the computer where the system is looking for installed software (in a UNIX-based system you can view it by the command "\texttt{echo \$PATH}"). If you need to modify it manually, see the documentation for your operating system.
 \item[Script] Software application. It requires an interpreter (application installed on the computer that is able to launch scripts written in a particular language), but the application itself is portable among operating systems and hardware architectures, and it is written in plain text, so that developers can easily modify it. Common examples are Python, Perl or BASH.
 \item[Shell] "The command line" -- the interface to interact with software using commands typed into the terminal window (See Figure~\ref{terminal}).
@@ -380,7 +412,7 @@ Those parameters are required when running in non-interactive mode. The paramete
 \item[\texttt{-c FILE}] Plastome reference sequence input file in FASTA format.
   \begin{itemize}
     \item \texttt{sondovac$\_$part$\_$a.sh}, \texttt{sondovac$\_$part$\_$b.sh}
-    \item Plastome reference sequences from taxa up to the same order of the studied plant group are suitable. See Straub et al. 2012, \href{http://www.amjbot.org/content/99/2/349.short}{http://www.amjbot.org/content/99/2/349.short}.
+    \item Plastome reference sequences from taxa up to the same order of the studied plant group are suitable. See \citet{Straub2012}, \href{http://www.amjbot.org/content/99/2/349.short}{http://www.amjbot.org/content/99/2/349.short}.
   \end{itemize}
 \item[\texttt{-m FILE}] Mitochondriome reference sequence input file in FASTA format (optional).
   \begin{itemize}
@@ -449,7 +481,84 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
 
 \subsection{Input and output files}
 
-XXX
+\textbf{Script \texttt{sondovac$\_$part$\_$a.sh} requires as input files:}
+
+\begin{enumerate}
+  \item Transcriptome input file in FASTA format.
+  \item Plastome reference sequence input file in FASTA format.
+  \item Paired-end genome skim input file in FASTQ format (two files).
+  \item OPTIONAL: Mitochondriome reference sequence input file in FASTA format. This file is not required.
+\end{enumerate}
+
+\textbf{Script \texttt{sondovac$\_$part$\_$a.sh} creates the following files:}
+
+\begin{enumerate}
+  \item \texttt{*$\_$blat$\_$unique$\_$transcripts.psl} -- Output of BLAT (removal of transcripts sharing $\geq$90\% sequence similarity).
+  \item \texttt{*$\_$unique$\_$transcripts.fasta} -- Unique transcripts in FASTA format.
+  \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$reads.bam} -- SAM converted to BAM (removal of reads of plastid origin).
+  \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$reads} -- Genome skim data without cpDNA reads.
+  \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$no$\_$mt$\_$reads.bam} -- SAM converted to BAM (removal of reads of mitochondrial origin).
+  \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$no$\_$mt$\_$reads} -- Genome skim data without mtDNA reads.
+  \item \texttt{*$\_$combined$\_$reads$\_$co$\_$cp$\_$no$\_$mt$\_$reads} -- Combined paired-end genome skim reads.
+  \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data.pslx} -- Output of BLAT (matching of the unique transcripts and the filtered, combined genome skim reads sharing $\geq$85\% sequence similarity).
+  \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data.fasta} -- Matching sequences in FASTA.
+  \item \textbf{\texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa} -- Final FASTA sequences for usage in Geneious.}
+\end{enumerate}
+
+Files 1-9 are not necessary for further processing by this pipeline, but may be useful for the user. The last file (10) is used as input file for Geneious in the next step.
+
+\textbf{Geneious} requires as input the last output file of \texttt{sondovac$\_$part$\_$a.sh} (file 10: \texttt{*$\_$blat$\_$uni\-que$\_$tra\-nscri\-pts$\_$ve\-rsu\-s$\_$ge\-no\-me$\_$skim$\_$data-no$\_$missing$\_$fin.fsa}). Output of Geneious are two exported files (see page~\pageref{geneious}):
+
+\begin{enumerate}
+  \item Final assembled sequences exported as TSV.
+  \item Final assembled sequences exported as FASTA.
+\end{enumerate}
+
+\textbf{Script \texttt{sondovac$\_$part$\_$b.sh} requires as input files:}
+
+\begin{enumerate}
+  \item Plastome reference sequence input file in FASTA format.
+  \item Assembled sequences exported from Geneious as TSV.
+  \item Assembled sequences exported from Geneious as FASTA.
+\end{enumerate}
+
+\textbf{Script \texttt{sondovac$\_$part$\_$b.sh} creates following files:}
+
+\begin{enumerate}
+  \item \texttt{*$\_$prelim$\_$probe$\_$seq.fasta} -- Preliminary probe sequences.
+  \item \texttt{*$\_$similarity$\_$test2} -- Contigs that comprise exons $\geq$ bait length and have a certain total locus length (in the Oxalis case $\geq$600 bp).
+  \item \texttt{*$\_$target$\_$enrichment$\_$probe$\_$sequences.fasta} -- Probes in FASTA.
+  \item \textbf{\texttt{*.target$\_$enrichment$\_$probe$\_$sequences$\_$final.pslx} -- Final probes ready for bait synthesis.}
+\end{enumerate}
+
+\section{Sample data}
+
+Together with the script, we provide the ZIP archive (1.8 GB) that contains exemplary input files for running the script: Oxalis transcriptome and genome skim data as well as the Ricinus cpDNA and mtDNA reference sequences. See \href{https://github.com/V-Z/sondovac/wiki/Sample-data}{https://github.com/V-Z/sondovac/wiki/Sample-data} for download of sample data.
+
+The package contains:
+
+\begin{enumerate}
+  \item \texttt{input2$\_$Ricinus$\_$communis$\_$reference$\_$plastid$\_$genome.fsa} -- cpDNA reference (parameter -c), GeneBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/372450118/}{NC$\_$016736}
+  \item \texttt{input3$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R1.fastq} -- paired-end genome skim data, file 1 (parameter -t)
+  \item \texttt{input4$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R2.fastq} -- paired-end genome skim data, file 2 (parameter -q)
+  \item \texttt{input5$\_$Ricinus$\_$communis$\_$reference$\_$mitochondrial$\_$genome.fasta} -- mtDNA reference (parameter -m), GeneBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/323649872/}{NC$\_$015141}
+\end{enumerate}
+
+The transcriptome input file is unpublished data from G. K.-S. Wong et al.
+
+\begin{enumerate}
+ \item \texttt{input1$\_$JHCN$\_$Oxalis$\_$corniculata$\_$transcriptome$\_$data.fa} -- transcriptome data (parameter -f)
+\end{enumerate}
+
+Data can be found under
+
+\begin{itemize}
+  \item \href{http://www.onekp.com/}{http://www.onekp.com/}
+  \item \href{http://www.onekp.com/samples/list.php}{http://www.onekp.com/samples/list.php}
+  \item \href{http://www.onekp.com/samples/single.php?id=JHCN}{http://www.onekp.com/samples/single.php?id=JHCN}
+\end{itemize}
+
+Information about how to get access to data download is given in \citet{Matasci2014}, \href{http://www.gigasciencejournal.com/content/3/1/17/}{http://www.gigasciencejournal.com/content/3/1/17/}
 
 \section{Questions not covered here, reporting bugs and wishes}
 
@@ -1069,9 +1178,9 @@ THE SOFTWARE IS PROVIDED “AS IS“, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 % Reference list
 % Package natbib, style apalike: \cite{} as well as \citet{} > Author (year); \citep{} > (Author, year)
 % natbib: \citet/p[text][p.~1]{} > text Author year, p. 1; with * lists all authors
-% \bibliographystyle{apalike}
-% \bibliography{sondovac_references}
-% \addcontentsline{toc}{section}{References}
+\bibliographystyle{apalike}
+\bibliography{sondovac_manual}
+\addcontentsline{toc}{section}{References}
 
 \vfill
 \hrule
