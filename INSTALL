@@ -1,3 +1,5 @@
+Sondovač 0.6 Install instructions
+
 Requirements to run Sondovač
 ================================================================================
 
@@ -166,7 +168,7 @@ Vocabulary
   (text readable by human programmer) into binary form launchable by the 
   computer. It requires special tools, and it usually must be done for every 
   operating system and hardware platform.
-* Console - see "shell"
+* Console - see "shell".
 * GNU - Major project providing free software widely used in many operating 
   systems, see https://gnu.org/
 * Library - Pack of software tools and functions used by another applications.
@@ -203,7 +205,7 @@ Vocabulary
 * Solaris - Popular (mainly on servers) UNIX-based operating system, now 
   developed by Oracle and including several independent clones. See
   http://distrowatch.com/table.php?distribution=solaris
-* Terminal - see "shell"
+* Terminal - see "shell".
 * Ubuntu - Popular Linux distribution, see http://www.ubuntu.com/
 * Upstream - Developers usually support (e.g. by fixing of bugs) only newer 
   versions of an application. If you use an older version and you encounter 

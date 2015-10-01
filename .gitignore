@@ -1,4 +1,5 @@
 bin
+manual/sondovac_manual.tex.backup
 pkgs/linux32b
 pkgs/linux64b
 pkgs/macosx

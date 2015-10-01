@@ -1,3 +1,5 @@
+Sondovač 0.6 Basic help
+
 Sondovač is a script to create orthologous low-copy nuclear probes from 
 transcriptome and genome skim data for target enrichment.
 
@@ -166,110 +168,172 @@ Use exported files from Geneious as input for part B of the script
 Command-line parameters to run Sondovač
 ================================================================================
 
-In order to get on-line help type:
-./sondovac_part_a.sh -h
-You will get the following list that is discussed below: 
-[-a Read length of paired-end genome skim reads (parameter -M of FLASH, see its 
-manual for details)]
-[-b Minimum exon length]
-[-c Plastome reference input file in FASTA format]
-[-d Sequence similarity between probe sequences (parameter -c of cd-hit-est, 
-see its manual for details)]
-[-e Citation information]
-[-f Transcriptome input file in FASTA format]
-[-i Interactive mode]
-[-l LICENSE for license information]
-[-m Mitochondriome reference input file in FASTA format]
-[-n Non-interactive mode]
-[-p INSTALL for detailed installation instructions]
-[-q Paired-end genome skim input file in FASTQ format (second file)]
-[-r README for detailed usage instructions]
-[-s Number of BLAT hits per transcript when matching unique transcripts and the 
-filtered, combined genome skim reads]
-[-t Paired-end genome skim input file in FASTQ format (first file)]
-[-u Check for updates and download]
-[-x Input file for sondovac_part_b.sh in TSV format]
-[-y Sequence similiarity between unique transcripts and the filtered, combined 
-genome skim reads (parameter -minIdentity of BLAT, see its manual for details)]
-[-z Input file for sondovac_part_b.sh in FASTA format]
+General parameters:
+  Shared by sondovac_part_a.sh as well as sondovac_part_b.sh.
 
--a    Read length of paired-end genome skim reads (parameter -M of FLASH, see 
-its manual for details)
-      Step 4 of Sondovač
-      Ensure to use a certain insert size of the genome skim genomic library in 
-combination with an appropriate read length for sequencing in order to enable 
-merging of the paired-end genome skim reads.
-      DEFAULT: 250
-      OPTIONS: 125, 150, 250, 300
+-h, -v   Print help message and exit.
+-u       Check for updates. If there is newer version of Sondovač available on
+         https://github.com/V-Z/sondovac/releases/ download of newer version
+         will be offered to the user.
+-l       Display LICENSE for license information (this script is licensed under 
+         GNU GPL v.3, other software under variable licenses). Exit viewing by 
+         pressing the "Q" key.
+-r       Display README (this file) for detailed usage instructions. Exit 
+         viewing by pressing the "Q" key. More information is available in 
+         PDF manual.
+-p       Display INSTALL for detailed installation instructions. Exit viewing 
+         by pressing the "Q" key. More information is available in PDF manual.
+-e       Display detailed citation information and exit. See PDF manual for 
+         more information.
+-i       Running in interactive mode - script will on-demand ask for required 
+         input files, installation of missing software etc. This is recommended 
+         default value (the script runs interactively without explicit using 
+         option "-n").
+-n       Running in non-interactive mode. User must provide at least required 
+         input files (see below). You can use only one of parameters "-i" or 
+         "-n" (not both of them). If script fails to find some of required 
+         software packages, it will exit. This is recommended for batch or 
+         repeated analysis, on remote servers and for more advanced users. User 
+         must be sure that all required software is installed (see INSTALL and
+         PDF manual for details).
 
--b    Minimum exon length
-      Steps 8 and 10 of Sondovač
-      The minimum exon length should not fall below the bait length in order to 
-facilitate specific binding between genomic libraries and baits during 
-hybridization.
-      DEFAULT: 120
-      OPTIONS: integers ranging from 120 to 200
+Input files:
+  Those parameters are required when running in non-interactive mode.
+  The parameters are optional in default interactive mode.
+  Please, use file names without spaces and without special characters.
 
--c    Plastome reference input file in FASTA format
-      Plastome reference sequences from taxa up to the same order of the 
-studied plant group are suitable (Straub et al., 2012).
+-f FILE  Transcriptome input file in FASTA format.
+         sondovac_part_a.sh
+-c FILE  Plastome reference sequence input file in FASTA format.
+         sondovac_part_a.sh, sondovac_part_b.sh
+         Plastome reference sequences from taxa up to the same order of the 
+           studied plant group are suitable. See Shannon C K. Straub, Matthew 
+           Parks, Kevin Weitemier, Mark Fishbein, Richard C. Cronn and Aaron 
+           Liston; American Journal of Botany (2012) 99(2): 349-364, 
+           http://www.amjbot.org/content/99/2/349.short
+-m FILE  Mitochondriome reference sequence input file in FASTA format (optional).
+         sondovac_part_a.sh
+         This step is facultative, as plant mitochondrial genomes have largely 
+           variable sizes and high rearrangement rates.
+-t FILE  Paired-end genome skim input file in FASTQ format (first file).
+         sondovac_part_a.sh
+-q FILE  Paired-end genome skim input file in FASTQ format (second file).
+         sondovac_part_a.sh
+-x FILE  Input file in TSV format (output of Geneious assembly).
+         sondovac_part_b.sh
+-z FILE  Input file in FASTA format (output of Geneious assembly).
+         sondovac_part_b.sh
 
--d    Sequence similarity between probe sequences (parameter -c of cd-hit-est, 
-see its manual for details)
-      Step 9 of Sondovač
-      Too similar probe sequences will interact with each other during 
-hybridization and thereby reduce enrichment efficiency.
-      DEFAULT: 0.9 (highly recommended)
-      OPTIONS: decimals ranging from 0.85 to 0.95
+Optional parameters:
+  See chapter "Pipeline" for steps referred here.
+  If those parameters are not provided, default values are used and it is not
+    possible to change them any time later (not even in interactive mode).
 
--e    Citation information
+-a ###   Read length of paired-end genome skim reads (parameter -M of FLASH, 
+         see its manual for details).
+         Step 4 of Sondovač, sondovac_part_a.sh.
+         Ensure to use a certain insert size of the genome skim genomic library 
+         in combination with an appropriate read length for sequencing in order 
+         to enable merging of the paired-end genome skim reads.
+         DEFAULT: 250
+         OPTIONS: 125, 150, 250, 300
+-y ##    Sequence similiarity between unique transcripts and the filtered, 
+         combined genome skim reads (parameter -minIdentity of BLAT, see its 
+         manual for details).
+         Step 5 of Sondovač, sondovac_part_a.sh.
+         Consider the trade-off between probe specificity and number of 
+         remaining matching sequences for probe design. Sequence similarity is 
+         in percent.
+         DEFAULT: 85
+         OPTIONS: Integer ranging from 70 to 100
+-s ####  Number of BLAT hits per transcript when matching unique transcripts 
+         and the filtered, combined genome skim reads.
+	 Step 6.2 of Sondovač, sondovac_part_a.sh.
+         Transcripts with a high number of BLAT hits, indicating repetitive 
+         elements, need to be removed from the putative probe sequences.
+         DEFAULT: 1000
+         OPTIONS: Integer ranging from 100 to 10000
+-b ###   Minimum exon (bait) length.
+         Steps 8 and 10 of Sondovač, sondovac_part_b.sh.
+         The minimum exon length should not fall below the bait length in order 
+         to facilitate specific binding between genomic libraries and baits 
+         during hybridization.
+         DEFAULT: 120 (optimal length for phylogeny).
+         OPTIONS: Integer ranging from 120 to 200
+-d 0.##  Sequence similarity between probe sequences (parameter -c of 
+         cd-hit-est, see its manual for details).
+         Step 9 of Sondovač, sondovac_part_b.sh.
+         Too similar probe sequences will interact with each other during 
+         hybridization and thereby reduce enrichment efficiency.
+         DEFAULT: 0.9 (highly recommended).
+         OPTIONS: Decimal ranging from 0.85 to 0.95
 
--f    Transcriptome input file in FASTA format
+Examples:
 
--i    Interactive mode
-      The script will on-demand ask for required input files, installation of 
-missing software etc.
-      
--l    LICENSE for license information
+Basic and the most simple usage:
+./sondovac_part_a.sh -i
 
--m    Mitochondriome reference input file in FASTA format
-      This step is facultative, as plant mitochondrial genomes have largely 
-variable sizes and high rearrangement rates.
+Specify some of required input files, otherwise run interactively:
+./sondovac_part_a.sh -i -f input.fa -t reads1.fastq -q reads2.fastq
 
--n    Non-interactive mode
+Running in non-interactive automated way:
+./sondovac_part_a.sh -n -f input.fa -c referencecp.fa -m referencemt.fa -t reads1.fastq -q reads2.fastq
 
--p    INSTALL for detailed installation instructions
+Modify parameter "-a", otherwise run interactively:
+./sondovac_part_a.sh -i -a 300
 
--q    Paired-end genome skim input file in FASTQ format (second file)
+Run in non-interactive mode (parameter "-n") - in such case user must specify all required input files (parameters "-f", "-c", "-m", "-t" and "-q"). Moreover, parameter "-y" is modified:
+./sondovac_part_a.sh -n -f input.fa -c referencecp.fa -m referencemt.fa -t reads1.fastq -q reads2.fastq -y 90
 
--r    README for detailed usage instructions
+Modifying parameter "-s". Note interactive mode -i is implicit and does not need to be specified explicitly:
+./sondovac_part_a.sh -s 950
 
--s    Number of BLAT hits per transcript when matching unique transcripts and 
-the filtered, combined genome skim reads
-      Step 6.2 of Sondovač
-      Transcripts with a high number of BLAT hits, indicating repetitive 
-elements, need to be removed from the putative probe sequences.
-      DEFAULT: 1000
-      OPTIONS: integers ranging from 100 to 10000
 
--t    Paired-end genome skim input file in FASTQ format (first file)
+Input and output files
+================================================================================
 
--u    Check for updates and download
-      Check for updates and download them if needed and confirmed by user.
+As input files Sondovač (script sondovac_part_a.sh) requires:
+1) Transcriptome input file in FASTA format. This is reference sequence.
+2) Plastome reference sequence input file in FASTA format.
+3) Paired-end genome skim input file in FASTQ format (two files).
+4) OPTIONAL: Mitochondriome reference sequence input file in FASTA format.
+   This file is not required.
 
--x    Input file for sondovac_part_b.sh in TSV format
+Script sondovac_part_a.sh creates following files:
+1) _blat_unique_transcripts.psl - Output of BLAT
+2) _unique_transcripts.fasta - Joined unique transcriptomes in FASTA format
+3) _genome_skim_data_no_cp_reads.bam - SAM converted into BAM
+4) _genome_skim_data_no_cp_reads - Removed cpDNA reads
+5) _genome_skim_data_no_cp_no_mt_reads.bam - SAM converted into BAM
+6) _genome_skim_data_no_cp_no_mt_reads - Removed mtDNA reads
+7) _combined_reads_co_cp_no_mt_reads - Combined paired-end reads
+8) _blat_unique_transcripts_versus_genome_skim_data.pslx - BLAT between the unique transcriptomes and the genome skimming data
+9) _blat_unique_transcripts_versus_genome_skim_data.fasta - Assembled sequences in contigs
+10) _blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa - Final FASTA for usage in Geneious
+Files 1-9 are not necessary for next processing by this pipeline, but may be useful for the user. Last file (10) is used as input file for Geneious in next step.
 
--y    Sequence similiarity between unique transcripts and the filtered, 
-combined genome skim reads (parameter -minIdentity of BLAT, see its manual for 
-details)
-      Step 5 of Sondovač
-      Consider the trade-off between probe specificity and number of remaining 
-matching sequences for probe design. Sequence similarity is in percent.
-      DEFAULT: 85
-      OPTIONS: integer ranging from 70 to 100
+Geneious requires as input the last output file of sondovac_part_a.sh (_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa).
+Output of Geneious are two exported files (see Geneious chapter):
+1) Final assembled sequences exported as TSV.
+2) Final assembled sequences exported as FASTA.
 
--z    Input file for sondovac_part_b.sh in FASTA format
+Script sondovac_part_b.sh requires as input files:
+1) Plastome reference sequence input file in FASTA format.
+2) Assembled sequences exported from Geneious as TSV.
+3) Assembled sequences exported from Geneious as FASTA.
 
+Script sondovac_part_b.sh creates following files:
+1) _prelim_probe_seq.fasta - Preliminary probe sequences
+2) _similarity_test2 - Assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
+3) _target_enrichment_probe_sequences.fasta - Probes in FASTA
+4) .target_enrichment_probe_sequences_final.pslx - Final probes ready for sysnthesis
+
+
+Sample data
+================================================================================
+
+See https://github.com/V-Z/sondovac/wiki/Sample-data for download of sample 
+data (1.8 GB).
 
 License
 ================================================================================
@@ -291,3 +355,80 @@ Other questions not covered here and reporting problems
 If you have any question or you encounter some problem, please, see 
 https://github.com/V-Z/sondovac/issues and feel free to ask any question 
 and/or express any wish. The authors will do their best to help you.
+
+
+Software references
+================================================================================
+
+bam2fastq:
+* http://gsl.hudsonalpha.org/information/software/bam2fastq
+BLAT:
+* W. James Kent
+  BLAT – the BLAST-like alignment tool
+  Genome Research (2002) 12:656-664
+  http://genome.cshlp.org/content/12/4/656.short
+Bowtie2:
+* Ben Langmead and Steven L. Salzberg
+  Fast gapped-read alignment with Bowtie 2
+  Nature Methods (2012) 9:357-359
+  http://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html
+CD-HIT:
+* Weizhong Li, Lukasz Jaroszewski and Adam Godzik
+  Clustering of highly homologous sequences to reduce the size of large
+  protein databases
+  Bioinformatics (2001) 17:282-283.
+  http://bioinformatics.oxfordjournals.org/content/17/3/282.short
+* Weizhong Li, Lukasz Jaroszewski and Adam Godzik
+  Tolerating some redundancy significantly speeds up clustering of large
+  protein databases
+  Bioinformatics (2002) 18:77-82
+  http://bioinformatics.oxfordjournals.org/content/18/1/77.short
+* Weizhong Li and Adam Godzik
+  Cd-hit: a fast program for clustering and comparing large sets of
+  protein or nucleotide sequences
+  Bioinformatics (2006) 22:1658-1659
+  http://bioinformatics.oxfordjournals.org/content/22/13/1658.short
+* Limin Fu, Beifang Niu, Zhengwei Zhu, Sitao Wu and Weizhong Li
+  CD-HIT: accelerated for clustering the next generation sequencing data
+  Bioinformatics (2012) 28:3150-3152
+  http://bioinformatics.oxfordjournals.org/content/28/23/3150.short
+* Ying Huang, Beifang Niu, Ying Gao, Limin Fu and Weizhong Li
+  CD-HIT Suite: a web server for clustering and comparing biological sequences
+  Bioinformatics (2010) 26:680
+  http://bioinformatics.oxfordjournals.org/content/26/5/680.short
+* Beifang Niu, Limin Fu, Shulei Sun and Weizhong Li
+  Artificial and natural duplicates in pyrosequencing reads of metagenomic data
+  BMC Bioinformatics (2010) 11:187
+  http://www.biomedcentral.com/1471-2105/11/187
+* Weizhong Li, Limin Fu, Beifang Niu, Sitao Wu and John Wooley
+  Ultrafast clustering algorithms for metagenomic sequence analysis
+  Briefings in Bioinformatics (2012) 13(6):656-668
+  http://bib.oxfordjournals.org/content/13/6/656.abstract
+FASTX toolkit:
+* A. Gordon and G. J. Hannon
+  FASTX-Toolkit. FASTQ/A short-reads pre-processing tools
+  2010
+  http://hannonlab.cshl.edu/fastx_toolkit/
+FLASH:
+* Tanja Magoč and Steven L. Salzberg
+  FLASH: fast length adjustment of short reads to improve genome assemblies
+  Bioinformatics (2011) 27(21):2957-2963
+  http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract
+Picard:
+* http://broadinstitute.github.io/picard
+SAMtools:
+* Heng Li, Bob Handsaker, Alec Wysoker, Tim Fennell, Jue Ruan, Nils Homer,
+    Gabor Marth, Goncalo Abecasis, Richard Durbin and 1000 Genome Project
+    Data Processing Subgroup
+  The Sequence Alignment/Map format and SAMtools
+  Bioinformatics (2009) 25(16): 2078-2079
+  http://bioinformatics.oxfordjournals.org/content/25/16/2078.abstract
+* Heng Li
+  A statistical framework for SNP calling, mutation discovery, association
+    mapping and population genetical parameter estimation from sequencing data
+  Bioinformatics (2011) 27(21): 2987-2993
+  http://bioinformatics.oxfordjournals.org/content/27/21/2987.abstract
+* Heng Li
+  Improving SNP discovery by base alignment quality
+  Bioinformatics (2011) 27(8): 1157-1158.
+  http://bioinformatics.oxfordjournals.org/content/27/8/1157.short

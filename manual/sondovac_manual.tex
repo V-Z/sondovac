@@ -3,9 +3,9 @@
 % Missing to do:
 % * References - bibtex
 % * Geneious screenshots
-% * More BASH examples, some screenshot
-% * Usage instructions
-% * Finam formatting
+% * More BASH examples (installation of packages in Linux), some screenshot
+% * Help for Mac OS X - install build tools, homebrew
+% * Final formatting
 
 \usepackage{xltxtra}
 \usepackage{xunicode}
@@ -52,7 +52,7 @@
   pdftitle={Sondovac manual 0.6},
   plainpages=false,
   pdfauthor={Roswitha Schmickl, Aaron Liston, Vojtech Zeisek and others},
-  pdfsubject={Sowftware manual},
+  pdfsubject={Software manual},
   pdfcreator={XeLaTeX, http://www.xelatex.org/},
   pdfkeywords={bioinformatics, genome skimming, manual, next generation sequencing},
   linkcolor={red},
@@ -145,6 +145,7 @@ For comprehension improvement the steps of Sondovač are consecutively numbered.
 \end{enumerate}
 
 \section{Installation of Sondovač}
+\label{install}
 
 Sondovač is simple BASH script, but it requires some software. The script will check for presence of all required software and if needed, it will offer installation. The most easy way is just to launch the script (see chapter \ref{script-start} at page \pageref{script-start}) and yet yourselves to be guided through whole needed process.
 
@@ -212,7 +213,7 @@ Modify parameter "\texttt{-a}", otherwise run interactively:
   ./sondovac_part_a.sh -i -a 300
 \end{bashcode}
 
-Run in non-interactive mode (parameter "\texttt{-n}", see chapter~\ref{script-usage} at page~\pageref{script-usage}) - i such case user must specify all required input files (parameters "\texttt{-f}", "\texttt{-c}", "\texttt{-m}", "\texttt{-t}" and "\texttt{-q}"). Moreover, parameter "\texttt{-y}" is modified:
+Run in non-interactive mode (parameter "\texttt{-n}", see chapter~\ref{script-usage} at page~\pageref{script-usage}) -- in such case user must specify all required input files (parameters "\texttt{-f}", "\texttt{-c}", "\texttt{-m}", "\texttt{-t}" and "\texttt{-q}"). Moreover, parameter "\texttt{-y}" is modified:
 
 \begin{bashcode}
   ./sondovac_part_a.sh -n -f input.fa -c referencecp.fasta \
@@ -338,6 +339,115 @@ zlib & 1.2.8 & \href{http://zlib.net/}{http://zlib.net/}
 
 \section{Usage of Sondovač}
 \label{script-usage}
+
+\subsection{Command line parameters}
+
+Sondovač has some parameters useful especially for advanced users, on remote servers, for repeated analysis and so on. We recommend to start with basic interactive usage -- script will ask for input files and when needed also for installation of additional software.
+
+\begin{bashcode}
+  # Go to directory with unpacked Sondovač (in terminal):
+  cd /path/to/directory_with_sondovac
+  # Run sondovac_part_a.sh in basic interactive mode:
+  ./sondovac_part_a.sh -i
+  # Then run Geneious and continue with sondovac_part_b.sh:
+  ./sondovac_part_b.sh -i
+\end{bashcode}
+
+\subsubsection{General parameters}
+
+Shared by \texttt{sondovac$\_$part$\_$a.sh} as well as \texttt{sondovac$\_$part$\_$b.sh}.
+
+\begin{description}
+  \item[\texttt{-h}, \texttt{-v}] Print help message and exit.
+  \item[\texttt{-u}] Check for updates. If there is newer version of Sondovač available on \href{https://github.com/V-Z/sondovac/releases/}{https://github.com/V-Z/sondovac/releases/} download of newer version will be offered to the user.
+  \item[\texttt{-l}] Display LICENSE for license information (this script is licensed under GNU GPL v.3, other software under variable licenses). Exit viewing by pressing the \texttt{Q} key.
+  \item[\texttt{-r}] Display README for detailed usage instructions. Exit viewing by pressing the \texttt{Q} key.
+  \item[\texttt{-p}] Display INSTALL for detailed installation instructions. Exit viewing by pressing the \texttt{Q} key. See also page~\pageref{install}.
+  \item[\texttt{-e}] Display detailed citation information and exit.
+  \item[\texttt{-i}] Running in interactive mode -- script will on-demand ask for required input files, installation of missing software etc. This is recommended default value (the script runs interactively without explicit using option \texttt{-n}).
+  \item[\texttt{-n}] Running in non-interactive mode. User must provide at least required input files (see below). You can use only one of parameters \texttt{-i} or \texttt{-n} (not both of them). If script fails to find some of required software packages, it will exit. This is recommended for batch or repeated analysis, on remote servers and for more advanced users. User must be sure that all required software is installed (see page~\pageref{install}).
+\end{description}
+
+\subsubsection{Input files}
+
+Those parameters are required when running in non-interactive mode. The parameters are optional in default interactive mode. Please, use file names without spaces and without special characters.
+
+\begin{description}
+\item[\texttt{-f FILE}] Transcriptome input file in FASTA format.
+  \begin{itemize}
+    \item \texttt{sondovac$\_$part$\_$a.sh}
+  \end{itemize}
+\item[\texttt{-c FILE}] Plastome reference sequence input file in FASTA format.
+  \begin{itemize}
+    \item \texttt{sondovac$\_$part$\_$a.sh}, \texttt{sondovac$\_$part$\_$b.sh}
+    \item Plastome reference sequences from taxa up to the same order of the studied plant group are suitable. See Straub et al. 2012, \href{http://www.amjbot.org/content/99/2/349.short}{http://www.amjbot.org/content/99/2/349.short}.
+  \end{itemize}
+\item[\texttt{-m FILE}] Mitochondriome reference sequence input file in FASTA format (optional).
+  \begin{itemize}
+    \item \texttt{sondovac$\_$part$\_$a.sh}
+    \item This step is facultative, as plant mitochondrial genomes have largely variable sizes and high rearrangement rates.
+  \end{itemize}
+\item[\texttt{-t FILE}] Paired-end genome skim input file in FASTQ format (first file).
+  \begin{itemize}
+    \item \texttt{sondovac$\_$part$\_$a.sh}
+  \end{itemize}
+\item[\texttt{-q FILE}] Paired-end genome skim input file in FASTQ format (second file).
+  \begin{itemize}
+    \item \texttt{sondovac$\_$part$\_$a.sh}
+  \end{itemize}
+\item[\texttt{-x FILE}] Input file in TSV format (output of Geneious assembly).
+  \begin{itemize}
+    \item \texttt{sondovac$\_$part$\_$b.sh}
+  \end{itemize}
+\item[\texttt{-z FILE}] Input file in FASTA format (output of Geneious assembly).
+  \begin{itemize}
+    \item \texttt{sondovac$\_$part$\_$b.sh}
+  \end{itemize}
+\end{description}
+
+\subsubsection{Optional parameters}
+
+See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for steps referred here. If those parameters are not provided, default values are used and it is not possible to change them any time later (not even in interactive mode).
+
+\begin{description}
+\item[\texttt{-a \#\#\#}] Read length of paired-end genome skim reads (parameter -M of FLASH, see its manual for details).
+  \begin{itemize}
+    \item Step 4 of Sondovač, \texttt{sondovac$\_$part$\_$a.sh}.
+    \item Ensure to use a certain insert size of the genome skim genomic library in combination with an appropriate read length for sequencing in order to enable merging of the paired-end genome skim reads.
+    \item DEFAULT: 250
+    \item OPTIONS: 125, 150, 250, 300
+  \end{itemize}
+\item[\texttt{-y \#\#}] Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details).
+  \begin{itemize}
+    \item Step 5 of Sondovač, \texttt{sondovac$\_$part$\_$a.sh}.
+    \item Consider the trade-off between probe specificity and number of remaining matching sequences for probe design. Sequence similarity is in percent.
+    \item DEFAULT: 85
+    \item OPTIONS: Integer ranging from 70 to 100
+  \end{itemize}
+\item[\texttt{-s \#\#\#\#}] Number of BLAT hits per transcript when matching unique transcripts and the filtered, combined genome skim reads.
+  \begin{itemize}
+    \item Step 6.2 of Sondovač, \texttt{sondovac$\_$part$\_$a.sh}.
+    \item Transcripts with a high number of BLAT hits, indicating repetitive elements, need to be removed from the putative probe sequences.
+    \item DEFAULT: 1000
+    \item OPTIONS: Integer ranging from 100 to 10000
+  \end{itemize}
+\item[\texttt{-b \#\#\#}] Minimum exon (bait) length.
+  \begin{itemize}
+    \item Steps 8 and 10 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
+    \item The minimum exon length should not fall below the bait length in order to facilitate specific binding between genomic libraries and baits during hybridization.
+    \item DEFAULT: 120 (optimal length for phylogeny).
+    \item OPTIONS: Integer ranging from 120 to 200
+  \end{itemize}
+\item[\texttt{-d 0.\#\#}] Sequence similarity between probe sequences (parameter -c of cd-hit-est, see its manual for details).
+  \begin{itemize}
+    \item Step 9 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
+    \item Too similar probe sequences will interact with each other during hybridization and thereby reduce enrichment efficiency.
+    \item DEFAULT: 0.9 (highly recommended).
+    \item OPTIONS: Decimal ranging from 0.85 to 0.95
+  \end{itemize}
+\end{description}
+
+\subsection{Input and output files}
 
 XXX
 

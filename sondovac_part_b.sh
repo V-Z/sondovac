@@ -284,37 +284,37 @@ readinputfile -z "Geneious output file - FASTA" $SEQUENCES
 SEQUENCES=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
-# Sequences converted from FASTA to tabular format
+# Sequences converted from FASTA to tabular format - temporary file - will be deleted
 SEQUENCESTAB="${SEQUENCES%.*}.tab"
-# Assembled sequences in TSV
+# Assembled sequences in TSV - temporary file - will be deleted
 SEQUENCESTABASSE="${SEQUENCES%.*}_assembled.tab"
-# Unassembled sequences in TSV
+# Unassembled sequences in TSV - temporary file - will be deleted
 SEQUENCESTABUNAS="${SEQUENCESTAB%.*}_unassembled.tab"
-# Filtered probes
+# Filtered probes - temporary file - will be deleted
 SEQUENCESPROBES600="${SEQUENCES%.*}_probes_120-600bp.tab"
-# Numbers of usable contigs for joining
+# Numbers of usable contigs for joining - temporary file - will be deleted
 SEQUENCESPROBES600FORJOIN="${SEQUENCESPROBES600%.*}_probes_120-600bp_fin_for_join"
-# All exons ≥120 bp
+# All exons ≥120 bp - temporary file - will be deleted
 SEQUENCESTABASSE120="${SEQUENCES%.*}_120bp_assembled_less_than_1kb_transcript_fin.tab"
-# Sorted exons ≥120 bp
+# Sorted exons ≥120 bp - temporary file - will be deleted
 SEQUENCESTABASSE120SORT="${SEQUENCES%.*}_120bp_assembled_less_than_1kb_transcript_fin_sorted.tab"
-# Exons ≥120 bp and all assemblies making up genes of ≥600 bp
+# Exons ≥120 bp and all assemblies making up genes of ≥600 bp - temporary file - will be deleted
 SEQUENCESPROBES120600FIN="${SEQUENCES%.*}_probes_120-600bp_fin.tab"
-# Temporal files when converting from TAB to FASTA
+# Temporal files when converting from TAB to FASTA - temporary file - will be deleted
 SEQUENCESPROBES120600MODIF="${SEQUENCES%.*}_probes_120-600bp_modified_fin.tab"
 SEQUENCESPROBES120600ASSEM="${SEQUENCES%.*}_probes_120-600bp_assembled_fin.fasta"
 SEQUENCESPROBES120600CONTIG="${SEQUENCES%.*}_probes_120-600bp_contig_fin.fasta"
 # Preliminary probe sequences
 PROBEPRELIM="${SEQUENCES%.*}_prelim_probe_seq.fasta"
-# Sequence similarity checked by CD-HIT
+# Sequence similarity checked by CD-HIT - temporary file - will be deleted
 PROBEPRELIMCDHIT="${SEQUENCES%.*}_similarity_test"
 # Assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
 PROBEPRELIMCDHIT2="${SEQUENCES%.*}_similarity_test2"
-# Extracted assemblies making up genes of ≥600 bp
+# Extracted assemblies making up genes of ≥600 bp - temporary file - will be deleted
 PROBEPRELIMFORJOIN="${SEQUENCES%.*}_similarity_test_assemblies_for_join"
-# Modified and sorted assemblies
+# Modified and sorted assemblies - temporary file - will be deleted
 PROBEPRELIMSORT="${SEQUENCES%.*}_similarity_test_assemblies_sort.tab"
-# All exons ≥120 bp and all assemblies making up genes of ≥600 bp
+# All exons ≥120 bp and all assemblies making up genes of ≥600 bp - temporary file - will be deleted
 PROBEPRELIMFIN="${SEQUENCES%.*}_similarity_test_assemblies_fin.tab"
 # Probes in FASTA
 PROBESEQUENCES="${SEQUENCES%.*}_target_enrichment_probe_sequences.fasta"
