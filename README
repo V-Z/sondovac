@@ -377,15 +377,15 @@ Data can be found under
 * http://www.onekp.com/samples/list.php
 * http://www.onekp.com/samples/single.php?id=JHCN
 
-Information about how to get access to data download is given in Matasci N, Hung 
-L-H, Yan Z, Carpenter EJ, Wickett NJ, Mirarab S, Nguyen N, Warnow T, 
+Information about how to get access to data download is given in Matasci N, 
+Hung L-H, Yan Z, Carpenter EJ, Wickett NJ, Mirarab S, Nguyen N, Warnow T, 
 Ayyampalayam S, Barker M, Burleigh JG, Gitzendanner MA, Wafula E, Der JP, 
 dePamphilis CW, Roure B, Philippe H, Ruhfel BR, Miles NW, Graham SW, Mathews S, 
 Surek B, Melkonian M, Soltis DE, Soltis PS, Rothfels C, Pokorny L, Shaw JA, 
 DeGironimo L, Stevenson DW, Villarreal JC, Chen T, Kutchan TM, Rolf M, Baucom 
-RS, Deyholos MK, Samudrala R, Tian Z, Wu X, Sun X, Zhang Y, Wang J, Leebens-Mack 
-J and Wong G K-S (2014) Data access for the 1,000 Plants (1KP) project. 
-GigaScience 3:17, http://www.gigasciencejournal.com/content/3/1/17/
+RS, Deyholos MK, Samudrala R, Tian Z, Wu X, Sun X, Zhang Y, Wang J, 
+Leebens-Mack J and Wong G K-S (2014) Data access for the 1,000 Plants (1KP) 
+project. GigaScience 3:17, http://www.gigasciencejournal.com/content/3/1/17/
 
 
 License
@@ -428,17 +428,17 @@ Bowtie2:
 CD-HIT:
 * Weizhong Li, Lukasz Jaroszewski and Adam Godzik
   Clustering of highly homologous sequences to reduce the size of large
-  protein databases
+    protein databases
   Bioinformatics (2001) 17:282-283.
   http://bioinformatics.oxfordjournals.org/content/17/3/282.short
 * Weizhong Li, Lukasz Jaroszewski and Adam Godzik
   Tolerating some redundancy significantly speeds up clustering of large
-  protein databases
+    protein databases
   Bioinformatics (2002) 18:77-82
   http://bioinformatics.oxfordjournals.org/content/18/1/77.short
 * Weizhong Li and Adam Godzik
   Cd-hit: a fast program for clustering and comparing large sets of
-  protein or nucleotide sequences
+    protein or nucleotide sequences
   Bioinformatics (2006) 22:1658-1659
   http://bioinformatics.oxfordjournals.org/content/22/13/1658.short
 * Limin Fu, Beifang Niu, Zhengwei Zhu, Sitao Wu and Weizhong Li
@@ -468,11 +468,11 @@ FLASH:
   Bioinformatics (2011) 27(21):2957-2963
   http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract
 Geneious
-* Matthew Kearse, Richard Moir, Amy Wilson, Steven Stones-Havas, Matthew Cheung, 
-  Shane Sturrock, Simon Buxton, Alex Cooper, Sidney Markowitz, Chris Duran, 
-  Tobias Thierer, Bruce Ashton, Peter Meintjes1, and Alexei Drummond
+* Matthew Kearse, Richard Moir, Amy Wilson, Steven Stones-Havas, Matthew 
+    Cheung, Shane Sturrock, Simon Buxton, Alex Cooper, Sidney Markowitz, Chris 
+    Duran, Tobias Thierer, Bruce Ashton, Peter Meintjes1, and Alexei Drummond
   Geneious Basic: An integrated and extendable desktop software platform for 
-  the organization and analysis of sequence data
+    the organization and analysis of sequence data
   Bioinformatics (2012) 28(12):1647-1649
   http://bioinformatics.oxfordjournals.org/content/28/12/1647
 Picard:
