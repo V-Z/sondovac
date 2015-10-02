@@ -526,28 +526,28 @@ Files 1-9 are not necessary for further processing by this pipeline, but may be 
 
 \begin{enumerate}
   \item \texttt{*$\_$prelim$\_$probe$\_$seq.fasta} -- Preliminary probe sequences.
-  \item \texttt{*$\_$similarity$\_$test2} -- Contigs that comprise exons $\geq$ bait length and have a certain total locus length (in the Oxalis case $\geq$600 bp).
+  \item \texttt{*$\_$similarity$\_$test2} -- Contigs that comprise exons $\geq$ bait length and have a certain total locus length (in the \textit{Oxalis} case $\geq$600 bp).
   \item \texttt{*$\_$target$\_$enrichment$\_$probe$\_$sequences.fasta} -- Probes in FASTA.
   \item \textbf{\texttt{*.target$\_$enrichment$\_$probe$\_$sequences$\_$final.pslx} -- Final probes ready for bait synthesis.}
 \end{enumerate}
 
 \section{Sample data}
 
-Together with the script, we provide the ZIP archive (1.8 GB) that contains exemplary input files for running the script: Oxalis transcriptome and genome skim data as well as the Ricinus cpDNA and mtDNA reference sequences. See \href{https://github.com/V-Z/sondovac/wiki/Sample-data}{https://github.com/V-Z/sondovac/wiki/Sample-data} for download of sample data.
+Together with the script, we provide the ZIP archive (1.8 GB) that contains exemplary input files for running the script: \textit{Oxalis} genome skim data as well as the \textit{Ricinus} cpDNA and mtDNA reference sequences. See \href{https://github.com/V-Z/sondovac/wiki/Sample-data}{https://github.com/V-Z/sondovac/wiki/Sample-data} for download of sample data.
 
 The package contains:
 
 \begin{enumerate}
-  \item \texttt{input2$\_$Ricinus$\_$communis$\_$reference$\_$plastid$\_$genome.fsa} -- cpDNA reference (parameter -c), GeneBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/372450118/}{NC$\_$016736}
-  \item \texttt{input3$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R1.fastq} -- paired-end genome skim data, file 1 (parameter -t)
-  \item \texttt{input4$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R2.fastq} -- paired-end genome skim data, file 2 (parameter -q)
-  \item \texttt{input5$\_$Ricinus$\_$communis$\_$reference$\_$mitochondrial$\_$genome.fasta} -- mtDNA reference (parameter -m), GeneBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/323649872/}{NC$\_$015141}
+  \item \texttt{input2$\_$Ricinus$\_$communis$\_$reference$\_$plastid$\_$genome.fsa} -- cpDNA reference (parameter \texttt{-c}), GenBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/372450118/}{NC$\_$016736}
+  \item \texttt{input3$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R1.fastq} -- paired-end genome skim data, file 1 (parameter \texttt{-t})
+  \item \texttt{input4$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R2.fastq} -- paired-end genome skim data, file 2 (parameter \texttt{-q})
+  \item \texttt{input5$\_$Ricinus$\_$communis$\_$reference$\_$mitochondrial$\_$genome.fasta} -- mtDNA reference (parameter \texttt{-m}), GenBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/323649872/}{NC$\_$015141}
 \end{enumerate}
 
-The transcriptome input file is unpublished data from G. K.-S. Wong et al.
+The transcriptome input file is unpublished data from G. K.-S. Wong et al. (hopefully it will be published soon).
 
 \begin{enumerate}
- \item \texttt{input1$\_$JHCN$\_$Oxalis$\_$corniculata$\_$transcriptome$\_$data.fa} -- transcriptome data (parameter -f)
+ \item \texttt{input1$\_$JHCN$\_$Oxalis$\_$corniculata$\_$transcriptome$\_$data.fa} -- transcriptome data (parameter \texttt{-f})
 \end{enumerate}
 
 Data can be found under
@@ -558,7 +558,9 @@ Data can be found under
   \item \href{http://www.onekp.com/samples/single.php?id=JHCN}{http://www.onekp.com/samples/single.php?id=JHCN}
 \end{itemize}
 
-Information about how to get access to data download is given in \citet{Matasci2014}, \href{http://www.gigasciencejournal.com/content/3/1/17/}{http://www.gigasciencejournal.com/content/3/1/17/}
+The transcriptome FASTA file used for the probe design is named JHCN-SOAPdenovo-Trans-assembly.dnas.out and can be found under JHCN/Assembly/JHCN-SOAPdenovo-Trans-translated/. Information about how to get access to data download is given in \citet{Matasci2014}, \href{http://www.gigasciencejournal.com/content/3/1/17/}{http://www.gigasciencejournal.com/content/3/1/17/}.
+
+Explanation of command line parameters is at page~\pageref{script-usage}.
 
 \section{Questions not covered here, reporting bugs and wishes}
 
@@ -583,6 +585,10 @@ FASTX & GNU Affero GPL & \href{https://gnu.org/licenses/agpl.html}{https://gnu.o
 \end{tabular}
 \label{software-lic}
 \end{table}
+
+\begingroup
+\fontsize{7pt}{8pt}
+\selectfont
 
 \subsection{GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007}
 
@@ -1174,6 +1180,8 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED “AS IS“, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+\endgroup
 
 % Reference list
 % Package natbib, style apalike: \cite{} as well as \citet{} > Author (year); \citep{} > (Author, year)

@@ -352,22 +352,23 @@ Sample data
 ================================================================================
 
 Together with the script, we provide the ZIP archive (1.8 GB) that contains 
-exemplary input files for running the script: Oxalis transcriptome and genome 
-skim data as well as the Ricinus cpDNA and mtDNA reference sequences. See 
+exemplary input files for running the script: Oxalis genome skim data as well 
+as the Ricinus cpDNA and mtDNA reference sequences. See 
 https://github.com/V-Z/sondovac/wiki/Sample-data for download of sample data.
 
 The package contains:
 
 1) input2_Ricinus_communis_reference_plastid_genome.fsa - cpDNA reference 
-   (parameter -c), GeneBank reference number NC_016736
+   (parameter -c), GenBank reference number NC_016736
 2) input3_J12_Oxalis_obtusa_J12_genome_skim_data_R1.fastq - paired-end genome 
    skim data, file 1 (parameter -t)
 3) input4_J12_Oxalis_obtusa_J12_genome_skim_data_R2.fastq - paired-end genome 
    skim data, file 2 (parameter -q)
 4) input5_Ricinus_communis_reference_mitochondrial_genome.fasta - mtDNA 
-   reference (parameter -m), GeneBank reference number NC_015141
+   reference (parameter -m), GenBank reference number NC_015141
 
-The transcriptome input file is unpublished data from G. K.-S. Wong et al.
+The transcriptome input file is unpublished data from G. K.-S. Wong et al. 
+(hopefully it will be published soon).
 
 1) input1_JHCN_Oxalis_corniculata_transcriptome_data.fa - transcriptome data 
    (parameter -f)
