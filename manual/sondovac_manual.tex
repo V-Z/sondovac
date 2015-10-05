@@ -89,7 +89,7 @@ Sondovač workflow is divided into three parts (see details at page~\pageref{pip
 
 \begin{enumerate}
 \item Raw input data are analyzed by \texttt{sondovac$\_$part$\_$a.sh}.
-\item Obtained sequences are assembled by Geneious.
+\item Obtained sequences are assembled by Geneious manually by user.
 \item Final probes are produced by \texttt{sondovac$\_$part$\_$b.sh}.
 \end{enumerate}
 
@@ -156,9 +156,11 @@ Sondovač is currently tested on the Linux distributions Ubuntu and openSUSE. Te
 
 In order to run Sondovač you need a UNIX-based operating system (preferably Linux or Mac OS X) equipped with BASH or compatible shell interpreter (this should be by default available for any Linux distribution, Mac OS X and any other UNIX-based operating system like Solaris, BSD and its variants etc). You should use the current operating system version supported by upstream. Otherwise we will not be able to help you in case of problems. Older operating systems can have different versions of shell and system libraries, which can cause various problems and incompatibilities.
 
-Sondovač is using several scientific software packages (namely bam2fastq, BLAT, Bowtie2, CD-HIT, FASTX toolkit, FLASH, htsjdk, libgtextutils, Picard and SAMtools -- see required versions and links, Table~\ref{software-links}), and basic UNIX tools. Sondovač will check if those programs are installed -- available in the PATH (i.e. if the shell application can locate and launch respective binaries). If you have those packages installed (in current versions), ensure their binaries are in PATH. This should not be a problem for basic tools available in any UNIX-based operating system, as basic installation usually contains all needed tools. If you are lacking some of the required tools, the script will notify you, and you will have to install them manually. If this will be needed, check the documentation for your operating system.
+Sondovač is using several scientific software packages (namely bam2fastq, BLAT, Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, Picard and SAMtools -- see required versions and links, Table~\ref{software-links}), and basic UNIX tools. Sondovač will check if those programs are installed -- available in the PATH (i.e. if the shell application can locate and launch respective binaries). If you have those packages installed (in current versions), ensure their binaries are in PATH. This should not be a problem for basic tools available in any UNIX-based operating system, as basic installation usually contains all needed tools. If you are lacking some of the required tools, the script will notify you, and you will have to install them manually. If this will be needed, check the documentation for your operating system.
 
 If required scientific programs are not installed, Sondovač will offer you installation. You can use precompiled binaries available together with the script or (sometimes) from the web. This is the recommended way. In case you would like to compile required software yourselves, the script will guide you through this process. Anyway, it is recommended only for advanced users, as compilation might sometimes be very tricky. It is currently fully implemented only for the Linux distributions Ubuntu and openSUSE. Support for other Linux distributions and Mac OS X will be added soon. For compilation you need Apache Ant, GNU G++, GNU GCC, GIT, Java, libpng developmental files and zlib developmental files. Ensure you have those tools available -- they should be readily available for any UNIX-based operating system.
+
+Following UNIX tools are required to run Sondovač. They are usually readily available in Mac OS X, any Linux distribution or another UNIX system, so there is usually no need to install them manually. The tools are \texttt{awk}, \texttt{bc}, \texttt{bunzip2}, \texttt{cat}, \texttt{cp}, \texttt{curl}, \texttt{cut}, \texttt{dirname}, \texttt{echo}, \texttt{egrep}, \texttt{cd}, \texttt{g++}, \texttt{gcc}, \texttt{grep}, \texttt{gunzip}, \texttt{join}, \texttt{less}, \texttt{lsb$\_$release}, \texttt{make}, \texttt{mkdir}, \texttt{perl}, \texttt{pkg-config}, \texttt{pwd}, \texttt{sed}, \texttt{sort}, \texttt{tar}, \texttt{tr}, \texttt{uname}, \texttt{uniq}, \texttt{unzip}, \texttt{wc}. Not all tools are required every time -- some are used only during particular actions (e.g. when user decide to compile required software manually). And user usually do not need to bother about them. See also details in following subchapters for some common Linux distributions and Mac OS X.
 
 \subsection{Installation of required software in Linux}
 
@@ -272,9 +274,7 @@ If you are not familiar with the usage of command line, see some basic tutorial 
 \subsection{Geneious}
 \label{geneious}
 
-For the part (2) user must have Geneious \citep{Meintjes2012}. Geneious is a DNA alignment, assembly, and analysis software and one of the most common software platforms used in genomics. It is utilized for de novo assembly in Sondovač. We plan to replace it by some free open-source command line tool in some future release of Sondovač. Visit \href{http://www.geneious.com/}{http://www.geneious.com/} for download, purchase, installation and usage of Geneious. It is very feature-rich application.
-
-Geneious was tested with versions 6, 7 and 8.
+For the part (2) user must have Geneious \citep{Meintjes2012}. Geneious is a DNA alignment, assembly, and analysis software and one of the most common software platforms used in genomics. It is utilized for de novo assembly in Sondovač. We plan to replace it by some free open-source command line tool in some future release of Sondovač. Visit \href{http://www.geneious.com/}{http://www.geneious.com/} for download, purchase, installation and usage of Geneious. It is very feature-rich application. The input data are processed (interactively or not) by \texttt{sondovac$\_$part$\_$a.sh} and then user must process its output manually by Geneious according instructions below. Output of Geneious is then processed by \texttt{sondovac$\_$part$\_$b.sh}, which produce final probe set. Geneious was tested with versions 6, 7 and 8.
 
 Import output file of part A of the script (\texttt{sondovac$\_$part$\_$a.sh}): go to menu \textbf{File | Import | From File\ldots} This file is named as:\\YourInputFile$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa
 
@@ -317,6 +317,24 @@ zlib & 1.2.8 & \href{http://zlib.net/}{http://zlib.net/}
 \end{tabular}
 \label{software-links}
 \end{table}
+
+\texttt{sondovac$\_$part$\_$a.sh} requires (and will install) following software packages:
+
+\begin{itemize}
+  \item BLAT
+  \item Bowtie2
+  \item SAMtools
+  \item bam2fastq (will be replaced by Picard in future release)
+  \item FLASH
+  \item FASTX-toolkit
+\end{itemize}
+
+\texttt{sondovac$\_$part$\_$b.sh} requires (and will install) following software packages:
+
+\begin{itemize}
+  \item CD-HIT
+  \item BLAT
+\end{itemize}
 
 \begin{description}
  \item[BLAT] \citet{Kent2002}: BLAT -- the BLAST-like alignment tool, \href{http://genome.cshlp.org/content/12/4/656.short}{http://genome.cshlp.org/content/12/4/656.short}

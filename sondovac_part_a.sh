@@ -863,7 +863,13 @@ join -j1 $UNIQUELIST $SORTEDINPUT > $JOINEDTS || { echo && echo "${BOLD}Error!${
 # Convert to FASTA
 echo
 echo "Converting to FASTA"
-sed -r 's/ /\t/g' $JOINEDTS > $JOINEDTABS || { echo && echo "${BOLD}Error!${NORM} Conversion of $JOINEDTS to FASTA failed. Aborting. Check file $JOINEDTS." && echo && exit 1; }
+
+if [ "$OS" == "Mac" ]; then
+  sed -E 's/ /\t/g' $JOINEDTS > $JOINEDTABS || { echo && echo "${BOLD}Error!${NORM} Conversion of $JOINEDTS to FASTA failed. Aborting. Check file $JOINEDTS." && echo && exit 1; }
+  else
+    sed -r 's/ /\t/g' $JOINEDTS > $JOINEDTABS || { echo && echo "${BOLD}Error!${NORM} Conversion of $JOINEDTS to FASTA failed. Aborting. Check file $JOINEDTS." && echo && exit 1; }
+  fi;
+
 echo
 awk '{print ">"$1"\n"$2}' $JOINEDTABS > $JOINEDFA || { echo && echo "${BOLD}Error!${NORM} Conversion of $JOINEDTS to FASTA failed. Aborting. Check file $JOINEDTABS." && echo && exit 1; }
 echo "Joined transcripts written in FASTA format as $JOINEDFA for possible later usage"

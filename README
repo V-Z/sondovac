@@ -100,8 +100,8 @@ Requirements to run Sondovač
 --------------------------------------------------------------------------------
 
 Sondovač is using several scientific software packages (namely bam2fastq, BLAT, 
-Bowtie2, CD-HIT, FASTX toolkit, FLASH, htsjdk, libgtextutils, Picard and 
-SAMtools - see required versions and links below), and basic UNIX tools. 
+Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, Picard 
+and SAMtools - see required versions and links below), and basic UNIX tools. 
 Sondovač will check if those programs are installed - available in the PATH 
 (i.e. if the shell application can locate and launch respective binaries). If 
 you have those packages installed (in current versions), ensure their binaries 
@@ -123,6 +123,25 @@ Ant, GNU G++, GNU GCC, GIT, Java, libpng developmental files and zlib
 developmental files. Ensure you have those tools available - they should be 
 readily available for any UNIX-based operating system.
 
+Following UNIX tools are required to run Sondovač. They are usually readily 
+available in Mac OS X, any Linux distribution or another UNIX system, so there 
+is usually no need to install them manually. The tools are awk, bc, bunzip2, 
+cat, cp, curl, cut, dirname, echo, egrep, cd, g++, gcc, grep, gunzip, join, 
+less, lsb_release, make, mkdir, perl, pkg-config, pwd, sed, sort, tar, tr, 
+uname, uniq, unzip, wc. See also details in PDF manual.
+
+sondovac_part_a.sh requires (and will install) following software packages:
+* BLAT
+* Bowtie2
+* SAMtools
+* bam2fastq (will be replaced by Picard in future release)
+* FLASH
+* FASTX-toolkit
+
+sondovac_part_b.sh requires (and will install) following software packages:
+* CD-HIT
+* BLAT
+
 Geneious
 --------------------------------------------------------------------------------
 
@@ -130,9 +149,11 @@ Geneious is a DNA alignment, assembly, and analysis software and one of the
 most common software platforms used in genomics. It is utilized for de novo 
 assembly in Sondovač. We plan to replace it by some free open-source command 
 line tool in some future release of Sondovač. Visit http://www.geneious.com/ 
-for download, purchase, installation and usage of Geneious.
-
-Geneious was tested with versions 6, 7 and 8.
+for download, purchase, installation and usage of Geneious.  The input data 
+are processed (interactively or not) by sondovac_part_a.sh and then user must 
+process its output manually by Geneious according instructions below. Output 
+of Geneious is then processed by sondovac_part_b.sh, which produce final probe 
+set. Geneious was tested with versions 6, 7 and 8.
 
 Import output file of part A of the script (sondovac_part_a.sh): go to menu 
 File | Import | From File... This file is named as:

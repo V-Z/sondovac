@@ -3,7 +3,6 @@ gcc
 g++
 cpp
 make
-checkinstall
 libpng++-dev
 libpng12-dev
 zlib1g-dev

@@ -18,8 +18,8 @@ systems can have different versions of shell and system libraries, which can
 cause various problems and incompatibilities.
 
 Sondovač is using several scientific software packages (namely bam2fastq, BLAT, 
-Bowtie2, CD-HIT, FASTX toolkit, FLASH, htsjdk, libgtextutils, Picard and 
-SAMtools - see required versions and links below), and basic UNIX tools. 
+Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, Picard 
+and SAMtools - see required versions and links below), and basic UNIX tools. 
 Sondovač will check if those programs are installed - available in the PATH 
 (i.e. if the shell application can locate and launch respective binaries). If 
 you have those packages installed (in current versions), ensure their binaries 
@@ -40,6 +40,27 @@ distributions and Mac OS X will be added soon. For compilation you need Apache
 Ant, GNU G++, GNU GCC, GIT, Java, libpng developmental files and zlib 
 developmental files. Ensure you have those tools available - they should be 
 readily available for any UNIX-based operating system.
+
+sondovac_part_a.sh requires (and will install) following software packages:
+* BLAT
+* Bowtie2
+* SAMtools
+* bam2fastq (will be replaced by Picard in future release)
+* FLASH
+* FASTX-toolkit
+
+sondovac_part_b.sh requires (and will install) following software packages:
+* CD-HIT
+* BLAT
+
+Geneious is required for step of the pipeline. See below and README for details.
+
+Following UNIX tools are required to run Sondovač. They are usually readily 
+available in Mac OS X, any Linux distribution or another UNIX system, so there 
+is usually no need to install them manually. The tools are awk, bc, bunzip2, 
+cat, cp, curl, cut, dirname, echo, egrep, cd, g++, gcc, grep, gunzip, join, 
+less, lsb_release, make, mkdir, perl, pkg-config, pwd, sed, sort, tar, tr, 
+uname, uniq, unzip, wc. See also details in PDF manual.
 
 
 First launch of Sondovač
@@ -117,7 +138,7 @@ Geneious
 
 Sondovač workflow is divided into three parts (see README for details):
 1) Raw input data are analyzed by sondovac_part_a.sh.
-2) Obtained sequences are assembled by Geneious.
+2) Obtained sequences are assembled by Geneious manually by user.
 3) Final probes are produced by sondovac_part_b.sh.
 
 For the part (2) user must have Geneious. We plan to replace it by some free 

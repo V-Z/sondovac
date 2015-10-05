@@ -499,7 +499,7 @@ echo "Joining all exons ≥120 bp and all assemblies making up genes of ≥600 b
 join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT > $PROBEPRELIMFIN
 echo
 # Convert TAB to FASTA
-ECHO "Converting TAB to FASTA"
+echo "Converting TAB to FASTA"
 sed s/' C'/_/ $PROBEPRELIMFIN | sed s/ontig/Contig/ | sed s/^/'>'/ | sed s/' '/\\n/ > $PROBESEQUENCES
 echo
 # Calculating of the total number of base pairs
