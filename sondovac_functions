@@ -81,7 +81,6 @@ function confirmgo {
 
 # This version is not yet ready for daily usage...
 function devrelease {
-    if [ "$STARTINI" == "I" ]; then
     echo
     echo "${BOLD}Warning!${NORM} This is developmental, not fully tested version."
     echo "You may encounter problems and some functions are still missing"
@@ -89,23 +88,18 @@ function devrelease {
     echo "Some functions for smoother and more comfortable user experience are missing."
     echo "Please, report any issues and/or wishes to zeisek@natur.cuni.cz."
     echo "We hope you enjoy the script, but, please, do not expect too much now. ;-)"
-    confirmgo
-    else
-      echo "${BOLD}Warning!${NORM} This is developmental, not fully tested version."
-      echo "You may encounter problems and some functions are still missing"
-      echo "Namely, support for Mac OS X and some major Linux distributions is not finished."
-      echo "Some functions for smoother and more comfortable user experience are missing."
-      echo "Please, report any issues and/or wishes to zeisek@natur.cuni.cz."
-      echo "We hope you enjoy the script, but, please, do not expect too much now. ;-)"
-    fi
+    if [ "$STARTINI" == "I" ]; then
+      confirmgo
+      fi
   }
 
 # Check availability of basic UNIX binaries
 function checktools {
   { command -v $1 >/dev/null 2>&1 && echo "Command \"$1\" is available. OK."; } || {
-    echo "Error! Command\"$1\" is required but not installed! Aborting."
+    echo "${BOLD}Error!${NORM} Command\"$1\" is required but not installed! Aborting."
     echo "Please, install \"$1\" and ensure it is in PATH."
     echo "It should be readily available for any UNIX-based system (Linux, Mac OS X, BSD, ...)."
+    echo "See manual for more information"
     echo
     exit 1
     }
@@ -178,9 +172,9 @@ function licenser {
   checktools less
   less $SCRIPTDIR/LICENSE || {
     echo
-    echo "Error! Can not display file $SCRIPTDIR/LICENSE!"
-    echo "Is your installation correct? See https://www.gnu.org/licenses/gpl.html for GNU"
-    echo "GPL v.3 and $WEB to ensure you have all needed files."
+    echo "${BOLD}Error!${NORM} Can not display file $SCRIPTDIR/LICENSE!"
+    echo "Is your installation correct? See https://www.gnu.org/licenses/gpl.html for"
+    echo "GNU GPL v.3 and $WEB to ensure you have all needed files."
     echo
     exit 1
     }
@@ -193,7 +187,7 @@ function readmeview {
   checktools less
   less $SCRIPTDIR/README || {
     echo
-    echo "Error! Can not display file $SCRIPTDIR/README!"
+    echo "${BOLD}Error!${NORM} Can not display file $SCRIPTDIR/README!"
     echo "Is your installation correct?"
     echo "See $WEB to ensure you have all needed files."
     echo
@@ -208,7 +202,7 @@ function installview {
   checktools less
   less $SCRIPTDIR/INSTALL || {
     echo
-    echo "Error! Can not display file $SCRIPTDIR/INSTALL!"
+    echo "${BOLD}Error!${NORM} Can not display file $SCRIPTDIR/INSTALL!"
     echo "Is your installation correct?"
     echo "See $WEB to ensure you have all needed files."
     echo
@@ -282,11 +276,11 @@ function citationreference {
   echo "  Bioinformatics (2011) 27(21):2957-2963"
   echo "  http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract"
   echo "Geneious"
-  echo "* Matthew Kearse, Richard Moir, Amy Wilson, Steven Stones-Havas, Matthew Cheung,"
-  echo "  Shane Sturrock, Simon Buxton, Alex Cooper, Sidney Markowitz, Chris Duran,"
-  echo "  Tobias Thierer, Bruce Ashton, Peter Meintjes1, and Alexei Drummond"
+  echo "* Matthew Kearse, Richard Moir, Amy Wilson, Steven Stones-Havas, Matthew"
+  echo "    Cheung, Shane Sturrock, Simon Buxton, Alex Cooper, Sidney Markowitz, Chris"
+  echo "    Duran, Tobias Thierer, Bruce Ashton, Peter Meintjes1, and Alexei Drummond"
   echo "  Geneious Basic: An integrated and extendable desktop software platform for"
-  echo "  the organization and analysis of sequence data"
+  echo "    the organization and analysis of sequence data"
   echo "  Bioinformatics (2012) 28(12):1647-1649"
   echo "  http://bioinformatics.oxfordjournals.org/content/28/12/1647"
   echo "Picard:"
@@ -322,7 +316,7 @@ function oscheck {
     echo
     echo "Command \"uname\" is not available on the system, is not in the PATH or the user"
     echo "does not have permission to use it, so that operating system is not detectable."
-    echo "Assuming Linux."
+    echo "${BOLD}Assuming Linux.${NORM}"
     echo "If this is not correct, you may experience problems during installation of"
     echo "required software. If so, please, install required dependencies manually."
     echo "See INSTALL for more details."
@@ -340,10 +334,10 @@ function oscheck {
       SOLARIS|Solaris|solaris|SUN*|Sun|sun*) OS="Solaris";;
       *) echo
 	  echo "OS other than Linux, Mac OS X, BSD, Solaris or Windows or undetectable OS."
-	  echo "Assuming Linux."
+	  echo "${BOLD}Assuming Linux.${NORM}"
 	  echo "If this is not correct, you may experience problems during installation"
 	  echo "of needed software. If so, please, install required dependencies manually."
-	  echo "See INSTALL for more details."
+	  echo "See INSTALL or manual for more details."
 	  OS="Linux"
 	  confirmgo
 	  ;;
@@ -356,7 +350,7 @@ function oscheck {
     echo "${BOLD}Warning!${NORM} Running this pipeline on Windows (native or any emulation)"
     echo "is not supported, although it may be possible."
     echo "We are not able to guarantee the pipeline to work."
-    echo "See INSTALL for more details."
+    echo "See INSTALL or manual for more details."
     echo "We wish you good luck. :-)"
     confirmgo
     fi
@@ -367,7 +361,7 @@ function oscheck {
     echo "${BOLD}Warning!${NORM} Running this pipeline on any BSD or Solaris was not tested,"
     echo "although it is supposed to work."
     echo "We are not able to guarantee the pipeline to work."
-    echo "See INSTALL for more details."
+    echo "See INSTALL or manual for more details."
     echo "We wish you good luck. :-)"
     confirmgo
     fi
@@ -376,10 +370,10 @@ function oscheck {
     echo
     echo "Command \"uname\" is not available on the system, is not in the PATH or the user"
     echo "does not have permission to use it, so that type of the CPU is not detectable."
-    echo "Assuming 64 bit CPU."
+    echo "${BOLD}Assuming 64 bit CPU.${NORM}"
     echo "If this is not correct, you may experience problems during installation"
     echo "of needed software. If so, please, install required dependencies manually."
-    echo "See INSTALL for more details."
+    echo "See INSTALL or manual for more details."
     OSB="64b"
     confirmgo; }
 
@@ -389,10 +383,10 @@ function oscheck {
       *x86_64*|*ia64*) OSB="64b";;
       *i386*|*i486*|*i586*|*i686*) OSB="32b";;
       *) echo "OS other than 64 or 32 bit or undetectable OS details."
-	  echo "Assuming 64 bit."
+	  echo "${BOLD}Assuming 64 bit.${NORM}"
 	  echo "If this is not correct, you may experience problems during installation"
 	  echo "of needed software. If so, please, install required dependencies manually."
-	  echo "See INSTALL for more details."
+	  echo "See INSTALL or manual for more details."
 	  OSB="64b"
 	  confirmgo
 	  ;;
@@ -427,9 +421,9 @@ function oscheck {
 	      fi
 	    done < $SCRIPTDIR/pkgs/packages-suse || {
 	      echo
-	      echo "Error! Can not check installed packages. Ensure following packages are installed:"
+	      echo "${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
 	      cat $SCRIPTDIR/pkgs/packages-suse || {
-		echo "Error! Can not find file $SCRIPTDIR/pkgs/packages-suse"
+		echo "${BOLD}Error!${NORM} Can not find file $SCRIPTDIR/pkgs/packages-suse"
 		echo "Go to $WEB and verify if your installation is correct."
 		echo
 		exit 1
@@ -467,7 +461,7 @@ function oscheck {
 	      esac
 	    done
 	    else
-	      echo "Packages reguired for compilation are installed. OK."
+	      echo "Packages required for compilation are installed. OK."
 	    fi
 	  ;;
 	*[Uu]buntu*)
@@ -483,9 +477,9 @@ function oscheck {
 	      fi
 	    done < $SCRIPTDIR/pkgs/packages-ubuntu || {
 	      echo
-	      echo "Error! Can not check installed packages. Ensure following packages are installed:"
+	      echo "${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
 	      cat $SCRIPTDIR/pkgs/packages-ubuntu || {
-		echo "Error! Can not find file $SCRIPTDIR/pkgs/packages-ubuntu"
+		echo "${BOLD}Error!${NORM} Can not find file $SCRIPTDIR/pkgs/packages-ubuntu"
 		echo "Go to $WEB and verify if your installation is correct."
 		echo
 		exit 1
@@ -502,31 +496,42 @@ function oscheck {
 		echo "Repository \"universe\" is required as source for some packages,"
 		echo "but it is not available. Adding it requires administrative privileges."
 		echo "Would you like to add it now? (Yes/No)"
-		read UNIVERSE
-		while :
-		do
-		  case "$UNIVERSE" in
-		    Y|y|YES|Yes|yes)
-		      echo "Adding universe repository..."
-		      { { sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe" && sudo apt-get update; } || { su -c 'add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe"' && su -c 'apt-get update'; }; } || {
-			echo
-			echo "Adding of repository \"deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe\""
-			echo "failed. If packages from it are required for compilation, add this repository manually."
-			echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
-			confirmgo; }
-		      break
-		      ;;
-		    N|n|NO|No|no)
-		      echo
-		      echo "You may need some packages from this repository."
-		      echo "We recommend to add repository \"deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) universe\""
-		      echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
-		      confirmgo
-		      break
-		      ;;
-		    *) echo "Wrong option. Use Y or N." && read UNIVERSE;;
-		  esac
-		done
+		UBUNTUV=`lsb_release -sc` || UBUNTUV="YourUbuntuVersion"
+		if [ "$UBUNTUV" == "YourUbuntuVersion" ]; then
+		  echo
+		  echo "Warning! Unable to detect version of your Ubuntu installation."
+		  echo "Probably because command \"lsb_release -sc\" is missing, unavailable for user or"
+		  echo "not in PATH. You may need some packages from \"universe\" repository. in case"
+		  echo "you will need or wish to compile of some software."
+		  echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
+		  confirmgo
+		  else
+		    read UNIVERSE
+		    while :
+		    do
+		      case "$UNIVERSE" in
+			Y|y|YES|Yes|yes)
+			  echo "Adding universe repository..."
+			  { { sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe" && sudo apt-get update; } || { su -c 'add-apt-repository "deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe"' && su -c 'apt-get update'; }; } || {
+			    echo
+			    echo "Adding of repository \"deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe\""
+			    echo "failed. If packages from it are required for compilation, add this repository manually."
+			    echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
+			    confirmgo; }
+			  break
+			  ;;
+			N|n|NO|No|no)
+			  echo
+			  echo "You may need some packages from this repository."
+			  echo "We recommend to add repository \"deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe\""
+			  echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
+			  confirmgo
+			  break
+			  ;;
+			*) echo "Wrong option. Use Y or N." && read UNIVERSE;;
+		      esac
+		    done
+		    fi
 		fi
 	      # Install missing packages
 	      echo "Packages \"$PACKAGES\" are missing."
@@ -542,7 +547,7 @@ function oscheck {
 		      echo
 		      echo "Installation of packages \"$PACKAGES\" failed."
 		      echo "Those packages may be required to install software used by Sondovač."
-		      echo "If so, install those packages manually. See INSTALL for details."
+		      echo "If so, install those packages manually. See INSTALL or manual for details."
 		      confirmgo; }
 		    break
 		    ;;
@@ -550,7 +555,7 @@ function oscheck {
 		    echo
 		    echo "You may need packages \"$PACKAGES\""
 		    echo "If compilation of some software required for the pipeline fails,"
-		    echo "install them manually. See INSTALL for details. See also"
+		    echo "install them manually. See INSTALL or manual for details. See also"
 		    echo "https://help.ubuntu.com/community/CompilingEasyHowTo"
 		    confirmgo
 		    break
@@ -566,10 +571,10 @@ function oscheck {
 	*) echo
 	    echo "Currently, only openSUSE and Ubuntu are supported. Support for another"
 	    echo "major Linux distributions is under development. For some steps you may"
-	    echo "need compilation tools (see INSTALL for details)."
+	    echo "need compilation tools (see INSTALL or manual for details)."
 # 	    echo "Unknown Linux distribution, probably not openSUSE, SUSE, RedHat, Fedora,"
 # 	    echo "Centos, Scientific, Debian, Ubuntu, Linux Mint or derivatives. For some"
-# 	    echo "steps you may need compilation tools (see INSTALL for details)."
+# 	    echo "steps you may need compilation tools (see INSTALL or manual for details)."
 	    echo "Ensure you have those tools available."
 	    confirmgo
 	    break
@@ -584,6 +589,7 @@ function oscheck {
 function workdirpath {
   # Check if there is bin directory, if not, create it
   checktools pwd
+  checktools mkdir
   WORKDIR=`pwd`
   mkdir -p $WORKDIR/bin/bin || {
     echo
@@ -612,29 +618,33 @@ function compileblat {
   checktools unzip &&
   checktools make &&
   checktools gcc &&
+  checktools cp &&
   echo "Downloading BLAT source code" &&
   if [ -z $MACHTYPE ]; then
     echo
-    echo "Error! Variable \$MACHTYPE required by BLAT is missing."
+    echo "${BOLD}Error!${NORM} Variable \$MACHTYPE required by BLAT is missing."
     echo "Trying to create it. If it fails, create global variable \$MACHTYPE manually, download binary or compile it on another comparable machine."
     MACHTYPE=$HOME/bin/$OSB
     else
       echo
       echo "BLAT binaries will be available in $HOME/bin/$MACHTYPE and $BIN (consider adding them into the PATH)."
+      confirmgo
     fi &&
   echo &&
   curl -o blatSrc.zip https://users.soe.ucsc.edu/~kent/src/blatSrc.zip &&
   unzip -nq blatSrc.zip &&
   cd blatSrc &&
-  { mkdir -p $HOME/bin/$MACHTYPE || { echo && echo "Error! Can not create directory \"$HOME/bin/$MACHTYPE\" required by BLAT. Aborting." && echo && exit 1; }; } &&
+  { mkdir -p $HOME/bin/$MACHTYPE || { echo && echo "${BOLD}Error!${NORM} Can not create directory \"$HOME/bin/$MACHTYPE\" required by BLAT. Aborting." && echo && exit 1; }; } &&
   PATH=$PATH:$HOME/bin/$MACHTYPE &&
-  { mkdir -p lib/$MACHTYPE || { echo && echo "Error! Can not create directory \"$(pwd)/lib/$MACHTYPE\" required by BLAT. Aborting." && echo && exit 1; }; } &&
+  { mkdir -p lib/$MACHTYPE || { echo && echo "${BOLD}Error!${NORM} Can not create directory \"$(pwd)/lib/$MACHTYPE\" required by BLAT. Aborting." && echo && exit 1; }; } &&
   echo "Compiling BLAT from source code" &&
   make -s &&
   cd $WORKDIR &&
   cp -p $HOME/bin/$MACHTYPE/* $BIN/ &&
   echo "\"BLAT\" is available. OK"
-  } || { echo "Compilation failed. Please go to https://users.soe.ucsc.edu/~kent/src/, download latest blatSrc*.zip, compile it and ensure it is in PATH" && exit 1; }
+  } || { echo "Compilation failed. Please go to https://users.soe.ucsc.edu/~kent/src/"
+    echo "download latest blatSrc*.zip, compile it and ensure it is in PATH"
+    exit 1; }
   }
 
 # Check if BLAT is available
@@ -644,9 +654,16 @@ function checkblat {
     echo "BLAT is required but not installed or available in PATH."
     echo
     if [ "$STARTINI" == "I" ]; then
-      echo "Type \"S\" to compile BLAT from source available on https://users.soe.ucsc.edu/~kent/src/ (BLAT license does not allow redistributions; required if BLAT is not available for your system). Together with standard compilation tools BLAT requires libpng developmental files."
-      echo "Type \"D\" to download BLAT from http://hgdownload.cse.ucsc.edu/admin/exe/ automatically for your OS (BLAT license does not allow redistributions; available for 64 bit Linux and Mac OS X, recommended)."
-      echo "Type \"M\" for manual installation - script will exit and you will have to install BLAT yourselves. Check http://genome.ucsc.edu/FAQ/FAQblat.html for more information."
+      echo "Type \"S\" to compile BLAT from source available on https://users.soe.ucsc.edu/~kent/src/"
+      echo -e "\t(BLAT license does not allow redistributions; required if BLAT is not"
+      echo -e "\tavailable for your system). Together with standard compilation tools"
+      echo -e "\tBLAT requires libpng developmental files."
+      echo "Type \"D\" to download BLAT from http://hgdownload.cse.ucsc.edu/admin/exe/"
+      echo -e "\tautomatically for your OS (BLAT license does not allow redistributions;"
+      echo -e "\tavailable for 64 bit Linux and Mac OS X, recommended)."
+      echo "Type \"M\" for manual installation - script will exit and you will have to"
+      echo -e "\tinstall BLAT yourselves. Check http://genome.ucsc.edu/FAQ/FAQblat.html"
+      echo -e "\tfor more information."
       read BLAT
       while :
       do
@@ -664,7 +681,14 @@ function checkblat {
 	      chmod +x blat &&
 	      mv blat $BIN/ &&
 	      echo "\"BLAT\" is available. OK"
-	      } || { echo && echo "Download of BLAT failed. Please, go to http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/ and download blat binary yourselves." && echo && exit 1; }
+	      } || {
+		echo
+		echo "Download of BLAT failed. Please, go to"
+		echo "http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/"
+		echo "and download blat binary yourselves."
+		echo
+		exit 1
+		}
 	      break
 	      elif [[ "$OS" == "Linux" && "$OSB" == "64b" ]]; then
 		{
@@ -673,7 +697,14 @@ function checkblat {
 		chmod +x blat &&
 		mv blat $BIN/ &&
 		echo "\"BLAT\" is available. OK."
-		} || { echo && echo "Download of BLAT failed. Please, go to http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/ and download blat binary yourselves." && echo && exit 1; }
+		} || {
+		  echo
+		  echo "Download of BLAT failed. Please, go to"
+		  echo "http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/"
+		  echo "and download blat binary yourselves."
+		  echo
+		  exit 1
+		  }
 		break
 	      elif [[ "$OS" == "Linux" && "$OSB" == "32b" ]]; then
 		echo "BLAT binary is not provided for 32bit Linux."
@@ -684,7 +715,11 @@ function checkblat {
 	      fi
 	      break
 	    ;;
-	  M|m) echo "Please, go to http://genome.ucsc.edu/FAQ/FAQblat.html and download and install BLAT and ensure it is in PATH." && echo && exit 2;;
+	  M|m) echo "Please, go to http://genome.ucsc.edu/FAQ/FAQblat.html and download and install"
+		echo "BLAT and ensure it is in PATH."
+		echo
+		exit 2
+		;;
 	  *) echo "Wrong option. Use S, D or M." && read BLAT;;
 	esac
       done
@@ -711,11 +746,13 @@ function readinputfile {
 	  echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
 	  break
 	  else
-	    echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
+	    echo "${BOLD}Error!${NORM} File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
+	    echo "Provide new one:"
 	  fi
 	done
       else
-	echo "As input $2 file you provided via parameter ${BOLD}$1${NORM} file \"$CHECKFILEREAD\". Would you like to use it (Yes) or to provide new file (New)?"
+	echo "As input $2 file you provided via parameter ${BOLD}$1${NORM} file \"$CHECKFILEREAD\"."
+	echo "Would you like to use it (Yes) or to provide new file (New)?"
 	read CHECKFILE
 	while :
 	do
@@ -726,7 +763,8 @@ function readinputfile {
 	      if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
 		echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
 		else
-		  echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable! Provide new one:"
+		  echo "${BOLD}Error!${NORM} File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
+		  echo "Provide new one:"
 		  while :
 		    do
 		    read CHECKFILEREAD
@@ -736,7 +774,8 @@ function readinputfile {
 		      echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
 		      break
 		      else
-			echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
+			echo "${BOLD}Error!${NORM} File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
+			echo "Provide new one:"
 		      fi
 		    done
 		fi
@@ -753,7 +792,8 @@ function readinputfile {
 		  echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
 		  break
 		  else
-		    echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
+		    echo "${BOLD}Error!${NORM} File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
+		    echo "Provide new one:"
 		  fi
 	      done
 	      break
@@ -770,7 +810,7 @@ function readinputfile {
 	  echo
 	  echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
 	  else
-	    echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
+	    echo "${BOLD}Error!${NORM} File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
 	    exit 1
 	  fi
     fi
@@ -780,5 +820,8 @@ function readinputfile {
 # Function to convert FASTA to TAB
 # $1 is input file in FASTA, $2 output file in TAB
 function fasta2tab {
+  checktools awk &&
+  checktools sed &&
+  checktools tr &&
   awk '/>/{if (x)print x;print;x="";next}{x=(!x)?$0:x$0;}END{print x;}' $1 | sed 's/>[[:blank:]]*/>/g' | sed 's/[[:blank:]]+/ /g' | tr "\n" "\t" | sed 's/\t>/\n>/g' | sed 's/^>//g' | sed 's/[[:blank:]]*$//g' > $2
   }
