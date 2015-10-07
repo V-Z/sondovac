@@ -99,7 +99,7 @@ function checktools {
     echo "${BOLD}Error!${NORM} Command\"$1\" is required but not installed! Aborting."
     echo "Please, install \"$1\" and ensure it is in PATH."
     echo "It should be readily available for any UNIX-based system (Linux, Mac OS X, BSD, ...)."
-    echo "See manual for more information"
+    echo "See manual for more information."
     echo
     exit 1
     }
@@ -634,17 +634,32 @@ function compileblat {
   curl -o blatSrc.zip https://users.soe.ucsc.edu/~kent/src/blatSrc.zip &&
   unzip -nq blatSrc.zip &&
   cd blatSrc &&
-  { mkdir -p $HOME/bin/$MACHTYPE || { echo && echo "${BOLD}Error!${NORM} Can not create directory \"$HOME/bin/$MACHTYPE\" required by BLAT. Aborting." && echo && exit 1; }; } &&
+  { mkdir -p $HOME/bin/$MACHTYPE || {
+    echo
+    echo "${BOLD}Error!${NORM} Can not create directory"
+    echo "\"$HOME/bin/$MACHTYPE\" required by BLAT. Aborting."
+    echo
+    exit 1
+    }; } &&
   PATH=$PATH:$HOME/bin/$MACHTYPE &&
-  { mkdir -p lib/$MACHTYPE || { echo && echo "${BOLD}Error!${NORM} Can not create directory \"$(pwd)/lib/$MACHTYPE\" required by BLAT. Aborting." && echo && exit 1; }; } &&
+  { mkdir -p lib/$MACHTYPE || {
+    echo
+    echo "${BOLD}Error!${NORM} Can not create directory"
+    echo "\"$(pwd)/lib/$MACHTYPE\" required by BLAT. Aborting."
+    echo
+    exit 1
+    }; } &&
   echo "Compiling BLAT from source code" &&
   make -s &&
   cd $WORKDIR &&
   cp -p $HOME/bin/$MACHTYPE/* $BIN/ &&
   echo "\"BLAT\" is available. OK"
-  } || { echo "Compilation failed. Please go to https://users.soe.ucsc.edu/~kent/src/"
+  } || {
+    echo
+    echo "Compilation failed. Please, go to https://users.soe.ucsc.edu/~kent/src/"
     echo "download latest blatSrc*.zip, compile it and ensure it is in PATH"
-    exit 1; }
+    exit 1
+    }
   }
 
 # Check if BLAT is available
@@ -820,8 +835,5 @@ function readinputfile {
 # Function to convert FASTA to TAB
 # $1 is input file in FASTA, $2 output file in TAB
 function fasta2tab {
-  checktools awk &&
-  checktools sed &&
-  checktools tr &&
   awk '/>/{if (x)print x;print;x="";next}{x=(!x)?$0:x$0;}END{print x;}' $1 | sed 's/>[[:blank:]]*/>/g' | sed 's/[[:blank:]]+/ /g' | tr "\n" "\t" | sed 's/\t>/\n>/g' | sed 's/^>//g' | sed 's/[[:blank:]]*$//g' > $2
   }

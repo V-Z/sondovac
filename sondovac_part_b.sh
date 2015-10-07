@@ -16,7 +16,8 @@ source $SCRIPTDIR/sondovac_functions || {
 
 echo "This is part B of the pipeline."
 echo
-echo "This part processes assembly output from Geneious and produces the final list of low-copy nuclear probe sequences."
+echo "This part processes assembly output from Geneious and produces the final list of"
+echo "low-copy nuclear probe sequences."
 
 # Default values
 # Counter if not both -i and -n options are used
@@ -37,30 +38,47 @@ while getopts "hvulrpeinc:x:z:b:d:" START; do
   case "$START" in
     h|v)
       echo "Usage options:"
-      echo -e "\t-h, -v\tPrint this help message and exit"
-      echo -e "\t-u\tCheck for updates and download them if needed and confirmed by user, and exit"
-      echo -e "\t-l\tDisplay LICENSE for license information (this script is licensed under GNU GPL v.3, other software under variable licenses) and exit"
-      echo -e "\t-r\tDisplay README for detailed usage instructions and exit"
-      echo -e "\t-p\tDisplay INSTALL for detailed installation instructions and exit"
-      echo -e "\t-e\tDisplay detailed citation information and exit"
-      echo -e "\t-i\tRunning in interactive mode - script will on-demand ask for required input files, installation of missing software etc."
-      echo -e "\t\tThis is recommended default value (the script runs interactively without explicit using option ${BOLD}-n${NORM})."
-      echo -e "\t-n\tRunning in non-interactive mode. User ${BOLD}must${NORM} provide at least five input files below:"
-      echo -e "\tYou can use ${BOLD}only one${NORM} of parameters ${BOLD}-i${NORM} or ${BOLD}-n${NORM} (not both of them)"
+      echo -e "\t-h, -v\tPrint this help message and exit."
+      echo -e "\t-u\tCheck for updates of Sondovač at $WEB"
+      echo -e "\t\t  and download of newer version will be offered to the user."
+      echo -e "\t-l\tDisplay LICENSE for license information (this script is licensed"
+      echo -e "\t\t  tunder GNU GPL v.3, other software under variable licenses)."
+      echo -e "\t\t  Exit viewing by pressing the \"Q\" key."
+      echo -e "\t-r\tDisplay README for detailed usage instructions. Exit viewing by"
+      echo -e "\t\t  pressing the \"Q\" key. More information is available in PDF"
+      echo -e "\t\t  manual."
+      echo -e "\t-p\tDisplay INSTALL for detailed installation instructions. Exit"
+      echo -e "\t\t  viewing by pressing the \"Q\" key. More information is available"
+      echo -e "\t\t  in PDF manual."
+      echo -e "\t-e\tDisplay detailed citation information and exit."
+      echo -e "\t-i\tRunning in interactive mode - script will on-demand ask for"
+      echo -e "\t\t  required input files, installation of missing software etc."
+      echo -e "\t\t  This is the recommended default value (the script runs"
+      echo -e "\t\t  interactively without explicitly using option ${BOLD}-n${NORM})."
+      echo -e "\t-n\tRunning in non-interactive mode. User ${BOLD}must${NORM} provide at least"
+      echo -e "\t\t  required input files below. You can use ${BOLD}only one${NORM} of the"
+      echo -e "\t\t  parameters ${BOLD}-i${NORM} or ${BOLD}-n${NORM} (not both of them). If script fails"
+      echo -e "\t\t  to find some of required software packages, it will exit."
       echo
-      echo -e "\tIf options ${BOLD}-c${NORM}, ${BOLD}-x${NORM} and/or ${BOLD}-z${NORM} are used and script is running in interactive mode, those values will be used as defaults, but may be later overwritten."
+      echo -e "\tIf options ${BOLD}-c${NORM}, ${BOLD}-x${NORM} and/or ${BOLD}-z${NORM} are used and script is running in"
+      echo -e "\t  interactive mode, those values will be used as defaults, but may be"
+      echo -e "\t  later overwritten."
       echo
       echo -e "\tOptions required for running in non-interactive mode:"
-      echo -e "\t-c\tPlastom reference sequence in FASTA format"
-      echo -e "\t-x\tInput file in TSV format (output of Geneious assembly)"
-      echo -e "\t-z\tInput file in FASTA format (output of Geneious assembly)"
+      echo -e "\t-c\Plastome reference sequence input file in FASTA format."
+      echo -e "\t-x\tInput file in TSV format (output of Geneious assembly)."
+      echo -e "\t-z\tInput file in FASTA format (output of Geneious assembly)."
       echo
       echo -e "\tOther optional arguments (if not provided, default values are used):"
       echo -e "\t-b\tBait length"
-      echo -e "\t\tDefault value: 120 (optimal length for phylogeny, use integer between 120 and 200)"
-      echo -e "\t-d\tSequence similarity between the developed probe sequences (parameter \"-c\" of cd-hit-est, see its manual for details)"
-      echo -e "\t\tDefault value: 0.9 (use decimal number ranging from 0.85 to 0.95)"
-      echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-b${NORM} or ${BOLD}-d${NORM} are not provided, default values are taken and it is not possible to change them later (not even in interactive mode)."
+      echo -e "\t\tDefault value: 120 (optimal length for phylogeny, use integer"
+      echo -e "\t\t  between 120 and 200)."
+      echo -e "\t-d\tSequence similarity between the developed probe sequences"
+      echo -e "\t\t  (parameter \"-c\" of cd-hit-est, see its manual for details)."
+      echo -e "\t\tDefault value: 0.9 (use decimal number ranging from 0.85 to 0.95)."
+      echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-b${NORM} or ${BOLD}-d${NORM} are not provided, default values are"
+      echo -e "\t  taken and it is not possible to change them later (not even in"
+      echo -e "\t  interactive mode)."
       echo
       exit 2
       ;;
@@ -107,7 +125,7 @@ while getopts "hvulrpeinc:x:z:b:d:" START; do
 	echo "Bait length: $BAITL"
 	else
 	  echo
-	  echo "Error! For parameter \"-b\" you did not provide an integer of range from 120 to 200!"
+	  echo "${BOLD}Error!${NORM} For parameter \"-b\" you did not provide an integer ranging from 120 to 200!"
 	  echo
 	  exit 1
 	fi
@@ -118,7 +136,8 @@ while getopts "hvulrpeinc:x:z:b:d:" START; do
 	echo "Sequence similarity: $CDHITSIM"
       else
 	echo
-	echo "Error! For parameter \"-d\" you did not provide decimal number ranging from 0.85 to 0.95!"
+	echo "${BOLD}Error!${NORM} For parameter \"-d\" you did not provide decimal number ranging from 0.85"
+	echo "  to 0.95!"
 	echo
 	exit 1
       fi
@@ -134,7 +153,7 @@ while getopts "hvulrpeinc:x:z:b:d:" START; do
 if [ "$CHECKMODE" == 2 ]; then
   echo
   echo "${BOLD}Error!${NORM} You provided both parameters ${BOLD}-i${NORM} (interactive mode) and ${BOLD}-n${NORM}"
-  echo "(non-interactive mode). You ${BOLD}may${NORM} use ${BOLD}only one${NORM} of them (${BOLD}either -i${NORM} or ${BOLD}-n${NORM})!"
+  echo "  (non-interactive mode). You ${BOLD}may${NORM} use ${BOLD}only one${NORM} of them (${BOLD}either -i${NORM} or ${BOLD}-n${NORM})!"
   echo
   exit 1
   fi
@@ -182,10 +201,10 @@ function compilecdhit {
   checktools make &&
   checktools g++ &&
   echo &&
-  echo "Compiling CD-HIT from source code" &&
+  echo "Compiling CD-HIT from source code..." &&
   echo &&
   cd $1 &&
-  make -s openmp=yes || make -s &&
+  make -s openmp=yes || { echo "There is no MPI available - no multi-thread support." && make -s; } &&
   cp -a *.pl $BIN/ &&
   cp -a cd-hit* $BIN/ &&
   cd $WORKDIR &&
@@ -193,7 +212,7 @@ function compilecdhit {
   echo "\"CD-HIT\" is available. OK."
   } || {
     echo
-    echo "Compilation failed. Please go to https://github.com/weizhongli/cdhit,"
+    echo "Compilation failed. Please go to https://github.com/weizhongli/cdhit"
     echo "download cd-hit-*.tgz, compile it and ensure it is in PATH."
     echo "Check last error messages to find why compilation failed."
     echo
@@ -205,16 +224,19 @@ function compilecdhit {
 { command -v cd-hit-est >/dev/null 2>&1 && echo "\"cd-hit-est\" is available. OK."; } || {
   echo "\"cd-hit-est\" is required but not installed or available in PATH"
   echo
-  echo "Type \"C\" to compile CD-HIT 4.6.1 from source available together with this script"
-  echo "Type \"S\" to download latest CD-HIT source from https://github.com/weizhongli/cdhit and compile it"
-  echo "Type \"B\" to copy CD-HIT 4.6.1 binary available together with the script (available for Linux and Mac OS X)"
-  echo "Type \"M\" for manual installation - script will exit and you will have to install CD-HIT yourselves"
+  echo "Type \"C\" to compile CD-HIT 4.6.4 from source available together with this script."
+  echo "Type \"S\" to download latest CD-HIT source from"
+  echo "  https://github.com/weizhongli/cdhit and compile it"
+  echo "Type \"B\" to copy CD-HIT 4.6.4 binary available together with the script"
+  echo "  (recommended, available for Linux and Mac OS X)."
+  echo "Type \"M\" for manual installation - script will exit and you will have to install"
+  echo "  CD-HIT yourselves."
   read CDHIT
   while :
   do
     case "$CDHIT" in
       C|c)
-	compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.1-2012-08-27
+	compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
 	break
 	;;
       S|s)
@@ -251,14 +273,20 @@ function compilecdhit {
 	    fi
 	    ;;
 	  *) echo
-	    echo "Binary is not available for $OS $OSB. Going to compile it from source code."
+	    echo "Binary is not available for $OS $OSB."
 	    echo
-	    compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.1-2012-08-27
+	    compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
 	    ;;
 	esac
 	break
 	;;
-      M|m) echo && echo "Please, go to http://weizhongli-lab.org/cd-hit/ and install CD-HIT and ensure it is in PATH" && echo && exit;;
+      M|m)
+	echo
+	echo "Please, go to http://weizhongli-lab.org/cd-hit/ and install CD-HIT and ensure"
+	echo "  it is in PATH."
+	echo
+	exit
+	;;
       *) echo "Wrong option. Use C, S, B or M." && read CDHIT;;
     esac
   done
@@ -322,6 +350,7 @@ PROBESEQUENCES="${SEQUENCES%.*}_target_enrichment_probe_sequences.fasta"
 # Part 3: Assemble the obtained sequences in contigs (part B)
 
 # Check if TSV output of Geneious contains at least requested columns
+REQUIREDCOLS="Required columns in `echo $TSVLIST` are \"# Sequences\",\n  \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\"\n  and \"Sequence Length\". Please, export the TSV file again."
 echo
 if grep -q "# Sequences" $TSVLIST; then
     echo "Column \"# Sequences\" is presented in $TSVLIST. OK."
@@ -336,33 +365,33 @@ if grep -q "# Sequences" $TSVLIST; then
 	    if grep -q "Sequence Length" $TSVLIST; then
 	      echo "Column \"Sequence Length\" is presented in $TSVLIST. OK."
 	    else
-	      echo "Error! Column \"Sequence Length\" is missing!"
-	      echo "Required columns in $TSVLIST are \"# Sequences\", \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and \"Sequence Length\". Please, export the TSV file again."
+	      echo "${BOLD}Error!${NORM} Column \"Sequence Length\" is missing!"
+	      echo -e "$REQUIREDCOLS"
 	      exit 1
 	    fi
 	  else
-	    echo "Error! Column \"Name\" is missing!"
-	    echo "Required columns in $TSVLIST are \"# Sequences\", \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and \"Sequence Length\". Please, export the TSV file again."
+	    echo "${BOLD}Error!${NORM} Column \"Name\" is missing!"
+	    echo -e "$REQUIREDCOLS"
 	    exit 1
 	  fi
 	else
-	  echo "Error! Column \"Mean Coverage\" is missing!"
-	  echo "Required columns in $TSVLIST are \"# Sequences\", \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and \"Sequence Length\". Please, export the TSV file again."
+	  echo "${BOLD}Error!${NORM} Column \"Mean Coverage\" is missing!"
+	  echo -e "$REQUIREDCOLS"
 	  exit 1
 	fi
       else
-	echo "Error! Column \"Description\" is missing!"
-	echo "Required columns in $TSVLIST are \"# Sequences\", \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and \"Sequence Length\". Please, export the TSV file again."
+	echo "${BOLD}Error!${NORM} Column \"Description\" is missing!"
+	echo -e "$REQUIREDCOLS"
 	exit 1
       fi
     else
-      echo "Error! Column \"Pairwise Identity\" is missing!"
-      echo "Required columns in $TSVLIST are \"# Sequences\", \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and \"Sequence Length\". Please, export the TSV file again."
+      echo "${BOLD}Error!${NORM} Column \"Pairwise Identity\" is missing!"
+      echo -e "$REQUIREDCOLS"
       exit 1
     fi
   else
-    echo "Error! Column \"# Sequences\" is missing!"
-    echo "Required columns in $TSVLIST are \"# Sequences\", \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and \"Sequence Length\". Please, export the TSV file again."
+    echo "${BOLD}Error!${NORM} Column \"# Sequences\" is missing!"
+    echo -e "$REQUIREDCOLS"
     exit 1
   fi
 echo
@@ -373,19 +402,24 @@ if egrep -q "# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[[
     echo "OK, $TSVLIST is correct input file."
     TSVLIST2=$TSVLIST
   else
-    echo "Input file $TSVLIST seems to contain more columns than required. Needed columns will be extracted."
+    echo "Input file $TSVLIST seems to contain more columns than required."
+    echo "Needed columns will be extracted."
     $SCRIPTDIR/geneious_column_separator.pl $TSVLIST || {
       echo
       echo "${BOLD}Error!${NORM} Extraction failed. Aborting."
-      echo "Please, do it manually. Required columns in $TSVLIST are \"# Sequences\", \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and \"Sequence Length\"."
+      echo "Either script $SCRIPTDIR/geneious_column_separator.pl"
+      echo "  is missing or there is something wrong with $TSVLIST"
+      echo "Please, prepare required file manually."
+      echo -e "$REQUIREDCOLS"
       echo
       exit 1
       }
     TSVLIST2="${TSVLIST%.*}.columns.tsv"
-    echo "File with extracted columns was saved as $TSVLIST2 for possible later usage"
+    echo "File with extracted columns was saved as"
+    echo "$TSVLIST2 for possible later usage."
   fi
 echo
-# { echo && echo "${BOLD}Error!${NORM} XXX failed. Aborting." && echo && exit 1; }
+
 # Check the statistics
 # Check total number of bp
 echo "Total number of base pairs:"
@@ -397,13 +431,20 @@ echo
 
 # Convert FASTA to TSV
 echo "Converting FASTA to TAB"
-fasta2tab $SEQUENCES $SEQUENCESTAB || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting." && echo && exit 1; }
+fasta2tab $SEQUENCES $SEQUENCESTAB || {
+  echo  
+  echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
+  echo "Check if file $SEQUENCES is correct FASTA file."
+  echo
+  exit 1
+  }
 echo
 
 # Separate the assembled sequences
 echo "Separating assembled sequences"
 grep 'Contig' $SEQUENCESTAB > $SEQUENCESTABASSE
 echo
+
 # Separate the unassembled sequences
 echo "Separating unassembled sequences"
 grep -v 'Contig' $SEQUENCESTAB > $SEQUENCESTABUNAS
@@ -414,51 +455,60 @@ echo "Counting assembled sequences:"
 awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | awk '{s+=$3;c++}END{print s}'
 awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | wc -l
 echo
+
 # Genes of ≥960 bp (exons ≥120 bp), total bp
 echo "Genes of ≥960 bp (exons ≥120 bp), total bp:"
 awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
 awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
 echo
+
 # Genes of ≥600 bp (exons ≥120 bp), total bp
 echo "Genes of ≥600 bp (exons ≥120 bp), total bp:"
 awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > $SEQUENCESPROBES600
 echo
+
 # Filter the file with the unassembled sequences
 echo "Filtering the file with the unassembled sequences:"
 awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed s/_/\\t/g | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>399' | wc -l
 echo
+
 # Unassembled sequences making up genes of ≥400 bp
 echo "Unassembled sequences making up genes of ≥400 bp:"
 awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed s/_/\\t/g | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
 awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed s/_/\\t/g | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
 echo
 
-# Part 4: Create the final .fasta file for the Hyb-Seq probes.
+# Part 4: Create the final FASTA file for the Hyb-Seq probes
 
 # Extract and sort the assemblies making up genes of ≥600 bp
 echo "Extracting and sorting the assemblies making up genes of ≥600 bp"
 sed s/^/Assembly_/ $SEQUENCESPROBES600 | cut -f1 -d' ' | sort -k1,1 > $SEQUENCESPROBES600FORJOIN
 echo
+
 # Make a file with all exons ≥120 bp
 echo "Selecting ≥120 bp exons"
 awk '{print $1"\t"length($2)"\t"$2}' $SEQUENCESTABASSE | awk '$2>119' > $SEQUENCESTABASSE120
 echo
+
 # Make the assembly number the first field and sort
 echo "Sorting exons ≥120 bp"
 sed 's/^.*\(Assembly\)/\1/' $SEQUENCESTABASSE120 | sed s/_C/\\tC/ | sort -k1,1 > $SEQUENCESTABASSE120SORT
 echo
+
 # Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
 echo "Selecting all exons ≥120 bp and all assemblies making up genes of ≥600 bp"
 join $SEQUENCESPROBES600FORJOIN $SEQUENCESTABASSE120SORT > $SEQUENCESPROBES120600FIN
 echo
-# Convert .tab to .fasta
+
+# Convert TAB to FASTA
 echo "Converting TAB to FASTA"
 sed 's/ /_/' $SEQUENCESPROBES120600FIN | sed 's/ /_/' > $SEQUENCESPROBES120600MODIF
 sed 's/^/>/' $SEQUENCESPROBES120600MODIF | tr " " "\n" > $SEQUENCESPROBES120600ASSEM
 # Remaining assemblies have to be selected and added to the .fasta file of the probes:
 grep -v Contig $SEQUENCESTABASSE120 | awk '$2>599' | sed 's/^/>/' | sed 's/\\t/_/' | tr " " "\n" > $SEQUENCESPROBES120600CONTIG
 echo
-# Combine the two .fasta files:
+
+# Combine the two FASTA files
 echo "Writing FASTA file with preliminary probe sequences"
 cat $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG > $PROBEPRELIM
 echo
@@ -470,14 +520,23 @@ echo "Preliminary probe sequences saved as $PROBEPRELIM for possible later usage
 echo "Checking sequence similarity between the developed probe sequences"
 cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCDHIT -c $CDHITSIM
 echo
+
 # One of the three outfiles is a FASTA file, it has to be converted to TAB
 echo "Converting FASTA to TAB"
-fasta2tab $PROBEPRELIMCDHIT $PROBEPRELIMCDHIT.txt || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting." && echo && exit 1; }
+fasta2tab $PROBEPRELIMCDHIT $PROBEPRELIMCDHIT.txt || {
+  echo
+  echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
+  echo "Check if file $PROBEPRELIMCDHIT is correct FASTA file."
+  echo
+  exit 1
+  }
 echo
+
 # Count all assemblies, comprised of putative exons ≥120 bp
 echo "Counting all assemblies, comprised of putative exons ≥120 bp:"
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | awk '{s+=$2;c++}END{print s}'
 echo
+
 # Count the assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
 echo "Counting the assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp:"
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed s/_/\\t/g | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
@@ -486,22 +545,27 @@ echo
 echo "Writing those assemblies into temporal file"
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed s/_/\\t/g | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > $PROBEPRELIMCDHIT2
 echo
+
 # Extract and sort the assemblies making up genes of ≥600 bp
 echo "Extract and sort the assemblies making up genes of ≥600 bp:"
 sed s/^/Assembly_/ $PROBEPRELIMCDHIT2 | cut -f1 -d' ' | sort -k1,1 > $PROBEPRELIMFORJOIN
 echo
+
 # Modify the assembly number and sort
 echo "Modify the assembly number and sort"
 sed s/_C/\\tC/ $PROBEPRELIMCDHIT.txt | sort -k1,1 > $PROBEPRELIMSORT
 echo
+
 # Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
 echo "Joining all exons ≥120 bp and all assemblies making up genes of ≥600 bp"
 join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT > $PROBEPRELIMFIN
 echo
+
 # Convert TAB to FASTA
 echo "Converting TAB to FASTA"
 sed s/' C'/_/ $PROBEPRELIMFIN | sed s/ontig/Contig/ | sed s/^/'>'/ | sed s/' '/\\n/ > $PROBESEQUENCES
 echo
+
 # Calculating of the total number of base pairs
 echo "Calculating of the total number of base pairs"
 echo "Converting FASTA to TAB"
@@ -510,6 +574,7 @@ echo
 echo "Total number of base pairs:"
 awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}'
 echo
+
 # Remove remaining cp/mt genes from probe set
 echo "Removing remaining cp/mt genes from probe set"
 blat -t=dna -q=dna -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCES.target_enrichment_probe_sequences_final.pslx

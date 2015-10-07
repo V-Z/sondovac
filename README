@@ -232,8 +232,7 @@ Input files:
            Parks, Kevin Weitemier, Mark Fishbein, Richard C. Cronn and Aaron 
            Liston; American Journal of Botany (2012) 99(2): 349-364, 
            http://www.amjbot.org/content/99/2/349.short
--m FILE  Mitochondriome reference sequence input file in FASTA format 
-(optional).
+-m FILE  Mitochondriome reference sequence input file in FASTA format (optional)
          sondovac_part_a.sh
          This step is facultative, as plant mitochondrial genomes have largely 
            variable sizes and high rearrangement rates.
@@ -259,7 +258,7 @@ Optional parameters:
          to enable merging of the paired-end genome skim reads.
          DEFAULT: 250
          OPTIONS: 125, 150, 250, 300
--y ##    Sequence similiarity between unique transcripts and the filtered, 
+-y ##    Sequence similarity between unique transcripts and the filtered, 
          combined genome skim reads (parameter -minIdentity of BLAT, see its 
          manual for details).
          Step 5 of Sondovač, sondovac_part_a.sh.
@@ -332,11 +331,11 @@ Script sondovac_part_a.sh creates the following files:
 2)  *_unique_transcripts.fasta - Unique transcripts in FASTA format
 3)  *_genome_skim_data_no_cp_reads.bam - SAM converted to BAM (removal of reads 
       of plastid origin)
-4)  *_genome_skim_data_no_cp_reads - Genome skim data without cpDNA reads
+4)  *_genome_skim_data_no_cp_reads* - Genome skim data without cpDNA reads
 5)  *_genome_skim_data_no_cp_no_mt_reads.bam - SAM converted to BAM (removal of 
       reads of mitochondrial origin)
-6)  *_genome_skim_data_no_cp_no_mt_reads - Genome skim data without mtDNA reads
-7)  *_combined_reads_co_cp_no_mt_reads - Combined paired-end genome skim reads
+6)  *_genome_skim_data_no_cp_no_mt_reads* - Genome skim data without mtDNA reads
+7)  *_combined_reads_co_cp_no_mt_reads* - Combined paired-end genome skim reads
 8)  *_blat_unique_transcripts_versus_genome_skim_data.pslx - Output of BLAT 
       (matching of the unique transcripts and the filtered, combined genome 
       skim reads sharing ≥85% sequence similarity)
