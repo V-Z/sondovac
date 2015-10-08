@@ -37,28 +37,7 @@ SEQUENCES=""
 while getopts "hvulrpeinc:x:z:b:d:" START; do
   case "$START" in
     h|v)
-      echo "Usage options:"
-      echo -e "\t-h, -v\tPrint this help message and exit."
-      echo -e "\t-u\tCheck for updates of Sondovač at $WEB"
-      echo -e "\t\t  and download of newer version will be offered to the user."
-      echo -e "\t-l\tDisplay LICENSE for license information (this script is licensed"
-      echo -e "\t\t  tunder GNU GPL v.3, other software under variable licenses)."
-      echo -e "\t\t  Exit viewing by pressing the \"Q\" key."
-      echo -e "\t-r\tDisplay README for detailed usage instructions. Exit viewing by"
-      echo -e "\t\t  pressing the \"Q\" key. More information is available in PDF"
-      echo -e "\t\t  manual."
-      echo -e "\t-p\tDisplay INSTALL for detailed installation instructions. Exit"
-      echo -e "\t\t  viewing by pressing the \"Q\" key. More information is available"
-      echo -e "\t\t  in PDF manual."
-      echo -e "\t-e\tDisplay detailed citation information and exit."
-      echo -e "\t-i\tRunning in interactive mode - script will on-demand ask for"
-      echo -e "\t\t  required input files, installation of missing software etc."
-      echo -e "\t\t  This is the recommended default value (the script runs"
-      echo -e "\t\t  interactively without explicitly using option ${BOLD}-n${NORM})."
-      echo -e "\t-n\tRunning in non-interactive mode. User ${BOLD}must${NORM} provide at least"
-      echo -e "\t\t  required input files below. You can use ${BOLD}only one${NORM} of the"
-      echo -e "\t\t  parameters ${BOLD}-i${NORM} or ${BOLD}-n${NORM} (not both of them). If script fails"
-      echo -e "\t\t  to find some of required software packages, it will exit."
+      generaloptions
       echo
       echo -e "\tIf options ${BOLD}-c${NORM}, ${BOLD}-x${NORM} and/or ${BOLD}-z${NORM} are used and script is running in"
       echo -e "\t  interactive mode, those values will be used as defaults, but may be"
@@ -150,13 +129,8 @@ while getopts "hvulrpeinc:x:z:b:d:" START; do
     esac
   done
 
-if [ "$CHECKMODE" == 2 ]; then
-  echo
-  echo "${BOLD}Error!${NORM} You provided both parameters ${BOLD}-i${NORM} (interactive mode) and ${BOLD}-n${NORM}"
-  echo "  (non-interactive mode). You ${BOLD}may${NORM} use ${BOLD}only one${NORM} of them (${BOLD}either -i${NORM} or ${BOLD}-n${NORM})!"
-  echo
-  exit 1
-  fi
+# Check if user didn't use together -n and -i
+checkmodef
 
 # Check which operating system the script is running on
 
@@ -292,23 +266,21 @@ function compilecdhit {
   done
   }
 
-# Variables
-
-# Function to check and read input files
-# Parameters: 1) parameter for particular file; 2) name (description) of input file; 3) variable for particular file (written into $CHECKFILEREADOUT)
+# Input files
+CHECKFILEREADOUT=""
 
 # Plastom reference in FASTA
-CHECKFILEREADOUT=""
-readinputfile -c "" $TSVLIST
+readinputfile -c "plastome reference sequence input file in FASTA format" $TSVLIST
 TSVLIST=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
-readinputfile -x "Geneious output file - TSV" $TSVLIST
+# Geneious output files are infiles here - consensus and unused sequences (TSV)
+readinputfile -x "input file in TSV format (output of Geneious assembly)" $TSVLIST
 TSVLIST=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
-# Geneious output files are infiles here - consensus and unused sequences
-readinputfile -z "Geneious output file - FASTA" $SEQUENCES
+# Geneious output files are infiles here - consensus and unused sequences (FASTA)
+readinputfile -z "input file in FASTA format (output of Geneious assembly)" $SEQUENCES
 SEQUENCES=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 

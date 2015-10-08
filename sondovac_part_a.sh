@@ -42,29 +42,7 @@ REFERENCEMT=""
 while getopts "hvulrpeinf:c:m:t:q:a:y:s:" START; do
   case "$START" in
     h|v)
-      echo
-      echo "Usage options:"
-      echo -e "\t-h, -v\tPrint this help message and exit."
-      echo -e "\t-u\tCheck for updates of Sondovač at $WEB"
-      echo -e "\t\t  and download of newer version will be offered to the user."
-      echo -e "\t-l\tDisplay LICENSE for license information (this script is licensed"
-      echo -e "\t\t  tunder GNU GPL v.3, other software under variable licenses)."
-      echo -e "\t\t  Exit viewing by pressing the \"Q\" key."
-      echo -e "\t-r\tDisplay README for detailed usage instructions. Exit viewing by"
-      echo -e "\t\t  pressing the \"Q\" key. More information is available in PDF"
-      echo -e "\t\t  manual."
-      echo -e "\t-p\tDisplay INSTALL for detailed installation instructions. Exit"
-      echo -e "\t\t  viewing by pressing the \"Q\" key. More information is available"
-      echo -e "\t\t  in PDF manual."
-      echo -e "\t-e\tDisplay detailed citation information and exit."
-      echo -e "\t-i\tRunning in interactive mode - script will on-demand ask for"
-      echo -e "\t\t  required input files, installation of missing software etc."
-      echo -e "\t\t  This is the recommended default value (the script runs"
-      echo -e "\t\t  interactively without explicitly using option ${BOLD}-n${NORM})."
-      echo -e "\t-n\tRunning in non-interactive mode. User ${BOLD}must${NORM} provide at least"
-      echo -e "\t\t  required input files below. You can use ${BOLD}only one${NORM} of the"
-      echo -e "\t\t  parameters ${BOLD}-i${NORM} or ${BOLD}-n${NORM} (not both of them). If script fails"
-      echo -e "\t\t  to find some of required software packages, it will exit."
+      generaloptions
       echo
       echo -e "\tIf options ${BOLD}-f, -c, -m, -t${NORM} and/or ${BOLD}-q${NORM} are used and the script is running"
       echo -e "\t  in interactive mode, those values will be used as defaults, but may"
@@ -74,6 +52,8 @@ while getopts "hvulrpeinf:c:m:t:q:a:y:s:" START; do
       echo -e "\t-f\tTranscriptome input file in FASTA format."
       echo -e "\t-c\tPlastome reference sequence input file in FASTA format."
       echo -e "\t-m\tMitochondriome reference sequence input file in FASTA format."
+      echo -e "\t\t  This file is optional. In interactive mode you will be every"
+      echo -e "\t\t  time asked if you wish to use it."
       echo -e "\t-t\tPaired-end genome skim input file in FASTQ format (first file)."
       echo -e "\t-q\tPaired-end genome skim input file in FASTQ format (second file)."
       echo
@@ -207,13 +187,8 @@ while getopts "hvulrpeinf:c:m:t:q:a:y:s:" START; do
     esac
   done
 
-if [ "$CHECKMODE" == 2 ]; then
-  echo
-  echo "${BOLD}Error!${NORM} You provided both parameters ${BOLD}-i${NORM} (interactive mode) and ${BOLD}-n${NORM}"
-  echo "  (non-interactive mode). You ${BOLD}may${NORM} use ${BOLD}only one${NORM} of them (${BOLD}either -i${NORM} or ${BOLD}-n${NORM})!"
-  echo
-  exit 1
-  fi
+# Check if user didn't use together -n and -i
+checkmodef
 
 # Ensure user reads introductory information
 confirmgo
@@ -957,32 +932,61 @@ function compilefastx {
   fi
   }
 
-# Input data, transcriptomic data in FASTA format
+# Input files
 CHECKFILEREADOUT=""
-readinputfile -f "FASTA transcriptomic data" $INPUTFILE
+
+# Input data, transcriptomic data in FASTA format
+readinputfile -f "transcriptome input file in FASTA format" $INPUTFILE
 INPUTFILE=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
 # Input data, plastom reference in FASTA format
-readinputfile -c "FASTA reference plastom data" $REFERENCECP
+readinputfile -c "plastome reference sequence input file in FASTA format" $REFERENCECP
 REFERENCECP=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
 # Input data, HybSeq reads in FASTQ, file 1
-readinputfile -m "FASTQ reads data file 1" $INPUTFQ1
+readinputfile -m "paired-end genome skim input file in FASTQ format (first file)" $INPUTFQ1
 INPUTFQ1=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
 # Input data, HybSeq reads in FASTQ, file 2
-readinputfile -t "FASTQ reads data file 2" $INPUTFQ2
+readinputfile -t "paired-end genome skim input file in FASTQ format (second file)" $INPUTFQ2
 INPUTFQ2=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
 # Input data, mitochondrion reference in FASTA
-readinputfile -q "FASTA reference mitochondrion data" $REFERENCEMT
-REFERENCEMT=$CHECKFILEREADOUT
-CHECKFILEREADOUT=""
-echo
+if [ "$STARTINI" == "I" ]; then
+  echo
+  echo "Would you like to use mitochondriome reference sequence input file in FASTA"
+  echo "  format? (Yes/No)"
+  read MTINPUTQ
+  while :
+  do
+    case $MTINPUTQ in
+      Y|y|Yes|yes|YES)
+	readinputfile -q "mitochondriome reference sequence input file in FASTA format" $REFERENCEMT
+	REFERENCEMT=$CHECKFILEREADOUT
+	CHECKFILEREADOUT=""
+	break
+	;;
+      N|n|No|no|NO)
+	echo
+	echo "OK, we will not use mitochondriome reference sequence. Continuing."
+	REFERENCEMT=""
+	break
+	;;
+      *) echo "Wrong option. Use Y or N." && read $MTINPUTQ;;
+    esac
+  done
+  echo
+  fi
+
+if [ -z "$REFERENCEMT" ]; then
+  echo
+  echo "${BOLD}Warning!${NORM} There is no mitochondriome reference sequence."
+  echo
+  fi
 
 # Input file in FASTA format
 echo "Input file: $INPUTFILE"
@@ -1014,7 +1018,9 @@ CPBAM="${INPUTFILE%.*}_genome_skim_data_no_cp_reads.bam"
 # Genome skim data without cpDNA reads
 FASTQNOCP="${INPUTFILE%.*}_genome_skim_data_no_cp_reads"
 # Input - reference genome - mtDNA
-echo "Input file: $REFERENCEMT"
+if [ -n "$REFERENCEMT" ]; then
+  echo "Input file: $REFERENCEMT"
+  fi
 # Reference genome - mitochondrion index - temporary file - will be deleted
 REFERENCEMT2="${REFERENCEMT%.*}.mt"
 # mtDNA reads mapped to reference - temporary file - will be deleted
@@ -1024,7 +1030,7 @@ MTBAM="${INPUTFILE%.*}_genome_skim_data_no_cp_no_mt_reads.bam"
 # Genome skim data without mtDNA reads
 FASTQNOMT="${INPUTFILE%.*}_genome_skim_data_no_cp_no_mt_reads"
 # Combined paired-end genome skim reads
-FLASHOUT="${INPUTFILE%.*}_combined_reads_co_cp_no_mt_reads"
+FLASHOUT="${INPUTFILE%.*}_combined_reads_no_cp_no_mt_reads"
 # Output of BLAT (matching of the unique transcripts and the filtered, combined genome skim reads sharing ≥85% sequence similarity)
 BLATOUTFIN="${INPUTFILE%.*}_blat_unique_transcripts_versus_genome_skim_data.pslx"
 # Matching sequences in FASTA
@@ -1041,6 +1047,9 @@ TABREMOVED="${INPUTFILE%.*}_1k_transcripts-removed.tab"
 FINALA="${INPUTFILE%.*}_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa"
 
 # Part 1: Obtain unique transcripts.
+
+echo
+echo "Step 1 of the pipeline - removal of transcripts sharing ≥90% sequence similarity."
 
 # BLAT between the transcriptome itself
 echo
@@ -1112,24 +1121,13 @@ join -j1 $UNIQUELIST $SORTEDINPUT > $JOINEDTS || {
 # Convert to FASTA
 echo
 echo "Converting to FASTA"
-
-if [ "$OS" == "Mac" ]; then
-  sed -E 's/ /\t/g' $JOINEDTS > $JOINEDTABS || {
-    echo
-    echo "${BOLD}Error!${NORM} Conversion of $JOINEDTS to FASTA failed."
-    echo "Aborting. Check file $JOINEDTS."
-    echo
-    exit 1
-    }
-  else
-    sed -r 's/ /\t/g' $JOINEDTS > $JOINEDTABS || {
-      echo
-      echo "${BOLD}Error!${NORM} Conversion of $JOINEDTS to FASTA failed."
-      echo "Aborting. Check file $JOINEDTS."
-      echo
-      exit 1
-      }
-  fi
+sed 's/ /\t/g' $JOINEDTS > $JOINEDTABS || {
+  echo
+  echo "${BOLD}Error!${NORM} Conversion of $JOINEDTS to FASTA failed."
+  echo "Aborting. Check if file $JOINEDTS is correct."
+  echo
+  exit 1
+  }
 
 echo
 awk '{print ">"$1"\n"$2}' $JOINEDTABS > $JOINEDFA || {
@@ -1144,6 +1142,9 @@ echo "  $JOINEDFA for possible later usage."
 confirmgo
 
 # Part 2: Find genome skimming data (only nuclear reads) which align to the unique transcripts
+
+echo
+echo "Step 2 of the pipeline - removal of reads of plastid origin."
 
 # Get rid of the chloroplast and mitochondrial reads in the genome skimming data
 
@@ -1209,71 +1210,97 @@ confirmgo
 
 # Mitochondrial reads
 
-# Create a reference mitochondrion index with bowtie2-build
-echo
-echo "Creating a reference mitochondrion index"
-echo
-bowtie2-build $REFERENCEMT $REFERENCEMT2 || {
-  echo
-  echo "${BOLD}Error!${NORM} Creating of reference mitochondrion index with bowtie2-build failed."
-  echo "Aborting. Check if files $REFERENCEMT and $REFERENCEMT2 are correct."
-  echo
-  exit 1
-  }
-echo
+if [ -n "$REFERENCEMT" ]; then
 
-# Map the mtDNA reads to the reference mitochondrion with BOWTIE2
-echo
-echo "Mapping mtDNA reads to reference mitochondrion. This may take longer time."
-echo
-bowtie2 -x $REFERENCEMT2 -1 `echo $FASTQNOCP`_1.fq -2 `echo $FASTQNOCP`_2.fq -S $BOWTIE2MT || {
   echo
-  echo "${BOLD}Error!${NORM} Mapping mtDNA reads to reference mitochondrion with bowtie2 failed."
-  echo "Aborting. Check if files $REFERENCEMT2,"
-  echo "`echo $FASTQNOCP`_1.fq and `echo $FASTQNOCP`_2.fq are correct."
-  echo
-  exit 1
-  }
-echo
+  echo "Step 3 of the pipeline - removal of reads of mitochondrial origin (optional)."
 
-# Convert SAM to BAM with SAMtools
-echo
-echo "Converting SAM to BAM. This may take longer time."
-samtools view -bT $REFERENCEMT $BOWTIE2MT > $MTBAM || {
+  # Create a reference mitochondrion index with bowtie2-build
   echo
-  echo "${BOLD}Error!${NORM} Conversion of SAM to BAM failed. Aborting. Check files"
-  echo "$REFERENCEMT and $BOWTIE2MT."
+  echo "Creating a reference mitochondrion index"
   echo
-  exit 1
-  }
-echo "Converted file saved as"
-echo "  $MTBAM for possible later usage."
-confirmgo
+  bowtie2-build $REFERENCEMT $REFERENCEMT2 || {
+    echo
+    echo "${BOLD}Error!${NORM} Creating of reference mitochondrion index with bowtie2-build failed."
+    echo "Aborting. Check if files $REFERENCEMT and $REFERENCEMT2 are correct."
+    echo
+    exit 1
+    }
+  echo
 
-# Remove the mtDNA reads with bam2fastq
-echo
-echo "Removing mtDNA reads. This may take longer time."
-bam2fastq --no-aligned $MTBAM -o $FASTQNOMT#.fq || {
+  # Map the mtDNA reads to the reference mitochondrion with BOWTIE2
   echo
-  echo "${BOLD}Error!${NORM} Removal of mtDNA reads failed. Aborting."
-  echo "Check if file $MTBAM is correct."
+  echo "Mapping mtDNA reads to reference mitochondrion. This may take longer time."
   echo
-  exit 1
-  }
-echo
+  bowtie2 -x $REFERENCEMT2 -1 `echo $FASTQNOCP`_1.fq -2 `echo $FASTQNOCP`_2.fq -S $BOWTIE2MT || {
+    echo
+    echo "${BOLD}Error!${NORM} Mapping mtDNA reads to reference mitochondrion with bowtie2 failed."
+    echo "Aborting. Check if files $REFERENCEMT2,"
+    echo "`echo $FASTQNOCP`_1.fq and `echo $FASTQNOCP`_2.fq are correct."
+    echo
+    exit 1
+    }
+  echo
 
-# Combine the paired-end reads with FLASH
-echo
-echo "Combining paired-end reads"
-echo
-flash -M $FLASHM `echo $FASTQNOMT`_1.fq `echo $FASTQNOMT`_2.fq -o $FLASHOUT || {
+  # Convert SAM to BAM with SAMtools
   echo
-  echo "${BOLD}Error!${NORM} Combining paired-end reads failed. Aborting. Check files"
-  echo "$REFERENCEMT, `echo $FASTQNOMT`_1.fq and `echo $FASTQNOMT`_2.fq."
+  echo "Converting SAM to BAM. This may take longer time."
+  samtools view -bT $REFERENCEMT $BOWTIE2MT > $MTBAM || {
+    echo
+    echo "${BOLD}Error!${NORM} Conversion of SAM to BAM failed. Aborting. Check files"
+    echo "$REFERENCEMT and $BOWTIE2MT."
+    echo
+    exit 1
+    }
+  echo "Converted file saved as"
+  echo "  $MTBAM for possible later usage."
+  confirmgo
+
+  # Remove the mtDNA reads with bam2fastq
   echo
-  exit 1
-  }
+  echo "Removing mtDNA reads. This may take longer time."
+  bam2fastq --no-aligned $MTBAM -o $FASTQNOMT#.fq || {
+    echo
+    echo "${BOLD}Error!${NORM} Removal of mtDNA reads failed. Aborting."
+    echo "Check if file $MTBAM is correct."
+    echo
+    exit 1
+    }
+  echo
+
+  # Combine the paired-end reads with FLASH - with Mt reads
+  echo
+  echo "Step 4 of the pipeline - combination of paired-end reads."
+  echo
+  echo "Combining paired-end reads"
+  echo
+  flash -o $FLASHOUT -M $FLASHM `echo $FASTQNOMT`_1.fq `echo $FASTQNOMT`_2.fq || {
+    echo
+    echo "${BOLD}Error!${NORM} Combining paired-end reads failed. Aborting. Check files"
+    echo "$REFERENCEMT, `echo $FASTQNOMT`_1.fq and `echo $FASTQNOMT`_2.fq."
+    echo
+    exit 1
+    }
+  echo
+  else
+    # Combine the paired-end reads with FLASH - without Mt reads
+    echo
+    echo "Step 4 of the pipeline - combination of paired-end reads."
+    echo
+    echo "Combining paired-end reads"
+    echo
+    flash -o $FLASHOUT -M $FLASHM `echo $FASTQNOCP`_1.fq `echo $FASTQNOCP`_2.fq || {
+      echo
+      echo "${BOLD}Error!${NORM} Combining paired-end reads failed. Aborting. Check files"
+      echo "$REFERENCECP, `echo $FASTQNOCP`_1.fq and `echo $FASTQNOCP`_2.fq."
+      echo
+      exit 1
+      }
+  fi
+
 echo
+echo "Step 5 of the pipeline - matching of the unique transcripts and the filtered,"
+echo "  combined genome skim reads sharing ≥85% sequence similarity."
 
 # Convert FASTQ file to FASTA
 echo
@@ -1306,13 +1333,16 @@ confirmgo
 
 # Part 3: Assemble the obtained sequences in contigs (part A)
 
+echo
+echo "Step 6 of the pipeline - filtering of BLAT output."
+
 # This will be done in Geneious. Modification of the PSLX file is needed (remove headers, select the field with the transcript (target) sequence names and the field with the query sequences, convert to FASTA)
 echo
 echo "Modifying PSLX BLAT output for usage in Geneious"
-{ sed 1,5d $BLATOUTFIN | cut -f14,22 | awk '{n=split($2,a,",");for(i=1;i<=n;i++)print $1"_"NR"_"i,a[i]}' | sed 's/^/>/' | sed 's/' '/\n/' > $BLATOUTFIN2; } || {
+{ sed 1,5d $BLATOUTFIN | cut -f14,22 | awk '{n=split($2,a,",");for(i=1;i<=n;i++)print $1"_"NR"_"i,a[i]}' | sed 's/^/>/' | sed 's/ /\n/' > $BLATOUTFIN2; } || {
   echo
   echo "${BOLD}Error!${NORM} Modifying PSLX BLAT output failed. Aborting."
-  eho "Check if file $BLATOUTFIN is correct."
+  echo "Check if file $BLATOUTFIN is correct."
   echo
   exit 1
   }
@@ -1357,7 +1387,7 @@ echo "Counting number of times each transcript hit a genom skim read"
 # List of the transcripts with >1000 BLAT scores
 echo
 echo "Listing transcripts with >$BLATSCORE BLAT scores"
-{ awk '$1>"'"$BLATSCORE"'"' $TABLIST | awk '{print $2}' > $TABBLAT; } || {
+{ awk '$1>'"$BLATSCORE"'' $TABLIST | awk '{print $2}' > $TABBLAT; } || {
   echo
   echo "${BOLD}Error!${NORM} Listing of transcripts with >$BLATSCORE BLAT scores failed. Aborting."
   echo "Check if file $TABLIST is correct."
@@ -1405,13 +1435,13 @@ grep -v n $TABREMOVED | awk '{print $1"\t"length($2)}' | awk '{s+=$2;a++}END{pri
 
 # Remove unneeded temporal files - keep only *.pslx, *.fasta and *.bam
 echo "Removing unneeded temporal files"
-rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $REFERENCEMT2* $BOWTIE2MT $FLASHOUT* $TAB $TABLIST $TABBLAT $TABREMOVED || {
+rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $REFERENCEMT2* $BOWTIE2MT $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
   echo
   echo "${BOLD}Error!${NORM} Removal of temporal files failed. Remove following files manually:"
   echo "$UNIQUELIST, $INPUTTAB, $SORTEDINPUT,"
   echo "$JOINEDTS, $JOINEDTABS, $REFERENCECP2*,"
   echo "$BOWTIE2CP, $REFERENCEMT2*, $BOWTIE2MT,"
-  echo "$FLASHOUT*, $TAB, $TABLIST,"
+  echo "$FLASHOUT.extendedFrags.fastq, $TAB, $TABLIST,"
   echo "$TABBLAT and $TABREMOVED."
   confirmgo
   }
@@ -1427,12 +1457,16 @@ echo "3)  SAM converted to BAM (removal of reads of plastid origin):"
 echo "$CPBAM"
 echo "4)  Genome skim data without cpDNA reads:"
 ls $FASTQNOCP*
-echo "5)  SAM converted to BAM (removal of reads of mitochondrial origin):"
-echo "$MTBAM"
-echo "6)  Genome skim data without mtDNA reads:"
-ls $FASTQNOMT*
+if [ -n "$REFERENCEMT" ]; then
+  echo "5)  SAM converted to BAM (removal of reads of mitochondrial origin):"
+  echo "$MTBAM"
+  echo "6)  Genome skim data without mtDNA reads:"
+  ls $FASTQNOMT*
+  else
+    echo "(Some files are not available as there was no mitochondriome reference sequence)"
+  fi
 echo "7)  Combined paired-end genome skim reads:"
-ls $FLASHOUT*
+echo "$FLASHOUT.extendedFrags.fa"
 echo "8)  Output of BLAT (matching of the unique transcripts and the filtered,"
 echo "    combined genome skim reads sharing ≥85% sequence similarity):"
 echo "$BLATOUTFIN"
@@ -1446,7 +1480,7 @@ echo
 echo "Success!"
 echo
 echo "Resulting FASTA was saved as"
-echo "${BOLD}$FINALA${NORM} for usage in Geneious."
+echo "${BOLD}$FINALA${NORM} for usage in Geneious (step 7 of the pipeline)."
 echo "Use this file in next step of the pipeline. See README and manual for details."
 confirmgo
 

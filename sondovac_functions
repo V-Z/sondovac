@@ -1,7 +1,8 @@
 # Functions required by probe design script
 
 # Version of the script
-SCRIPTVERSION=0.5
+SCRIPTVERSION=0.8
+RELEASEDATE=2015-09-09
 # Web page of the script
 WEB="https://github.com/V-Z/sondovac/"
 
@@ -44,7 +45,7 @@ echo " #          When using this script, please, cite Schmickl et al. 2015     
 echo " #                                                                            #"
 echo " ##############################################################################"
 echo
-echo -e "\tThis is version $SCRIPTVERSION released 2015-08-07."
+echo -e "\tThis is version $SCRIPTVERSION released $RELEASEDATE."
 echo -e "\tFor newest version check $WEB or"
 echo -e "\t\t$0 -u"
 echo -e "\tIn case of problems not covered in README for user support see"
@@ -67,6 +68,43 @@ echo
 echo "################################################################################"
 echo
 
+# Help for command line options shared by both parts of the script
+function generaloptions {
+  echo "Usage options:"
+  echo -e "\t-h, -v\tPrint this help message and exit."
+  echo -e "\t-u\tCheck for updates of Sondovač at $WEB"
+  echo -e "\t\t  and download of newer version will be offered to the user."
+  echo -e "\t-l\tDisplay LICENSE for license information (this script is licensed"
+  echo -e "\t\t  tunder GNU GPL v.3, other software under variable licenses)."
+  echo -e "\t\t  Exit viewing by pressing the \"Q\" key."
+  echo -e "\t-r\tDisplay README for detailed usage instructions. Exit viewing by"
+  echo -e "\t\t  pressing the \"Q\" key. More information is available in PDF"
+  echo -e "\t\t  manual."
+  echo -e "\t-p\tDisplay INSTALL for detailed installation instructions. Exit"
+  echo -e "\t\t  viewing by pressing the \"Q\" key. More information is available"
+  echo -e "\t\t  in PDF manual."
+  echo -e "\t-e\tDisplay detailed citation information and exit."
+  echo -e "\t-i\tRunning in interactive mode - script will on-demand ask for"
+  echo -e "\t\t  required input files, installation of missing software etc."
+  echo -e "\t\t  This is the recommended default value (the script runs"
+  echo -e "\t\t  interactively without explicitly using option ${BOLD}-n${NORM})."
+  echo -e "\t-n\tRunning in non-interactive mode. User ${BOLD}must${NORM} provide at least"
+  echo -e "\t\t  required input files below. You can use ${BOLD}only one${NORM} of the"
+  echo -e "\t\t  parameters ${BOLD}-i${NORM} or ${BOLD}-n${NORM} (not both of them). If script fails"
+  echo -e "\t\t  to find some of required software packages, it will exit."
+  }
+
+# Check if user didn't use together -n and -i
+function checkmodef {
+  if [ "$CHECKMODE" == 2 ]; then
+    echo
+    echo "${BOLD}Error!${NORM} You provided both parameters ${BOLD}-i${NORM} (interactive mode) and ${BOLD}-n${NORM}"
+    echo "  (non-interactive mode). You ${BOLD}may${NORM} use ${BOLD}only one${NORM} of them (${BOLD}either -i${NORM} or ${BOLD}-n${NORM})!"
+    echo
+    exit 1
+    fi
+  }
+
 # Sometimes user must read something and confirm continuing...
 function confirmgo {
   if [ "$STARTINI" == "I" ]; then
@@ -84,10 +122,10 @@ function devrelease {
     echo
     echo "${BOLD}Warning!${NORM} This is developmental, not fully tested version."
     echo "You may encounter problems and some functions are still missing"
-    echo "Namely, support for Mac OS X and some major Linux distributions is not finished."
-    echo "Some functions for smoother and more comfortable user experience are missing."
     echo "Please, report any issues and/or wishes to zeisek@natur.cuni.cz."
-    echo "We hope you enjoy the script, but, please, do not expect too much now. ;-)"
+    echo "We hope you enjoy the script, but, please, do not expect too much yet. ;-)"
+    echo "Full release will be available soon"
+    echo
     if [ "$STARTINI" == "I" ]; then
       confirmgo
       fi
@@ -283,8 +321,8 @@ function citationreference {
   echo "    the organization and analysis of sequence data"
   echo "  Bioinformatics (2012) 28(12):1647-1649"
   echo "  http://bioinformatics.oxfordjournals.org/content/28/12/1647"
-  echo "Picard:"
-  echo "* http://broadinstitute.github.io/picard"
+#   echo "Picard:"
+#   echo "* http://broadinstitute.github.io/picard"
   echo "SAMtools:"
   echo "* Heng Li, Bob Handsaker, Alec Wysoker, Tim Fennell, Jue Ruan, Nils Homer,"
   echo "    Gabor Marth, Goncalo Abecasis, Richard Durbin and 1000 Genome Project"
@@ -325,7 +363,7 @@ function oscheck {
     }
 
   # Operating system
-  if [ -n $OSCHECKS ]; then
+  if [ -n "$OSCHECKS" ]; then
     case "$OSCHECKS" in
       Darwin|darwin) OS="Mac";;
       Linux|linux) OS="Linux";;
@@ -358,7 +396,7 @@ function oscheck {
   # Warning for BSD and Solaris users
   if [ "$OS" == "BSD" -o "$OS" == "Solaris" ]; then
     echo
-    echo "${BOLD}Warning!${NORM} Running this pipeline on any BSD or Solaris was not tested,"
+    echo "${BOLD}Warning!${NORM} Running this pipeline on any version of $OS was not tested,"
     echo "although it is supposed to work."
     echo "We are not able to guarantee the pipeline to work."
     echo "See INSTALL or manual for more details."
@@ -378,11 +416,12 @@ function oscheck {
     confirmgo; }
 
   # 64 or 32 bit
-  if [ -n $OSCHECKB ]; then
+  if [ -n "$OSCHECKB" ]; then
     case "$OSCHECKB" in
       *x86_64*|*ia64*) OSB="64b";;
       *i386*|*i486*|*i586*|*i686*) OSB="32b";;
-      *) echo "OS other than 64 or 32 bit or undetectable OS details."
+      *) echo
+	  echo "OS other than 64 or 32 bit or undetectable OS details."
 	  echo "${BOLD}Assuming 64 bit.${NORM}"
 	  echo "If this is not correct, you may experience problems during installation"
 	  echo "of needed software. If so, please, install required dependencies manually."
@@ -405,11 +444,12 @@ function oscheck {
       echo "missing, not in PATH or not available for current user. For some steps you may"
       echo "need compilation tools (see INSTALL for details). Ensure you have those tools available."
       confirmgo; }
-    if [ -n $OSCHECKS ]; then
+    if [ -n "$OSCHECKS" ]; then
       case "$DISTRIBUTION" in
 	*[Ss][Uu][Ss][Ee]*)
 	  LINUX="SUSE"
 	  echo "Linux distribution is SUSE, openSUSE or derivative."
+	  echo
 	  PACKAGES=''
 	  # Check if all required packages are installed
 	  while read PACKAGENAME; do
@@ -433,6 +473,7 @@ function oscheck {
 	  if [ -n "$PACKAGES" ]; then
 	    # Install missing packages
 	    echo "Packages \"$PACKAGES\" are missing."
+	    echo
 	    echo "Compilation may require to install them. Would you like to install them now?"
 	    echo "It requires administrative privileges. (Yes/No)"
 	    read SUSEI
@@ -467,6 +508,7 @@ function oscheck {
 	*[Uu]buntu*)
 	  LINUX=Ubuntu
 	  echo "Linux distribution is Ubuntu or derivative."
+	  echo
 	  PACKAGES=''
 	  # Check if all required packages are installed
 	  while read PACKAGENAME; do
@@ -535,6 +577,7 @@ function oscheck {
 		fi
 	      # Install missing packages
 	      echo "Packages \"$PACKAGES\" are missing."
+	      echo
 	      echo "Compilation may require to install them. Would you like to install them now?"
 	      echo "It requires administrative privileges. (Yes/No)"
 	      read UBUNTUI
@@ -751,7 +794,7 @@ function readinputfile {
   CHECKFILEREAD=$3
   if [ "$STARTINI" == "I" ]; then
     if [ -z "$CHECKFILEREAD" ]; then
-      echo "Provide file name for $2 input file:"
+      echo "Provide file name for $2:"
       while :
 	do
 	read CHECKFILEREAD
@@ -797,7 +840,7 @@ function readinputfile {
 	      break
 	      ;;
 	    N|n|NO|No|no|NEW|New|new)
-	      echo "Provide file name for new $2 input file:"
+	      echo "Provide file name for new $2:"
 	      while :
 		do
 		read CHECKFILEREAD
