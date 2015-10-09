@@ -1,6 +1,6 @@
 Sondovač changelog
 
-Version 0.8 alpha release 2015-09-09
+Version 0.8 alpha released 2015-10-09
 ================================================================================
 
 * Usage of mitochondrial reference sequence is optional
@@ -8,7 +8,7 @@ Version 0.8 alpha release 2015-09-09
 * Various fixes and enhancements
 
 
-Version 0.7 alpha release 2015-09-06
+Version 0.7 alpha released 2015-10-06
 ================================================================================
 
 * Fixed reported problems with sed differences among Linux and Mac OS X
@@ -16,7 +16,7 @@ Version 0.7 alpha release 2015-09-06
 * Various fixes and enhancements
 
 
-Version 0.6 alpha release 2015-08-10
+Version 0.6 alpha released 2015-08-10
 ================================================================================
 
 * Fixed problems with some versions of output of Geneious
@@ -24,7 +24,7 @@ Version 0.6 alpha release 2015-08-10
 * Various fixes and enhancements
 
 
-Version 0.5 alpha release 2015-07-24
+Version 0.5 alpha released 2015-07-24
 ================================================================================
 
 * First public release, early alpha stage

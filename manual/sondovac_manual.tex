@@ -4,20 +4,13 @@
 % * Geneious screenshots
 % * More BASH examples (installation of packages in Linux), some screenshot
 % * Help for Mac OS X - install build tools, homebrew
-% * Final formatting
 
 \usepackage{xltxtra}
 \usepackage{xunicode}
 \usepackage{polyglossia}
 
 % Modify page margins
-\addtolength{\hoffset}{-0.5cm} % Enlarge page to left
-\setlength{\evensidemargin}{0cm} % Move left margin of even pages left
-\setlength{\oddsidemargin}{1cm} % Move right margin of odd pages right
-\setlength{\marginparwidth}{2cm} % Left margin
-\setlength{\textwidth}{16cm} % Text width (width of A4 is 21 cm - maximal width of graphics)
-\addtolength{\voffset}{-1cm} % Move text up on a page
-\setlength{\textheight}{23cm} % Text height (height of A4 is 29.7 cm - maximal height of graphics)
+\usepackage[a4paper, text={160mm, 250mm}]{geometry}
 
 % Better captions of tables and figures
 \usepackage[small, bf]{caption}
@@ -26,7 +19,9 @@
 \usepackage{enumitem}
 
 % Better bibliography
-\usepackage{natbib}
+\usepackage[round, semicolon, authoryear]{natbib}
+% \citet{} > Author (year); \citep{} > (Author, year);	 natbib: \citet/p[text][p.~1]{} > text Author year, p. 1; with * lists all authors
+\bibliographystyle{plainnat}
 
 % Various logos
 \usepackage{dtklogos}
@@ -40,15 +35,19 @@
 \setdefaultlanguage{english}
 
 % Opening
-\title{Manual for Sondovač 0.7}
+\title{Manual for Sondovač 0.8}
 \author{Roswitha Schmickl, Aaron Liston, Vojtěch Zeisek and others}
 
+% Allow line breaks within URLs
+\usepackage[hyphens]{url}
+
+% Clickable navigation within document
 \usepackage[
   bookmarks=true,
   unicode=true,
   colorlinks=true,
   pagebackref=true,
-  pdftitle={Sondovac manual 0.7},
+  pdftitle={Sondovac manual 0.8},
   plainpages=false,
   pdfauthor={Roswitha Schmickl, Aaron Liston, Vojtech Zeisek and others},
   pdfsubject={Software manual},
@@ -67,19 +66,21 @@
 
 % Title page
 \maketitle
-Sondovač is a script to create orthologous low-copy nuclear probes from transcriptome and genome skim data for target enrichment.
+Sondovač\footnote{English pronunciation is "Sondovach".} is a script to create orthologous low-copy nuclear probes from transcriptome and genome skim data for target enrichment.
+
+\begin{abstract}
+Phylogenetics benefits from using a large number of putatively independent nuclear loci and the combination with other datasets such as the plastid and mitochondrial genome. Selecting such orthologous low-copy nuclear (LCN) loci is still a challenge for non-model organisms. Meanwhile it is common to select LCN genes for phylogenies based on a comparison of transcriptomes, but automated bioinformatic pipelines for the selection of those genes are largely absent. We created a user-friendly, automated and interactive script named Sondovač to LCN loci by a comparison between transcriptome and genome skim data. The script is licensed under open-source license GPL v.3 allowing further modifications. The script runs on major Linux distributions and Mac OS X. Strong bioinformatic skills and access to high-performance computer clusters are not required; it runs on a standard desktop computer equipped with modern CPU like Intel i5 or i7 within several hours.
+\end{abstract}
+
+% Contents
 \tableofcontents
 \listoffigures
 \listoftables
 \vskip 1cm
 
-% Document body starts
+% Document main text starts
 
-\framebox{\parbox{15cm}{Sondovač is a script to create orthologous low-copy nuclear probes from transcriptome and genome skim data for target enrichment. For information and download see \href{https://github.com/V-Z/sondovac/wiki}{https://github.com/V-Z/sondovac/wiki}. For paper introducing Sondovač see Schmickl et al.}}
-
-\begin{abstract}
-Phylogenetics benefits from using a large number of putatively independent nuclear loci and the combination with other datasets such as the plastid and mitochondrial genome. Selecting such orthologous low-copy nuclear (LCN) loci is still a challenge for non-model organisms. Meanwhile it is common to select LCN genes for phylogenies based on a comparison of transcriptomes, but automated bioinformatic pipelines for the selection of those genes are largely absent. We created a user-friendly, automated and interactive script named Sondovač to LCN loci by a comparison between transcriptome and genome skim data. The script is licensed under open-source license GPL v.3 allowing further modifications. The script runs on major Linux distributions and Mac OS X. Strong bioinformatic skills and access to high-performance computer clusters are not required; it runs on a standard desktop computer equipped with modern CPU like Intel i5 or i7 within several hours.
-\end{abstract}
+\framebox{\parbox{15cm}{Sondovač is a script to create orthologous low-copy nuclear probes from transcriptome and genome skim data for target enrichment. For information and download see \href{https://github.com/V-Z/sondovac/wiki}{https://github.com/V-Z/sondovac/wiki}.}}
 
 \section{Introduction}
 
@@ -99,7 +100,7 @@ A transcriptome assembly and paired-end genome skim raw data are combined to get
 
 \begin{figure}[p]
 \begin{center}
-\includegraphics[width=15cm]{pipeline_workflow_grayscale.png}
+\includegraphics[width=14cm]{pipeline_workflow_grayscale.png}
 \end{center}
 \caption[Workflow of the probe design script Sondovač]{Workflow of the probe design script Sondovač. An overview on the main steps of Hyb-Seq are given in the top part of the figure; probe design is the first one. Each step of Sondovač is numbered and illustrated by three boxes each: Software is highlighted in dark gray, a summary of each step is given in medium gray, and input/output of each step is depicted in light gray. Optional removal of reads of mitochondrial origin from the genome skim data is marked by decoloration of the text. The required input files of Sondovač are highlighted in bold. The direction of the workflow is indicated by arrows.}
 \label{pipeline-workflow}
@@ -274,9 +275,9 @@ If you are not familiar with the usage of command line, see some basic tutorial 
 \subsection{Geneious}
 \label{geneious}
 
-For the part (2) user must have Geneious \citep{Meintjes2012}. Geneious is a DNA alignment, assembly, and analysis software and one of the most common software platforms used in genomics. It is utilized for de novo assembly in Sondovač. We plan to replace it by some free open-source command line tool in some future release of Sondovač. Visit \href{http://www.geneious.com/}{http://www.geneious.com/} for download, purchase, installation and usage of Geneious. It is very feature-rich application. The input data are processed (interactively or not) by \texttt{sondovac$\_$part$\_$a.sh} and then user must process its output manually by Geneious according instructions below. Output of Geneious is then processed by \texttt{sondovac$\_$part$\_$b.sh}, which produce final probe set. Geneious was tested with versions 6, 7 and 8.
+For the part (2) user must have Geneious \citep{Kearse2012}. Geneious is a DNA alignment, assembly, and analysis software and one of the most common software platforms used in genomics. It is utilized for de novo assembly in Sondovač. We plan to replace it by some free open-source command line tool in some future release of Sondovač. Visit \href{http://www.geneious.com/}{http://www.geneious.com/} for download, purchase, installation and usage of Geneious. It is very feature-rich application. The input data are processed (interactively or not) by \texttt{sondovac$\_$part$\_$a.sh} and then user must process its output manually by Geneious according instructions below. Output of Geneious is then processed by \texttt{sondovac$\_$part$\_$b.sh}, which produce final probe set. Geneious was tested with versions 6, 7 and 8.
 
-Import output file of part A of the script (\texttt{sondovac$\_$part$\_$a.sh}): go to menu \textbf{File | Import | From File\ldots} This file is named as:\\YourInputFile$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa
+Import output file of part A of the script (\texttt{sondovac$\_$part$\_$a.sh}): go to menu \textbf{File | Import | From File\ldots} This file is named as: \texttt{YourInputFile$\_$\allowbreak blat$\_$\allowbreak unique$\_$\allowbreak transcripts$\_$\allowbreak versus$\_$\allowbreak genome$\_$\allowbreak skim$\_$\allowbreak data-no$\_$\allowbreak missing$\_$\allowbreak fin.fsa}
 
 Select the file and go to menu \textbf{Tools | Align / Assemble | De Novo Assemble}. In \textbf{Data} frame select \textbf{Assembe by 1st (\ldots) Underscore}. In \textbf{Method} frame select \textbf{Geneious Assembler} (if you don't have other assemblers, this option might be missing) and \textbf{Medium Sensitivity / Fast Sensitivity}
 
@@ -312,7 +313,7 @@ Java/OpenJDK & v. > 7 & \href{https://www.java.com/}{https://www.java.com/}/\hre
 libpng & 1.6.X & \href{http://www.libpng.org/}{http://www.libpng.org/}\\
 Picard & v. > 1.137 & \href{https://broadinstitute.github.io/picard/}{https://broadinstitute.github.io/picard/}\\
 SAMtools, htsjdk & 1.2 & \href{http://www.htslib.org/}{http://www.htslib.org/}\\
-Sondovač & 0.7 & \href{https://github.com/V-Z/sondovac/wiki}{https://github.com/V-Z/sondovac/wiki}\\
+Sondovač & 0.8 & \href{https://github.com/V-Z/sondovac/wiki}{https://github.com/V-Z/sondovac/wiki}\\
 zlib & 1.2.8 & \href{http://zlib.net/}{http://zlib.net/}
 \end{tabular}
 \label{software-links}
@@ -336,29 +337,31 @@ zlib & 1.2.8 & \href{http://zlib.net/}{http://zlib.net/}
   \item BLAT
 \end{itemize}
 
+Papers describing the software used by Sondovač:
+
 \begin{description}
- \item[BLAT] \citet{Kent2002}: BLAT -- the BLAST-like alignment tool, \href{http://genome.cshlp.org/content/12/4/656.short}{http://genome.cshlp.org/content/12/4/656.short}
- \item[Bowtie2] \citet{Langmead2012}: Fast gapped-read alignment with Bowtie 2, \href{http://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html}{http://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html}
+ \item[BLAT] \citet{Kent2002}: BLAT -- the BLAST-like alignment tool.
+ \item[Bowtie2] \citet{Langmead2012}: Fast gapped-read alignment with Bowtie 2.
  \item[CD-HIT] There are several papers describing CD-HIT:
   \begin{itemize}
-    \item \citet{Li2001}: Clustering of highly homologous sequences to reduce the size of large protein databases, \href{http://bioinformatics.oxfordjournals.org/content/17/3/282.short}{http://bioinformatics.oxfordjournals.org/content/17/3/282.short}
-    \item \citet{Li2002}: Tolerating some redundancy significantly speeds up clustering of large protein databases, \href{http://bioinformatics.oxfordjournals.org/content/18/1/77.short}{http://bioinformatics.oxfordjournals.org/content/18/1/77.short}
-    \item \citet{Li2006}: Cd-hit: a fast program for clustering and comparing large sets of protein or nucleotide sequences, \href{http://bioinformatics.oxfordjournals.org/content/22/13/1658.short}{http://bioinformatics.oxfordjournals.org/content/22/13/1658.short}
-    \item \citet{Fu2012}: CD-HIT: accelerated for clustering the next generation sequencing data, \href{http://bioinformatics.oxfordjournals.org/content/28/23/3150.short}{http://bioinformatics.oxfordjournals.org/content/28/23/3150.short}
-    \item \citet{Huang2010}: CD-HIT Suite: a web server for clustering and comparing biological sequences, \href{http://bioinformatics.oxfordjournals.org/content/26/5/680.short}{http://bioinformatics.oxfordjournals.org/content/26/5/680.short}
-    \item \citet{Niu2010}: Artificial and natural duplicates in pyrosequencing reads of metagenomic data, \href{http://www.biomedcentral.com/1471-2105/11/187}{http://www.biomedcentral.com/1471-2105/11/187}
-    \item \citet{Li2012b}: Ultrafast clustering algorithms for metagenomic sequence analysis, \href{http://bib.oxfordjournals.org/content/13/6/656.abstract}{http://bib.oxfordjournals.org/content/13/6/656.abstract}
+    \item \citet{Li2001}: Clustering of highly homologous sequences to reduce the size of large protein databases.
+    \item \citet{Li2002}: Tolerating some redundancy significantly speeds up clustering of large protein databases.
+    \item \citet{Li2006}: Cd-hit: a fast program for clustering and comparing large sets of protein or nucleotide sequences.
+    \item \citet{Fu2012}: CD-HIT: accelerated for clustering the next generation sequencing data.
+    \item \citet{Huang2010}: CD-HIT Suite: a web server for clustering and comparing biological sequences.
+    \item \citet{Niu2010}: Artificial and natural duplicates in pyrosequencing reads of metagenomic data.
+    \item \citet{Li2012b}: Ultrafast clustering algorithms for metagenomic sequence analysis.
    \end{itemize}
- \item[FASTX toolkit] \citet{Gordon2010}: FASTX-Toolkit. FASTQ/A short-reads pre-processing tools, \href{http://hannonlab.cshl.edu/fastx_toolkit/}{http://hannonlab.cshl.edu/fastx$\_$toolkit/}
- \item[FLASH] \citet{Magoc2011}: FLASH: fast length adjustment of short reads to improve genome assemblies, \href{http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract}{http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract}
- \item[Geneious] \citet{Meintjes2012}: Geneious Basic: An integrated and extendable desktop software platform for the organization and analysis of sequence data, \href{http://bioinformatics.oxfordjournals.org/cgi/doi/10.1093/bioinformatics/bts199}{http://bioinformatics.oxfordjournals.org/cgi/doi/10.1093/bioinformatics/bts199}
+ \item[FASTX toolkit] \citet{Gordon2010}: FASTX-Toolkit. FASTQ/A short-reads pre-processing tools.
+ \item[FLASH] \citet{Magoc2011}: FLASH: fast length adjustment of short reads to improve genome assemblies.
+ \item[Geneious] \citet{Kearse2012}: Geneious Basic: An integrated and extendable desktop software platform for the organization and analysis of sequence data.
  \item[SAMtools] There are several papers describing SAMtools:
   \begin{itemize}
-   \item \citet{Li2009}: The Sequence alignment/map (SAM) format and SAMtools, \href{http://bioinformatics.oxfordjournals.org/content/25/16/2078.abstract}{http://bioinformatics.oxfordjournals.org/content/25/16/2078.abstract}
-   \item \citet{Li2011}: A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data, \href{http://bioinformatics.oxfordjournals.org/content/27/21/2987.abstract}{http://bioinformatics.oxfordjournals.org/content/27/21/2987.abstract}
-   \item \citet{Li2011a}: Improving SNP discovery by base alignment quality, \href{http://bioinformatics.oxfordjournals.org/content/27/8/1157.short}{http://bioinformatics.oxfordjournals.org/content/27/8/1157.short}
+   \item \citet{Li2009}: The Sequence alignment/map (SAM) format and SAMtools.
+   \item \citet{Li2011}: A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data.
+   \item \citet{Li2011a}: Improving SNP discovery by base alignment quality.
   \end{itemize}
- \item[Sondovač] Schmickl et al
+ \item[Sondovač] XXX
 \end{description}
 
 \subsection{Vocabulary}
@@ -366,20 +369,20 @@ zlib & 1.2.8 & \href{http://zlib.net/}{http://zlib.net/}
 \begin{description}
 \item[Binary] An application in form understandable by the computer, but usually not transferable among operating systems and/or hardware platforms. Binaries in Windows usually have extension *.exe, in UNIX there use to be no extension.
 \item[BASH] "The command line" -- fully featured programming scripting language accessible through terminal of any UNIX-based operating system (any Linux, Mac OS X, Solaris, any variant of BSD and more). BASH scripts usually have extension *.sh.
-\item[BSD] Group of popular UNIX-based operating systems. See \href{https://en.wikipedia.org/wiki/Berkeley_Software_Distribution}{https://en.wikipedia.org/wiki/Berkeley$\_$Software$\_$Distribution}.
-\item[compilation] "Translation" of software application from the source code (text readable by human programmer) into binary form launchable by the computer. It requires special tools, and it usually must be done for every operating system and hardware platform.
+\item[BSD] Group of popular UNIX-based operating systems. See \href{https://en.wikipedia.org/wiki/Berkeley_Software_Distribution}{https://en.wikipedia.org/wiki/\\Berkeley$\_$Software$\_$Distribution}.
+\item[Compilation] "Translation" of software application from the source code (text readable by human programmer) into binary form launchable by the computer. It requires special tools, and it usually must be done for every operating system and hardware platform.
 \item[Console] See "Shell".
-\item[GNU] Major project providing free software widely used in many operating systems, see \href{https://gnu.org/}{https://gnu.org/}.
+\item[GNU] Major project providing free software widely used in many operating systems, see \href{https://gnu.org/}{https://\\gnu.org/}.
 \item[Library] Pack of software tools and functions used by another applications.
 \item[Linux] One of the most common variants of UNIX-based operating systems. Linux kernel is used by many developers, so that there are plenty of Linux distributions ("flavors") from various sources (e.g. Ubuntu and derivatives, openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.). They share many features although on the first look they can look differently. See \href{https://en.wikipedia.org/wiki/Linux}{https://en.wikipedia.org/wiki/Linux}.
 \item[Mac OS X] Popular operating system produced by Apple. The system kernel is based on UNIX, see \href{https://www.apple.com/osx/}{https://www.apple.com/osx/}.
 \item[openSUSE] Popular Linux distribution, see \href{https://www.opensuse.org/}{https://www.opensuse.org/}.
 \item[Operating system] Basic system running on your computer -- typically MS Windows (not supported by Sondovač, although it might be working), Mac OS X or some Linux distribution (Ubuntu and derivatives, openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.).
-\item[Parameter(s)] Option(s) passed to any function/command line application to modify its usage. Some can be required, some are optional and some can be used only in particular cases. In case of shell applications, parameters are usually given in way like "application -X", "application -\-parameter", "application -Param SomeValue" and so on. See manual for particular application (e.g. "man application"), in case of Sondovač see page~\pageref{script-usage}.
+\item[Parameter(s)] Option(s) passed to any function/command line application to modify its usage. Some can be required, some are optional and some can be used only in particular cases. In case of shell applications, parameters are usually given in way like "application -X", "application -parameter", "application -Param SomeValue" and so on. See manual for particular application (e.g. "man application"), in case of Sondovač see page~\pageref{script-usage}.
 \item[PATH] Directories in the computer where the system is looking for installed software (in a UNIX-based system you can view it by the command "\texttt{echo \$PATH}"). If you need to modify it manually, see the documentation for your operating system.
 \item[Script] Software application. It requires an interpreter (application installed on the computer that is able to launch scripts written in a particular language), but the application itself is portable among operating systems and hardware architectures, and it is written in plain text, so that developers can easily modify it. Common examples are Python, Perl or BASH.
 \item[Shell] "The command line" -- the interface to interact with software using commands typed into the terminal window (See Figure~\ref{terminal}).
-\item[Solaris] Popular (mainly on servers) UNIX-based operating system, now developed by Oracle and including several independent clones. See \href{http://distrowatch.com/table.php?distribution=solaris}{http://distrowatch.com/table.php?distribution=solaris}.
+\item[Solaris] Popular (mainly on servers) UNIX-based operating system, now developed by Oracle and including several independent clones. See \href{http://distrowatch.com/table.php?distribution=solaris}{http://distrowatch.com/table.php?distribu\\tion=solaris}.
 \item[Terminal] see "Shell".
 \item[Ubuntu] Popular Linux distribution, see \href{http://www.ubuntu.com/}{http://www.ubuntu.com/}.
 \item[Upstream] Developers usually support (e.g. by fixing of bugs) only newer versions of an application. If you use an older version and you encounter problems, no one will probably help you. Moreover, using old versions of software can be a security risk because of security issues fixed in newer versions.
@@ -429,7 +432,7 @@ Those parameters are required when running in non-interactive mode. The paramete
 \item[\texttt{-c FILE}] Plastome reference sequence input file in FASTA format.
   \begin{itemize}
     \item \texttt{sondovac$\_$part$\_$a.sh}, \texttt{sondovac$\_$part$\_$b.sh}
-    \item Plastome reference sequences from taxa up to the same order of the studied plant group are suitable. See \citet{Straub2012}, \href{http://www.amjbot.org/content/99/2/349.short}{http://www.amjbot.org/content/99/2/349.short}.
+    \item Plastome reference sequences from taxa up to the same order of the studied plant group are suitable. See \citet{Straub2012}.
   \end{itemize}
 \item[\texttt{-m FILE}] Mitochondriome reference sequence input file in FASTA format (optional).
   \begin{itemize}
@@ -514,17 +517,17 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
   \item \texttt{*$\_$unique$\_$transcripts.fasta} -- Unique transcripts in FASTA format.
   \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$reads.bam} -- SAM converted to BAM (removal of reads of plastid origin).
   \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$reads} -- Genome skim data without cpDNA reads.
-  \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$no$\_$mt$\_$reads.bam} -- SAM converted to BAM (removal of reads of mitochondrial origin).
-  \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$no$\_$mt$\_$reads} -- Genome skim data without mtDNA reads.
+  \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$no$\_$mt$\_$reads.bam} -- SAM converted to BAM (removal of reads of mitochondrial origin)  -- only if mitochondriome reference sequence was used.
+  \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$no$\_$mt$\_$reads} -- Genome skim data without mtDNA reads -- only if mitochondriome reference sequence was used.
   \item \texttt{*$\_$combined$\_$reads$\_$co$\_$cp$\_$no$\_$mt$\_$reads} -- Combined paired-end genome skim reads.
-  \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data.pslx} -- Output of BLAT (matching of the unique transcripts and the filtered, combined genome skim reads sharing $\geq$85\% sequence similarity).
+  \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data.pslx} -- Output of BLAT (ma\-tching of the unique transcripts and the filtered, combined genome skim reads sharing $\geq$85\% sequence similarity).
   \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data.fasta} -- Matching sequences in FASTA.
   \item \textbf{\texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa} -- Final FASTA sequences for usage in Geneious.}
 \end{enumerate}
 
 Files 1-9 are not necessary for further processing by this pipeline, but may be useful for the user. The last file (10) is used as input file for Geneious in the next step.
 
-\textbf{Geneious} requires as input the last output file of \texttt{sondovac$\_$part$\_$a.sh} (file 10: \texttt{*$\_$blat$\_$uni\-que$\_$tra\-nscri\-pts$\_$ve\-rsu\-s$\_$ge\-no\-me$\_$skim$\_$data-no$\_$missing$\_$fin.fsa}). Output of Geneious are two exported files (see page~\pageref{geneious}):
+\textbf{Geneious} requires as input the last output file of \texttt{sondovac$\_$part$\_$a.sh} (file 10: \texttt{*$\_$blat$\_$\allowbreak unique$\_$\allowbreak transcripts$\_$\allowbreak versus$\_$\allowbreak genome$\_$\allowbreak skim$\_$\allowbreak data-no$\_$\allowbreak missing$\_$\allowbreak fin.fsa}). Output of Geneious are two exported files (see page~\pageref{geneious}):
 
 \begin{enumerate}
   \item Final assembled sequences exported as TSV.
@@ -548,6 +551,20 @@ Files 1-9 are not necessary for further processing by this pipeline, but may be 
   \item \textbf{\texttt{*.target$\_$enrichment$\_$probe$\_$sequences$\_$final.pslx} -- Final probes ready for bait synthesis.}
 \end{enumerate}
 
+\subsection{Record output of Sondovač}
+
+To record whole output of Sondovač script (regardless parameters used) use utility \texttt{tee}. It will produce plain text output with everything printed to the screen. It can be useful for reference or explorations is something went wrong. Use it as follows:
+
+\begin{bashcode}
+  ./sondovac_part_a.sh | tee records.log
+  man tee # See more options how tee can record script's output
+  # "|" is a pipe passing output of 1st command as input for 2nd command
+  less records.log # See the record. Quit viewing by "Q"
+  rm records.log # Delete the log file
+\end{bashcode}
+
+You can use any command line arguments, script will behave as usually. Plain text file \texttt{records.log} will then contain all its output.
+
 \section{Sample data}
 
 Together with the script, we provide the ZIP archive (1.8 GB) that contains exemplary input files for running the script: \textit{Oxalis} genome skim data as well as the \textit{Ricinus} cpDNA and mtDNA reference sequences. See \href{https://github.com/V-Z/sondovac/wiki/Sample-data}{https://github.com/V-Z/sondovac/wiki/Sample-data} for download of sample data.
@@ -555,16 +572,16 @@ Together with the script, we provide the ZIP archive (1.8 GB) that contains exem
 The package contains:
 
 \begin{enumerate}
-  \item \texttt{input2$\_$Ricinus$\_$communis$\_$reference$\_$plastid$\_$genome.fsa} -- cpDNA reference (parameter \texttt{-c}), GenBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/372450118/}{NC$\_$016736}
-  \item \texttt{input3$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R1.fastq} -- paired-end genome skim data, file 1 (parameter \texttt{-t})
-  \item \texttt{input4$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R2.fastq} -- paired-end genome skim data, file 2 (parameter \texttt{-q})
-  \item \texttt{input5$\_$Ricinus$\_$communis$\_$reference$\_$mitochondrial$\_$genome.fasta} -- mtDNA reference (parameter \texttt{-m}), GenBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/323649872/}{NC$\_$015141}
+  \item \texttt{input2$\_$Ricinus$\_$communis$\_$reference$\_$plastid$\_$genome.fsa} -- cpDNA reference (pa\-ra\-meter \texttt{-c}), GenBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/372450118/}{NC$\_$016736}.
+  \item \texttt{input3$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R1.fastq} -- paired-end genome skim data, file 1 (parameter \texttt{-t}).
+  \item \texttt{input4$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R2.fastq} -- paired-end genome skim data, file 2 (parameter \texttt{-q}).
+  \item \texttt{input5$\_$Ricinus$\_$communis$\_$reference$\_$mitochondrial$\_$genome.fasta} -- mtDNA reference (parameter \texttt{-m}), GenBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/323649872/}{NC$\_$015141}.
 \end{enumerate}
 
 The transcriptome input file is unpublished data from G. K.-S. Wong et al. (hopefully it will be published soon).
 
 \begin{enumerate}
- \item \texttt{input1$\_$JHCN$\_$Oxalis$\_$corniculata$\_$transcriptome$\_$data.fa} -- transcriptome data (parameter \texttt{-f})
+ \item \texttt{input1$\_$JHCN$\_$Oxalis$\_$corniculata$\_$transcriptome$\_$data.fa} -- transcriptome data (parameter \texttt{-f}).
 \end{enumerate}
 
 Data can be found under
@@ -575,7 +592,7 @@ Data can be found under
   \item \href{http://www.onekp.com/samples/single.php?id=JHCN}{http://www.onekp.com/samples/single.php?id=JHCN}
 \end{itemize}
 
-The transcriptome FASTA file used for the probe design is named JHCN-SOAPdenovo-Trans-assembly.dnas.out and can be found under JHCN/Assembly/JHCN-SOAPdenovo-Trans-translated/. Information about how to get access to data download is given in \citet{Matasci2014}, \href{http://www.gigasciencejournal.com/content/3/1/17/}{http://www.gigasciencejournal.com/content/3/1/17/}.
+The transcriptome FASTA file used for the probe design is named JHCN-SOAPdenovo-Trans-assembly.dnas.out and can be found under JHCN/Assembly/JHCN-SOAPdenovo-Trans-translated/. Information about how to get access to data download is given in \citet{Matasci2014}.
 
 Explanation of command line parameters is at page~\pageref{script-usage}.
 
@@ -607,7 +624,7 @@ FASTX & GNU Affero GPL & \href{https://gnu.org/licenses/agpl.html}{https://gnu.o
 \fontsize{7pt}{8pt}
 \selectfont
 
-\subsection{GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007}
+\subsection{GNU General Public License, Version 3, 29 June 2007}
 
 Copyright © 2007 Free Software Foundation, Inc. \href{http://fsf.org/}{http://fsf.org/}
 
@@ -635,7 +652,7 @@ Finally, every program is threatened constantly by software patents. States shou
 
 The precise terms and conditions for copying, distribution and modification follow.
 
-\subsubsection{TERMS AND CONDITIONS}
+\subsubsection{Terms and Conditions}
 
 \subsubsection{0. Definitions}
 
@@ -820,7 +837,7 @@ IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY C
 
 If the disclaimer of warranty and limitation of liability provided above cannot be given local legal effect according to their terms, reviewing courts shall apply local law that most closely approximates an absolute waiver of all civil liability in connection with the Program, unless a warranty or assumption of liability accompanies a copy of the Program in return for a fee.
 
-\subsection{GNU GENERAL PUBLIC LICENSE, Version 2, June 1991}
+\subsection{GNU General Public License, Version 2, June 1991}
 
 Copyright (C) 1989, 1991 Free Software Foundation, Inc. 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
@@ -844,7 +861,7 @@ Finally, any free program is threatened constantly by software patents. We wish 
 
 The precise terms and conditions for copying, distribution and modification follow.
 
-\subsubsection{TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION}
+\subsubsection{Terms and Conditions for Copying, Distribution and Modification}
 
 0. This License applies to any program or other work which contains a notice placed by the copyright holder saying it may be distributed under the terms of this General Public License. The “Program“, below, refers to any such program or work, and a “work based on the Program“ means either the Program or any derivative work under copyright law: that is to say, a work containing the Program or a portion of it, either verbatim or with modifications and/or translated into another language. (Hereinafter, translation is included without limitation in the term “modification“.) Each licensee is addressed as “you“.
 
@@ -902,13 +919,13 @@ Each version is given a distinguishing version number. If the Program specifies 
 
 10. If you wish to incorporate parts of the Program into other free programs whose distribution conditions are different, write to the author to ask for permission. For software which is copyrighted by the Free Software Foundation, write to the Free Software Foundation; we sometimes make exceptions for this. Our decision will be guided by the two goals of preserving the free status of all derivatives of our free software and of promoting the sharing and reuse of software generally.
 
-\subsubsection{NO WARRANTY}
+\subsubsection{No Warranty}
 
 11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS“ WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
 
 12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
-\subsection{GNU AFFERO GENERAL PUBLIC LICENSE, Version 3, 19 November 2007}
+\subsection{GNU Affero General Public License, Version 3, 19 November 2007}
 
 Copyright © 2007 Free Software Foundation, Inc. \href{http://fsf.org/}{http://fsf.org/}
 
@@ -932,7 +949,7 @@ An older license, called the Affero General Public License and published by Affe
 
 The precise terms and conditions for copying, distribution and modification follow.
 
-\subsubsection{TERMS AND CONDITIONS}
+\subsubsection{Terms and Conditions}
 
 \subsubsection{0. Definitions}
 
@@ -1190,7 +1207,7 @@ While redistributing the Work or Derivative Works thereof, You may choose to off
 
 END OF TERMS AND CONDITIONS
 
-\subsection{MIT LICENSE}
+\subsection{MIT License}
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software“), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -1201,9 +1218,6 @@ THE SOFTWARE IS PROVIDED “AS IS“, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 \endgroup
 
 % Reference list
-% Package natbib, style apalike: \cite{} as well as \citet{} > Author (year); \citep{} > (Author, year)
-% natbib: \citet/p[text][p.~1]{} > text Author year, p. 1; with * lists all authors
-\bibliographystyle{apalike}
 \bibliography{sondovac_manual}
 \addcontentsline{toc}{section}{References}
 

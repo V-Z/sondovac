@@ -44,7 +44,7 @@ while getopts "hvulrpeinc:x:z:b:d:" START; do
       echo -e "\t  later overwritten."
       echo
       echo -e "\tOptions required for running in non-interactive mode:"
-      echo -e "\t-c\Plastome reference sequence input file in FASTA format."
+      echo -e "\t-c\tPlastome reference sequence input file in FASTA format."
       echo -e "\t-x\tInput file in TSV format (output of Geneious assembly)."
       echo -e "\t-z\tInput file in FASTA format (output of Geneious assembly)."
       echo
@@ -154,8 +154,14 @@ checktools grep
 # Check if egrep is available
 checktools egrep
 
+# Check if cut is available
+checktools cut
+
 # Check if awk is available
 checktools awk
+
+# Check if wc is available
+checktools wc
 
 # Check if sed is available
 checktools sed
@@ -304,7 +310,9 @@ SEQUENCESPROBES120600FIN="${SEQUENCES%.*}_probes_120-600bp_fin.tab"
 SEQUENCESPROBES120600MODIF="${SEQUENCES%.*}_probes_120-600bp_modified_fin.tab"
 SEQUENCESPROBES120600ASSEM="${SEQUENCES%.*}_probes_120-600bp_assembled_fin.fasta"
 SEQUENCESPROBES120600CONTIG="${SEQUENCES%.*}_probes_120-600bp_contig_fin.fasta"
-# Preliminary probe sequences
+# Preliminary probe sequences - temporary file - will be deleted
+PROBEPRELIM0="${SEQUENCES%.*}_prelim_probe_seq0.fasta"
+# Preliminary probe sequences - corrected labels
 PROBEPRELIM="${SEQUENCES%.*}_prelim_probe_seq.fasta"
 # Sequence similarity checked by CD-HIT - temporary file - will be deleted
 PROBEPRELIMCDHIT="${SEQUENCES%.*}_similarity_test"
@@ -318,6 +326,8 @@ PROBEPRELIMSORT="${SEQUENCES%.*}_similarity_test_assemblies_sort.tab"
 PROBEPRELIMFIN="${SEQUENCES%.*}_similarity_test_assemblies_fin.tab"
 # Probes in FASTA
 PROBESEQUENCES="${SEQUENCES%.*}_target_enrichment_probe_sequences.fasta"
+# Probes in tab - temporary file - will be deleted
+PROBESEQUENCESNUM="${SEQUENCES%.*}_target_enrichment_probe_sequences.tab"
 
 # Part 3: Assemble the obtained sequences in contigs (part B)
 
@@ -395,16 +405,34 @@ echo
 # Check the statistics
 # Check total number of bp
 echo "Total number of base pairs:"
-{ cut -f6 $TSVLIST2 | awk '$1>119' | awk '{s+=$1}END{print s}'; } || { echo && echo "${BOLD}Error!${NORM} Checking statistics failed. Aborting." && echo && exit 1; }
+{ cut -f6 $TSVLIST2 | awk '$1>119' | awk '{s+=$1}END{print s}'; } || {
+  echo
+  echo "${BOLD}Error!${NORM} Checking statistics failed. Aborting. Check if file"
+  echo "$TSVLIST2 is correct TSV file containing all required columns:"
+  echo -e "$REQUIREDCOLS"
+  echo
+  exit 1
+  }
+confirmgo
+echo
+
 # Check number of contigs
 echo "Number of contigs:"
-{ cut -f6 $TSVLIST2 | awk '$1>119' | wc -l; } || { echo && echo "${BOLD}Error!${NORM} Checking number of contigs failed. Aborting." && echo && exit 1; }
+{ cut -f6 $TSVLIST2 | awk '$1>119' | wc -l; } || {
+  echo
+  echo "${BOLD}Error!${NORM} Checking number of contigs failed. Aborting. Check if file"
+  echo "$TSVLIST2 is correct TSV file containing all required columns"
+  echo -e "$REQUIREDCOLS"
+  echo
+  exit 1
+  }
+confirmgo
 echo
 
 # Convert FASTA to TSV
 echo "Converting FASTA to TAB"
 fasta2tab $SEQUENCES $SEQUENCESTAB || {
-  echo  
+  echo
   echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
   echo "Check if file $SEQUENCES is correct FASTA file."
   echo
@@ -414,47 +442,52 @@ echo
 
 # Separate the assembled sequences
 echo "Separating assembled sequences"
-grep 'Contig' $SEQUENCESTAB > $SEQUENCESTABASSE
+grep '[Aa]ssembly' $SEQUENCESTAB > $SEQUENCESTABASSE
 echo
 
 # Separate the unassembled sequences
 echo "Separating unassembled sequences"
-grep -v 'Contig' $SEQUENCESTAB > $SEQUENCESTABUNAS
+grep -v '[Aa]ssembly' $SEQUENCESTAB > $SEQUENCESTABUNAS
 echo
 
 # Filter the file with the assembled sequences – count the assemblies (the ones indicated with "Contig") making up genes of ≥960 bp / ≥600 bp, comprised of putative exons ≥120 bp
-echo "Counting assembled sequences:"
-awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | awk '{s+=$3;c++}END{print s}'
-awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | wc -l
+echo "Number of assembled sequences:"
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | awk '{s+=$3;c++}END{print s}'
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | wc -l
+confirmgo
 echo
 
 # Genes of ≥960 bp (exons ≥120 bp), total bp
 echo "Genes of ≥960 bp (exons ≥120 bp), total bp:"
-awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
-awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
+confirmgo
 echo
 
 # Genes of ≥600 bp (exons ≥120 bp), total bp
 echo "Genes of ≥600 bp (exons ≥120 bp), total bp:"
-awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed s/_/\\t/g | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > $SEQUENCESPROBES600
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > $SEQUENCESPROBES600
+confirmgo
 echo
 
 # Filter the file with the unassembled sequences
 echo "Filtering the file with the unassembled sequences:"
-awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed s/_/\\t/g | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>399' | wc -l
+awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed 's/_/\t/g' | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>399' | wc -l
+confirmgo
 echo
 
 # Unassembled sequences making up genes of ≥400 bp
 echo "Unassembled sequences making up genes of ≥400 bp:"
-awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed s/_/\\t/g | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
-awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed s/_/\\t/g | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
+awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed 's/_/\t/g' | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
+awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed 's/_/\t/g' | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
+confirmgo
 echo
 
 # Part 4: Create the final FASTA file for the Hyb-Seq probes
 
 # Extract and sort the assemblies making up genes of ≥600 bp
 echo "Extracting and sorting the assemblies making up genes of ≥600 bp"
-sed s/^/Assembly_/ $SEQUENCESPROBES600 | cut -f1 -d' ' | sort -k1,1 > $SEQUENCESPROBES600FORJOIN
+sed 's/^/Assembly_/' $SEQUENCESPROBES600 | cut -f1 -d " " | sort -k1,1 > $SEQUENCESPROBES600FORJOIN
 echo
 
 # Make a file with all exons ≥120 bp
@@ -464,7 +497,7 @@ echo
 
 # Make the assembly number the first field and sort
 echo "Sorting exons ≥120 bp"
-sed 's/^.*\(Assembly\)/\1/' $SEQUENCESTABASSE120 | sed s/_C/\\tC/ | sort -k1,1 > $SEQUENCESTABASSE120SORT
+sed 's/^.*\(Assembly\)/\1/' $SEQUENCESTABASSE120 | sed 's/_C/\tC/' | sort -k1,1 > $SEQUENCESTABASSE120SORT
 echo
 
 # Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
@@ -475,16 +508,22 @@ echo
 # Convert TAB to FASTA
 echo "Converting TAB to FASTA"
 sed 's/ /_/' $SEQUENCESPROBES120600FIN | sed 's/ /_/' > $SEQUENCESPROBES120600MODIF
-sed 's/^/>/' $SEQUENCESPROBES120600MODIF | tr " " "\n" > $SEQUENCESPROBES120600ASSEM
+sed 's/^/>/' $SEQUENCESPROBES120600MODIF | sed 's/ /\n/' > $SEQUENCESPROBES120600ASSEM
+
 # Remaining assemblies have to be selected and added to the .fasta file of the probes:
-grep -v Contig $SEQUENCESTABASSE120 | awk '$2>599' | sed 's/^/>/' | sed 's/\\t/_/' | tr " " "\n" > $SEQUENCESPROBES120600CONTIG
+grep -v '[Cc]ontig' $SEQUENCESTABASSE120 | awk '$2>599' | sed 's/^/>/' | sed 's/\t/_/' | sed 's/\t/\n/' > $SEQUENCESPROBES120600CONTIG
 echo
 
 # Combine the two FASTA files
 echo "Writing FASTA file with preliminary probe sequences"
-cat $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG > $PROBEPRELIM
+cat $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG > $PROBEPRELIM0
+
+# Ensure all sequences have correct labeling
+echo "Ensuring all sequences have correct labels"
+sed 's/^>.\+\(Assembly_[0-9]\+_\)/>\1Contig_0_/' $PROBEPRELIM0 > $PROBEPRELIM
 echo
 echo "Preliminary probe sequences saved as $PROBEPRELIM for possible later usage"
+
 
 # Part 5: Make the final quality control of the probe sequences before sending them to company for bait synthesis
 
@@ -505,27 +544,30 @@ fasta2tab $PROBEPRELIMCDHIT $PROBEPRELIMCDHIT.txt || {
 echo
 
 # Count all assemblies, comprised of putative exons ≥120 bp
-echo "Counting all assemblies, comprised of putative exons ≥120 bp:"
+echo "Number of all assemblies, comprised of putative exons ≥120 bp:"
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | awk '{s+=$2;c++}END{print s}'
 echo
+confirmgo
 
 # Count the assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
-echo "Counting the assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp:"
-awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed s/_/\\t/g | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
-awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed s/_/\\t/g | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
+echo "Number of the assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp:"
+awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
+awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
 echo
-echo "Writing those assemblies into temporal file"
-awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed s/_/\\t/g | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > $PROBEPRELIMCDHIT2
+confirmgo
+
+echo "Writing the assemblies into temporal file"
+awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > $PROBEPRELIMCDHIT2
 echo
 
 # Extract and sort the assemblies making up genes of ≥600 bp
 echo "Extract and sort the assemblies making up genes of ≥600 bp:"
-sed s/^/Assembly_/ $PROBEPRELIMCDHIT2 | cut -f1 -d' ' | sort -k1,1 > $PROBEPRELIMFORJOIN
+sed 's/^/Assembly_/' $PROBEPRELIMCDHIT2 | cut -f1 -d " " | sort -k1,1 > $PROBEPRELIMFORJOIN
 echo
 
 # Modify the assembly number and sort
 echo "Modify the assembly number and sort"
-sed s/_C/\\tC/ $PROBEPRELIMCDHIT.txt | sort -k1,1 > $PROBEPRELIMSORT
+sed 's/_C/\tC/' $PROBEPRELIMCDHIT.txt | sort -k1,1 > $PROBEPRELIMSORT
 echo
 
 # Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
@@ -535,33 +577,48 @@ echo
 
 # Convert TAB to FASTA
 echo "Converting TAB to FASTA"
-sed s/' C'/_/ $PROBEPRELIMFIN | sed s/ontig/Contig/ | sed s/^/'>'/ | sed s/' '/\\n/ > $PROBESEQUENCES
+sed 's/^\(.\+\) \(Contig\)/>\1_\2/' $PROBEPRELIMFIN | sed 's/ /\n/' > $PROBESEQUENCES
 echo
 
 # Calculating of the total number of base pairs
 echo "Calculating of the total number of base pairs"
 echo "Converting FASTA to TAB"
-fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM || { echo && echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting." && echo && exit 1; }
+fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM || {
+  echo
+  echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
+  echo
+  exit 1
+  }
+
 echo
 echo "Total number of base pairs:"
 awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}'
+confirmgo
+echo
+
+echo "Success!"
+echo
+echo "Final output file was written as $PROBESEQUENCES"
+echo
+echo "This file contains the probe sequences."
+confirmgo
 echo
 
 # Remove remaining cp/mt genes from probe set
 echo "Removing remaining cp/mt genes from probe set"
-blat -t=dna -q=dna -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCES.target_enrichment_probe_sequences_final.pslx
+blat -t=dna -q=dna -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCES.possible_cp_dna_genes_in_probe_set.pslx
+echo
+
+echo "File $PROBESEQUENCES.possible_cp_dna_genes_in_probe_set.pslx"
+echo "contains possible plastid genes in final probe set."
+echo "We recommend to remove those genes from final probe set in file"
+echo "$PROBESEQUENCES."
+confirmgo
 echo
 
 # Remove temporal files
 echo "Removing unneeded temporal files"
 rm $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESTABUNAS $SEQUENCESPROBES600 $SEQUENCESPROBES600FORJOIN $SEQUENCESTABASSE120 $SEQUENCESTABASSE120SORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM
-echo
-
-echo "Success!"
-echo
-echo "Final output file was written as $PROBESEQUENCES.target_enrichment_probe_sequences_final.pslx"
-echo
-echo "This file contains the probe sequences"
 echo
 
 echo "Script exited successfully..."

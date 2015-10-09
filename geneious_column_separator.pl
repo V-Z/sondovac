@@ -9,6 +9,7 @@ use warnings;
 # Read provided file name
 my $GENEIOUSFILE = $ARGV[0];
 my $GENEIOUSFILENAME = basename($GENEIOUSFILE, ".tsv");
+
 # Check if it is readable
 open(FH, "< $GENEIOUSFILE") || die "Cannot open $GENEIOUSFILE for reading: $!";
 my @array = <FH>;

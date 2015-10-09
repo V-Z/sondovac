@@ -1,7 +1,8 @@
-Sondovač 0.6 Basic help
+Sondovač 0.8 Basic help
 
-Sondovač is a script to create orthologous low-copy nuclear probes from 
-transcriptome and genome skim data for target enrichment.
+Sondovač (English pronunciation is "Sondovach".) is a script to create 
+orthologous low-copy nuclear probes from transcriptome and genome skim data for 
+target enrichment.
 
 
 Script summary
@@ -333,8 +334,10 @@ Script sondovac_part_a.sh creates the following files:
       of plastid origin)
 4)  *_genome_skim_data_no_cp_reads* - Genome skim data without cpDNA reads
 5)  *_genome_skim_data_no_cp_no_mt_reads.bam - SAM converted to BAM (removal of 
-      reads of mitochondrial origin)
-6)  *_genome_skim_data_no_cp_no_mt_reads* - Genome skim data without mtDNA reads
+      reads of mitochondrial origin) - only if mitochondriome reference 
+      sequence was used
+6)  *_genome_skim_data_no_cp_no_mt_reads* - Genome skim data without mtDNA 
+      reads - only if mitochondriome reference sequence was used
 7)  *_combined_reads_co_cp_no_mt_reads* - Combined paired-end genome skim reads
 8)  *_blat_unique_transcripts_versus_genome_skim_data.pslx - Output of BLAT 
       (matching of the unique transcripts and the filtered, combined genome 
@@ -364,7 +367,7 @@ Script sondovac_part_b.sh creates following files:
 2) *_similarity_test2 - Contigs that comprise exons ≥ bait length and have a 
      certain total locus length (in the Oxalis case ≥600 bp)
 3) *_target_enrichment_probe_sequences.fasta - Probes in FASTA
-4) *.target_enrichment_probe_sequences_final.pslx - Final probes ready for bait 
+4) *.possible_cp_dna_genes_in_probe_set.pslx - Final probes ready for bait 
      synthesis
 
 
@@ -407,6 +410,20 @@ DeGironimo L, Stevenson DW, Villarreal JC, Chen T, Kutchan TM, Rolf M, Baucom
 RS, Deyholos MK, Samudrala R, Tian Z, Wu X, Sun X, Zhang Y, Wang J, 
 Leebens-Mack J and Wong G K-S (2014) Data access for the 1,000 Plants (1KP) 
 project. GigaScience 3:17, http://www.gigasciencejournal.com/content/3/1/17/
+
+
+Record output of Sondovač
+================================================================================
+
+To record whole output of Sondovač script (regardless parameters used) use 
+utility "tee". It will produce plain text output with everything printed to the 
+screen. It can be useful for reference or explorations is something went wrong. 
+Use it as follows:
+
+./sondovac_part_a.sh | tee records.log
+
+You can use any command line arguments, script will behave as usually. Plain 
+text file "records.log" will then contain all its output.
 
 
 License

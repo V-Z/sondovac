@@ -29,7 +29,7 @@ STARTINI="I"
 FLASHM=250
 # BLAT -minIdentity between the unique transcriptomes and the genome skim data
 BLATIDENT=85
-# Remove transcripts with >1000 BLAT scores
+# Remove transcripts with >1000 BLAT scores (or another value selected by user)
 BLATSCORE=1000
 # Create empty variables for file names
 INPUTFILE=""
@@ -1104,7 +1104,7 @@ echo "Sorting unique transcripts"
 { awk '{$1=sprintf("%05d", $1); print $0}' $INPUTTAB | sort > $SORTEDINPUT; } || {
   echo
   echo "${BOLD}Error!${NORM} Sorting of unique transcripts failed. Aborting. Check if"
-  echo "$INPUTFILE is correct FASTA file and check file $INPUTTAB."
+  echo "$INPUTFILE is correct FASTA file and check if file $INPUTTAB is correct."
   echo
   exit 1
   }
@@ -1133,7 +1133,7 @@ echo
 awk '{print ">"$1"\n"$2}' $JOINEDTABS > $JOINEDFA || {
   echo
   echo "${BOLD}Error!${NORM} Conversion of $JOINEDTS to FASTA failed."
-  echo "Aborting. Check file $JOINEDTABS."
+  echo "Aborting. Check if file $JOINEDTABS is correct."
   echo
   exit 1
   }   
@@ -1185,7 +1185,7 @@ echo "Converting SAM to BAM. This may take longer time."
 samtools view -bT $REFERENCECP $BOWTIE2CP > $CPBAM || {
   echo
   echo "${BOLD}Error!${NORM} Conversion of SAM to BAM with samtools failed. Aborting."
-  echo "Check files $REFERENCECP and $BOWTIE2CP."
+  echo "Check if files $REFERENCECP and $BOWTIE2CP are correct."
   echo
   exit 1
   }
@@ -1247,8 +1247,8 @@ if [ -n "$REFERENCEMT" ]; then
   echo "Converting SAM to BAM. This may take longer time."
   samtools view -bT $REFERENCEMT $BOWTIE2MT > $MTBAM || {
     echo
-    echo "${BOLD}Error!${NORM} Conversion of SAM to BAM failed. Aborting. Check files"
-    echo "$REFERENCEMT and $BOWTIE2MT."
+    echo "${BOLD}Error!${NORM} Conversion of SAM to BAM failed. Aborting. Check if files"
+    echo "$REFERENCEMT and $BOWTIE2MT are correct."
     echo
     exit 1
     }
@@ -1276,8 +1276,8 @@ if [ -n "$REFERENCEMT" ]; then
   echo
   flash -o $FLASHOUT -M $FLASHM `echo $FASTQNOMT`_1.fq `echo $FASTQNOMT`_2.fq || {
     echo
-    echo "${BOLD}Error!${NORM} Combining paired-end reads failed. Aborting. Check files"
-    echo "$REFERENCEMT, `echo $FASTQNOMT`_1.fq and `echo $FASTQNOMT`_2.fq."
+    echo "${BOLD}Error!${NORM} Combining paired-end reads failed. Aborting. Check if files"
+    echo "$REFERENCEMT, `echo $FASTQNOMT`_1.fq and `echo $FASTQNOMT`_2.fq are correct."
     echo
     exit 1
     }
@@ -1291,8 +1291,8 @@ if [ -n "$REFERENCEMT" ]; then
     echo
     flash -o $FLASHOUT -M $FLASHM `echo $FASTQNOCP`_1.fq `echo $FASTQNOCP`_2.fq || {
       echo
-      echo "${BOLD}Error!${NORM} Combining paired-end reads failed. Aborting. Check files"
-      echo "$REFERENCECP, `echo $FASTQNOCP`_1.fq and `echo $FASTQNOCP`_2.fq."
+      echo "${BOLD}Error!${NORM} Combining paired-end reads failed. Aborting. Check if files"
+      echo "$REFERENCECP, `echo $FASTQNOCP`_1.fq and `echo $FASTQNOCP`_2.fq are correct."
       echo
       exit 1
       }
@@ -1371,7 +1371,7 @@ echo
   exit 1
   }
 
-# Remove transcripts with >1000 BLAT scores (very likely that these are repetitive elements)
+# Remove transcripts with >1000 BLAT scores (or another value selected by user; very likely that these are repetitive elements)
 
 # Count the number of times each transcript hit a genome skim read
 echo
@@ -1384,7 +1384,7 @@ echo "Counting number of times each transcript hit a genom skim read"
   exit 1
   }
 
-# List of the transcripts with >1000 BLAT scores
+# List of the transcripts with >1000 BLAT scores (or another value selected by user)
 echo
 echo "Listing transcripts with >$BLATSCORE BLAT scores"
 { awk '$1>'"$BLATSCORE"'' $TABLIST | awk '{print $2}' > $TABBLAT; } || {
@@ -1428,7 +1428,7 @@ echo "Converting TAB to FASTA and removing sequences with \"n\""
 grep -v n $TABREMOVED | awk '{print $1"\t"length($2)}' | awk '{s+=$2;a++}END{print s}' || {
   echo
   echo "${BOLD}Error!${NORM} Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting."
-  echo "Check file $TABREMOVED."
+  echo "Check if file $TABREMOVED is correct."
   echo
   exit 1
   }
@@ -1449,31 +1449,49 @@ rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWT
 # List kept files which user can use for another analysis
 echo
 echo "Following files are kept for possible later usage (see manual for details):"
-echo "1)  Output of BLAT (removal of transcripts sharing ≥90% sequence similarity):"
-echo "$BLATOUT"
-echo "2)  Unique transcripts in FASTA format:"
-echo "$JOINEDFA"
-echo "3)  SAM converted to BAM (removal of reads of plastid origin):"
-echo "$CPBAM"
-echo "4)  Genome skim data without cpDNA reads:"
-ls $FASTQNOCP*
+echo "================================================================================"
 if [ -n "$REFERENCEMT" ]; then
+  echo "1)  Output of BLAT (removal of transcripts sharing ≥90% sequence similarity):"
+  echo "$BLATOUT"
+  echo "2)  Unique transcripts in FASTA format:"
+  echo "$JOINEDFA"
+  echo "3)  SAM converted to BAM (removal of reads of plastid origin):"
+  echo "$CPBAM"
+  echo "4)  Genome skim data without cpDNA reads:"
+  ls $FASTQNOCP*
   echo "5)  SAM converted to BAM (removal of reads of mitochondrial origin):"
   echo "$MTBAM"
   echo "6)  Genome skim data without mtDNA reads:"
   ls $FASTQNOMT*
+  echo "7)  Combined paired-end genome skim reads:"
+  echo "$FLASHOUT.extendedFrags.fa"
+  echo "8)  Output of BLAT (matching of the unique transcripts and the filtered,"
+  echo "    combined genome skim reads sharing ≥85% sequence similarity):"
+  echo "$BLATOUTFIN"
+  echo "9)  Matching sequences in FASTA:"
+  echo "$BLATOUTFIN2"
+  echo "10) Final FASTA sequences for usage in Geneious:"
+  echo "$FINALA"
   else
-    echo "(Some files are not available as there was no mitochondriome reference sequence)"
+    echo "1) Output of BLAT (removal of transcripts sharing ≥90% sequence similarity):"
+    echo "$BLATOUT"
+    echo "2) Unique transcripts in FASTA format:"
+    echo "$JOINEDFA"
+    echo "3) SAM converted to BAM (removal of reads of plastid origin):"
+    echo "$CPBAM"
+    echo "4) Genome skim data without cpDNA reads:"
+    ls $FASTQNOCP*
+    echo "5) Combined paired-end genome skim reads:"
+    echo "$FLASHOUT.extendedFrags.fa"
+    echo "6) Output of BLAT (matching of the unique transcripts and the filtered,"
+    echo "   combined genome skim reads sharing ≥85% sequence similarity):"
+    echo "$BLATOUTFIN"
+    echo "7) Matching sequences in FASTA:"
+    echo "$BLATOUTFIN2"
+    echo "8) Final FASTA sequences for usage in Geneious:"
+    echo "$FINALA"
   fi
-echo "7)  Combined paired-end genome skim reads:"
-echo "$FLASHOUT.extendedFrags.fa"
-echo "8)  Output of BLAT (matching of the unique transcripts and the filtered,"
-echo "    combined genome skim reads sharing ≥85% sequence similarity):"
-echo "$BLATOUTFIN"
-echo "9)  Matching sequences in FASTA:"
-echo "$BLATOUTFIN2"
-echo "10) Final FASTA sequences for usage in Geneious:"
-echo "$FINALA"
+echo "================================================================================"
 confirmgo
 
 echo
@@ -1482,6 +1500,7 @@ echo
 echo "Resulting FASTA was saved as"
 echo "${BOLD}$FINALA${NORM} for usage in Geneious (step 7 of the pipeline)."
 echo "Use this file in next step of the pipeline. See README and manual for details."
+echo "================================================================================"
 confirmgo
 
 echo "Run Geneious (tested with versions 6, 7 and 8). See README and manual for details."
