@@ -6,7 +6,8 @@ SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 # Load functions shared by both parts, introductory message
 source $SCRIPTDIR/sondovac_functions || {
   echo
-  echo "Fatal error! Unable to load file \"sondovac_functions\" with required functions!"
+  echo "Fatal error!"
+  echo "Unable to load file \"sondovac_functions\" with required functions!"
   echo "It must be in same directory as \"$0\""
   echo "Check it and if needed download again whole script from"
   echo "https://github.com/V-Z/sondovac/"
@@ -180,8 +181,10 @@ while getopts "hvulrpeinf:c:m:t:q:a:y:s:" START; do
 	fi
       ;;
     ?)
+      echo
       echo "Invalid option(s)!"
       echo "See \"$0 -h\" for usage options."
+      echo
       exit 1
       ;;
     esac
@@ -261,7 +264,7 @@ function compilebowtie {
   cp bowtie2* $BIN/ &&
   cd $WORKDIR &&
   echo &&
-  echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\""
+  echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
   echo "   and \"bowtie2-build-s\" are available. OK."
   } || {
     echo
@@ -306,65 +309,58 @@ function compilebowtie {
 	  break
 	  ;;
 	D|d)
-	  if [ "$OSB" == "32b" ]; then
-	    echo
-	    checktools curl
-	    checktools unzip
-	    echo
-	    echo "Bowtie binary for 32bit CPU is not available."
+	  if [ "$OS" == "Linux" ]; then
+	    {
+	    echo "Downloading Bowtie2 binaries for $OS $OSB" &&
+	    curl -s -L -o bowtie2-$BOWTIE2V-linux-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-linux-x86_64.zip &&
+	    unzip -nq bowtie2-$BOWTIE2V-linux-x86_64.zip &&
+	    cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
+	    echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
+	    echo "  and \"bowtie2-build-s\" are available. OK."
+	    } || {
+	      echo
+	      echo "Download failed. Please, go to"
+	      echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
+	      echo "  and download and unpack bowtie2-$BOWTIE2V-linux-x86_64.zip manually."
+	      echo
+	      exit 1
+	      }
+	  elif [ "$OS" == "Mac" ]; then
+	    {
+	    echo "Downloading Bowtie2 binaries for $OS $OSB" &&
+	    curl -s -L -o bowtie2-$BOWTIE2V-macos-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-macos-x86_64.zip &&
+	    unzip -nq bowtie2-$BOWTIE2V-macos-x86_64.zip &&
+	    cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
+	    echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
+	    echo "  and \"bowtie2-build-s\" are available. OK."
+	    } || {
+	      echo
+	      echo "Download failed. Please, go to"
+	      echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
+	      echo "  and download and unpack bowtie2-$BOWTIE2V-macos-x86_64.zip manually."
+	      echo
+	      exit 1
+	      }
+	  elif [ "$OS" == "Windows" ]; then
+	    {
+	    echo "Downloading Bowtie2 binaries for $OS $OSB" &&
+	    curl -s -L -o bowtie2-$BOWTIE2V-mingw-win64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-mingw-win64.zip &&
+	    unzip -nq bowtie2-$BOWTIE2V-mingw-win64.zip &&
+	    cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
+	    echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\""
+	    echo "  and \"bowtie2-build-s\" are available. OK."
+	    } || {
+	      echo
+	      echo "Download failed. Please, go to"
+	      echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
+	      echo "  and download and unpack bowtie2-$BOWTIE2V-mingw-win64.zip manually."
+	      echo
+	      exit 1
+	      }
+	  else
+	    echo "Unknown OS or OS without Bowtie2 binary available."
 	    compilebowtie $SCRIPTDIR/src/bowtie2-$BOWTIE2V
-	    elif [ "$OS" == "Linux" ]; then
-	      {
-	      echo "Downloading Bowtie2 binaries for $OS $OSB" &&
-	      curl -L -o bowtie2-$BOWTIE2V-linux-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-linux-x86_64.zip &&
-	      unzip -nq bowtie2-$BOWTIE2V-linux-x86_64.zip &&
-	      cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
-	      echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
-	      echo "  and \"bowtie2-build-s\" are available. OK."
-	      } || {
-		echo
-		echo "Download failed. Please, go to"
-		echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
-		echo "  and download and unpack bowtie2-$BOWTIE2V-linux-x86_64.zip manually."
-		echo
-		exit 1
-		}
-	    elif [ "$OS" == "Mac" ]; then
-	      {
-	      echo "Downloading Bowtie2 binaries for $OS $OSB" &&
-	      curl -L -o bowtie2-$BOWTIE2V-macos-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-macos-x86_64.zip &&
-	      unzip -nq bowtie2-$BOWTIE2V-macos-x86_64.zip &&
-	      cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
-	      echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
-	      echo "  and \"bowtie2-build-s\" are available. OK."
-	      } || {
-		echo
-		echo "Download failed. Please, go to"
-		echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
-		echo "  and download and unpack bowtie2-$BOWTIE2V-macos-x86_64.zip manually."
-		echo
-		exit 1
-		}
-	    elif [ "$OS" == "Windows" ]; then
-	      {
-	      echo "Downloading Bowtie2 binaries for $OS $OSB" &&
-	      curl -L -o bowtie2-$BOWTIE2V-mingw-win64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-mingw-win64.zip &&
-	      unzip -nq bowtie2-$BOWTIE2V-mingw-win64.zip &&
-	      cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
-	      echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\""
-	      echo "  and \"bowtie2-build-s\" are available. OK."
-	      } || {
-		echo
-		echo "Download failed. Please, go to"
-		echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
-		echo "  and download and unpack bowtie2-$BOWTIE2V-mingw-win64.zip manually."
-		echo
-		exit 1
-		}
-	    else
-	      echo "Unknown OS or OS without Bowtie2 binary available."
-	      compilebowtie $SCRIPTDIR/src/bowtie2-$BOWTIE2V
-	    fi
+	  fi
 	  break
 	  ;;
 	S|s)
@@ -373,7 +369,7 @@ function compilebowtie {
 	  checktools unzip
 	  echo
 	  echo "Downloading Bowtie2 source code"
-	  curl -L -o bowtie2-$BOWTIE2V-source.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-source.zip || {
+	  curl -s -L -o bowtie2-$BOWTIE2V-source.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-source.zip || {
 	    echo
 	    echo "Download failed. Please, go to"
 	    echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
@@ -389,18 +385,14 @@ function compilebowtie {
 	  case "$OS" in
 	    Mac)
 	      echo "Copying Bowtie binaries"
+	      break
 	      ;;
 	    Linux)
 	      echo "Copying Bowtie binaries"
-	      if [ "$OSB" == "64b" ]; then
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/bowtie2* $BIN/
-		mkdir -p $WORKDIR/bin/share
-		cp -pr $SCRIPTDIR/pkgs/linux64b/share/man $WORKDIR/bin/share/
-	      else
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/bowtie2* $BIN/
-		mkdir -p $WORKDIR/bin/share
-		cp -pr $SCRIPTDIR/pkgs/linux32b/share/man $WORKDIR/bin/share/
-	      fi
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/bowtie2* $BIN/
+	      mkdir -p $WORKDIR/bin/share
+	      cp -pr $SCRIPTDIR/pkgs/linux64b/share/man $WORKDIR/bin/share/
+	      break
 	      ;;
 	    *) echo
 	      echo "Binary is not available for $OS $OSB. Going to compile it from source code."
@@ -475,10 +467,10 @@ function compilesamtools {
 	  checktools gcc &&
 	  echo &&
 	  echo "Downloading SAMtools sources..." &&
-	  curl -L -o develop.zip https://github.com/samtools/samtools/archive/develop.zip &&
+	  curl -s -L -o develop.zip https://github.com/samtools/samtools/archive/develop.zip &&
 	  unzip -nq develop.zip &&
 	  cd samtools-develop &&
-	  curl -L -o develop.zip https://github.com/samtools/htslib/archive/develop.zip &&
+	  curl -s -L -o develop.zip https://github.com/samtools/htslib/archive/develop.zip &&
 	  unzip -nq develop.zip &&
 	  echo "Compiling SAMtools" &&
 	  make -s HTSDIR=`pwd`/htslib-develop &&
@@ -499,51 +491,33 @@ function compilesamtools {
 	  case "$OS" in
 	    Mac)
 	      echo "Copying SAMtools binaries"
+	      break
 	      ;;
 	    Linux)
 	      echo "Copying SAMtools binaries"
-	      if [ "$OSB" == "64b" ]; then
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/ace2sam $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/blast2sam.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/export2sam.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/interpolate_sam.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/maq2sam-long $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/maq2sam-short $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/md5fa $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/md5sum-lite $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/novo2sam.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/plot-bamstats $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/psl2sam.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/samtools $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/samtools.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/sam2vcf.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/seq_cache_populate.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/soap2sam.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/varfilter.py $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/wgsim $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/wgsim_eval.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/zoom2sam.pl $BIN/
-	      else
-	      	cp -p $SCRIPTDIR/pkgs/linux32b/bin/ace2sam $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/blast2sam.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/export2sam.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/interpolate_sam.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/maq2sam-long $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/maq2sam-short $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/md5fa $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/md5sum-lite $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/novo2sam.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/plot-bamstats $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/psl2sam.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/samtools $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/samtools.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/sam2vcf.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/seq_cache_populate.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/soap2sam.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/varfilter.py $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/wgsim $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/wgsim_eval.pl $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/zoom2sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/ace2sam $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/blast2sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/bowtie2sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/export2sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/interpolate_sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/maq2sam-long $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/maq2sam-short $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/md5fa $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/md5sum-lite $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/novo2sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/plot-bamstats $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/psl2sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/samtools $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/samtools.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/sam2vcf.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/seq_cache_populate.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/soap2sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/varfilter.py $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/wgsim $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/wgsim_eval.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/zoom2sam.pl $BIN/
+	      mkdir -p $WORKDIR/bin/share/man/man1
+	      cp -p $SCRIPTDIR/pkgs/linux64b/share/man/man1/samtools.1 $WORKDIR/bin/share/man/man1/
 	      fi
 	      ;;
 	    *) echo
@@ -617,7 +591,7 @@ function compilebam2fastq {
 	  checktools make &&
 	  echo &&
 	  echo "Downloading bam2fastq source code..." &&
-	  curl -o bam2fastq-1.1.0.tgz http://gsl.hudsonalpha.org/static/software/bam2fastq-1.1.0.tgz &&
+	  curl -s -L -o bam2fastq-1.1.0.tgz http://gsl.hudsonalpha.org/static/software/bam2fastq-1.1.0.tgz &&
 	  tar xzvf bam2fastq-1.1.0.tgz &&
 	  compilebam2fastq bam2fastq-1.1.0/
 	  } || {
@@ -633,14 +607,12 @@ function compilebam2fastq {
 	  case "$OS" in
 	    Mac)
 	      echo "Copying bam2fastq binary"
+	      break
 	      ;;
 	    Linux)
 	      echo "Copying bam2fastq binary"
-	      if [ "$OSB" == "64b" ]; then
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/bam2fastq $BIN/
-	      else
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/bam2fastq $BIN/
-	      fi
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/bam2fastq $BIN/
+	      break
 	      ;;
 	    *) echo
 	      echo "Binary is not available for $OS $OSB."
@@ -726,7 +698,7 @@ function compileflash {
 	  checktools gunzip
 	  echo
 	  echo "Downloading FLASH source code"
-	  curl -L -o FLASH-1.2.11.tar.gz http://downloads.sourceforge.net/project/flashpage/FLASH-1.2.11.tar.gz || {
+	  curl -s -L -o FLASH-1.2.11.tar.gz http://downloads.sourceforge.net/project/flashpage/FLASH-1.2.11.tar.gz || {
 	    echo
 	    echo "Download failed. Please, go to http://sourceforge.net/projects/flashpage/files/"
 	    echo "  download FLASH-*.tar.gz, compile it manually and ensure it is in PATH."
@@ -749,7 +721,7 @@ function compileflash {
 	      checktools mv
 	      echo
 	      echo "Downloading FLASH for $OS"
-	      curl -L -o FLASH-1.2.11-windows-bin.zip http://downloads.sourceforge.net/project/flashpage/FLASH-1.2.11-windows-bin.zip || {
+	      curl -s -L -o FLASH-1.2.11-windows-bin.zip http://downloads.sourceforge.net/project/flashpage/FLASH-1.2.11-windows-bin.zip || {
 		echo
 		echo "Download failed. Please, go to http://sourceforge.net/projects/flashpage/files/"
 		echo "  download FLASH-*windows-bin.zip, unpack it and ensure it is in PATH."
@@ -766,14 +738,12 @@ function compileflash {
 	  case "$OS" in
 	    Mac)
 	      echo "Copying FLASH binary"
+	      break
 	      ;;
 	    Linux)
 	      echo "Copying FLASH binary"
-	      if [ "$OSB" == "64b" ]; then
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/flash $BIN/
-	      else
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/flash $BIN/
-	      fi
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/flash $BIN/
+	      break
 	      ;;
 	    *) echo
 	      echo "Binary is not available for $OS $OSB."
@@ -869,8 +839,8 @@ function compilefastx {
 	  echo
 	  echo "Downloading FASTX source code"
 	  echo
-	  { curl -L -o libgtextutils-0.7.tar.gz https://github.com/agordon/libgtextutils/releases/download/0.7/libgtextutils-0.7.tar.gz &&
-	  curl -L -o fastx_toolkit-0.0.14.tar.bz2 https://github.com/agordon/fastx_toolkit/releases/download/0.0.14/fastx_toolkit-0.0.14.tar.bz2; } || {
+	  { curl -s -L -o libgtextutils-0.7.tar.gz https://github.com/agordon/libgtextutils/releases/download/0.7/libgtextutils-0.7.tar.gz &&
+	  curl -s -L -o fastx_toolkit-0.0.14.tar.bz2 https://github.com/agordon/fastx_toolkit/releases/download/0.0.14/fastx_toolkit-0.0.14.tar.bz2; } || {
 	    echo
 	    echo "Download failed. Please, go to"
 	    echo "  https://github.com/agordon/fastx_toolkit/releases/download/ and download"
@@ -890,25 +860,14 @@ function compilefastx {
 	      ;;
 	    Linux)
 	      echo "Copying FASTX binaries"
-	      if [ "$OSB" == "64b" ]; then
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/fasta_* $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/fastq_* $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux64b/bin/fastx_* $BIN/
-		mkdir -p $WORKDIR/bin/include $WORKDIR/bin/lib64 $WORKDIR/bin/share
-		cp -pr $SCRIPTDIR/pkgs/linux64b/include/gtextutils $WORKDIR/bin/include/
-		cp -pr $SCRIPTDIR/pkgs/linux64b/lib64/pkgconfig $WORKDIR/bin/lib64/
-		cp -p $SCRIPTDIR/pkgs/linux64b/lib64/libgtextutils* $WORKDIR/bin/lib64/
-		cp -pr $SCRIPTDIR/pkgs/linux64b/share/aclocal $WORKDIR/bin/share/
-	      else
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/fasta_* $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/fastq_* $BIN/
-		cp -p $SCRIPTDIR/pkgs/linux32b/bin/fastx_* $BIN/
-		mkdir -p $WORKDIR/bin/include $WORKDIR/bin/lib $WORKDIR/bin/share
-		cp -pr $SCRIPTDIR/pkgs/linux32b/include/gtextutils $WORKDIR/bin/include/
-		cp -pr $SCRIPTDIR/pkgs/linux32b/lib/pkgconfig $WORKDIR/bin/lib/
-		cp -p $SCRIPTDIR/pkgs/linux32b/lib32/libgtextutils* $WORKDIR/bin/lib32/
-		cp -pr $SCRIPTDIR/pkgs/linux32b/share/aclocal $WORKDIR/bin/share/
-	      fi
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/fasta_* $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/fastq_* $BIN/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/fastx_* $BIN/
+	      mkdir -p $WORKDIR/bin/include $WORKDIR/bin/lib64 $WORKDIR/bin/share
+	      cp -pr $SCRIPTDIR/pkgs/linux64b/include/gtextutils $WORKDIR/bin/include/
+	      cp -pr $SCRIPTDIR/pkgs/linux64b/lib64/pkgconfig $WORKDIR/bin/lib64/
+	      cp -p $SCRIPTDIR/pkgs/linux64b/lib64/libgtextutils* $WORKDIR/bin/lib64/
+	      cp -pr $SCRIPTDIR/pkgs/linux64b/share/aclocal $WORKDIR/bin/share/
 	      ;;
 	    *) echo
 	      echo "Binary is not available for $OS $OSB."
@@ -1046,7 +1005,7 @@ TABREMOVED="${INPUTFILE%.*}_1k_transcripts-removed.tab"
 # Final FASTA sequences for usage in Geneious
 FINALA="${INPUTFILE%.*}_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa"
 
-# Part 1: Obtain unique transcripts.
+# Step 1: Obtain unique transcripts.
 
 echo
 echo "Step 1 of the pipeline - removal of transcripts sharing ≥90% sequence similarity."
@@ -1100,6 +1059,7 @@ fasta2tab $INPUTFILE $INPUTTAB || {
   exit 1
   }
 echo
+
 echo "Sorting unique transcripts"
 { awk '{$1=sprintf("%05d", $1); print $0}' $INPUTTAB | sort > $SORTEDINPUT; } || {
   echo
@@ -1109,6 +1069,7 @@ echo "Sorting unique transcripts"
   exit 1
   }
 echo
+
 # Apply the join command
 join -j1 $UNIQUELIST $SORTEDINPUT > $JOINEDTS || {
   echo
@@ -1141,7 +1102,7 @@ echo "Joined transcripts written in FASTA format as"
 echo "  $JOINEDFA for possible later usage."
 confirmgo
 
-# Part 2: Find genome skimming data (only nuclear reads) which align to the unique transcripts
+# Step 2: Find genome skimming data (only nuclear reads) which align to the unique transcripts
 
 echo
 echo "Step 2 of the pipeline - removal of reads of plastid origin."
@@ -1208,7 +1169,7 @@ echo "Removed reads saved for possible later usage as"
 ls -1 $FASTQNOCP*
 confirmgo
 
-# Mitochondrial reads
+# Mitochondrial reads - optional step
 
 if [ -n "$REFERENCEMT" ]; then
 
@@ -1298,6 +1259,8 @@ if [ -n "$REFERENCEMT" ]; then
       }
   fi
 
+# Step 5 - matching of the unique transcripts and the filtered, combined genome skim reads sharing ≥85% sequence similarity
+
 echo
 echo "Step 5 of the pipeline - matching of the unique transcripts and the filtered,"
 echo "  combined genome skim reads sharing ≥85% sequence similarity."
@@ -1331,12 +1294,12 @@ echo "Output saved as"
 echo "  $BLATOUTFIN for possible later usage."
 confirmgo
 
-# Part 3: Assemble the obtained sequences in contigs (part A)
+# Step 6: Assemble the obtained sequences in contigs
 
 echo
 echo "Step 6 of the pipeline - filtering of BLAT output."
 
-# This will be done in Geneious. Modification of the PSLX file is needed (remove headers, select the field with the transcript (target) sequence names and the field with the query sequences, convert to FASTA)
+# Modification of the PSLX file is needed (remove headers, select the field with the transcript (target) sequence names and the field with the query sequences, convert to FASTA) for usage in Geneious
 echo
 echo "Modifying PSLX BLAT output for usage in Geneious"
 { sed 1,5d $BLATOUTFIN | cut -f14,22 | awk '{n=split($2,a,",");for(i=1;i<=n;i++)print $1"_"NR"_"i,a[i]}' | sed 's/^/>/' | sed 's/ /\n/' > $BLATOUTFIN2; } || {
@@ -1523,6 +1486,8 @@ echo "Save following columns (Hold Ctrl key to mark more fields): \"# Sequences\
 echo "  \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\" and"
 echo "  \"Sequence Length\"."
 echo "If this option would be inaccessible for you, export all columns."
+echo "Warning! Do not select and export \"* Consensus Sequences\", \"* Unused Reads\""
+echo "or \"* Assembly Report\" - only the individual  \"* contig #\" files."
 echo
 echo "Select items \"Consensus Sequences\" and \"Unused Reads\" and export both of them"
 echo "  as one FASTA file."

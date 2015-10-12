@@ -13,3 +13,4 @@ openjdk-7-source
 git
 ant
 pkg-config
+curl

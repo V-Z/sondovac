@@ -6,7 +6,8 @@ SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 # Load functions shared by both parts, introductory message
 source $SCRIPTDIR/sondovac_functions || {
   echo
-  echo "Fatal error! Unable to load file \"sondovac_functions\" with required functions!"
+  echo "Fatal error!"
+  echo "Unable to load file \"sondovac_functions\" with required functions!"
   echo "It must be in same directory as \"$0\""
   echo "Check it and if needed download again whole script from"
   echo "https://github.com/V-Z/sondovac/"
@@ -122,8 +123,10 @@ while getopts "hvulrpeinc:x:z:b:d:" START; do
       fi
       ;;
     ?)
+      echo
       echo "Invalid option(s)!"
       echo "See \"$0 -h\" for usage options."
+      echo
       exit 1
       ;;
     esac
@@ -165,6 +168,9 @@ checktools wc
 
 # Check if sed is available
 checktools sed
+
+# Check if sort is available
+checktools sort
 
 # Check if join is available
 checktools join
@@ -222,7 +228,7 @@ function compilecdhit {
       S|s)
 	checktools curl
 	checktools unzip
-	curl -L -o cd-hit-master.zip https://github.com/weizhongli/cdhit/archive/master.zip
+	curl -s -L -o cd-hit-master.zip https://github.com/weizhongli/cdhit/archive/master.zip
 	unzip -nq cd-hit-master.zip
 	compilecdhit cdhit-master
 	break
@@ -232,25 +238,11 @@ function compilecdhit {
 	case "$OS" in
 	  Mac)
 	    cp -p $SCRIPTDIR/pkgs/macosx/bin/cd-hit* $BIN/
-	    cp -p $SCRIPTDIR/pkgs/macosx/bin/clstr*.pl $BIN/
-	    cp -p $SCRIPTDIR/pkgs/macosx/bin/plot_*.pl $BIN/
-	    cp -p $SCRIPTDIR/pkgs/macosx/bin/psi-cd-hit*.pl $BIN/
-	    cp -p $SCRIPTDIR/pkgs/macosx/bin/make_multi_seq.pl $BIN/
+	    cp -p $SCRIPTDIR/pkgs/macosx/bin/*.pl $BIN/
 	    ;;
 	  Linux)
-	    if [ "$OSB" == "64b" ]; then
-	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/cd-hit* $BIN/
-	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/clstr*.pl $BIN/
-	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/plot_*.pl $BIN/
-	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/psi-cd-hit*.pl $BIN/
-	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/make_multi_seq.pl $BIN/
-	    else
-	      cp -p $SCRIPTDIR/pkgs/linux32b/bin/cd-hit* $BIN/
-	      cp -p $SCRIPTDIR/pkgs/linux32b/bin/clstr*.pl $BIN/
-	      cp -p $SCRIPTDIR/pkgs/linux32b/bin/plot_*.pl $BIN/
-	      cp -p $SCRIPTDIR/pkgs/linux32b/bin/psi-cd-hit*.pl $BIN/
-	      cp -p $SCRIPTDIR/pkgs/linux32b/bin/make_multi_seq.pl $BIN/
-	    fi
+	    cp -p $SCRIPTDIR/pkgs/linux64b/bin/cd-hit* $BIN/
+	    cp -p $SCRIPTDIR/pkgs/linux64b/bin/*.pl $BIN/
 	    ;;
 	  *) echo
 	    echo "Binary is not available for $OS $OSB."
@@ -315,9 +307,9 @@ PROBEPRELIM0="${SEQUENCES%.*}_prelim_probe_seq0.fasta"
 # Preliminary probe sequences - corrected labels
 PROBEPRELIM="${SEQUENCES%.*}_prelim_probe_seq.fasta"
 # Sequence similarity checked by CD-HIT - temporary file - will be deleted
-PROBEPRELIMCDHIT="${SEQUENCES%.*}_similarity_test"
+PROBEPRELIMCDHIT="${SEQUENCES%.*}_sim_test.fasta"
 # Assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
-PROBEPRELIMCDHIT2="${SEQUENCES%.*}_similarity_test2"
+PROBEPRELIMCDHIT2="${SEQUENCES%.*}_similarity_test.fasta"
 # Extracted assemblies making up genes of ≥600 bp - temporary file - will be deleted
 PROBEPRELIMFORJOIN="${SEQUENCES%.*}_similarity_test_assemblies_for_join"
 # Modified and sorted assemblies - temporary file - will be deleted
@@ -328,8 +320,16 @@ PROBEPRELIMFIN="${SEQUENCES%.*}_similarity_test_assemblies_fin.tab"
 PROBESEQUENCES="${SEQUENCES%.*}_target_enrichment_probe_sequences.fasta"
 # Probes in tab - temporary file - will be deleted
 PROBESEQUENCESNUM="${SEQUENCES%.*}_target_enrichment_probe_sequences.tab"
+# Possible cpDNA genes in probe set
+PROBESEQUENCESCP="${SEQUENCES%.*}_possible_cp_dna_genes_in_probe_set.pslx"
 
-# Part 3: Assemble the obtained sequences in contigs (part B)
+# Assemble the obtained sequences in contigs
+
+# Step 8: Retention of those contigs that comprise exons ≥ bait length (default is 120 bp) and have a certain locus length
+
+echo "Step 8 of the pipeline - retention of those contigs that comprise exons ≥ bait"
+echo "length ($BAITL bp) and have a certain locus length"
+echo
 
 # Check if TSV output of Geneious contains at least requested columns
 REQUIREDCOLS="Required columns in `echo $TSVLIST` are \"# Sequences\",\n  \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\"\n  and \"Sequence Length\". Please, export the TSV file again."
@@ -399,10 +399,15 @@ if egrep -q "# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[[
     TSVLIST2="${TSVLIST%.*}.columns.tsv"
     echo "File with extracted columns was saved as"
     echo "$TSVLIST2 for possible later usage."
+    confirmgo
   fi
 echo
 
 # Check the statistics
+
+echo "Assembly statistics"
+echo
+
 # Check total number of bp
 echo "Total number of base pairs:"
 { cut -f6 $TSVLIST2 | awk '$1>119' | awk '{s+=$1}END{print s}'; } || {
@@ -483,7 +488,7 @@ awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed 's/_/\t/g' | cut -f1,4 | 
 confirmgo
 echo
 
-# Part 4: Create the final FASTA file for the Hyb-Seq probes
+# Create the final FASTA file for the Hyb-Seq probes
 
 # Extract and sort the assemblies making up genes of ≥600 bp
 echo "Extracting and sorting the assemblies making up genes of ≥600 bp"
@@ -523,13 +528,24 @@ echo "Ensuring all sequences have correct labels"
 sed 's/^>.\+\(Assembly_[0-9]\+_\)/>\1Contig_0_/' $PROBEPRELIM0 > $PROBEPRELIM
 echo
 echo "Preliminary probe sequences saved as $PROBEPRELIM for possible later usage"
+confirmgo
 
+# Step 9: Make the final quality control of the probe sequences before sending them to company for bait synthesis
 
-# Part 5: Make the final quality control of the probe sequences before sending them to company for bait synthesis
+echo
+echo "Step 9 of the pipeline - removal of probe sequences sharing ≥90% sequence"
+echo "similarity"
+echo
 
 # Check for sequence similarity between the developed probe sequences with CD-HIT-EST
 echo "Checking sequence similarity between the developed probe sequences"
 cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCDHIT -c $CDHITSIM
+
+# Step 10: Retention of those contigs that comprise exons ≥ bait length (default is 120 bp) and have a certain locus length
+
+echo
+echo "Step 10 of the pipeline - retention of those contigs that comprise exons ≥ bait"
+echo "length ($BAITL bp) and have a certain locus length"
 echo
 
 # One of the three outfiles is a FASTA file, it has to be converted to TAB
@@ -596,31 +612,66 @@ awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}
 confirmgo
 echo
 
-echo "Success!"
+echo "${BOLD}Success!${NORM}"
 echo
-echo "Final output file was written as $PROBESEQUENCES"
-echo
+echo "================================================================================"
+echo "Final output file was written as"
+echo "${BOLD}$PROBESEQUENCES${NORM}"
 echo "This file contains the probe sequences."
+echo "================================================================================"
 confirmgo
+
+# Step 11 - removal of possible cpDNA sequences in final probe list
+
+echo
+echo "Step 11 of the pipeline - removal of probe sequences sharing ≥90% sequence"
+echo "similarity with the plastome reference"
 echo
 
-# Remove remaining cp/mt genes from probe set
-echo "Removing remaining cp/mt genes from probe set"
-blat -t=dna -q=dna -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCES.possible_cp_dna_genes_in_probe_set.pslx
+# Remove remaining cp genes from probe set
+echo "Removing remaining plastid genes from probe set"
+blat -t=dna -q=dna -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCESCP
 echo
 
-echo "File $PROBESEQUENCES.possible_cp_dna_genes_in_probe_set.pslx"
+echo "================================================================================"
+echo "File $PROBESEQUENCESCP"
 echo "contains possible plastid genes in final probe set."
 echo "We recommend to remove those genes from final probe set in file"
 echo "$PROBESEQUENCES."
+echo "================================================================================"
 confirmgo
 echo
 
 # Remove temporal files
 echo "Removing unneeded temporal files"
-rm $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESTABUNAS $SEQUENCESPROBES600 $SEQUENCESPROBES600FORJOIN $SEQUENCESTABASSE120 $SEQUENCESTABASSE120SORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM
-echo
+rm $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESTABUNAS $SEQUENCESPROBES600 $SEQUENCESPROBES600FORJOIN $SEQUENCESTABASSE120 $SEQUENCESTABASSE120SORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM || {
+  echo
+  echo "${BOLD}Error!${NORM} Removal of temporal files failed. Remove following files manually:"
+  echo "$SEQUENCESTAB, $SEQUENCESTABASSE, $SEQUENCESTABUNAS,"
+  echo "$SEQUENCESPROBES600, $SEQUENCESPROBES600FORJOIN, $SEQUENCESTABASSE120,"
+  echo "$SEQUENCESTABASSE120SORT, $SEQUENCESPROBES120600FIN, $SEQUENCESPROBES120600MODIF,"
+  echo "$SEQUENCESPROBES120600ASSEM, $SEQUENCESPROBES120600CONTIG, $PROBEPRELIMCDHIT,"
+  echo "$PROBEPRELIMFORJOIN, $PROBEPRELIMSORT,"
+  echo "$PROBEPRELIMFIN and $PROBESEQUENCESNUM."
+  confirmgo
+  }
 
+# List kept files which user can use for another analysis
+echo
+echo "Following files are kept for possible later usage (see manual for details):"
+echo "================================================================================"
+echo "1) Preliminary probe sequences:"
+echo "$PROBEPRELIM"
+echo "2) Contigs comprising exons ≥ bait length and have a certain total locus length:"
+echo "$PROBEPRELIMCDHIT2"
+echo "3) Possible plastid genes in final probe set:"
+echo "$PROBESEQUENCESCP"
+echo "4) Final probe sequences in FASTA format:"
+echo "$PROBESEQUENCES"
+echo "================================================================================"
+confirmgo
+
+echo
 echo "Script exited successfully..."
 echo
 

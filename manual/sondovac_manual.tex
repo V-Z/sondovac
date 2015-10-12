@@ -283,7 +283,7 @@ Select the file and go to menu \textbf{Tools | Align / Assemble | De Novo Assemb
 
 In \textbf{Results} frame check \textbf{Save assembly report}, \textbf{Save list of unused reads}, \textbf{Save in sub-folder}, \textbf{Save contigs} (do not check \textbf{Maximum}) and \textbf{Save consensus sequences}. Do not trim. Otherwise keep defaults. Run it. Geneious may warn about possible hanging because of big file. Do not use Geneious for other tasks during the assembly. Running may take long time.
 
-Select all resulting contigs (typically named \textbf{* Contig \#}) and export them (go to menu \textbf{File | Export | Selected Documents\ldots}) as \textbf{Tab-separated table values (*.tsv)}. Save following columns (Hold \texttt{Ctrl} key to mark more fields): \textbf{\# Sequences}, \textbf{\% Pairwise Identity}, \textbf{Description}, \textbf{Mean Coverage}, \textbf{Name} and \textbf{Sequence Length}. If this option would be inaccessible for you, export all columns.
+Select all resulting contigs (typically named \textbf{* Contig \#}) and export them (go to menu \textbf{File | Export | Selected Documents\ldots}) as \textbf{Tab-separated table values (*.tsv)}. Save following columns (Hold \texttt{Ctrl} key to mark more fields): \textbf{\# Sequences}, \textbf{\% Pairwise Identity}, \textbf{Description}, \textbf{Mean Coverage}, \textbf{Name} and \textbf{Sequence Length}. If this option would be inaccessible for you, export all columns. Warning! Do not select and export \textbf{* Consensus Sequences}, \textbf{* Unused Reads} or \textbf{* Report} -- only the individual \textbf{* contig \#} files.
 
 Select items \textbf{Consensus Sequences} and \textbf{Unused Reads} and export them as one \textbf{FASTA}. Go to menu \textbf{File | Export | Selected Documents\ldots} and choose \textbf{FASTA file type}.
 
@@ -546,9 +546,9 @@ Files 1-9 are not necessary for further processing by this pipeline, but may be 
 
 \begin{enumerate}
   \item \texttt{*$\_$prelim$\_$probe$\_$seq.fasta} -- Preliminary probe sequences.
-  \item \texttt{*$\_$similarity$\_$test2} -- Contigs that comprise exons $\geq$ bait length and have a certain total locus length (in the \textit{Oxalis} case $\geq$600 bp).
+  \item \texttt{*$\_$similarity$\_$test.fasta} -- Contigs that comprise exons $\geq$ bait length and have a certain total locus length.
   \item \texttt{*$\_$target$\_$enrichment$\_$probe$\_$sequences.fasta} -- Probes in FASTA.
-  \item \textbf{\texttt{*.target$\_$enrichment$\_$probe$\_$sequences$\_$final.pslx} -- Final probes ready for bait synthesis.}
+  \item \textbf{\texttt{*_target$\_$enrichment$\_$probe$\_$sequences$\_$final.pslx} -- Final probes ready for bait synthesis.}
 \end{enumerate}
 
 \subsection{Record output of Sondovač}

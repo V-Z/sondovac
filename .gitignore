@@ -1,7 +1,6 @@
 bin
 manual/sondovac_manual.brf
 manual/sondovac_manual.kilepr
-pkgs/linux32b
 pkgs/linux64b
 pkgs/macosx
 src

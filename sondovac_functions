@@ -31,7 +31,7 @@ MAGF=$(tput setab 5) # magenta background color
 CYAF=$(tput setab 6) # cyan background color
 WHIF=$(tput setab 7) # white background color
 REVF=$(tput setab 9) # reset default background color
-
+s
 # Introductory message for users
 echo
 echo " ##############################################################################"
@@ -148,16 +148,20 @@ function scriptupdater {
   checktools curl
   checktools grep
   checktools cut
+  checktools mv
   echo
   echo "Checking for updates..."
-  { ONLINEVERSION=`curl -s https://raw.githubusercontent.com/V-Z/sondovac/master/.info | grep CURRENTVERSION | cut -f 2 -d "="`; } || {
-    echo
-    echo "Downloading of version information available on-line failed."
-    echo "Please, go to to $WEB and check for available version manually."
-    echo "Your current version is $SCRIPTVERSION."
-    echo
-    exit 1
-    }
+  { curl -s -L -o .info https://raw.githubusercontent.com/V-Z/sondovac/master/.info &&
+    ONLINEVERSION=`grep 'CURRENTVERSION' .info | cut -f 2 -d "="` &&
+    mv .info .info~
+    } || {
+      echo
+      echo "Downloading of version information available on-line failed."
+      echo "Please, go to to $WEB and check for available version manually."
+      echo "Your current version is $SCRIPTVERSION."
+      echo
+      exit 1
+      }
   echo
   if [[ (( "$SCRIPTVERSION" < "$ONLINEVERSION" )) ]]; then
     echo "Your version is $SCRIPTVERSION. On-line available version $ONLINEVERSION is newer."
@@ -170,8 +174,8 @@ function scriptupdater {
 	  checktools unzip
 	  echo
 	  echo "Downloading newer version of the script..."
-	  NEWVERSION=`curl -s https://raw.githubusercontent.com/V-Z/sondovac/master/.info | grep NEWVERSION | cut -f 2 -d "="`
-	  curl -o sondovac.$ONLINEVERSION.zip $NEWVERSION || {
+	  NEWVERSION=`curl -s -L https://raw.githubusercontent.com/V-Z/sondovac/master/.info | grep NEWVERSION | cut -f 2 -d "="`
+	  curl -s -L -o sondovac.$ONLINEVERSION.zip $NEWVERSION || {
 	    echo
 	    echo "Downloading of new version available on-line failed."
 	    echo "Please, go to to $WEB and download and unpack new version manually."
@@ -432,6 +436,17 @@ function oscheck {
       esac
     fi
 
+  # Warning for 32 bit systems
+  if [ "$OSB" == "32b" ]; then
+    echo
+    echo "${BOLD}Warning!${NORM} Some packages are not available for $OSB bit system,"
+    echo "it will probably be impossible to run the pipeline on this system."
+    echo "We recommend to upgrade CPU and/or reinstall operating system for 64 bit system."
+    echo "See INSTALL or manual for more details."
+    echo "We wish you good luck. :-)"
+    confirmgo
+    fi
+
   echo
   echo "Current OS is $OS $OSB."
   echo
@@ -487,7 +502,8 @@ function oscheck {
 		    echo "Installation of packages \"$PACKAGES\" failed."
 		    echo "Those packages may be required to install software used by Sondovač."
 		    echo "If so, install those packages manually. See INSTALL for details."
-		    confirmgo; }
+		    confirmgo
+		    }
 		  break
 		  ;;
 		N|n|NO|No|no)
@@ -509,10 +525,11 @@ function oscheck {
 	  LINUX=Ubuntu
 	  echo "Linux distribution is Ubuntu or derivative."
 	  echo
+	  checktools grep
 	  PACKAGES=''
 	  # Check if all required packages are installed
 	  while read PACKAGENAME; do
-	    if dpkg-query -W $PACKAGENAME | grep -q ubuntu; then
+	    if dpkg -l $PACKAGENAME | grep -q 'ii  '; then
 	      echo "Package \"$PACKAGENAME\" is available. OK."
 	      else
 		PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
@@ -528,7 +545,7 @@ function oscheck {
 		}
 	      confirmgo
 	      }
-	  # Is some packages are missing, install them
+	  # If some packages are missing, install them
 	  if [ -n "$PACKAGES" ]; then
 	    # Check if universe repository (not enabled by default) is available - it is required source for some packages
 	    if grep -q '^[^#].*universe.*' /etc/apt/sources.list; then
@@ -559,7 +576,8 @@ function oscheck {
 			    echo "Adding of repository \"deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe\""
 			    echo "failed. If packages from it are required for compilation, add this repository manually."
 			    echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
-			    confirmgo; }
+			    confirmgo
+			    }
 			  break
 			  ;;
 			N|n|NO|No|no)
@@ -591,7 +609,8 @@ function oscheck {
 		      echo "Installation of packages \"$PACKAGES\" failed."
 		      echo "Those packages may be required to install software used by Sondovač."
 		      echo "If so, install those packages manually. See INSTALL or manual for details."
-		      confirmgo; }
+		      confirmgo
+		      }
 		    break
 		    ;;
 		  N|n|NO|No|no)
@@ -608,6 +627,67 @@ function oscheck {
 	      done
 	      else
 		echo "Packages required for compilation are installed. OK."
+	    fi
+	  ;;
+	*[Dd]ebian*)
+	  LINUX=Debian
+	  echo "Linux distribution is Debian or derivative."
+	  echo
+	  PACKAGES=''
+	  # Check if all required packages are installed
+	  while read PACKAGENAME; do
+	    if dpkg -l $PACKAGENAME | grep -q 'ii  '; then
+	      echo "Package \"$PACKAGENAME\" is available. OK."
+	      else
+		PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
+	      fi
+	    done < $SCRIPTDIR/pkgs/packages-ubuntu || {
+	      echo
+	      echo "${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
+	      cat $SCRIPTDIR/pkgs/packages-ubuntu || {
+		echo "${BOLD}Error!${NORM} Can not find file $SCRIPTDIR/pkgs/packages-ubuntu"
+		echo "Go to $WEB and verify if your installation is correct."
+		echo
+		exit 1
+		}
+	      confirmgo
+	      }
+	  # If some packages are missing, install them
+	  if [ -n "$PACKAGES" ]; then
+	    # Install missing packages
+	    echo "Packages \"$PACKAGES\" are missing."
+	    echo
+	    echo "Compilation may require to install them. Would you like to install them now?"
+	    echo "It requires administrative privileges. (Yes/No)"
+	    read DEBIANI
+	    while :
+	    do
+	      case "$DEBIANI" in
+		Y|y|YES|Yes|yes)
+		  echo "Installing required packages..."
+		  { { sudo apt-get update && sudo apt-get install $PACKAGES; } || { su -c 'apt-get update' && su -c 'apt-get install $PACKAGES'; }; } || {
+		    echo
+		    echo "Installation of packages \"$PACKAGES\" failed."
+		    echo "Those packages may be required to install software used by Sondovač."
+		    echo "If so, install those packages manually. See INSTALL or manual for details."
+		    confirmgo
+		    }
+		  break
+		  ;;
+		N|n|NO|No|no)
+		  echo
+		  echo "You may need packages \"$PACKAGES\""
+		  echo "If compilation of some software required for the pipeline fails,"
+		  echo "install them manually. See INSTALL or manual for details. See also"
+		  echo "https://help.ubuntu.com/community/CompilingEasyHowTo"
+		  confirmgo
+		  break
+		  ;;
+		*) echo "Wrong option. Use Y or N." && read DEBIANI;;
+	      esac
+	    done
+	    else
+	    echo "Packages required for compilation are installed. OK."
 	    fi
 	  ;;
 	# Another distros...
@@ -674,7 +754,7 @@ function compileblat {
       confirmgo
     fi &&
   echo &&
-  curl -o blatSrc.zip https://users.soe.ucsc.edu/~kent/src/blatSrc.zip &&
+  curl -s -L -o blatSrc.zip https://users.soe.ucsc.edu/~kent/src/blatSrc.zip &&
   unzip -nq blatSrc.zip &&
   cd blatSrc &&
   { mkdir -p $HOME/bin/$MACHTYPE || {
@@ -735,7 +815,7 @@ function checkblat {
 	      {
 	      checktools curl &&
 	      echo "Downloading blat binary for $OS" &&
-	      curl -o blat http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/blat &&
+	      curl -s -L -o blat http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/blat &&
 	      chmod +x blat &&
 	      mv blat $BIN/ &&
 	      echo "\"BLAT\" is available. OK"
@@ -747,11 +827,10 @@ function checkblat {
 		echo
 		exit 1
 		}
-	      break
 	      elif [[ "$OS" == "Linux" && "$OSB" == "64b" ]]; then
 		{
 		echo "Downloading blat binary for $OS" &&
-		curl -o blat http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/blat &&
+		curl -s -L -o blat http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/blat &&
 		chmod +x blat &&
 		mv blat $BIN/ &&
 		echo "\"BLAT\" is available. OK."
@@ -763,10 +842,6 @@ function checkblat {
 		  echo
 		  exit 1
 		  }
-		break
-	      elif [[ "$OS" == "Linux" && "$OSB" == "32b" ]]; then
-		echo "BLAT binary is not provided for 32bit Linux."
-		compileblat
 	      else
 		echo "Unknown OS or OS without BLAT binary available."
 		compileblat
