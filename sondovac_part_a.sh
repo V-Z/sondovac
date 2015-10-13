@@ -312,7 +312,7 @@ function compilebowtie {
 	  if [ "$OS" == "Linux" ]; then
 	    {
 	    echo "Downloading Bowtie2 binaries for $OS $OSB" &&
-	    curl -s -L -o bowtie2-$BOWTIE2V-linux-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-linux-x86_64.zip &&
+	    $DOWNLOADER bowtie2-$BOWTIE2V-linux-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-linux-x86_64.zip &&
 	    unzip -nq bowtie2-$BOWTIE2V-linux-x86_64.zip &&
 	    cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
 	    echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
@@ -328,7 +328,7 @@ function compilebowtie {
 	  elif [ "$OS" == "Mac" ]; then
 	    {
 	    echo "Downloading Bowtie2 binaries for $OS $OSB" &&
-	    curl -s -L -o bowtie2-$BOWTIE2V-macos-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-macos-x86_64.zip &&
+	    $DOWNLOADER bowtie2-$BOWTIE2V-macos-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-macos-x86_64.zip &&
 	    unzip -nq bowtie2-$BOWTIE2V-macos-x86_64.zip &&
 	    cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
 	    echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
@@ -344,7 +344,7 @@ function compilebowtie {
 	  elif [ "$OS" == "Windows" ]; then
 	    {
 	    echo "Downloading Bowtie2 binaries for $OS $OSB" &&
-	    curl -s -L -o bowtie2-$BOWTIE2V-mingw-win64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-mingw-win64.zip &&
+	    $DOWNLOADER bowtie2-$BOWTIE2V-mingw-win64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-mingw-win64.zip &&
 	    unzip -nq bowtie2-$BOWTIE2V-mingw-win64.zip &&
 	    cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
 	    echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\""
@@ -365,11 +365,11 @@ function compilebowtie {
 	  ;;
 	S|s)
 	  echo
-	  checktools curl
+	  downloaderselector
 	  checktools unzip
 	  echo
 	  echo "Downloading Bowtie2 source code"
-	  curl -s -L -o bowtie2-$BOWTIE2V-source.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-source.zip || {
+	  $DOWNLOADER bowtie2-$BOWTIE2V-source.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-source.zip || {
 	    echo
 	    echo "Download failed. Please, go to"
 	    echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
@@ -460,17 +460,17 @@ function compilesamtools {
 	S|s)
 	  {
 	  echo
-	  checktools curl &&
+	  downloaderselector &&
 	  checktools unzip &&
 	  checktools pwd &&
 	  checktools make &&
 	  checktools gcc &&
 	  echo &&
 	  echo "Downloading SAMtools sources..." &&
-	  curl -s -L -o develop.zip https://github.com/samtools/samtools/archive/develop.zip &&
+	  $DOWNLOADER develop.zip https://github.com/samtools/samtools/archive/develop.zip &&
 	  unzip -nq develop.zip &&
 	  cd samtools-develop &&
-	  curl -s -L -o develop.zip https://github.com/samtools/htslib/archive/develop.zip &&
+	  $DOWNLOADER develop.zip https://github.com/samtools/htslib/archive/develop.zip &&
 	  unzip -nq develop.zip &&
 	  echo "Compiling SAMtools" &&
 	  make -s HTSDIR=`pwd`/htslib-develop &&
@@ -518,7 +518,6 @@ function compilesamtools {
 	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/zoom2sam.pl $BIN/
 	      mkdir -p $WORKDIR/bin/share/man/man1
 	      cp -p $SCRIPTDIR/pkgs/linux64b/share/man/man1/samtools.1 $WORKDIR/bin/share/man/man1/
-	      fi
 	      ;;
 	    *) echo
 	      echo "Binary is not available for $OS $OSB."
@@ -585,13 +584,13 @@ function compilebam2fastq {
 	S|s)
 	  {
 	  echo &&
-	  checktools curl &&
+	  downloaderselector &&
 	  checktools tar &&
 	  checktools gunzip &&
 	  checktools make &&
 	  echo &&
 	  echo "Downloading bam2fastq source code..." &&
-	  curl -s -L -o bam2fastq-1.1.0.tgz http://gsl.hudsonalpha.org/static/software/bam2fastq-1.1.0.tgz &&
+	  $DOWNLOADER bam2fastq-1.1.0.tgz http://gsl.hudsonalpha.org/static/software/bam2fastq-1.1.0.tgz &&
 	  tar xzvf bam2fastq-1.1.0.tgz &&
 	  compilebam2fastq bam2fastq-1.1.0/
 	  } || {
@@ -693,12 +692,12 @@ function compileflash {
 	  ;;
 	S|s)
 	  echo
-	  checktools curl
+	  downloaderselector
 	  checktools tar
 	  checktools gunzip
 	  echo
 	  echo "Downloading FLASH source code"
-	  curl -s -L -o FLASH-1.2.11.tar.gz http://downloads.sourceforge.net/project/flashpage/FLASH-1.2.11.tar.gz || {
+	  $DOWNLOADER FLASH-1.2.11.tar.gz http://downloads.sourceforge.net/project/flashpage/FLASH-1.2.11.tar.gz || {
 	    echo
 	    echo "Download failed. Please, go to http://sourceforge.net/projects/flashpage/files/"
 	    echo "  download FLASH-*.tar.gz, compile it manually and ensure it is in PATH."
@@ -715,13 +714,13 @@ function compileflash {
 	    compileflash $SCRIPTDIR/src/FLASH-1.2.11
 	    else
 	      echo
-	      checktools curl
+	      downloaderselector
 	      checktools unzip
 	      checktools chmod
 	      checktools mv
 	      echo
 	      echo "Downloading FLASH for $OS"
-	      curl -s -L -o FLASH-1.2.11-windows-bin.zip http://downloads.sourceforge.net/project/flashpage/FLASH-1.2.11-windows-bin.zip || {
+	      $DOWNLOADER FLASH-1.2.11-windows-bin.zip http://downloads.sourceforge.net/project/flashpage/FLASH-1.2.11-windows-bin.zip || {
 		echo
 		echo "Download failed. Please, go to http://sourceforge.net/projects/flashpage/files/"
 		echo "  download FLASH-*windows-bin.zip, unpack it and ensure it is in PATH."
@@ -772,6 +771,7 @@ function compilefastx {
   echo &&
   checktools make &&
   checktools g++ &&
+  checktools realpath &&
   checktools pkg-config &&
   echo &&
   echo "Compiling FASTX-Toolkit from source code..." &&
@@ -782,12 +782,13 @@ function compilefastx {
   make -s check &&
   make -s install &&
   make -s installcheck &&
-  if [ "$OSB" == "64b" ]; then
-    PKGTEXTUTILIB="lib64"
-    else
-      PKGTEXTUTILIB="lib"
-      fi
-  export PKG_CONFIG_PATH=$WORKDIR/bin/$PKGTEXTUTILIB/pkgconfig &&
+#   if [ "$OSB" == "64b" ]; then
+#     PKGTEXTUTILIB="lib64"
+#     else
+#       PKGTEXTUTILIB="lib"
+#       fi
+#   export PKG_CONFIG_PATH=$WORKDIR/bin/$PKGTEXTUTILIB/pkgconfig &&
+  export PKG_CONFIG_PATH=`realpath $WORKDIR/bin/*/pkgconfig` &&
   cd $2 &&
   ./configure --prefix=$WORKDIR/bin &&
   make -s &&
@@ -832,15 +833,15 @@ function compilefastx {
 	  ;;
 	S|s)
 	  echo
-	  checktools curl
+	  downloaderselector
 	  checktools tar
 	  checktools gunzip
 	  checktools bunzip2 || checktools bunzip
 	  echo
 	  echo "Downloading FASTX source code"
 	  echo
-	  { curl -s -L -o libgtextutils-0.7.tar.gz https://github.com/agordon/libgtextutils/releases/download/0.7/libgtextutils-0.7.tar.gz &&
-	  curl -s -L -o fastx_toolkit-0.0.14.tar.bz2 https://github.com/agordon/fastx_toolkit/releases/download/0.0.14/fastx_toolkit-0.0.14.tar.bz2; } || {
+	  { $DOWNLOADER libgtextutils-0.7.tar.gz https://github.com/agordon/libgtextutils/releases/download/0.7/libgtextutils-0.7.tar.gz &&
+	  $DOWNLOADER fastx_toolkit-0.0.14.tar.bz2 https://github.com/agordon/fastx_toolkit/releases/download/0.0.14/fastx_toolkit-0.0.14.tar.bz2; } || {
 	    echo
 	    echo "Download failed. Please, go to"
 	    echo "  https://github.com/agordon/fastx_toolkit/releases/download/ and download"

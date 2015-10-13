@@ -8,6 +8,7 @@ use warnings;
 
 # Read provided file name
 my $GENEIOUSFILE = $ARGV[0];
+my $DIR = dirname($GENEIOUSFILE);
 my $GENEIOUSFILENAME = basename($GENEIOUSFILE, ".tsv");
 
 # Check if it is readable
@@ -16,7 +17,7 @@ my @array = <FH>;
 close FH || die "Could not open file: $!";
 
 # Set name of output file
-my $OUTPUTFILE = "$GENEIOUSFILENAME.columns.tsv";
+my $OUTPUTFILE = $DIR . "/$GENEIOUSFILENAME.columns.tsv";
 
 open(MYFILE, "< $GENEIOUSFILE") || die "Cannot open $GENEIOUSFILE for read access: $!";
 

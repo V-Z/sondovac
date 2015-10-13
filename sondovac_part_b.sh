@@ -226,9 +226,9 @@ function compilecdhit {
 	break
 	;;
       S|s)
-	checktools curl
+	downloaderselector
 	checktools unzip
-	curl -s -L -o cd-hit-master.zip https://github.com/weizhongli/cdhit/archive/master.zip
+	$DOWNLOADER cd-hit-master.zip https://github.com/weizhongli/cdhit/archive/master.zip
 	unzip -nq cd-hit-master.zip
 	compilecdhit cdhit-master
 	break
@@ -269,7 +269,7 @@ CHECKFILEREADOUT=""
 
 # Plastom reference in FASTA
 readinputfile -c "plastome reference sequence input file in FASTA format" $TSVLIST
-TSVLIST=$CHECKFILEREADOUT
+REFERENCECP=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
 # Geneious output files are infiles here - consensus and unused sequences (TSV)

@@ -31,7 +31,7 @@ MAGF=$(tput setab 5) # magenta background color
 CYAF=$(tput setab 6) # cyan background color
 WHIF=$(tput setab 7) # white background color
 REVF=$(tput setab 9) # reset default background color
-s
+
 # Introductory message for users
 echo
 echo " ##############################################################################"
@@ -131,6 +131,26 @@ function devrelease {
       fi
   }
 
+# Select tool for downloading - wget or curl
+function downloaderselector {
+  echo
+  if command -v wget >/dev/null 2>&1; then
+    DOWNLOADER='wget -q -O'
+    echo "The script will use \"wget\" to download from the internet."
+    elif command -v curl >/dev/null 2>&1; then
+      DOWNLOADER='curl -s -L -o'
+      echo "The script will use \"curl\" to download from the internet."
+      else
+	echo
+	echo "${BOLD}Error!${NORM} Command \"wget\" as well as \"curl\" are missing. The script can need one"
+	echo "of them to download some of required software packages and other things from the internet."
+	echo "Please, install one of them manually and restart previous task."
+	echo
+	exit 1
+	fi
+  echo
+  }
+
 # Check availability of basic UNIX binaries
 function checktools {
   { command -v $1 >/dev/null 2>&1 && echo "Command \"$1\" is available. OK."; } || {
@@ -145,13 +165,13 @@ function checktools {
 
 # Function to update whole script
 function scriptupdater {
-  checktools curl
+  downloaderselector
   checktools grep
   checktools cut
   checktools mv
   echo
   echo "Checking for updates..."
-  { curl -s -L -o .info https://raw.githubusercontent.com/V-Z/sondovac/master/.info &&
+  { $DOWNLOADER .info https://raw.githubusercontent.com/V-Z/sondovac/master/.info &&
     ONLINEVERSION=`grep 'CURRENTVERSION' .info | cut -f 2 -d "="` &&
     mv .info .info~
     } || {
@@ -175,7 +195,7 @@ function scriptupdater {
 	  echo
 	  echo "Downloading newer version of the script..."
 	  NEWVERSION=`curl -s -L https://raw.githubusercontent.com/V-Z/sondovac/master/.info | grep NEWVERSION | cut -f 2 -d "="`
-	  curl -s -L -o sondovac.$ONLINEVERSION.zip $NEWVERSION || {
+	  $DOWNLOADER sondovac.$ONLINEVERSION.zip $NEWVERSION || {
 	    echo
 	    echo "Downloading of new version available on-line failed."
 	    echo "Please, go to to $WEB and download and unpack new version manually."
@@ -737,7 +757,7 @@ function workdirpath {
 function compileblat {
   {
   echo
-  checktools curl &&
+  downloaderselector &&
   checktools unzip &&
   checktools make &&
   checktools gcc &&
@@ -754,7 +774,7 @@ function compileblat {
       confirmgo
     fi &&
   echo &&
-  curl -s -L -o blatSrc.zip https://users.soe.ucsc.edu/~kent/src/blatSrc.zip &&
+  $DOWNLOADER blatSrc.zip https://users.soe.ucsc.edu/~kent/src/blatSrc.zip &&
   unzip -nq blatSrc.zip &&
   cd blatSrc &&
   { mkdir -p $HOME/bin/$MACHTYPE || {
@@ -811,11 +831,11 @@ function checkblat {
 	    break
 	    ;;
 	  D|d)
+	    downloaderselector
 	    if [ "$OS" == "Mac" ]; then
 	      {
-	      checktools curl &&
 	      echo "Downloading blat binary for $OS" &&
-	      curl -s -L -o blat http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/blat &&
+	      $DOWNLOADER blat http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/blat &&
 	      chmod +x blat &&
 	      mv blat $BIN/ &&
 	      echo "\"BLAT\" is available. OK"
@@ -830,7 +850,7 @@ function checkblat {
 	      elif [[ "$OS" == "Linux" && "$OSB" == "64b" ]]; then
 		{
 		echo "Downloading blat binary for $OS" &&
-		curl -s -L -o blat http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/blat &&
+		$DOWNLOADER blat http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/blat &&
 		chmod +x blat &&
 		mv blat $BIN/ &&
 		echo "\"BLAT\" is available. OK."
