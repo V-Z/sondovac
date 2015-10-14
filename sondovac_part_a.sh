@@ -782,12 +782,6 @@ function compilefastx {
   make -s check &&
   make -s install &&
   make -s installcheck &&
-#   if [ "$OSB" == "64b" ]; then
-#     PKGTEXTUTILIB="lib64"
-#     else
-#       PKGTEXTUTILIB="lib"
-#       fi
-#   export PKG_CONFIG_PATH=$WORKDIR/bin/$PKGTEXTUTILIB/pkgconfig &&
   export PKG_CONFIG_PATH=`realpath $WORKDIR/bin/*/pkgconfig` &&
   cd $2 &&
   ./configure --prefix=$WORKDIR/bin &&

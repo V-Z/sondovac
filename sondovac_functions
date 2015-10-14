@@ -567,52 +567,50 @@ function oscheck {
 	      }
 	  # If some packages are missing, install them
 	  if [ -n "$PACKAGES" ]; then
-	    # Check if universe repository (not enabled by default) is available - it is required source for some packages
-	    if grep -q '^[^#].*universe.*' /etc/apt/sources.list; then
-	      echo "Repository \"universe\" is available. OK."
-	      else
-		echo
-		echo "Repository \"universe\" is required as source for some packages,"
-		echo "but it is not available. Adding it requires administrative privileges."
-		echo "Would you like to add it now? (Yes/No)"
-		UBUNTUV=`lsb_release -sc` || UBUNTUV="YourUbuntuVersion"
-		if [ "$UBUNTUV" == "YourUbuntuVersion" ]; then
-		  echo
-		  echo "Warning! Unable to detect version of your Ubuntu installation."
-		  echo "Probably because command \"lsb_release -sc\" is missing, unavailable for user or"
-		  echo "not in PATH. You may need some packages from \"universe\" repository. in case"
-		  echo "you will need or wish to compile of some software."
-		  echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
-		  confirmgo
-		  else
-		    read UNIVERSE
-		    while :
-		    do
-		      case "$UNIVERSE" in
-			Y|y|YES|Yes|yes)
-			  echo "Adding universe repository..."
-			  { { sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe" && sudo apt-get update; } || { su -c 'add-apt-repository "deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe"' && su -c 'apt-get update'; }; } || {
-			    echo
-			    echo "Adding of repository \"deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe\""
-			    echo "failed. If packages from it are required for compilation, add this repository manually."
-			    echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
-			    confirmgo
-			    }
-			  break
-			  ;;
-			N|n|NO|No|no)
-			  echo
-			  echo "You may need some packages from this repository."
-			  echo "We recommend to add repository \"deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe\""
-			  echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
-			  confirmgo
-			  break
-			  ;;
-			*) echo "Wrong option. Use Y or N." && read UNIVERSE;;
-		      esac
-		    done
-		    fi
-		fi
+# 	    # Check if universe repository (not enabled by default) is available - it is required source for some packages
+# 	    UBUNTUV=`lsb_release -sc` || UBUNTUV="YourUbuntuVersion"
+# 	    if [ "$UBUNTUV" == "YourUbuntuVersion" ]; then
+# 	      echo
+# 	      echo "Warning! Unable to detect version of your Ubuntu installation."
+# 	      echo "Probably because command \"lsb_release -sc\" is missing, unavailable for user or"
+# 	      echo "not in PATH. You may need some packages from \"universe\" repository. in case"
+# 	      echo "you will need or wish to compile of some software."
+# 	      echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
+# 	      confirmgo
+# 	      elif grep -q '^[^#].*universe.*' /etc/apt/sources.list | grep -q -v "$UBUNTUV-"; then
+# 		echo "Repository \"universe\" is available. OK."
+# 		else
+# 		  echo
+# 		  echo "Repository \"universe\" is required as source for some packages,"
+# 		  echo "but it is not available. Adding it requires administrative privileges."
+# 		  echo "Would you like to add it now? (Yes/No)"
+# 		  read UNIVERSE
+# 		  while :
+# 		  do
+# 		    case "$UNIVERSE" in
+# 		      Y|y|YES|Yes|yes)
+# 			echo "Adding universe repository..."
+# 			{ { sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe" && sudo apt-get update; } || { su -c 'add-apt-repository "deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe"' && su -c 'apt-get update'; }; } || {
+# 			  echo
+# 			  echo "Adding of repository \"deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe\""
+# 			  echo "failed. If packages from it are required for compilation, add this repository manually."
+# 			  echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
+# 			  confirmgo
+# 			  }
+# 			break
+# 			;;
+# 		      N|n|NO|No|no)
+# 			echo
+# 			echo "You may need some packages from this repository."
+# 			echo "We recommend to add repository \"deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe\""
+# 			echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
+# 			confirmgo
+# 			break
+# 			;;
+# 		      *) echo "Wrong option. Use Y or N." && read UNIVERSE;;
+# 		    esac
+# 		  done
+# 		fi
 	      # Install missing packages
 	      echo "Packages \"$PACKAGES\" are missing."
 	      echo

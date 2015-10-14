@@ -3,8 +3,6 @@ gcc
 g++
 cpp
 make
-checkinstall
-libpng++-dev
 libpng12-dev
 zlib1g-dev
 openjdk-7-jre
@@ -13,4 +11,5 @@ openjdk-7-source
 git
 ant
 pkg-config
-curl
+realpath
+wget

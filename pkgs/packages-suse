@@ -11,4 +11,4 @@ java-1_7_0-openjdk-devel
 git-core
 ant
 pkg-config
-curl
+wget
