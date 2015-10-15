@@ -1,9 +1,10 @@
 patterns-openSUSE-devel_basis
+coreutils
 gcc
 gcc-c++
 cpp
 make
-libpng16-devel
+libpng12-devel
 zlib-devel
 gcc-java
 java-1_7_0-openjdk

@@ -38,9 +38,11 @@ REFERENCECP=""
 INPUTFQ1=""
 INPUTFQ2=""
 REFERENCEMT=""
+# Default name of output files
+OUTPUTFILENAME="output"
 
 # Parse initial arguments
-while getopts "hvulrpeinf:c:m:t:q:a:y:s:" START; do
+while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:" START; do
   case "$START" in
     h|v)
       generaloptions
@@ -108,6 +110,10 @@ while getopts "hvulrpeinf:c:m:t:q:a:y:s:" START; do
       ;;
     e)
       citationreference
+      ;;
+    o)
+      OUTPUTFILENAME=$OPTARG
+      echo "Output files will start name with $OUTPUTFILENAME"
       ;;
     i)
       echo "Running in interactive mode..."
@@ -945,60 +951,60 @@ if [ -z "$REFERENCEMT" ]; then
 # Input file in FASTA format
 echo "Input file: $INPUTFILE"
 # Output of BLAT (removal of transcripts sharing ≥90% sequence similarity)
-BLATOUT="${INPUTFILE%.*}_blat_unique_transcripts.psl"
+BLATOUT="${OUTPUTFILENAME%.*}_blat_unique_transcripts.psl"
 # List of unique transcripts - temporary file - will be deleted
-UNIQUELIST="${INPUTFILE%.*}_trans-trans_unique_transcripts_sorted.txt"
+UNIQUELIST="${OUTPUTFILENAME%.*}_trans-trans_unique_transcripts_sorted.txt"
 # Input file converted into TXT - temporary file - will be deleted
-INPUTTAB="${INPUTFILE%.*}.txt"
+INPUTTAB="${OUTPUTFILENAME%.*}.txt"
 # Sorted input file in TXT - temporary file - will be deleted
-SORTEDINPUT="${INPUTFILE%.*}_sorted.txt"
+SORTEDINPUT="${OUTPUTFILENAME%.*}_sorted.txt"
 # Joined unique transcriptomes - temporary file - will be deleted
-JOINEDTS="${INPUTFILE%.*}_unique_transcriptomes_trans-trans_plus_sequence.txt"
+JOINEDTS="${OUTPUTFILENAME%.*}_unique_transcriptomes_trans-trans_plus_sequence.txt"
 # Joined unique transcriptomes in tabular format - temporary file - will be deleted
-JOINEDTABS="${JOINEDTS%.*}_tabs.txt"
+JOINEDTABS="${OUTPUTFILENAME%.*}_tabs.txt"
 # Joined unique transcriptomes in FASTA format
-JOINEDFA="${INPUTFILE%.*}_unique_transcripts.fasta"
+JOINEDFA="${OUTPUTFILENAME%.*}_unique_transcripts.fasta"
 # Input - reference genome - cpDNA
 echo "Input file: $REFERENCECP"
 # Reference genome - plastome index - temporary file - will be deleted
-REFERENCECP2="${REFERENCECP%.*}.cp"
+REFERENCECP2="${OUTPUTFILENAME%.*}.cp"
 # Input cpDNA reads in FASTQ
 echo "Input file: $INPUTFQ1"
 echo "Input file: $INPUTFQ2"
 # cpDNA reads mapped to reference - temporary file - will be deleted
-BOWTIE2CP="${INPUTFILE%.*}_genome_skim_data_no_cp_reads.sam"
+BOWTIE2CP="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_reads.sam"
 # SAM converted into BAM (removal of reads of plastid origin)
-CPBAM="${INPUTFILE%.*}_genome_skim_data_no_cp_reads.bam"
+CPBAM="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_reads.bam"
 # Genome skim data without cpDNA reads
-FASTQNOCP="${INPUTFILE%.*}_genome_skim_data_no_cp_reads"
+FASTQNOCP="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_reads"
 # Input - reference genome - mtDNA
 if [ -n "$REFERENCEMT" ]; then
   echo "Input file: $REFERENCEMT"
   fi
 # Reference genome - mitochondrion index - temporary file - will be deleted
-REFERENCEMT2="${REFERENCEMT%.*}.mt"
+REFERENCEMT2="${OUTPUTFILENAME%.*}.mt"
 # mtDNA reads mapped to reference - temporary file - will be deleted
-BOWTIE2MT="${INPUTFILE%.*}_genome_skim_data_no_cp_no_mt_reads.sam"
+BOWTIE2MT="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads.sam"
 # SAM converted into BAM (removal of reads of mitochondrial origin)
-MTBAM="${INPUTFILE%.*}_genome_skim_data_no_cp_no_mt_reads.bam"
+MTBAM="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads.bam"
 # Genome skim data without mtDNA reads
-FASTQNOMT="${INPUTFILE%.*}_genome_skim_data_no_cp_no_mt_reads"
+FASTQNOMT="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads"
 # Combined paired-end genome skim reads
-FLASHOUT="${INPUTFILE%.*}_combined_reads_no_cp_no_mt_reads"
+FLASHOUT="${OUTPUTFILENAME%.*}_combined_reads_no_cp_no_mt_reads"
 # Output of BLAT (matching of the unique transcripts and the filtered, combined genome skim reads sharing ≥85% sequence similarity)
-BLATOUTFIN="${INPUTFILE%.*}_blat_unique_transcripts_versus_genome_skim_data.pslx"
+BLATOUTFIN="${OUTPUTFILENAME%.*}_blat_unique_transcripts_versus_genome_skim_data.pslx"
 # Matching sequences in FASTA
-BLATOUTFIN2="${INPUTFILE%.*}_blat_unique_transcripts_versus_genome_skim_data.fasta"
+BLATOUTFIN2="${OUTPUTFILENAME%.*}_blat_unique_transcripts_versus_genome_skim_data.fasta"
 # FASTA converted into TABe - temporary file - will be deleted
-TAB="${INPUTFILE%.*}_final.tab"
+TAB="${OUTPUTFILENAME%.*}_final.tab"
 # Number of times each transcript hit a genome skim read - will be deleted
-TABLIST="${INPUTFILE%.*}_transcript_hits.txt"
+TABLIST="${OUTPUTFILENAME%.*}_transcript_hits.txt"
 # Listed transcripts with >1000 BLAT score - will be deleted
-TABBLAT="${INPUTFILE%.*}_1k_transcripts"
+TABBLAT="${OUTPUTFILENAME%.*}_1k_transcripts"
 # Transcribds without >1000 BLAT score - will be deleted
-TABREMOVED="${INPUTFILE%.*}_1k_transcripts-removed.tab"
+TABREMOVED="${OUTPUTFILENAME%.*}_1k_transcripts-removed.tab"
 # Final FASTA sequences for usage in Geneious
-FINALA="${INPUTFILE%.*}_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa"
+FINALA="${OUTPUTFILENAME%.*}_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa"
 
 # Step 1: Obtain unique transcripts.
 

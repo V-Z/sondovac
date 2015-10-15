@@ -33,9 +33,11 @@ CDHITSIM=0.9
 REFERENCECP=""
 TSVLIST=""
 SEQUENCES=""
+# Default name of output files
+OUTPUTFILENAME="output"
 
 # Parse initial arguments
-while getopts "hvulrpeinc:x:z:b:d:" START; do
+while getopts "hvulrpeo:inc:x:z:b:d:" START; do
   case "$START" in
     h|v)
       generaloptions
@@ -76,6 +78,10 @@ while getopts "hvulrpeinc:x:z:b:d:" START; do
       ;;
     e)
       citationreference
+      ;;
+    o)
+      OUTPUTFILENAME=$OPTARG
+      echo "Output files will start name with $OUTPUTFILENAME"
       ;;
     i)
       echo "Running in interactive mode..."
@@ -283,45 +289,45 @@ SEQUENCES=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
 # Sequences converted from FASTA to tabular format - temporary file - will be deleted
-SEQUENCESTAB="${SEQUENCES%.*}.tab"
+SEQUENCESTAB="${OUTPUTFILENAME%.*}.tab"
 # Assembled sequences in TSV - temporary file - will be deleted
-SEQUENCESTABASSE="${SEQUENCES%.*}_assembled.tab"
+SEQUENCESTABASSE="${OUTPUTFILENAME%.*}_assembled.tab"
 # Unassembled sequences in TSV - temporary file - will be deleted
-SEQUENCESTABUNAS="${SEQUENCESTAB%.*}_unassembled.tab"
+SEQUENCESTABUNAS="${OUTPUTFILENAME%.*}_unassembled.tab"
 # Filtered probes - temporary file - will be deleted
-SEQUENCESPROBES600="${SEQUENCES%.*}_probes_120-600bp.tab"
+SEQUENCESPROBES600="${OUTPUTFILENAME%.*}_probes_120-600bp.tab"
 # Numbers of usable contigs for joining - temporary file - will be deleted
-SEQUENCESPROBES600FORJOIN="${SEQUENCESPROBES600%.*}_probes_120-600bp_fin_for_join"
+SEQUENCESPROBES600FORJOIN="${OUTPUTFILENAME%.*}_probes_120-600bp_fin_for_join"
 # All exons ≥120 bp - temporary file - will be deleted
-SEQUENCESTABASSE120="${SEQUENCES%.*}_120bp_assembled_less_than_1kb_transcript_fin.tab"
+SEQUENCESTABASSE120="${OUTPUTFILENAME%.*}_120bp_assembled_less_than_1kb_transcript_fin.tab"
 # Sorted exons ≥120 bp - temporary file - will be deleted
-SEQUENCESTABASSE120SORT="${SEQUENCES%.*}_120bp_assembled_less_than_1kb_transcript_fin_sorted.tab"
+SEQUENCESTABASSE120SORT="${OUTPUTFILENAME%.*}_120bp_assembled_less_than_1kb_transcript_fin_sorted.tab"
 # Exons ≥120 bp and all assemblies making up genes of ≥600 bp - temporary file - will be deleted
-SEQUENCESPROBES120600FIN="${SEQUENCES%.*}_probes_120-600bp_fin.tab"
+SEQUENCESPROBES120600FIN="${OUTPUTFILENAME%.*}_probes_120-600bp_fin.tab"
 # Temporal files when converting from TAB to FASTA - temporary file - will be deleted
-SEQUENCESPROBES120600MODIF="${SEQUENCES%.*}_probes_120-600bp_modified_fin.tab"
-SEQUENCESPROBES120600ASSEM="${SEQUENCES%.*}_probes_120-600bp_assembled_fin.fasta"
-SEQUENCESPROBES120600CONTIG="${SEQUENCES%.*}_probes_120-600bp_contig_fin.fasta"
+SEQUENCESPROBES120600MODIF="${OUTPUTFILENAME%.*}_probes_120-600bp_modified_fin.tab"
+SEQUENCESPROBES120600ASSEM="${OUTPUTFILENAME%.*}_probes_120-600bp_assembled_fin.fasta"
+SEQUENCESPROBES120600CONTIG="${OUTPUTFILENAME%.*}_probes_120-600bp_contig_fin.fasta"
 # Preliminary probe sequences - temporary file - will be deleted
-PROBEPRELIM0="${SEQUENCES%.*}_prelim_probe_seq0.fasta"
+PROBEPRELIM0="${OUTPUTFILENAME%.*}_prelim_probe_seq0.fasta"
 # Preliminary probe sequences - corrected labels
-PROBEPRELIM="${SEQUENCES%.*}_prelim_probe_seq.fasta"
+PROBEPRELIM="${OUTPUTFILENAME%.*}_prelim_probe_seq.fasta"
 # Sequence similarity checked by CD-HIT - temporary file - will be deleted
-PROBEPRELIMCDHIT="${SEQUENCES%.*}_sim_test.fasta"
+PROBEPRELIMCDHIT="${OUTPUTFILENAME%.*}_sim_test.fasta"
 # Assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
-PROBEPRELIMCDHIT2="${SEQUENCES%.*}_similarity_test.fasta"
+PROBEPRELIMCDHIT2="${OUTPUTFILENAME%.*}_similarity_test.fasta"
 # Extracted assemblies making up genes of ≥600 bp - temporary file - will be deleted
-PROBEPRELIMFORJOIN="${SEQUENCES%.*}_similarity_test_assemblies_for_join"
+PROBEPRELIMFORJOIN="${OUTPUTFILENAME%.*}_similarity_test_assemblies_for_join"
 # Modified and sorted assemblies - temporary file - will be deleted
-PROBEPRELIMSORT="${SEQUENCES%.*}_similarity_test_assemblies_sort.tab"
+PROBEPRELIMSORT="${OUTPUTFILENAME%.*}_similarity_test_assemblies_sort.tab"
 # All exons ≥120 bp and all assemblies making up genes of ≥600 bp - temporary file - will be deleted
-PROBEPRELIMFIN="${SEQUENCES%.*}_similarity_test_assemblies_fin.tab"
+PROBEPRELIMFIN="${OUTPUTFILENAME%.*}_similarity_test_assemblies_fin.tab"
 # Probes in FASTA
-PROBESEQUENCES="${SEQUENCES%.*}_target_enrichment_probe_sequences.fasta"
+PROBESEQUENCES="${OUTPUTFILENAME%.*}_target_enrichment_probe_sequences.fasta"
 # Probes in tab - temporary file - will be deleted
-PROBESEQUENCESNUM="${SEQUENCES%.*}_target_enrichment_probe_sequences.tab"
+PROBESEQUENCESNUM="${OUTPUTFILENAME%.*}_target_enrichment_probe_sequences.tab"
 # Possible cpDNA genes in probe set
-PROBESEQUENCESCP="${SEQUENCES%.*}_possible_cp_dna_genes_in_probe_set.pslx"
+PROBESEQUENCESCP="${OUTPUTFILENAME%.*}_possible_cp_dna_genes_in_probe_set.pslx"
 
 # Assemble the obtained sequences in contigs
 

@@ -84,6 +84,9 @@ function generaloptions {
   echo -e "\t\t  viewing by pressing the \"Q\" key. More information is available"
   echo -e "\t\t  in PDF manual."
   echo -e "\t-e\tDisplay detailed citation information and exit."
+  echo -e "\t-o\tSet name of output files. Output files will start with that"
+  echo -e "\t\t  name. Do not use spaces or special characters. See README"
+  echo -e "\t\t  or manual for details."
   echo -e "\t-i\tRunning in interactive mode - script will on-demand ask for"
   echo -e "\t\t  required input files, installation of missing software etc."
   echo -e "\t\t  This is the recommended default value (the script runs"
@@ -371,6 +374,68 @@ function citationreference {
   exit
   }
 
+
+# Install needed packages for DEB distributions - Debian, Ubuntu, Linux Mint and direct derivatives
+function debinstall {
+  echo
+  PACKAGES=''
+  # Check if all required packages are installed
+  while read PACKAGENAME; do
+    if dpkg -l $PACKAGENAME | grep -q 'ii  '; then
+      echo "Package \"$PACKAGENAME\" is available. OK."
+      else
+	PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
+      fi
+    done < $SCRIPTDIR/pkgs/packages-deb || {
+      echo
+      echo "${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
+      cat $SCRIPTDIR/pkgs/packages-deb || {
+	echo "${BOLD}Error!${NORM} Can not find file $SCRIPTDIR/pkgs/packages-deb"
+	echo "Go to $WEB and verify if your installation is correct."
+	echo
+	exit 1
+	}
+      confirmgo
+      }
+  # If some packages are missing, install them
+  if [ -n "$PACKAGES" ]; then
+    # Install missing packages
+    echo "Packages \"$PACKAGES\" are missing."
+    echo
+    echo "Compilation may require to install them. Would you like to install them now?"
+    echo "It requires administrative privileges. (Yes/No)"
+    read DEBIANI
+    while :
+    do
+      case "$DEBIANI" in
+	Y|y|YES|Yes|yes)
+	  echo "Installing required packages..."
+	  { { sudo apt-get update && sudo apt-get install $PACKAGES; } || { su -c 'apt-get update' && su -c "apt-get install $PACKAGES"; }; } || {
+	    echo
+	    echo "Installation of packages \"$PACKAGES\" failed."
+	    echo "Those packages may be required to install software used by Sondovač."
+	    echo "If so, install those packages manually. See INSTALL or manual for details."
+	    confirmgo
+	    }
+	  break
+	  ;;
+	N|n|NO|No|no)
+	  echo
+	  echo "You may need packages \"$PACKAGES\""
+	  echo "If compilation of some software required for the pipeline fails,"
+	  echo "install them manually. See INSTALL or manual for details. See also"
+	  echo "https://help.ubuntu.com/community/CompilingEasyHowTo"
+	  confirmgo
+	  break
+	  ;;
+	*) echo "Wrong option. Use Y or N." && read DEBIANI;;
+      esac
+    done
+    else
+    echo "Packages required for compilation are installed. OK."
+    fi
+  }
+
 # Check operating system
 function oscheck {
 
@@ -478,155 +543,52 @@ function oscheck {
       echo "Unable to detect Linux version! Probably because command \"lsb_release\" is"
       echo "missing, not in PATH or not available for current user. For some steps you may"
       echo "need compilation tools (see INSTALL for details). Ensure you have those tools available."
-      confirmgo; }
-    if [ -n "$OSCHECKS" ]; then
-      case "$DISTRIBUTION" in
-	*[Ss][Uu][Ss][Ee]*)
-	  LINUX="SUSE"
-	  echo "Linux distribution is SUSE, openSUSE or derivative."
-	  echo
-	  PACKAGES=''
-	  # Check if all required packages are installed
-	  while read PACKAGENAME; do
-	    if rpm -q --quiet $PACKAGENAME; then
-	      echo "Package \"$PACKAGENAME\" is available. OK."
-	      else
-		echo "Package \"$PACKAGENAME\" is missing. It will be installed."
-		PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
-	      fi
-	    done < $SCRIPTDIR/pkgs/packages-suse || {
-	      echo
-	      echo "${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
-	      cat $SCRIPTDIR/pkgs/packages-suse || {
-		echo "${BOLD}Error!${NORM} Can not find file $SCRIPTDIR/pkgs/packages-suse"
-		echo "Go to $WEB and verify if your installation is correct."
-		echo
-		exit 1
-		}
-	      confirmgo
-	      }
-	  if [ -n "$PACKAGES" ]; then
-	    # Install missing packages
-	    echo "Packages \"$PACKAGES\" are missing."
+      confirmgo
+      }
+    if [ "$STARTINI" == "I" ]; then
+      if [ -n "$OSCHECKS" ]; then
+	case "$DISTRIBUTION" in
+	  *[Ss][Uu][Ss][Ee]*)
+	    LINUX="SUSE"
+	    echo "Linux distribution is SUSE, openSUSE or derivative."
 	    echo
-	    echo "Compilation may require to install them. Would you like to install them now?"
-	    echo "It requires administrative privileges. (Yes/No)"
-	    read SUSEI
-	    while :
-	    do
-	      case "$SUSEI" in
-		Y|y|YES|Yes|yes)
-		  echo "Installing required packages..."
-		  { sudo zypper in $PACKAGES || su -c 'zypper in $PACKAGES'; } || {
-		    echo
-		    echo "Installation of packages \"$PACKAGES\" failed."
-		    echo "Those packages may be required to install software used by Sondovač."
-		    echo "If so, install those packages manually. See INSTALL for details."
-		    confirmgo
-		    }
-		  break
-		  ;;
-		N|n|NO|No|no)
-		  echo
-		  echo "You may need packages \"$PACKAGES\""
-		  echo "If compilation of some software required for the pipeline fails,"
-		  echo "install them manually. See INSTALL for details."
-		  confirmgo
-		  break
-		  ;;
-		*) echo "Wrong option. Use Y or N." && read SUSEI;;
-	      esac
-	    done
-	    else
-	      echo "Packages required for compilation are installed. OK."
-	    fi
-	  ;;
-	*[Uu]buntu*)
-	  LINUX=Ubuntu
-	  echo "Linux distribution is Ubuntu or derivative."
-	  echo
-	  checktools grep
-	  PACKAGES=''
-	  # Check if all required packages are installed
-	  while read PACKAGENAME; do
-	    if dpkg -l $PACKAGENAME | grep -q 'ii  '; then
-	      echo "Package \"$PACKAGENAME\" is available. OK."
-	      else
-		PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
-	      fi
-	    done < $SCRIPTDIR/pkgs/packages-ubuntu || {
-	      echo
-	      echo "${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
-	      cat $SCRIPTDIR/pkgs/packages-ubuntu || {
-		echo "${BOLD}Error!${NORM} Can not find file $SCRIPTDIR/pkgs/packages-ubuntu"
-		echo "Go to $WEB and verify if your installation is correct."
+	    PACKAGES=''
+	    # Check if all required packages are installed
+	    while read PACKAGENAME; do
+	      if rpm -q --quiet $PACKAGENAME; then
+		echo "Package \"$PACKAGENAME\" is available. OK."
+		else
+		  echo "Package \"$PACKAGENAME\" is missing. It will be installed."
+		  PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
+		fi
+	      done < $SCRIPTDIR/pkgs/packages-suse || {
 		echo
-		exit 1
+		echo "${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
+		cat $SCRIPTDIR/pkgs/packages-suse || {
+		  echo "${BOLD}Error!${NORM} Can not find file $SCRIPTDIR/pkgs/packages-suse"
+		  echo "Go to $WEB and verify if your installation is correct."
+		  echo
+		  exit 1
+		  }
+		confirmgo
 		}
-	      confirmgo
-	      }
-	  # If some packages are missing, install them
-	  if [ -n "$PACKAGES" ]; then
-# 	    # Check if universe repository (not enabled by default) is available - it is required source for some packages
-# 	    UBUNTUV=`lsb_release -sc` || UBUNTUV="YourUbuntuVersion"
-# 	    if [ "$UBUNTUV" == "YourUbuntuVersion" ]; then
-# 	      echo
-# 	      echo "Warning! Unable to detect version of your Ubuntu installation."
-# 	      echo "Probably because command \"lsb_release -sc\" is missing, unavailable for user or"
-# 	      echo "not in PATH. You may need some packages from \"universe\" repository. in case"
-# 	      echo "you will need or wish to compile of some software."
-# 	      echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
-# 	      confirmgo
-# 	      elif grep -q '^[^#].*universe.*' /etc/apt/sources.list | grep -q -v "$UBUNTUV-"; then
-# 		echo "Repository \"universe\" is available. OK."
-# 		else
-# 		  echo
-# 		  echo "Repository \"universe\" is required as source for some packages,"
-# 		  echo "but it is not available. Adding it requires administrative privileges."
-# 		  echo "Would you like to add it now? (Yes/No)"
-# 		  read UNIVERSE
-# 		  while :
-# 		  do
-# 		    case "$UNIVERSE" in
-# 		      Y|y|YES|Yes|yes)
-# 			echo "Adding universe repository..."
-# 			{ { sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe" && sudo apt-get update; } || { su -c 'add-apt-repository "deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe"' && su -c 'apt-get update'; }; } || {
-# 			  echo
-# 			  echo "Adding of repository \"deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe\""
-# 			  echo "failed. If packages from it are required for compilation, add this repository manually."
-# 			  echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
-# 			  confirmgo
-# 			  }
-# 			break
-# 			;;
-# 		      N|n|NO|No|no)
-# 			echo
-# 			echo "You may need some packages from this repository."
-# 			echo "We recommend to add repository \"deb http://archive.ubuntu.com/ubuntu $UBUNTUV universe\""
-# 			echo "See https://help.ubuntu.com/community/Repositories/Ubuntu for more details."
-# 			confirmgo
-# 			break
-# 			;;
-# 		      *) echo "Wrong option. Use Y or N." && read UNIVERSE;;
-# 		    esac
-# 		  done
-# 		fi
+	    if [ -n "$PACKAGES" ]; then
 	      # Install missing packages
 	      echo "Packages \"$PACKAGES\" are missing."
 	      echo
 	      echo "Compilation may require to install them. Would you like to install them now?"
 	      echo "It requires administrative privileges. (Yes/No)"
-	      read UBUNTUI
+	      read SUSEI
 	      while :
 	      do
-		case "$UBUNTUI" in
+		case "$SUSEI" in
 		  Y|y|YES|Yes|yes)
 		    echo "Installing required packages..."
-		    { { sudo apt-get update && sudo apt-get install $PACKAGES; } || { su -c 'apt-get update' && su -c 'apt-get install $PACKAGES'; }; } || {
+		    { sudo zypper in $PACKAGES || su -c "zypper in $PACKAGES"; } || {
 		      echo
 		      echo "Installation of packages \"$PACKAGES\" failed."
 		      echo "Those packages may be required to install software used by Sondovač."
-		      echo "If so, install those packages manually. See INSTALL or manual for details."
+		      echo "If so, install those packages manually. See INSTALL for details."
 		      confirmgo
 		      }
 		    break
@@ -635,95 +597,108 @@ function oscheck {
 		    echo
 		    echo "You may need packages \"$PACKAGES\""
 		    echo "If compilation of some software required for the pipeline fails,"
-		    echo "install them manually. See INSTALL or manual for details. See also"
-		    echo "https://help.ubuntu.com/community/CompilingEasyHowTo"
+		    echo "install them manually. See INSTALL for details."
 		    confirmgo
 		    break
 		    ;;
-		  *) echo "Wrong option. Use Y or N." && read UBUNTUI;;
+		  *) echo "Wrong option. Use Y or N." && read SUSEI;;
 		esac
 	      done
 	      else
 		echo "Packages required for compilation are installed. OK."
-	    fi
-	  ;;
-	*[Dd]ebian*)
-	  LINUX=Debian
-	  echo "Linux distribution is Debian or derivative."
-	  echo
-	  PACKAGES=''
-	  # Check if all required packages are installed
-	  while read PACKAGENAME; do
-	    if dpkg -l $PACKAGENAME | grep -q 'ii  '; then
-	      echo "Package \"$PACKAGENAME\" is available. OK."
-	      else
-		PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
 	      fi
-	    done < $SCRIPTDIR/pkgs/packages-ubuntu || {
-	      echo
-	      echo "${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
-	      cat $SCRIPTDIR/pkgs/packages-ubuntu || {
-		echo "${BOLD}Error!${NORM} Can not find file $SCRIPTDIR/pkgs/packages-ubuntu"
-		echo "Go to $WEB and verify if your installation is correct."
-		echo
-		exit 1
-		}
-	      confirmgo
-	      }
-	  # If some packages are missing, install them
-	  if [ -n "$PACKAGES" ]; then
-	    # Install missing packages
-	    echo "Packages \"$PACKAGES\" are missing."
-	    echo
-	    echo "Compilation may require to install them. Would you like to install them now?"
-	    echo "It requires administrative privileges. (Yes/No)"
-	    read DEBIANI
-	    while :
-	    do
-	      case "$DEBIANI" in
-		Y|y|YES|Yes|yes)
-		  echo "Installing required packages..."
-		  { { sudo apt-get update && sudo apt-get install $PACKAGES; } || { su -c 'apt-get update' && su -c 'apt-get install $PACKAGES'; }; } || {
-		    echo
-		    echo "Installation of packages \"$PACKAGES\" failed."
-		    echo "Those packages may be required to install software used by Sondovač."
-		    echo "If so, install those packages manually. See INSTALL or manual for details."
-		    confirmgo
-		    }
-		  break
-		  ;;
-		N|n|NO|No|no)
-		  echo
-		  echo "You may need packages \"$PACKAGES\""
-		  echo "If compilation of some software required for the pipeline fails,"
-		  echo "install them manually. See INSTALL or manual for details. See also"
-		  echo "https://help.ubuntu.com/community/CompilingEasyHowTo"
-		  confirmgo
-		  break
-		  ;;
-		*) echo "Wrong option. Use Y or N." && read DEBIANI;;
-	      esac
-	    done
-	    else
-	    echo "Packages required for compilation are installed. OK."
-	    fi
-	  ;;
-	# Another distros...
-	*) echo
-	    echo "Currently, only openSUSE and Ubuntu are supported. Support for another"
-	    echo "major Linux distributions is under development. For some steps you may"
-	    echo "need compilation tools (see INSTALL or manual for details)."
-# 	    echo "Unknown Linux distribution, probably not openSUSE, SUSE, RedHat, Fedora,"
-# 	    echo "Centos, Scientific, Debian, Ubuntu, Linux Mint or derivatives. For some"
-# 	    echo "steps you may need compilation tools (see INSTALL or manual for details)."
-	    echo "Ensure you have those tools available."
-	    confirmgo
-	    break
 	    ;;
-      esac
+	  *[Uu]buntu*)
+	    LINUX=Ubuntu
+	    echo "Linux distribution is Ubuntu or derivative."
+	    debinstall
+	    ;;
+	  *[Dd]ebian*)
+	    LINUX=Debian
+	    echo "Linux distribution is Debian or derivative."
+	    debinstall
+	    ;;
+	  *[Mm]int*)
+	    LINUX=Debian
+	    echo "Linux distribution is Linux Mint or derivative."
+	    debinstall
+	    ;;
+	  *[Ff]edora*)
+	    LINUX="Fedora"
+	    echo "Linux distribution is Fedora or derivative."
+	    echo
+	    PACKAGES=''
+	    # Check if all required packages are installed
+	    while read PACKAGENAME; do
+	      if rpm -q --quiet $PACKAGENAME; then
+		echo "Package \"$PACKAGENAME\" is available. OK."
+		else
+		  echo "Package \"$PACKAGENAME\" is missing. It will be installed."
+		  PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
+		fi
+	      done < $SCRIPTDIR/pkgs/packages-rh || {
+		echo
+		echo "${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
+		cat $SCRIPTDIR/pkgs/packages-rh || {
+		  echo "${BOLD}Error!${NORM} Can not find file $SCRIPTDIR/pkgs/packages-rh"
+		  echo "Go to $WEB and verify if your installation is correct."
+		  echo
+		  exit 1
+		  }
+		confirmgo
+		}
+	    if [ -n "$PACKAGES" ]; then
+	      # Install missing packages
+	      echo "Packages \"$PACKAGES\" are missing."
+	      echo
+	      echo "Compilation may require to install them. Would you like to install them now?"
+	      echo "It requires administrative privileges. (Yes/No)"
+	      read FEDORAI
+	      while :
+	      do
+		case "$FEDORAI" in
+		  Y|y|YES|Yes|yes)
+		    echo "Installing required packages..."
+		    { sudo yum install $PACKAGES || su -c "yum install $PACKAGES"; } || {
+		      echo
+		      echo "Installation of packages \"$PACKAGES\" failed."
+		      echo "Those packages may be required to install software used by Sondovač."
+		      echo "If so, install those packages manually. See INSTALL for details."
+		      confirmgo
+		      }
+		    break
+		    ;;
+		  N|n|NO|No|no)
+		    echo
+		    echo "You may need packages \"$PACKAGES\""
+		    echo "If compilation of some software required for the pipeline fails,"
+		    echo "install them manually. See INSTALL for details."
+		    confirmgo
+		    break
+		    ;;
+		  *) echo "Wrong option. Use Y or N." && read FEDORAI;;
+		esac
+	      done
+	      else
+		echo "Packages required for compilation are installed. OK."
+	      fi
+	    ;;
+	  # Another distros...
+	  *) echo
+	      echo "Currently, only openSUSE and Ubuntu are supported. Support for another"
+	      echo "major Linux distributions is under development. For some steps you may"
+	      echo "need compilation tools (see INSTALL or manual for details)."
+  # 	    echo "Unknown Linux distribution, probably not openSUSE, SUSE, RedHat, Fedora,"
+  # 	    echo "Centos, Scientific, Debian, Ubuntu, Linux Mint or derivatives. For some"
+  # 	    echo "steps you may need compilation tools (see INSTALL or manual for details)."
+	      echo "Ensure you have those tools available."
+	      confirmgo
+	      break
+	      ;;
+	esac
+	fi
       fi
     fi
-
   } # End of OS checking
 
 # Set variables for working directory and PATH

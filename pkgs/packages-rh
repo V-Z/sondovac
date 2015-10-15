@@ -1,0 +1,12 @@
+java-1.8.0-openjdk
+java-1.8.0-openjdk-devel
+coreutils
+wget
+make
+git
+ant
+gcc
+libpng12-devel
+gcc-c++
+cpp
+zlib-devel
