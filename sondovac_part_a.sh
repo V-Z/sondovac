@@ -3,6 +3,10 @@
 # Determine script's directory
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
+# Load aliases to replace Mac OS X outdated tools by those installed by Homebrew
+shopt -s expand_aliases
+source $SCRIPTDIR/mac_aliases
+
 # Load functions shared by both parts, introductory message
 source $SCRIPTDIR/sondovac_functions || {
   echo
@@ -267,7 +271,7 @@ function compilebowtie {
   echo &&
   cd $1 &&
   make -s &&
-  cp bowtie2* $BIN/ &&
+  cp -r bowtie2* $BIN/ &&
   cd $WORKDIR &&
   echo &&
   echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
@@ -304,6 +308,8 @@ function compilebowtie {
     echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/ for your OS"
     echo "Type \"B\" to copy Bowtie2-2.$BOWTIE2V binary available together with the script"
     echo "  (recommended, available for Linux and Mac OS X)"
+    echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
+		echo "  See \"brew info homebrew/science/bowtie2\" for more details."
     echo "Type \"M\" for manual installation - script will exit and you will have to install"
     echo "  Bowtie2 yourselves"
     read BOWTIE
@@ -391,11 +397,14 @@ function compilebowtie {
 	  case "$OS" in
 	    Mac)
 	      echo "Copying Bowtie binaries"
+	      cp -pr $SCRIPTDIR/pkgs/macosx/bin/bowtie2* $BIN/
+	      mkdir -p $WORKDIR/bin/share
+	      cp -pr $SCRIPTDIR/pkgs/macosx/share/man $WORKDIR/bin/share/
 	      break
 	      ;;
 	    Linux)
 	      echo "Copying Bowtie binaries"
-	      cp -p $SCRIPTDIR/pkgs/linux64b/bin/bowtie2* $BIN/
+	      cp -pr $SCRIPTDIR/pkgs/linux64b/bin/bowtie2* $BIN/
 	      mkdir -p $WORKDIR/bin/share
 	      cp -pr $SCRIPTDIR/pkgs/linux64b/share/man $WORKDIR/bin/share/
 	      break
@@ -408,12 +417,30 @@ function compilebowtie {
 	  esac
 	  break
 	  ;;
+	H|h)
+		if [ "$OS" == "Mac" ]; then
+			{ echo "Installing Bowtie2 using Homebrew" &&
+			brew install homebrew/science/bowtie2 &&
+			echo "\"Bowtie2\" is available. OK."
+			} || {
+				echo
+				echo "Installation of \"Bowtie2\" failed. Please, do it manually. For details see"
+				echo "\"brew info homebrew/science/bowtie2\" and \"brew help\"."
+				echo
+				exit 1
+				}
+			else
+				echo "This is not Mac OS X. Going to compile..."
+				compilebowtie $SCRIPTDIR/src/bowtie2-$BOWTIE2V
+			fi
+		break
+		;;
 	M|m) 
 	  echo "Please, go to http://bowtie-bio.sourceforge.net/bowtie2/index.shtml and install"
 	  echo " latest Bowtie2 and ensure it is in PATH."
 	  exit 2
 	  ;;
-	*) echo "Wrong option. Use C, D, S, B or M." && read BOWTIE;;
+	*) echo "Wrong option. Use C, D, S, B, H or M." && read BOWTIE;;
       esac
     done
   else
@@ -447,12 +474,14 @@ function compilesamtools {
     echo "  fails, check SAMtools' INSTALL file for details and adjust its Makefile."
     echo "Type \"B\" to copy SAMtools-1.2 binary available together with the script"
     echo "  (recommended, available for Linux and Mac OS X)."
+    echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
+		echo "  See \"brew info homebrew/science/samtools\" for more details."
     echo "Type \"M\" for manual installation - script will exit and you will have to"
     echo "  install SAMtools yourselves."
-    read SAMtools
+    read SAMTOOLS
     while :
     do
-      case "$SAMtools" in
+      case "$SAMTOOLS" in
 	C|c)
 	  compilesamtools || {
 	    echo
@@ -497,6 +526,29 @@ function compilesamtools {
 	  case "$OS" in
 	    Mac)
 	      echo "Copying SAMtools binaries"
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/ace2sam $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/blast2sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/bowtie2sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/export2sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/interpolate_sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/maq2sam-long $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/maq2sam-short $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/md5fa $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/md5sum-lite $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/novo2sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/plot-bamstats $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/psl2sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/samtools $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/samtools.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/sam2vcf.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/seq_cache_populate.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/soap2sam.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/varfilter.py $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/wgsim $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/wgsim_eval.pl $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/zoom2sam.pl $BIN/
+	      mkdir -p $WORKDIR/bin/share/man/man1
+	      cp -p $SCRIPTDIR/pkgs/macosx/share/man/man1/samtools.1 $WORKDIR/bin/share/man/man1/
 	      break
 	      ;;
 	    Linux)
@@ -533,12 +585,30 @@ function compilesamtools {
 	  esac
 	  break
 	  ;;
+	H|h)
+	 if [ "$OS" == "Mac" ]; then			
+		{ echo "Installing SAMtools using Homebrew" &&
+		brew install homebrew/science/samtools &&
+		echo "\"SAMtools\" is available. OK."
+		} || {
+			echo
+			echo "Installation of \"SAMtools\" failed. Please, do it manually. For details see"
+			echo "\"brew info homebrew/science/samtools\" and \"brew help\"."
+			echo
+			exit 1
+			}
+		else
+			echo "This is not Mac OS X. Going to compile..."
+			compilesamtools
+		fi
+	break
+	;;
 	M|m)
 	  echo "Please, go to http://www.htslib.org/ and install SAMtools 1.2 and ensure it is"
 	  echo "  in PATH."
 	  exit 2
 	  ;;
-	*) echo "Wrong option. Use C, S, B or M." && read SAMtools;;
+	*) echo "Wrong option. Use C, S, B, H or M." && read SAMTOOLS;;
       esac
     done
   else
@@ -612,6 +682,7 @@ function compilebam2fastq {
 	  case "$OS" in
 	    Mac)
 	      echo "Copying bam2fastq binary"
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/bam2fastq $BIN/
 	      break
 	      ;;
 	    Linux)
@@ -686,6 +757,8 @@ function compileflash {
     echo "  http://sourceforge.net/projects/flashpage/ (available only for Windows)."
     echo "Type \"B\" to copy FLASH 1.2.11 binary available together with the script"
     echo "  (recommended, available for Linux and Mac OS X)."
+    echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
+		echo "  See \"brew info homebrew/science/flash\" for more details."
     echo "Type \"M\" for manual installation - script will exit and you will have to"
     echo "  install FLASH yourselves."
     read FLASH
@@ -743,6 +816,7 @@ function compileflash {
 	  case "$OS" in
 	    Mac)
 	      echo "Copying FLASH binary"
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/flash $BIN/
 	      break
 	      ;;
 	    Linux)
@@ -758,12 +832,30 @@ function compileflash {
 	  esac
 	  break
 	  ;;
+	H|h)
+		if [ "$OS" == "Mac" ]; then			
+			{ echo "Installing FLASH using Homebrew" &&
+			brew install homebrew/science/flash &&
+			echo "\"FLASH\" is available. OK."
+			} || {
+				echo
+				echo "Installation of \"FLASH\" failed. Please, do it manually. For details see"
+				echo "\"brew info homebrew/science/flash\" and \"brew help\"."
+				echo
+				exit 1
+				}
+			else
+				echo "This is not Mac OS X. Going to compile..."
+				compileflash $SCRIPTDIR/src/FLASH-1.2.11
+			fi
+		break
+		;;
 	M|m)
 	  echo "Please, go to http://ccb.jhu.edu/software/FLASH/ and install FLASH and ensure it"
 	  echo "  is in PATH"
 	  exit 2
 	  ;;
-	*) echo "Wrong option. Use C, S, D, B or M." && read FLASH;;
+	*) echo "Wrong option. Use C, S, D, B, H or M." && read FLASH;;
       esac
     done
   else
@@ -821,6 +913,8 @@ function compilefastx {
     echo "  http://hannonlab.cshl.edu/fastx_toolkit/ and compile it."
     echo "Type \"B\" to copy FASTX-Toolkit 0.0.14 binary available together with the"
     echo "  script (recommended, available for Linux and Mac OS X)."
+    echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
+		echo "  See \"brew info homebrew/science/fastx_toolkit\" for more details."
     echo "Type \"M\" for manual installation - script will exit and you will have to"
     echo "  install FASTX-Toolkit yourselves."
     read FASTX
@@ -858,6 +952,14 @@ function compilefastx {
 	  case "$OS" in
 	    Mac)
 	      echo "Copying FASTX binaries"
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/fasta_* $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/fastq_* $BIN/
+	      cp -p $SCRIPTDIR/pkgs/macosx/bin/fastx_* $BIN/
+	      mkdir -p $WORKDIR/bin/include $WORKDIR/bin/lib $WORKDIR/bin/share
+	      cp -pr $SCRIPTDIR/pkgs/macosx/include/gtextutils $WORKDIR/bin/include/
+	      cp -pr $SCRIPTDIR/pkgs/macosx/lib/pkgconfig $WORKDIR/bin/lib/
+	      cp -p $SCRIPTDIR/pkgs/macosx/lib/libgtextutils* $WORKDIR/bin/lib/
+	      cp -pr $SCRIPTDIR/pkgs/macosx/share/aclocal $WORKDIR/bin/share/
 	      ;;
 	    Linux)
 	      echo "Copying FASTX binaries"
@@ -878,13 +980,31 @@ function compilefastx {
 	  esac
 	  break
 	  ;;
+	H|h)
+		if [ "$OS" == "Mac" ]; then			
+			{ echo "Installing FASTX Toolkit using Homebrew" &&
+			brew install homebrew/science/fastx_toolkit &&
+			echo "\"FASTX Toolkit\" is available. OK."
+			} || {
+				echo
+				echo "Installation of \"FASTX Toolkit\" failed. Please, do it manually. For details see"
+				echo "\"brew info homebrew/science/fastx_toolkit\" and \"brew help\"."
+				echo
+				exit 1
+				}
+			else
+				echo "This is not Mac OS X. Going to compile..."
+				compilefastx $SCRIPTDIR/src/libgtextutils-0.7/ $SCRIPTDIR/src/fastx_toolkit-0.0.14/
+			fi
+		break
+		;;
 	M|m)
 	  echo "Please, go to http://hannonlab.cshl.edu/fastx_toolkit/download.html download"
 	  echo "  libgtextutils-*.tar.gz and fastx_toolkit-*.tar.bz2, compile them and ensure"
 	  echo "  they are in PATH"
 	  exit 2
 	  ;;
-	*) echo "Wrong option. Use C, S, B or M." && read FASTX;;
+	*) echo "Wrong option. Use C, S, B, H or M." && read FASTX;;
       esac
     done
   else

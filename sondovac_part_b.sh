@@ -3,6 +3,10 @@
 # Determine script's directory
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
+# Load aliases to replace Mac OS X outdated tools by those installed by Homebrew
+shopt -s expand_aliases
+source $SCRIPTDIR/mac_aliases
+
 # Load functions shared by both parts, introductory message
 source $SCRIPTDIR/sondovac_functions || {
   echo
@@ -196,8 +200,8 @@ function compilecdhit {
   echo "Compiling CD-HIT from source code..." &&
   echo &&
   cd $1 &&
-  make -s openmp=yes || { echo "There is no MPI available - no multi-thread support." && make -s; } &&
-  cp -a *.pl $BIN/ &&
+  make -s openmp=yes || { echo "There is no MPI available - no multi-thread support." && make -s openmp=no; } &&
+  cp -a *.pl $BIN/ || echo "No Perl scripts in this build..." &&
   cp -a cd-hit* $BIN/ &&
   cd $WORKDIR &&
   echo &&
@@ -221,6 +225,8 @@ function compilecdhit {
   echo "  https://github.com/weizhongli/cdhit and compile it"
   echo "Type \"B\" to copy CD-HIT 4.6.4 binary available together with the script"
   echo "  (recommended, available for Linux and Mac OS X)."
+  echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
+  echo "  See \"brew info homebrew/science/cd-hit\" for more details."
   echo "Type \"M\" for manual installation - script will exit and you will have to install"
   echo "  CD-HIT yourselves."
   read CDHIT
@@ -243,8 +249,8 @@ function compilecdhit {
 	echo "Copying CD-HIT binaries"
 	case "$OS" in
 	  Mac)
-	    cp -p $SCRIPTDIR/pkgs/macosx/bin/cd-hit* $BIN/
-	    cp -p $SCRIPTDIR/pkgs/macosx/bin/*.pl $BIN/
+	    cp -pr $SCRIPTDIR/pkgs/macosx/bin/cd-hit* $BIN/
+	    #cp -p $SCRIPTDIR/pkgs/macosx/bin/*.pl $BIN/
 	    ;;
 	  Linux)
 	    cp -p $SCRIPTDIR/pkgs/linux64b/bin/cd-hit* $BIN/
@@ -258,6 +264,24 @@ function compilecdhit {
 	esac
 	break
 	;;
+	H|h)
+		if [ "$OS" == "Mac" ]; then
+			{ echo "Installing \"CD-HIT\" using Homebrew" &&
+			brew install homebrew/science/cd-hit &&
+			echo "\"CD-HIT\" is available. OK."
+			} || {
+				echo
+				echo "Installation of \"CD-HIT\" failed. Please, do it manually. For details see"
+				echo "\"brew info homebrew/science/cd-hit\" and \"brew help\"."
+				echo
+				exit 1
+				}
+			else
+				echo "This is not Mac OS X. Going to compile..."
+				compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
+			fi
+		break
+		;;
       M|m)
 	echo
 	echo "Please, go to http://weizhongli-lab.org/cd-hit/ and install CD-HIT and ensure"
@@ -265,7 +289,7 @@ function compilecdhit {
 	echo
 	exit
 	;;
-      *) echo "Wrong option. Use C, S, B or M." && read CDHIT;;
+      *) echo "Wrong option. Use C, S, B, H or M." && read CDHIT;;
     esac
   done
   }

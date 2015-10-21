@@ -1,0 +1,11 @@
+coreutils
+gnu-sed
+gawk
+grep
+bash
+pkg-config
+gcc
+make
+git
+ant
+wget
