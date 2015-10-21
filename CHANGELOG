@@ -1,30 +1,43 @@
 Sondovač changelog
 
+Version 0.9 beta released 2015-10-
+================================================================================
+
+* Highly enhanced part B.
+* Better handling of variable output from Geneious.
+* Possibility to specify custom output files name.
+* Full support for Linux distributions using DEB - Debian, Ubuntu, Linux Mint and derivatives.
+* Enhanced documentation.
+* Better compilation and installation of required software.
+* For downloading automatically select if to use wget (preferred) or curl.
+* Various fixes.
+
+
 Version 0.8 alpha released 2015-10-09
 ================================================================================
 
-* Usage of mitochondrial reference sequence is optional
-* Better formatting of script messages
-* Various fixes and enhancements
+* Usage of mitochondrial reference sequence is optional.
+* Better formatting of script messages.
+* Various fixes and enhancements.
 
 
 Version 0.7 alpha released 2015-10-06
 ================================================================================
 
-* Fixed reported problems with sed differences among Linux and Mac OS X
-* Added more exhaustive documentation
-* Various fixes and enhancements
+* Fixed reported problems with sed differences among Linux and Mac OS X.
+* Added more exhaustive documentation.
+* Various fixes and enhancements.
 
 
 Version 0.6 alpha released 2015-08-10
 ================================================================================
 
-* Fixed problems with some versions of output of Geneious
-* Better compilation and installation of required additional software packages
-* Various fixes and enhancements
+* Fixed problems with some versions of output of Geneious.
+* Better compilation and installation of required additional software packages.
+* Various fixes and enhancements.
 
 
 Version 0.5 alpha released 2015-07-24
 ================================================================================
 
-* First public release, early alpha stage
+* First public release, early alpha stage.

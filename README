@@ -143,6 +143,11 @@ sondovac_part_b.sh requires (and will install) following software packages:
 * CD-HIT
 * BLAT
 
+When Sondovač starts, directory "bin" is created in current working directory. 
+Sondovač saves here binaries of required software packages (if they are not 
+available). User can then add this directory to PATH, move or delete it 
+afterward. See manual for details.
+
 Geneious
 --------------------------------------------------------------------------------
 
@@ -210,6 +215,10 @@ General parameters:
          by pressing the "Q" key. More information is available in PDF manual.
 -e       Display detailed citation information and exit. See PDF manual for 
          more information.
+-o       Set name of output files. Output files will start with that name. Do 
+         not use spaces or special characters - some software can not handle 
+         them correctly. Default value (if user does not provide) another name 
+         is "output". See below for list of produced output files.
 -i       Running in interactive mode - script will on-demand ask for required 
          input files, installation of missing software etc. This is recommended 
          default value (the script runs interactively without explicit using 
@@ -322,6 +331,9 @@ Modifying parameter "-s". Note interactive mode -i is implicit and does not
 Input and output files
 ================================================================================
 
+All names of input files and paths to them must be without spaces and without 
+special characters (some software has difficulties to handle them in such case).
+
 Script sondovac_part_a.sh requires as input files:
 1) Transcriptome input file in FASTA format.
 2) Plastome reference sequence input file in FASTA format.
@@ -351,7 +363,9 @@ Script sondovac_part_a.sh creates the following files:
       Final FASTA sequences for usage in Geneious
 Files 1-9 are not necessary for further processing by this pipeline, but may be 
 useful for the user. The last file (10) is used as input file for Geneious in 
-the next step.
+the next step. Asterisk (*) denotes beginning of the output files names 
+specified by the user with parameter "-o". If user does not select custom name, 
+default value ("output") will be used.
 
 Geneious requires as input the last output file of sondovac_part_a.sh (file 10: 
 *_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa).
@@ -373,6 +387,25 @@ Script sondovac_part_b.sh creates following files:
 4) *_possible_cp_dna_genes_in_probe_set.pslx - Final probes ready for bait 
      synthesis
 
+Asterisk (*) denotes beginning of the output files names specified by the user 
+with parameter "-o". If user does not select custom name, default value 
+("output") will be used.
+
+By default, output files are created in same directory from which Sondovač was 
+launched. Output files can be saved in custom directory by specifying output 
+directory together with parameter "-o":
+
+# Find current directory (e.g. /home/user):
+pwd
+# Launching Sondovač located in directory /home/user/sondovac and save output 
+# to e.g. desktop (/home/user/Desktop):
+./sondovac/sondovac_part_a.sh -o Desktop/MyFile
+# Sondovač will save software (if needed) in "bin" directory located in 
+# directory from which it was launched, see it:
+ls bin/*
+# Output files are in desired directory, see them e.g. by:
+ls -lh Desktop/MyFile*
+
 
 Sample data
 ================================================================================
@@ -384,22 +417,22 @@ https://github.com/V-Z/sondovac/wiki/Sample-data for download of sample data.
 
 The package contains:
 
-1) input2_Ricinus_communis_reference_plastid_genome.fsa - cpDNA reference 
-   (parameter -c), GenBank reference number NC_016736
-2) input3_J12_Oxalis_obtusa_J12_genome_skim_data_R1.fastq - paired-end genome 
-   skim data, file 1 (parameter -t)
-3) input4_J12_Oxalis_obtusa_J12_genome_skim_data_R2.fastq - paired-end genome 
-   skim data, file 2 (parameter -q)
-4) input5_Ricinus_communis_reference_mitochondrial_genome.fasta - mtDNA 
-   reference (parameter -m), GenBank reference number NC_015141
+1) input1_JHCN_Oxalis_corniculata_transcriptome_data-unique_transcripts.fa - 
+   reduced data of file JHCN_Oxalis_corniculata_transcriptome_data.fa (only 
+   unique transcripts) kindly provided by Prof. Soltis (parameter -f). See 
+   below for information how to get full dataset.
+2) input2_Ricinus_communis_reference_plastid_genome.fsa - cpDNA reference 
+   (parameter -c), GenBank reference number NC_016736.
+3) input3_J12_Oxalis_obtusa_J12_genome_skim_data_R1.fastq - paired-end genome 
+   skim data, file 1 (parameter -t).
+4) input4_J12_Oxalis_obtusa_J12_genome_skim_data_R2.fastq - paired-end genome 
+   skim data, file 2 (parameter -q).
+5) input5_Ricinus_communis_reference_mitochondrial_genome.fasta - mtDNA 
+   reference (parameter -m), GenBank reference number NC_015141.
 
-The transcriptome input file is unpublished data from G. K.-S. Wong et al. 
-(hopefully it will be published soon).
-
-1) input1_JHCN_Oxalis_corniculata_transcriptome_data.fa - transcriptome data 
-   (parameter -f)
-
-Data can be found under
+Transcriptome input file is unpublished data from G. K.-S. Wong et al. 
+(hopefully it will be published soon). When the data became public, we will 
+post them here. Data can be now found under
 * http://www.onekp.com/
 * http://www.onekp.com/samples/list.php
 * http://www.onekp.com/samples/single.php?id=JHCN
