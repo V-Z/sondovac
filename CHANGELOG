@@ -6,8 +6,10 @@ Version 0.9 beta released 2015-10-
 * Highly enhanced part B.
 * Better handling of variable output from Geneious.
 * Possibility to specify custom output files name.
-* Full support for Linux distributions using DEB - Debian, Ubuntu, Linux Mint and derivatives.
+* Full support for Linux distributions using DEB - Debian, Ubuntu, Linux Mint 
+  and derivatives.
 * Enhanced documentation.
+* Support for Mac OS X, package management using Homebrew.
 * Better compilation and installation of required software.
 * For downloading automatically select if to use wget (preferred) or curl.
 * Various fixes.

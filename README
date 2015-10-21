@@ -1,4 +1,4 @@
-Sondovač 0.8 Basic help
+Sondovač 0.9 beta Basic help
 
 Sondovač (English pronunciation is "Sondovach".) is a script to create 
 orthologous low-copy nuclear probes from transcriptome and genome skim data for 
@@ -9,19 +9,20 @@ Script summary
 ================================================================================
 
 Phylogenetics benefits from using a large number of putatively independent 
-nuclear loci and their combination with other sources of information, such as 
-the plastid and mitochondrial genomes. Currently, target enrichment (sequence 
-capture) of hundreds of loci in combination with genome skimming is becoming 
-increasingly popular in phylogenetics. In animal phylogenomics non-exonic or 
-partly exonic ultraconserved elements and their quite variable flanking regions 
-are often utilized. For plant phylogenetics, low-copy nuclear (LCN) genes are 
-targeted due to the paucity of ultraconserved nuclear sequences. Due to 
-sequence divergence, target sequencing strategies for plant nuclear genomes are 
-largely lineage-specific, requiring the de novo design of target enrichment 
-probes. We developed a novel probe design pipeline for targeting orthologous 
-LCN loci for phylogenetic reconstruction by using genome skim and transcriptome 
-data. We implemented our software workflow in the user-friendly, automated and 
-interactive BASH script Sondovač.
+nuclear loci and the combination with other sources of information, such as the 
+plastid and mitochondrial genome. Selecting such orthologous low-copy nuclear 
+(LCN) loci is still a challenge for non-model organisms. In recently published 
+phylogenies based on target enrichment of several hundred LCN genes, these loci 
+were selected from transcriptomes, genomes, gene expression studies, the 
+literature, or a combination of these sources. Automated bioinformatic 
+pipelines for the selection of LCN genes are, however, largely absent. We 
+created a user-friendly, automated and interactive script named Sondovač to 
+design LCN loci by a comparison between transcriptome and genome skim data. 
+The script is licensed under open-source license GPL v.3 allowing further 
+modifications. It runs on major Linux distributions and Mac OS X. Strong 
+bioinformatics skills and access to high-performance computer clusters are not 
+required; Sondovač runs on a standard desktop computer equipped with modern CPU 
+like Intel i5 or i7.
 
 
 Pipeline - how the data are processed

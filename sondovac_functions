@@ -126,8 +126,8 @@ function devrelease {
     echo "${BOLD}Warning!${NORM} This is developmental, not fully tested version."
     echo "You may encounter problems and some functions are still missing"
     echo "Please, report any issues and/or wishes to zeisek@natur.cuni.cz."
-    echo "We hope you enjoy the script, but, please, do not expect too much yet. ;-)"
-    echo "Full release will be available soon"
+    echo "We hope you enjoy the script, but. ;-)"
+    echo "Full release will be available soon..."
     echo
     if [ "$STARTINI" == "I" ]; then
       confirmgo
@@ -694,12 +694,9 @@ function oscheck {
 	  ;;
 	  # Another distros...
 	  *) echo
-	      echo "Currently, only openSUSE and Ubuntu are supported. Support for another"
-	      echo "major Linux distributions is under development. For some steps you may"
-	      echo "need compilation tools (see INSTALL or manual for details)."
-  # 	    echo "Unknown Linux distribution, probably not openSUSE, SUSE, RedHat, Fedora,"
-  # 	    echo "Centos, Scientific, Debian, Ubuntu, Linux Mint or derivatives. For some"
-  # 	    echo "steps you may need compilation tools (see INSTALL or manual for details)."
+	      echo "Unknown Linux distribution, probably not openSUSE, SUSE, RedHat, Fedora,"
+	      echo "Centos, Scientific, Debian, Ubuntu, Linux Mint or derivatives. For some"
+	      echo "steps you may need compilation tools (see INSTALL or manual for details)."
 	      echo "Ensure you have those tools available."
 	      confirmgo
 	      break
@@ -709,178 +706,178 @@ function oscheck {
       fi
     fi
 	
-	# If on Mac, notify user about need of compilation tools
-	if [ "$OS" == "Mac" ]; then
-		if [ "$STARTINI" == "I" ]; then
-			echo
-			# Check for Xcode
-			echo "Xcode is required to install Homebrew, which is required to upgrade and install"
-			echo "software used by Sondovač. See INSTALL or manual for details."
-			echo
-			echo "Unfortunatelly, it is not easily possible to universally check for presence of"
-			echo "Xcode."
-			echo "If you have never used command \"make\" or not installed Xcode manually, you"
-			echo "probably do not have it. If you have ever compiled any software, you probably"
-			echo "have Xcode installed. After installation of Xcode you will probably have to"
-			echo "restart Sondovač."
-			echo "Would you like to install Xcode now? (Yes/No)"
-			read XCODEI
-			while :
-				do
-				case "$XCODEI" in
-					Y|y|YES|Yes|yes)
-						echo "Installing Xcode..."
-						xcode-select --install || {
-						echo
-						echo "Installation of Xcode failed. This is commonly because it has been already"
-						echo "installed."
-						echo "If you see in output below Xcode path and version, you can safely continue."
-						echo "Otherwise see, please, command \"xcode-select --help\""
-						echo "and https://developer.apple.com/xcode/ and install Xcode manually."
-						xcode-select --print-path
-						xcode-select --version
-						confirmgo
-						}
-					break
-					;;
-				N|n|NO|No|no)
-					echo
-					echo "Xcode is required for installation of software needed by Sondovač."
-					echo "If you do not have Xcode installed, install it manually."
-					echo "See INSTALL or manual for details. If you see in output below Xcode path and"
-					echo "version, you can safely continue."
-					xcode-select --print-path
-					xcode-select --version
-					confirmgo
-					break
-					;;
-				*) echo "Wrong option. Use Y or N." && read XCODEI;;
-				esac
-				done
-			echo
-			# Check for Homebrew, install if not available
-			echo "Homebrew is service allowing to install and manage various applications."
-			echo "See http://brew.sh/ and/or manual for more information."
-			echo "Testing if there is Homebrew available..."
-			{ command -v brew >/dev/null 2>&1 &&
-				echo "Homebrew is available. OK." &&
-				echo "Checking for Homebrew updates..." &&
-				echo &&
-				brew update
-				} || {
-					echo "Homebrew is not available."
-					echo "Homebrew is service allowing to install and manage various applications."
-					echo "See http://brew.sh/ and/or manual for more information."
-					echo "Homebrew is required to install software required by Sondovač."
-					echo "Would you like to install it now? (Yes/No)"
-					read BREWI
-					while :
-						do
-						case "$BREWI" in
-							Y|y|YES|Yes|yes)
-								echo "Installing Xcode..."
-								ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" || {
-								echo
-								echo "Error! Installation of Homebrew failed. Please, go to http://brew.sh/ and"
-								echo "install it manally."
-								echo
-								exit 1
-								}
-							break
-							;;
-						N|n|NO|No|no)
-							echo
-							echo "Homebrew is required for installation of software needed by Sondovač."
-							echo "Please, go to http://brew.sh/ install it manually."
-							echo "See INSTALL or manual for details."
-							echo
-							exit
-							;;
-						*) echo "Wrong option. Use Y or N." && read BREWI;;
-						esac
-						done
-					} 
-			echo
-			echo "Script will now check for presence of required Homebrew formulae."
-			echo "Formulae will be installed according to needs."
-			confirmgo
-			echo "Checking for installed packages (brew formulae)..."
-			while read BREWFORMULA; do
-				if [[ ! $(brew ls --versions $BREWFORMULA) ]]; then
-					echo
-					echo "Formula \"$BREWFORMULA\" is missing. Going to install it..."
-					brew install $BREWFORMULA || {
-						echo "Installation of formula \"$BREWFORMULA\" failed."
-						echo "Please, install Homebrew formula \"$BREWFORMULA\" and ensure it is available."
-						echo "See manual for details."
-						confirmgo
-						}
-					else
-						echo
-						echo "Formula \"$BREWFORMULA\" is present."
-						echo "Going to reinstall it to ensure it is up-to-date and installed in correct place."
-						brew reinstall $BREWFORMULA || {
-							echo "Reinstallation of formula \"$BREWFORMULA\" failed."
-							echo "Please, check Homebrew formula \"$BREWFORMULA\" and ensure it is available."
-							echo "See manual for details."
-							confirmgo
-							}
-					fi
-				echo
-				echo "Information about formula \"$BREWFORMULA\":"
-				brew info $BREWFORMULA
-				echo
-				done < $SCRIPTDIR/pkgs/packages-brew
-				echo
-				echo "List of currently installed Homebrew formulae:"
-				brew list
-				echo
-				echo "See \"brew help\" or manual for information about management of Homebrew formulae."
-				confirmgo
-				echo "Modifying PATH to contain binaries installed by Homebrew in correct place."
-				export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
-				export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),"");if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
-				echo "Current PATH is: $PATH"
-				echo "Consider to make this PATH permanent as it contains more utilities and newer"
-				echo "versions of various tools than in original installation of Mac OS X."
-				confirmgo
-			else
-				echo
-				echo "Checking if Homebrew and required formulae are installed."
-				{ command -v brew >/dev/null 2>&1 && echo "Homebrew is available. OK."; } || {
-					echo
-					echo "Error! Homebrew is missing! Check INSTALL and manual for details or run Sondovač"
-					echo "interactively to install it automatically:"
-					echo -e "\t$0 -i"
-					echo
-					exit 1
-					}
-				while read BREWFORMULA; do
-					if [[ $(brew ls --versions $BREWFORMULA) ]]; then
-						echo "Formula \"$BREWFORMULA\" is installed. OK."
-					else
-						echo
-						echo "Error! Formula \"$BREWFORMULA\" is missing."
-						echo "Check INSTALL and manual for details or run Sondovač interactively to install"
-						echo "it automatically:"
-						echo -e "\t$0 -i"
-						echo
-						exit 1
-					fi
-					echo
-					done < $SCRIPTDIR/pkgs/packages-brew
-				echo
-				# Modify PATH to contain newly installed software
-				echo "Modifying PATH to contain binaries installed by Homebrew in correct place."
-				export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
-				# Remove duplicities from PATH
-				export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),"");if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
-				echo "Current PATH is: $PATH"
-				echo "Consider to make this PATH permanent as it contains more utilities and newer"
-				echo "versions than in original installation of Mac OS X."
-				echo
-			fi
-		fi
+    # If on Mac, notify user about need of compilation tools
+    if [ "$OS" == "Mac" ]; then
+      if [ "$STARTINI" == "I" ]; then
+	echo
+	# Check for Xcode
+	echo "Xcode is required to install Homebrew, which is required to upgrade and install"
+	echo "software used by Sondovač. See INSTALL or manual for details."
+	echo
+	echo "Unfortunatelly, it is not easily possible to universally check for presence of"
+	echo "Xcode."
+	echo "If you have never used command \"make\" or not installed Xcode manually, you"
+	echo "probably do not have it. If you have ever compiled any software, you probably"
+	echo "have Xcode installed. After installation of Xcode you will probably have to"
+	echo "restart Sondovač."
+	echo "Would you like to install Xcode now? (Yes/No)"
+	read XCODEI
+	while :
+	  do
+	  case "$XCODEI" in
+	    Y|y|YES|Yes|yes)
+	      echo "Installing Xcode..."
+	      xcode-select --install || {
+		echo
+		echo "Installation of Xcode failed. This is commonly because it has been already"
+		echo "installed."
+		echo "If you see in output below Xcode path and version, you can safely continue."
+		echo "Otherwise see, please, command \"xcode-select --help\""
+		echo "and https://developer.apple.com/xcode/ and install Xcode manually."
+		xcode-select --print-path
+		xcode-select --version
+		confirmgo
+		}
+	    break
+	    ;;
+	  N|n|NO|No|no)
+	    echo
+	    echo "Xcode is required for installation of software needed by Sondovač."
+	    echo "If you do not have Xcode installed, install it manually."
+	    echo "See INSTALL or manual for details. If you see in output below Xcode path and"
+	    echo "version, you can safely continue."
+	    xcode-select --print-path
+	    xcode-select --version
+	    confirmgo
+	    break
+	    ;;
+	  *) echo "Wrong option. Use Y or N." && read XCODEI;;
+	  esac
+	  done
+	echo
+	# Check for Homebrew, install if not available
+	echo "Homebrew is service allowing to install and manage various applications."
+	echo "See http://brew.sh/ and/or manual for more information."
+	echo "Testing if there is Homebrew available..."
+	{ command -v brew >/dev/null 2>&1 &&
+	  echo "Homebrew is available. OK." &&
+	  echo "Checking for Homebrew updates..." &&
+	  echo &&
+	  brew update
+	  } || {
+	    echo "Homebrew is not available."
+	    echo "Homebrew is service allowing to install and manage various applications."
+	    echo "See http://brew.sh/ and/or manual for more information."
+	    echo "Homebrew is required to install software required by Sondovač."
+	    echo "Would you like to install it now? (Yes/No)"
+	    read BREWI
+	    while :
+	      do
+	      case "$BREWI" in
+		Y|y|YES|Yes|yes)
+		  echo "Installing Xcode..."
+		  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" || {
+		  echo
+		  echo "Error! Installation of Homebrew failed. Please, go to http://brew.sh/ and"
+		  echo "install it manally."
+		  echo
+		  exit 1
+		  }
+		break
+		;;
+	      N|n|NO|No|no)
+		echo
+		echo "Homebrew is required for installation of software needed by Sondovač."
+		echo "Please, go to http://brew.sh/ install it manually."
+		echo "See INSTALL or manual for details."
+		echo
+		exit
+		;;
+	      *) echo "Wrong option. Use Y or N." && read BREWI;;
+	      esac
+	      done
+	    }
+	echo
+	echo "Script will now check for presence of required Homebrew formulae."
+	echo "Formulae will be installed according to needs."
+	confirmgo
+	echo "Checking for installed packages (brew formulae)..."
+	while read BREWFORMULA; do
+	  if [[ ! $(brew ls --versions $BREWFORMULA) ]]; then
+	    echo
+	    echo "Formula \"$BREWFORMULA\" is missing. Going to install it..."
+	    brew install $BREWFORMULA || {
+	      echo "Installation of formula \"$BREWFORMULA\" failed."
+	      echo "Please, install Homebrew formula \"$BREWFORMULA\" and ensure it is available."
+	      echo "See manual for details."
+	      confirmgo
+	      }
+	    else
+	      echo
+	      echo "Formula \"$BREWFORMULA\" is present."
+	      echo "Going to reinstall it to ensure it is up-to-date and installed in correct place."
+	      brew reinstall $BREWFORMULA || {
+		echo "Reinstallation of formula \"$BREWFORMULA\" failed."
+		echo "Please, check Homebrew formula \"$BREWFORMULA\" and ensure it is available."
+		echo "See manual for details."
+		confirmgo
+		}
+	    fi
+	    echo
+	    echo "Information about formula \"$BREWFORMULA\":"
+	    brew info $BREWFORMULA
+	    echo
+	  done < $SCRIPTDIR/pkgs/packages-brew
+	echo
+	echo "List of currently installed Homebrew formulae:"
+	brew list
+	echo
+	echo "See \"brew help\" or manual for information about management of Homebrew formulae."
+	confirmgo
+	echo "Modifying PATH to contain binaries installed by Homebrew in correct place."
+	export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
+	export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),"");if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
+	echo "Current PATH is: $PATH"
+	echo "Consider to make this PATH permanent as it contains more utilities and newer"
+	echo "versions of various tools than in original installation of Mac OS X."
+	confirmgo
+      else
+	echo
+	echo "Checking if Homebrew and required formulae are installed."
+	{ command -v brew >/dev/null 2>&1 && echo "Homebrew is available. OK."; } || {
+	  echo
+	  echo "Error! Homebrew is missing! Check INSTALL and manual for details or run Sondovač"
+	  echo "interactively to install it automatically:"
+	  echo -e "\t$0 -i"
+	  echo
+	  exit 1
+	  }
+	while read BREWFORMULA; do
+	  if [[ $(brew ls --versions $BREWFORMULA) ]]; then
+	    echo "Formula \"$BREWFORMULA\" is installed. OK."
+	  else
+	    echo
+	    echo "Error! Formula \"$BREWFORMULA\" is missing."
+	    echo "Check INSTALL and manual for details or run Sondovač interactively to install"
+	    echo "it automatically:"
+	    echo -e "\t$0 -i"
+	    echo
+	    exit 1
+	  fi
+	  echo
+	  done < $SCRIPTDIR/pkgs/packages-brew
+	echo
+	# Modify PATH to contain newly installed software
+	echo "Modifying PATH to contain binaries installed by Homebrew in correct place."
+	export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
+	# Remove duplicities from PATH
+	export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),"");if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
+	echo "Current PATH is: $PATH"
+	echo "Consider to make this PATH permanent as it contains more utilities and newer"
+	echo "versions than in original installation of Mac OS X."
+	echo
+	fi
+      fi
   } # End of OS checking
 
 # Set variables for working directory and PATH
@@ -1026,28 +1023,28 @@ function checkblat {
 	      break
 	    ;;
 	  H|h)
-			if [ "$OS" == "Mac" ]; then			
-				{ echo "Installing BLAT using Homebrew" &&
-				brew install homebrew/science/blat &&
-				echo "\"BLAT\" is available. OK."
-				} || {
-					echo
-					echo "Installation of \"BLAT\" failed. Please, do it manually. For details see"
-					echo "\"brew info homebrew/science/blat\" and \"brew help\"."
-					echo
-					exit 1
-					}
-				else
-					echo "This is not Mac OS X. Going to compile..."
-					compileblat
-				fi
-			break
-			;;
-	  M|m) echo "Please, go to http://genome.ucsc.edu/FAQ/FAQblat.html and download and install"
-		echo "BLAT and ensure it is in PATH."
+	    if [ "$OS" == "Mac" ]; then			
+	      { echo "Installing BLAT using Homebrew" &&
+	      brew install homebrew/science/blat &&
+	      echo "\"BLAT\" is available. OK."
+	      } || {
 		echo
-		exit 2
-		;;
+		echo "Installation of \"BLAT\" failed. Please, do it manually. For details see"
+		echo "\"brew info homebrew/science/blat\" and \"brew help\"."
+		echo
+		exit 1
+		}
+	      else
+		echo "This is not Mac OS X. Going to compile..."
+		compileblat
+	      fi
+	    break
+	    ;;
+	  M|m) echo "Please, go to http://genome.ucsc.edu/FAQ/FAQblat.html and download and install"
+	    echo "BLAT and ensure it is in PATH."
+	    echo
+	    exit 2
+	    ;;
 	  *) echo "Wrong option. Use S, D, H or M." && read BLAT;;
 	esac
       done
