@@ -265,23 +265,23 @@ function compilecdhit {
 	break
 	;;
 	H|h)
-		if [ "$OS" == "Mac" ]; then
-			{ echo "Installing \"CD-HIT\" using Homebrew" &&
-			brew install homebrew/science/cd-hit &&
-			echo "\"CD-HIT\" is available. OK."
-			} || {
-				echo
-				echo "Installation of \"CD-HIT\" failed. Please, do it manually. For details see"
-				echo "\"brew info homebrew/science/cd-hit\" and \"brew help\"."
-				echo
-				exit 1
-				}
-			else
-				echo "This is not Mac OS X. Going to compile..."
-				compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
-			fi
-		break
-		;;
+	  if [ "$OS" == "Mac" ]; then
+	    { echo "Installing \"CD-HIT\" using Homebrew" &&
+	    brew install homebrew/science/cd-hit &&
+	    echo "\"CD-HIT\" is available. OK."
+	    } || {
+	      echo
+	      echo "Installation of \"CD-HIT\" failed. Please, do it manually. For details see"
+	      echo "\"brew info homebrew/science/cd-hit\" and \"brew help\"."
+	      echo
+	      exit 1
+	      }
+	    else
+	      echo "This is not Mac OS X. Going to compile..."
+	      compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
+	    fi
+	  break
+	  ;;
       M|m)
 	echo
 	echo "Please, go to http://weizhongli-lab.org/cd-hit/ and install CD-HIT and ensure"

@@ -1,4 +1,16 @@
 build-essential
+gawk
+bc
+bzip2
+coreutils
+grep
+gzip
+less
+lsb-release
+perl-base
+sed
+tar
+unzip
 gcc
 g++
 cpp

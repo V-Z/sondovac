@@ -115,22 +115,22 @@ the documentation for your operating system.
 
 If required scientific programs are not installed, Sondovač will offer you 
 installation. You can use precompiled binaries available together with the 
-script or (sometimes) from the web. This is the recommended way. In case you 
-would like to compile required software yourselves, the script will guide you 
-through this process. Anyway, it is recommended only for advanced users, as 
-compilation might sometimes be very tricky. It is currently fully implemented 
-only for the Linux distributions Ubuntu and openSUSE. Support for other Linux 
-distributions and Mac OS X will be added soon. For compilation you need Apache 
-Ant, GNU G++, GNU GCC, GIT, Java, libpng developmental files and zlib 
-developmental files. Ensure you have those tools available - they should be 
-readily available for any UNIX-based operating system.
+script (this is the recommended option) or (sometimes) from the web. This is 
+the recommended way. In case you would like to compile required software 
+yourselves, the script will guide you through this process. Anyway, it is 
+recommended only for advanced users, as compilation might sometimes be very 
+tricky. Users of Mac OS X can install those applications also using Homebrew 
+(see http://brew.sh/). For compilation you need Apache Ant, GNU G++, GNU GCC, 
+GIT, Java/OpenJDK, libpng developmental files and zlib developmental files. 
+Ensure you have those tools available - they should be readily available for 
+any UNIX-based operating system.
 
 Following UNIX tools are required to run Sondovač. They are usually readily 
-available in Mac OS X, any Linux distribution or another UNIX system, so there 
-is usually no need to install them manually. The tools are awk, bc, bunzip2, 
-cat, cp, curl, cut, dirname, echo, egrep, cd, g++, gcc, grep, gunzip, join, 
-less, lsb_release, make, mkdir, perl, pkg-config, pwd, sed, sort, tar, tr, 
-uname, uniq, unzip, wc. See also details in PDF manual.
+available in UNIX systems (but see note for Mac OS X below), so there is 
+usually no need to install them manually. The tools are awk, bc, bunzip2, cat, 
+cp, curl, cut, dirname, echo, egrep, cd, g++, gcc, grep, gunzip, join, less, 
+lsb_release, make, mkdir, perl, pkg-config, pwd, sed, sort, tar, tr, uname, 
+uniq, unzip, wc.
 
 sondovac_part_a.sh requires (and will install) following software packages:
 * BLAT
@@ -143,6 +143,17 @@ sondovac_part_a.sh requires (and will install) following software packages:
 sondovac_part_b.sh requires (and will install) following software packages:
 * CD-HIT
 * BLAT
+
+For Mac OS X users, Homebrew (http://brew.sh/) will be installed and it will 
+instal newer versions of Apache Ant, BASH (the shell interpreter), GNU AWK, GNU 
+coreutils, GNU GCC, git, GNU grep, GNU make, pkg-config, GNU sed and wget. Mac 
+OS X is missing some tools and for others (typically sed, grep, awk) contains 
+too old BSD versions. The script will guide user through the process and if 
+user would wish, it is possible safely and easily remove those tools afterward.
+
+See PDF manual for details about tools required by Sondovač and their manual 
+installation. For most users should be sufficient to be guided by the script 
+to install needed tools automatically.
 
 When Sondovač starts, directory "bin" is created in current working directory. 
 Sondovač saves here binaries of required software packages (if they are not 
@@ -433,7 +444,7 @@ The package contains:
 
 Transcriptome input file is unpublished data from G. K.-S. Wong et al. 
 (hopefully it will be published soon). When the data became public, we will 
-post them here. Data can be now found under
+post them on GitHub. Data can be now found under
 * http://www.onekp.com/
 * http://www.onekp.com/samples/list.php
 * http://www.onekp.com/samples/single.php?id=JHCN

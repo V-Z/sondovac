@@ -1,10 +1,5 @@
 \documentclass[a4paper, 11pt, twoside]{article}
 
-% Missing to do:
-% * Geneious screenshots
-% * More BASH examples (installation of packages in Linux), some screenshot
-% * Help for Mac OS X - install build tools, homebrew
-
 \usepackage{xltxtra}
 \usepackage{xunicode}
 \usepackage{polyglossia}
@@ -69,7 +64,7 @@
 Sondovač\footnote{English pronunciation is "Sondovach".} is a script to create orthologous low-copy nuclear probes from transcriptome and genome skim data for target enrichment.
 
 \begin{abstract}
-Phylogenetics benefits from using a large number of putatively independent nuclear loci and the combination with other sources of information, such as the plastid and mitochondrial genome. Selecting such orthologous low-copy nuclear (LCN) loci is still a challenge for non-model organisms. In recently published phylogenies based on target enrichment of several hundred LCN genes, these loci were selected from transcriptomes, genomes, gene expression studies, the literature, or a combination of these sources. Automated bioinformatic pipelines for the selection of LCN genes are, however, largely absent. We created a user-friendly, automated and interactive script named Sondovač to design LCN loci by a comparison between transcriptome and genome skim data. The script is licensed under open-source license GPL v.3 allowing further modifications. It runs on major Linux distributions and Mac OS X. Strong bioinformatics skills and access to high-performance computer clusters are not required; Sondovač runs on a standard desktop computer equipped with modern CPU like Intel i5 or i7.
+Phylogenetics benefits from using a large number of putatively independent nuclear loci and the combination with other sources of information, such as the plastid and mitochondrial genome. Selecting such orthologous low-copy nuclear (LCN) loci is still a challenge for non-model organisms. In recently published phylogenies based on target enrichment of several hundred LCN genes, these loci were selected from transcriptomes, genomes, gene expression studies, the literature, or a combination of these sources. Automated bioinformatic pipelines for the selection of LCN genes are, however, largely absent. We created a user-friendly, automated and interactive script named Sondovač to design LCN loci by a comparison between transcriptome and genome skim data. The script is licensed under open-source license GPL v.3 allowing further modifications. It runs on major Linux distributions and Mac OS~X. Strong bioinformatics skills and access to high-performance computer clusters are not required; Sondovač runs on a standard desktop computer equipped with modern CPU like Intel i5 or i7.
 \end{abstract}
 
 % Contents
@@ -159,43 +154,171 @@ Sondovač is simple BASH script, but it requires some software. The script will 
 
 \subsection{Requirements to run Sondovač}
 
-Sondovač is currently tested on the Linux distributions Ubuntu and openSUSE. Testing on Mac OS X and other major Linux distributions is on the way and full support will be added soon. Thank you for patience and reporting\footnote{You can report any problems at \href{https://github.com/V-Z/sondovac/issues}{https://github.com/V-Z/sondovac/issues}. We will try to help you.} any problems and wishes.
+Sondovač is currently tested on major Linux distributions (in actual versions) openSUSE, Debian, Ubuntu, Linux Mint, Fedora, Centos and Scientific Linux; and on Mac OS~X (version 10.10 Yosemite).
 
-In order to run Sondovač you need a UNIX-based operating system (preferably Linux or Mac OS X) equipped with BASH or compatible shell interpreter (this should be by default available for any Linux distribution, Mac OS X and any other UNIX-based operating system like Solaris, BSD and its variants etc). You should use the current operating system version supported by upstream. Otherwise we will not be able to help you in case of problems. Older operating systems can have different versions of shell and system libraries, which can cause various problems and incompatibilities.
+In order to run Sondovač you need a UNIX-based operating system (preferably Linux, alternatively Mac OS~X) equipped with BASH or compatible shell interpreter (this should be by default available for any Linux distribution, Mac OS~X and any other UNIX-based operating system like Solaris, BSD and its variants etc). You should use the current operating system version supported by upstream. Otherwise we will not be able to help you in case of problems. Older operating systems can have different versions of shell and system libraries, which can cause various problems and incompatibilities.
 
-Sondovač is using several scientific software packages (namely bam2fastq, BLAT, Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, Picard and SAMtools -- see required versions and links, Table~\ref{software-links}), and basic UNIX tools. Sondovač will check if those programs are installed -- available in the PATH (i.e. if the shell application can locate and launch respective binaries). If you have those packages installed (in current versions), ensure their binaries are in PATH. This should not be a problem for basic tools available in any UNIX-based operating system, as basic installation usually contains all needed tools. If you are lacking some of the required tools, the script will notify you, and you will have to install them manually. If this will be needed, check the documentation for your operating system.
+Sondovač is using several scientific software packages (namely bam2fastq, BLAT, Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils and SAMtools -- see required versions and links, Table~\ref{software-links}), and basic UNIX tools (see below). Sondovač will check if those programs are installed -- available in the PATH (i.e. if the shell application can locate and launch respective binaries, see also vocabulary at page~\pageref{vocabulary}). If you have those packages installed (in current versions, see Table~\ref{software-links}), ensure their binaries are in PATH. This should not be a problem for basic tools available in any UNIX-based operating system, as basic installation usually contains all needed tools. If you are lacking some of the required tools, the script will notify you, and you will have to install them manually. If this will be needed, check the documentation for your operating system. % Picard % will be used instead of bam2fastq
 
-If required scientific programs are not installed, Sondovač will offer you installation. You can use precompiled binaries available together with the script or (sometimes) from the web. This is the recommended way. In case you would like to compile required software yourselves, the script will guide you through this process. Anyway, it is recommended only for advanced users, as compilation might sometimes be very tricky. It is currently fully implemented only for the Linux distributions Ubuntu and openSUSE. Support for other Linux distributions and Mac OS X will be added soon. For compilation you need Apache Ant, GNU G++, GNU GCC, GIT, Java, libpng developmental files and zlib developmental files. Ensure you have those tools available -- they should be readily available for any UNIX-based operating system.
+If required scientific programs are not installed, Sondovač will offer you installation. You can use precompiled binaries available together with the script or (sometimes) from the web. This is the recommended way. In case you would like to compile required software yourselves, the script will guide you through this process. Anyway, it is recommended only for advanced users, as compilation might sometimes be very tricky. Users of Mac OS~X can install those applications also using Homebrew (see \href{http://brew.sh/}{http://brew.sh/}). For compilation you need Apache Ant, GNU G++, GNU GCC, GIT, Java/OpenJDK, libpng developmental files and zlib developmental files. Ensure you have those tools available -- they should be readily available for any UNIX-based operating system. Chapters~\ref{required-linux} and~\ref{required-mac} give details about requirements and their manual fulfilling. It is mainly reference for more advanced users or users with special needs. For most users should be fully sufficient to run the script and let it to do this job (see chapter~\ref{script-start} at page~\pageref{script-usage}).
 
-Following UNIX tools are required to run Sondovač. They are usually readily available in Mac OS X, any Linux distribution or another UNIX system, so there is usually no need to install them manually. The tools are \texttt{awk}, \texttt{bc}, \texttt{bunzip2}, \texttt{cat}, \texttt{cp}, \texttt{curl}, \texttt{cut}, \texttt{dirname}, \texttt{echo}, \texttt{egrep}, \texttt{cd}, \texttt{g++}, \texttt{gcc}, \texttt{grep}, \texttt{gunzip}, \texttt{join}, \texttt{less}, \texttt{lsb$\_$release}, \texttt{make}, \texttt{mkdir}, \texttt{perl}, \texttt{pkg-config}, \texttt{pwd}, \texttt{sed}, \texttt{sort}, \texttt{tar}, \texttt{tr}, \texttt{uname}, \texttt{uniq}, \texttt{unzip}, \texttt{wc}. Not all tools are required every time -- some are used only during particular actions (e.g. when user decide to compile required software manually). And user usually do not need to bother about them. See also details in following subchapters for some common Linux distributions and Mac OS X.
+Following UNIX tools are required to run Sondovač. They are usually readily available in UNIX systems (but see note for Mac OS~X below), so there is usually no need to install them manually. The tools are \texttt{awk}, \texttt{bc}, \texttt{bunzip2}, \texttt{cat}, \texttt{cp}, \texttt{curl} or \texttt{wget}, \texttt{cut}, \texttt{dirname}, \texttt{echo}, \texttt{egrep}, \texttt{cd}, \texttt{g++}, \texttt{gcc}, \texttt{grep}, \texttt{gunzip}, \texttt{join}, \texttt{less}, \texttt{lsb$\_$release} or \texttt{python} (for Linux), \texttt{make}, \texttt{mkdir}, \texttt{perl}, \texttt{pkg-config}, \texttt{pwd}, \texttt{sed}, \texttt{sort}, \texttt{tar}, \texttt{tr}, \texttt{uname}, \texttt{uniq}, \texttt{unzip}, \texttt{wc}. Not all tools are required every time -- some are used only during particular actions (e.g. when user decide to compile required software manually). And user usually do not need to bother about them. See also details in following subchapters for some common Linux distributions and Mac OS~X.
+
+See below for details about tools required by Sondovač and their manual installation. For most users should be sufficient to be guided by the script to install needed tools automatically.
 
 \subsection{Installation of required software in Linux}
+\label{required-linux}
 
-XXX
+Linux distributions have precise packages management tools (similar, but with more functions, to various app stores known from Android, iOS or recent Mac OS~X, MS~Windows, etc.), but unfortunately Linux repositories commonly do not contain all needed scientific packages (or not enough recent versions). We recommend pre-compiled binaries of scientific applications available together with the script. If the user for whatever reason wishes to compile the software, the script will guide through that process.
 
 \subsubsection{openSUSE and SUSE Linux Enterprise}
 
-XXX
+SUSE Linux Enterprise (\href{https://www.suse.com/}{https://www.suse.com/}) and openSUSE (\href{https://www.opensuse.org/}{https://www.opensuse.org/}) use for package management command \texttt{zypper}\footnote{See \href{https://en.opensuse.org/Zypper}{https://en.opensuse.org/Zypper} and \href{https://activedoc.opensuse.org/book/opensuse-start-up/chapter-9-managing-software-with-command-line-tools}{https://activedoc.opensuse.org/book/opensuse-start-up/chapter-9-managing-software-with-command-line-tools} for details.}. The script will check if all required software packages are installed and if not, it will install them. You can do it also manually:
 
-\subsubsection{Debian and derivatives}
+\begin{bashcode}
+  # Verify installation of basic tools (they are installed in 99.9%):
+  sudo zypper in bash gawk bc coreutils grep less lsb-release perl-base sed wget
+  # Install packages needed for compilation:
+  sudo zypper in gcc-c++ gcc make pkg-config bzip2 gzip tar unzip \
+    patterns-openSUSE-devel_basis libpng12-devel zlib-devel gcc-java \
+    java-1_7_0-openjdk java-1_7_0-openjdk-devel git-core ant
+  # Update installed packages:
+  sudo zypper up
+  # Remove package:
+  sudo zypper rm PACKAGE
+  # Search for package:
+  zypper se PACKAGE/KEYWORD
+  # More information about zypper usage:
+  zypper --help
+  man zypper
+\end{bashcode}
 
-XXX
+Originally, those distributions used only \texttt{rpm*} commands (see \texttt{rpm --help} and \texttt{man rpm} for basic usage).
 
-\subsubsection{Ubuntu and derivatives}
+\subsubsection{Debian, Ubuntu, Linux Mint and derivatives}
 
-XXX
+Debian (\href{https://www.debian.org/}{https://www.debian.org/}), Linux Mint (\href{http://linuxmint.com/}{http://linuxmint.com/}), Ubuntu (\href{http://www.ubuntu.com/}{http://www\\.ubuntu.com/}) and all derived distributions\footnote{See \href{http://distrowatch.com/search.php?basedon=Debian}{http://distrowatch.com/search.php?basedon=Debian} and \href{http://distrowatch.com/search.php?basedon=Ubuntu}{http://distrowatch.com/search.php?basedon=\\Ubuntu} for complete lists.} like Kubuntu (\href{http://www.kubuntu.com/}{http://www.kubuntu.com/}) use for package management commands \texttt{apt-get} (basic) and \texttt{aptitude} (front-end for \texttt{apt-get}, recommended, not available by default in every DEB distribution). There are more tools\footnote{See \href{https://wiki.debian.org/PackageManagement}{https://wiki.debian.org/PackageManagement} for list of tools and \href{https://www.debian.org/doc/manuals/debian-reference/ch02.en.html}{https://www.debian.org/doc/manuals/\\debian-reference/ch02.en.html} for exhaustive documentation. Shorter introduction is available at \href{https://help.ubuntu.com/community/AptGet/Howto}{https://help.ubu\\ntu.com/community/AptGet/Howto} and \href{http://ubuntuguide.org/wiki/Ubuntu_Trusty_Packages_and_Repositories}{http://ubuntuguide.org/wiki/Ubuntu$\_$Trusty$\_$Packages$\_$and$\_$Reposit\\ories}. Ubuntu-specific information at \href{https://help.ubuntu.com/stable/ubuntu-help/addremove.html}{https://help.ubuntu.com/stable/ubuntu-help/addremove.html}.}, we will describe only basic usage needed for our purpose. The script will check if all required software packages are installed and if not, it will install them. You can do it also manually:
 
-\subsubsection{Linux Mint}
+\begin{bashcode}
+  # Verify installation of basic tools (they are installed in 99.9%):
+  sudo apt-get install bash gawk bc coreutils grep less lsb-release perl-base \
+    sed wget
+  # Install packages needed for compilation:
+  sudo apt-get install build-essential bzip2 gzip tar unzip gcc g++ cpp make \
+    libpng12-dev zlib1g-dev openjdk-7-jre openjdk-7-jdk openjdk-7-source \
+    git ant pkg-config realpath
+  # Update installed packages:
+  sudo apt-get update # Update list of available packages in repositories
+  sudo apt-get upgrade # Actually update installed packages
+  # Remove package:
+  sudo apt-get remove PACKAGE
+  sudo apt-get autoremove # Automatically remove orphaned unneeded packages
+  # Search for package:
+  apt-cache --help # Usage options
+  apt-cache show PACKAGE # Display information about PACKAGE
+  apt-cache search KEYWORD # Search for KEYWORD, including regular expressions
+  # More information about apt-get usage:
+  apt-get --help
+  man apt-get
+  # Interactive command-line package manager
+  sudo aptitude
+  # Help for aptitude
+  aptitude --help
+  man aptitude
+\end{bashcode}
 
-XXX
+Note you can use \texttt{aptitude} in similar way as \texttt{apt-*} commands (e.g \texttt{aptitude instal \ldots} etc.). For special package operations, there are plenty of \texttt{dpkg} commands for advanced management.
 
-\subsubsection{Fedora, RedHat, Centos and Scientific Linux}
+\subsubsection{RedHat, Fedora, Centos, Scientific Linux and derivatives}
 
-XXX
+RedHat (\href{https://www.redhat.com/}{https://www.redhat.com/}), Fedora (\href{https://getfedora.org/}{https://getfedora.org/}; until version 21), Centos (\href{https://centos.org/}{https://centos.org/}) and Scientific Linux (\href{https://www.scientificlinux.org/}{https://www.scientificlinux.org/}) and other related distributions\footnote{See \href{http://distrowatch.com/search.php?basedon=Fedora}{http://distrowatch.com/search.php?basedon=Fedora} for complete list.} use for package management command \texttt{yum}\footnote{See \href{http://yum.baseurl.org/}{http://yum.baseurl.org/} for details.}. The script will check if all required software packages are installed and if not, it will install them. You can do it also manually:
 
-\subsection{Installation of required software in Mac OS X}
+\begin{bashcode}
+  # Verify installation of basic tools (they are installed in 99.9%):
+  sudo yum install bash coreutils gawk bc grep less lsb perl sed wget
+  # Install packages needed for compilation:
+  sudo yum install bzip2 gzip pkgconfig unzip gcc gcc-c++ cpp libpng12-devel \
+    make zlib-devel java-1.8.0-openjdk java-1.8.0-openjdk-devel git ant tar
+  # Update installed packages:
+  sudo yum update
+  # Remove package:
+  sudo yum remove PACKAGE
+  # Search for package:
+  yum search PACKAGE/KEYWORD
+  # More information about yum usage:
+  yum --help
+  man yum
+\end{bashcode}
 
-XXX
+Fedora uses since version 22 for package management command \texttt{dnf}. It replaces older \texttt{yum} and \texttt{yum} commands are redirected to \texttt{dnf}. Basic usage is same, so that one can just replace \texttt{yum} by \texttt{dnf} in above examples. Originally, those distributions used only \texttt{rpm*} commands (see \texttt{rpm --help} and \texttt{man rpm} for basic usage).
+
+\subsection{Installation of required software in Mac OS~X}
+\label{required-mac}
+
+For Mac OS~X users, Homebrew (see \href{http://brew.sh/}{http://brew.sh/} and \href{https://github.com/Homebrew/}{https://github.com/Homebrew/}) will be installed by the script and it will instal (new software or newer versions) Apache Ant, BASH (the shell interpreter), GNU AWK, GNU coreutils, GNU GCC, git, GNU grep, GNU make, pkg-config, GNU sed and wget. Mac OS~X is missing some tools and for others (typically sed, grep or awk) contains too old BSD versions. The script will guide user through the process and if user would wish, it is possible safely and easily remove those tools afterward. Unfortunately, Mac OS~X does not have usable build-in package management and it has too old versions of some required tools. Homebrew fills this gap. It is simple command-line installer (similar to package managers known from Linux, BSD or Solaris) of various applications.
+
+Homebrew requires Xcode\footnote{\href{https://developer.apple.com/xcode/}{https://developer.apple.com/xcode/}} (set of tools required to compile software) to be installed. Unfortunately, it is not easily universally possible to check if Xcode is installed, so that the script will ask if user wishes to install it. If the user is unsure if Xcode is installed, it is safely possible to answer \texttt{Yes} and install it. Manual command to install Xcode is following:
+
+\begin{bashcode}
+  xcode-select --install
+  # Following error means Xcode has been already installed:
+  xcode-select: note: no developer tools were found at '/Applications/Xcode.app',
+    requesting install. Choose an option in the dialog to download the command
+    line developer tools.
+  # Verify Xcode installation by
+  xcode-select --print-path # Prints installation location of Xcode
+  xcode-select --version # Prints version of Xcode
+\end{bashcode}
+
+If Xcode is not installed yet, user will see windows similar to that on Figure~\ref{xcode}, offering installation of Xcode. Select \textbf{Install} to continue. After installation, the script will exit and user must start it again.
+
+\begin{figure}[htb]
+  \begin{center}
+    \includegraphics[width=7.5cm]{xcode.png}
+  \end{center}
+  \caption[Prompt to install Xcode]{If user uses command requiring Xcode for first time, system will offer installation of Xcode.}
+  \label{xcode}
+\end{figure}
+
+Script will guide user through all those steps and basic usage of Homebrew. Manual installation of Homebrew is also simple:
+
+\begin{bashcode}
+  # Install Homebrew
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/ \
+    master/install)"
+  # Basic help
+  brew help
+  # Install UNIX tools required by Sondovač
+  brew install coreutils gnu-sed gawk grep bash pkg-config gcc make git ant wget
+  # List of installed packages (brew formulae)
+  brew list
+  # Information about particular formula
+  brew info FORMULA
+  # Search for applications
+  brew search KEYWORD
+  # Update Homebrew
+  brew update
+  # Update all packages installed by Homebrew
+  brew upgrade
+  # Remove Homebrew package (formula)
+  brew uninstall FORMULA
+  # Cleaning after uninstallation
+  brew cleanup
+  # Completely remove Homebrew (after uninstallation of all formulae)
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/ \
+    master/uninstall)"
+\end{bashcode}
+
+Within Homebrew project, there is also scientific section (Homebrew Science, \href{http://brew.sh/homebrew-science/}{http://brew.sh\\/homebrew-science/}) containing plenty of software\footnote{See \href{https://github.com/Homebrew/homebrew-science/wiki/List-of-homebrew-science-formulae}{https://github.com/Homebrew/homebrew-science/wiki/List-of-homebrew-science-formulae} for complete list of available scientific packages.}. When script checks for required scientific packages, it offers several ways to install missing software. Mac OS~X users can use also Homebrew. It is the recommended way. If user wish to install the software manually, it is possible to use following commands:
+
+\begin{bashcode}
+  # Install required scientific packages using Homebrew Science
+  brew install homebrew/science/blat homebrew/science/bowtie2 \
+    homebrew/science/samtools homebrew/science/flash \
+    homebrew/science/fastx_toolkit
+\end{bashcode}
+
+Using Homebrew, software will be installed system-wide and Homebrew allows easily check for updates. The only software missing in Homebrew science is \href{http://gsl.hudsonalpha.org/information/software/bam2fastq}{bam2fastq} -- it is easily installable by another method offered by the script.
 
 \subsection{First launch of Sondovač}
 \label{script-start}
@@ -215,9 +338,9 @@ and start it by
 to see basic usage instructions. See chapter~\ref{script-usage} at page~\pageref{script-usage} for more information.
 
 \begin{figure}[htbp]
-\includegraphics[width=\textwidth]{terminal.png}
-\caption[Starting terminal and navigating to Sondovač]{Starting terminal and navigating to Sondovač. First look at the terminal (command-line, shell) window, navigation to directory with Sondovač (using command \texttt{cd}), listing directory content (command \texttt{ls}) and preparing to launch Sondovač (\texttt{./sondovac$\_$part$\_$a.sh}).}
-\label{terminal}
+  \includegraphics[width=\textwidth]{terminal.png}
+  \caption[Starting terminal and navigating to Sondovač]{Starting terminal and navigating to Sondovač. First look at the terminal (command-line, shell) window, navigation to directory with Sondovač (using command \texttt{cd}), listing directory content (command \texttt{ls}) and preparing to launch Sondovač (\texttt{./sondovac$\_$part$\_$a.sh}).}
+  \label{terminal}
 \end{figure}
 
 \subsubsection{Examples}
@@ -264,6 +387,8 @@ Modifying parameter "\texttt{-s}". Note interactive mode "\texttt{-i}" is implic
   ./sondovac_part_a.sh -s 950
 \end{bashcode}
 
+We recommend to launch Sondovač at least for first time in an interactive mode, so that the script will verify all requirements and install missing tools when needed. We then recommend to use non-interactive mode for routine usage.
+
 \subsection{Help for usage of terminal}
 
 If you are not familiar with the usage of command line, see some basic tutorial first. You can try some of those:
@@ -274,6 +399,8 @@ If you are not familiar with the usage of command line, see some basic tutorial 
 \item \href{https://www.gnu.org/software/bash/manual/}{https://www.gnu.org/software/bash/manual/} (advanced -- full reference manual)
 \item \href{http://ubuntuguide.org/}{http://ubuntuguide.org/}
 \item \href{https://www.debian.org/doc/manuals/debian-reference/ch01.en.html}{https://www.debian.org/doc/manuals/debian-reference/ch01.en.html}
+\item \href{https://en.wikibooks.org/wiki/Guide_to_Unix}{https://en.wikibooks.org/wiki/Guide$\_$to$\_$Unix}
+\item \href{http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html}{http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html}
 \item \href{https://trapa.cz/en/course-linux-command-line-2015}{https://trapa.cz/en/course-linux-command-line-2015}
 \item \href{https://docs.fedoraproject.org/en-US/Fedora/22/html/System_Administrators_Guide}{https://docs.fedoraproject.org/en-US/Fedora/22/html/System$\_$Administrators$\_$Guide}
 \end{itemize}
@@ -282,18 +409,6 @@ If you are not familiar with the usage of command line, see some basic tutorial 
 \label{geneious}
 
 For the part (2) user must have Geneious \citep{Kearse2012}. Geneious is a DNA alignment, assembly, and analysis software and one of the most common software platforms used in genomics. It is utilized for de novo assembly in Sondovač. We plan to replace it by some free open-source command line tool in some future release of Sondovač. Visit \href{http://www.geneious.com/}{http://www.geneious.com/} for download, purchase, installation and usage of Geneious. It is very feature-rich application. The input data are processed (interactively or not) by \texttt{sondovac$\_$part$\_$a.sh} and then user must process its output manually by Geneious according instructions below. Output of Geneious is then processed by \texttt{sondovac$\_$part$\_$b.sh}, which produce final probe set. Geneious was tested with versions 6, 7 and 8.
-
-Import output file of part A of the script (\texttt{sondovac$\_$part$\_$a.sh}): go to menu \textbf{File | Import | From File\ldots} This file is named as: \texttt{YourInputFile$\_$\allowbreak blat$\_$\allowbreak unique$\_$\allowbreak transcripts$\_$\allowbreak versus$\_$\allowbreak genome$\_$\allowbreak skim$\_$\allowbreak data-no$\_$\allowbreak missing$\_$\allowbreak fin.fsa}
-
-Select the file and go to menu \textbf{Tools | Align / Assemble | De Novo Assemble}. In \textbf{Data} frame select \textbf{Assembe by 1st (\ldots) Underscore}. In \textbf{Method} frame select \textbf{Geneious Assembler} (if you don't have other assemblers, this option might be missing) and \textbf{Medium Sensitivity / Fast Sensitivity}
-
-In \textbf{Results} frame check \textbf{Save assembly report}, \textbf{Save list of unused reads}, \textbf{Save in sub-folder}, \textbf{Save contigs} (do not check \textbf{Maximum}) and \textbf{Save consensus sequences}. Do not trim. Otherwise keep defaults. Run it. Geneious may warn about possible hanging because of big file. Do not use Geneious for other tasks during the assembly. Running may take long time.
-
-Select all resulting contigs (typically named \textbf{* Contig \#}) and export them (go to menu \textbf{File | Export | Selected Documents\ldots}) as \textbf{Tab-separated table values (*.tsv)}. Save following columns (Hold \texttt{Ctrl} key to mark more fields): \textbf{\# Sequences}, \textbf{\% Pairwise Identity}, \textbf{Description}, \textbf{Mean Coverage}, \textbf{Name} and \textbf{Sequence Length}. If this option would be inaccessible for you, export all columns. Warning! Do not select and export \textbf{* Consensus Sequences}, \textbf{* Unused Reads} or \textbf{* Report} -- only the individual \textbf{* contig \#} files.
-
-Select items \textbf{Consensus Sequences} and \textbf{Unused Reads} and export them as one \textbf{FASTA}. Go to menu \textbf{File | Export | Selected Documents\ldots} and choose \textbf{FASTA file type}.
-
-Use exported files from Geneious as input for part B of the script (\texttt{sondovac$\_$part$\_$b.sh}).
 
 \subsection{Software used by Sondovač}
 
@@ -305,7 +420,7 @@ Table~\ref{software-links} lists all software used by Sondovač, including minim
 \textbf{Software} & \textbf{Version} & \textbf{Homepage}\\
 Apache Ant & 1.9.X & \href{https://ant.apache.org/}{https://ant.apache.org/}\\
 bam2fastq & 1.1.0 & \href{http://gsl.hudsonalpha.org/information/software/bam2fastq}{http://gsl.hudsonalpha.org/information/software/bam2fastq}\\
-BASH & v. > 3 & \href{https://gnu.org/software/bash/bash.html}{https://gnu.org/software/bash/bash.html}\\
+BASH & v. > 4 & \href{https://gnu.org/software/bash/bash.html}{https://gnu.org/software/bash/bash.html}\\
 BLAT & v.36 & \href{http://genome.ucsc.edu/FAQ/FAQblat.html}{http://genome.ucsc.edu/FAQ/FAQblat.html}\\
 Bowtie2 & 2.2.6 & \href{http://bowtie-bio.sourceforge.net/bowtie2/index.shtml}{http://bowtie-bio.sourceforge.net/bowtie2/index.shtml}\\
 CD-HIT & 4.6 & \href{http://weizhongli-lab.org/cd-hit/}{http://weizhongli-lab.org/cd-hit/}\\
@@ -317,7 +432,7 @@ GIT & v. > 2.0 & \href{http://git-scm.com/}{http://git-scm.com/}\\
 GNU core utils & 8.X & \href{https://gnu.org/software/coreutils/coreutils.html}{https://gnu.org/software/coreutils/coreutils.html}\\
 Java/OpenJDK & v. > 7 & \href{https://www.java.com/}{https://www.java.com/}/\href{http://openjdk.java.net/}{http://openjdk.java.net/}\\
 libpng & 1.6.X & \href{http://www.libpng.org/}{http://www.libpng.org/}\\
-Picard & v. > 1.137 & \href{https://broadinstitute.github.io/picard/}{https://broadinstitute.github.io/picard/}\\
+%Picard & v. > 1.137 & \href{https://broadinstitute.github.io/picard/}{https://broadinstitute.github.io/picard/}\\
 SAMtools, htsjdk & 1.2 & \href{http://www.htslib.org/}{http://www.htslib.org/}\\
 Sondovač & 0.9 & \href{https://github.com/V-Z/sondovac/wiki}{https://github.com/V-Z/sondovac/wiki}\\
 zlib & 1.2.8 & \href{http://zlib.net/}{http://zlib.net/}
@@ -367,23 +482,24 @@ Papers describing the software used by Sondovač:
    \item \citet{Li2011}: A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data.
    \item \citet{Li2011a}: Improving SNP discovery by base alignment quality.
   \end{itemize}
- \item[Sondovač] XXX
+% \item[Sondovač]
 \end{description}
 
 \subsection{Vocabulary}
+\label{vocabulary}
 
 \begin{description}
 \item[Binary] An application in form understandable by the computer, but usually not transferable among operating systems and/or hardware platforms. Binaries in Windows usually have extension *.exe, in UNIX there use to be no extension.
-\item[BASH] "The command line" -- fully featured programming scripting language accessible through terminal of any UNIX-based operating system (any Linux, Mac OS X, Solaris, any variant of BSD and more). BASH scripts usually have extension *.sh.
+\item[BASH] "The command line" -- fully featured programming scripting language accessible through terminal of any UNIX-based operating system (any Linux, Mac OS~X, Solaris, any variant of BSD and more). BASH scripts usually have extension *.sh.
 \item[BSD] Group of popular UNIX-based operating systems. See \href{https://en.wikipedia.org/wiki/Berkeley_Software_Distribution}{https://en.wikipedia.org/wiki/\\Berkeley$\_$Software$\_$Distribution}.
-\item[Compilation] "Translation" of software application from the source code (text readable by human programmer) into binary form launchable by the computer. It requires special tools, and it usually must be done for every operating system and hardware platform.
+\item[Compilation] "Translation" of software application from the source code (text readable by human programmer) into binary form launchable by the computer. It requires special tools (compilers), and it usually must be done for every operating system and hardware platform.
 \item[Console] See "Shell".
 \item[GNU] Major project providing free software widely used in many operating systems, see \href{https://gnu.org/}{https://\\gnu.org/}.
 \item[Library] Pack of software tools and functions used by another applications.
 \item[Linux] One of the most common variants of UNIX-based operating systems. Linux kernel is used by many developers, so that there are plenty of Linux distributions ("flavors") from various sources (e.g. Ubuntu and derivatives, openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.). They share many features although on the first look they can look differently. See \href{https://en.wikipedia.org/wiki/Linux}{https://en.wikipedia.org/wiki/Linux}.
-\item[Mac OS X] Popular operating system produced by Apple. The system kernel is based on UNIX, see \href{https://www.apple.com/osx/}{https://www.apple.com/osx/}.
+\item[Mac OS~X] Popular operating system produced by Apple. The system kernel is based on UNIX, see \href{https://www.apple.com/osx/}{https://www.apple.com/osx/}.
 \item[openSUSE] Popular Linux distribution, see \href{https://www.opensuse.org/}{https://www.opensuse.org/}.
-\item[Operating system] Basic system running on your computer -- typically MS Windows (not supported by Sondovač, although it might be working), Mac OS X or some Linux distribution (Ubuntu and derivatives, openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.).
+\item[Operating system] Basic system running on your computer -- typically MS Windows (not supported by Sondovač, although it might be working), Mac OS~X or some Linux distribution (Ubuntu and derivatives, openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.).
 \item[Parameter(s)] Option(s) passed to any function/command line application to modify its usage. Some can be required, some are optional and some can be used only in particular cases. In case of shell applications, parameters are usually given in way like "application -X", "application -parameter", "application -Param SomeValue" and so on. See manual for particular application (e.g. "man application"), in case of Sondovač see page~\pageref{script-usage}.
 \item[PATH] Directories in the computer where the system is looking for installed software (in a UNIX-based system you can view it by the command "\texttt{echo \$PATH}"). If you need to modify it manually, see the documentation for your operating system.
 \item[Script] Software application. It requires an interpreter (application installed on the computer that is able to launch scripts written in a particular language), but the application itself is portable among operating systems and hardware architectures, and it is written in plain text, so that developers can easily modify it. Common examples are Python, Perl or BASH.
@@ -536,7 +652,7 @@ All names of input files and paths to them must be without spaces and without sp
 
 Files 1-9 are not necessary for further processing by this pipeline, but may be useful for the user. The last file (10) is used as input file for Geneious in the next step. Asterisk (*) denotes beginning of the output files names specified by the user with parameter \texttt{-o}. If user does not select custom name, default value (\texttt{output}) will be used.
 
-\textbf{Geneious} requires as input the last output file of \texttt{sondovac$\_$part$\_$a.sh} (file 10: \texttt{*$\_$blat$\_$\allowbreak unique$\_$\allowbreak transcripts$\_$\allowbreak versus$\_$\allowbreak genome$\_$\allowbreak skim$\_$\allowbreak data-no$\_$\allowbreak missing$\_$\allowbreak fin.fsa}). Output of Geneious are two exported files (see page~\pageref{geneious}):
+\textbf{Geneious} requires as input the last output file of \texttt{sondovac$\_$part$\_$a.sh} (file 10: \texttt{*$\_$blat$\_$\allowbreak unique$\_$\allowbreak transcripts$\_$\allowbreak versus$\_$\allowbreak genome$\_$\allowbreak skim$\_$\allowbreak data-no$\_$\allowbreak missing$\_$\allowbreak fin.fsa}). Output of Geneious are two exported files (see page~\pageref{geneious-usage}):
 
 \begin{enumerate}
   \item Final assembled sequences exported as TSV.
@@ -575,6 +691,47 @@ Asterisk (*) denotes beginning of the output files names specified by the user w
   ls -lh Desktop/MyFile*
 \end{bashcode}
 
+\subsection{Geneious usage}
+\label{geneious-usage}
+
+Import output file of part A of the script (\texttt{sondovac$\_$part$\_$a.sh}): go to menu \textbf{File | Import | From File\ldots} This file is named as: \texttt{*$\_$\allowbreak blat$\_$\allowbreak unique$\_$\allowbreak transcripts$\_$\allowbreak versus$\_$\allowbreak genome$\_$\allowbreak skim$\_$\allowbreak data-no$\_$\allowbreak missing$\_$\allowbreak fin.fsa} (see Figure~\ref{geneious-import}).
+
+\begin{figure}[htb]
+  \includegraphics[width=\textwidth]{geneious1.png}
+  \caption[Import into Geneious]{Import of output of \texttt{sondovac$\_$part$\_$a.sh} into Geneious for next processing (see page~\pageref{pipeline-overview}). Go to menu File \textbf{(1)} | Import \textbf{(2)} | From file\ldots \textbf{(3)} and import output of \texttt{sondovac$\_$part$\_$a.sh}. You should see similar result as \textbf{(4)}.}
+  \label{geneious-import}
+\end{figure}
+
+Select the file and go to menu \textbf{Tools | Align / Assemble | De Novo Assemble}. In \textbf{Data} frame select \textbf{Assembe by 1st (\ldots) Underscore}. In \textbf{Method} frame select \textbf{Geneious Assembler} (if you don't have other assemblers, this option might be missing) and \textbf{Medium Sensitivity / Fast Sensitivity} (see Figure~\ref{geneious-assembly}).
+
+In \textbf{Results} frame check \textbf{Save assembly report}, \textbf{Save list of unused reads}, \textbf{Save in sub-folder}, \textbf{Save contigs} (do not check \textbf{Maximum}) and \textbf{Save consensus sequences}. Do not trim. Otherwise keep defaults. Run it. Geneious may warn about possible hanging because of big file. Do not use Geneious for other tasks during the assembly. Running may take long time (see Figure~\ref{geneious-assembly}).
+
+\begin{figure}[htb]
+  \begin{center}
+    \includegraphics[width=12cm]{geneious2.png}
+  \end{center}
+  \caption[Settings of Geneious assembly]{Settings of Geneious assembly as described in main text. It can take longer time to run it.}
+  \label{geneious-assembly}
+\end{figure}
+
+Select all resulting contigs (typically named \textbf{* Contig \#}) and export them (go to menu \textbf{File | Export | Selected Documents\ldots}) as \textbf{Tab-separated table values (*.tsv)}. Save following columns (Hold \texttt{Ctrl} key to mark more fields): \textbf{\# Sequences}, \textbf{\% Pairwise Identity}, \textbf{Description}, \textbf{Mean Coverage}, \textbf{Name} and \textbf{Sequence Length}. If this option would be inaccessible for you, export all columns (see Figure~\ref{geneious-export1}). Warning! Do not select and export \textbf{* Consensus Sequences}, \textbf{* Unused Reads} or \textbf{* Report} -- only the individual \textbf{* contig \#} files (see Figure~\ref{geneious-export1}).
+
+\begin{figure}[p]
+  \includegraphics[width=\textwidth]{geneious3.png}
+  \caption[Export of contigs as TSV from Geneious]{Select all (and only) \textbf{* Contig \#} files \textbf{(1)}. Go to menu File \textbf{(2)} | Export \textbf{(3)} | Selected Documents\ldots \textbf{(4)} and export them as Tab-separated table values (TSV) \textbf{(5)}. Export only marked columns \textbf{(6)} (hold \texttt{Ctrl} to mark more fields).}
+  \label{geneious-export1}
+\end{figure}
+
+Select items \textbf{Consensus Sequences} and \textbf{Unused Reads} and export them as one \textbf{FASTA}. Go to menu \textbf{File | Export | Selected Documents\ldots} and choose \textbf{FASTA file type} (see Figure~\ref{geneious-export2}).
+
+\begin{figure}[htb]
+  \includegraphics[width=\textwidth]{geneious4.png}
+  \caption[Export of FASTA from Geneious]{ Select only documents \textbf{Consensus Sequences} and \textbf{Unused Reads} and export them as FASTA format (see also Figure~\ref{geneious-export1}).}
+  \label{geneious-export2}
+\end{figure}
+
+Use exported files from Geneious as input for part B of the script (\texttt{sondovac$\_$part$\_$b.sh}).
+
 \subsection{Record output of Sondovač}
 
 To record whole output of Sondovač script (regardless parameters used) use utility \texttt{tee}. It will produce plain text output with everything printed to the screen. It can be useful for reference or explorations is something went wrong. Use it as follows:
@@ -603,7 +760,7 @@ The package contains:
   \item \texttt{input5$\_$Ricinus$\_$communis$\_$reference$\_$mitochondrial$\_$genome.fasta} -- mtDNA reference (parameter \texttt{-m}), GenBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/323649872/}{NC$\_$015141}.
 \end{enumerate}
 
-Transcriptome input file is unpublished data from G. K.-S. Wong et al. (hopefully it will be published soon). When the data became public, we will post them here. Data can be now found under
+Transcriptome input file is unpublished data from G. K.-S. Wong et al. (hopefully it will be published soon). When the data became public, we will post them on \href{https://github.com/V-Z/sondovac/wiki/Sample-data}{GitHub}. Data can be now found under
 
 \begin{itemize}
   \item \href{http://www.onekp.com/}{http://www.onekp.com/}
@@ -631,7 +788,7 @@ Sondovač & GNU GPL v. 3 & \href{https://gnu.org/licenses/gpl.html}{https://gnu.
 Bowtie2 & GNU GPL v. 3 & \href{https://gnu.org/licenses/gpl.html}{https://gnu.org/licenses/gpl.html}\\
 SAMtools & MIT/Expat Lic. & \href{https://en.wikipedia.org/wiki/MIT_License}{https://en.wikipedia.org/wiki/MIT$\_$License}\\
 bam2fastq & Apache Lic. 2.0 & \href{https://apache.org/licenses/LICENSE-2.0.html}{https://apache.org/licenses/LICENSE-2.0.html}\\
-Picard & MIT License & \href{https://en.wikipedia.org/wiki/MIT_License}{https://en.wikipedia.org/wiki/MIT$\_$License}\\
+%Picard & MIT License & \href{https://en.wikipedia.org/wiki/MIT_License}{https://en.wikipedia.org/wiki/MIT$\_$License}\\
 FLASh & GNU GPL v. 3 & \href{https://gnu.org/licenses/gpl.html}{https://gnu.org/licenses/gpl.html}\\
 CD-HIT & GNU GPL v. 2 & \href{https://gnu.org/licenses/old-licenses/gpl-2.0.html}{https://gnu.org/licenses/old-licenses/gpl-2.0.html}\\
 FASTX & GNU Affero GPL & \href{https://gnu.org/licenses/agpl.html}{https://gnu.org/licenses/agpl.html}

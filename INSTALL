@@ -1,21 +1,24 @@
 Sondovač 0.9 beta Install instructions
 
+Sondovač is a script to create orthologous low-copy nuclear probes from 
+transcriptome and genome skim data for target enrichment.
+
+
 Requirements to run Sondovač
 ================================================================================
 
-Sondovač is currently tested on the Linux distributions Ubuntu and openSUSE. 
-Testing on Mac OS X and other major Linux distributions is on the way and 
-full support will be added soon. Thank you for patience and reporting any 
-problems and wishes.
+Sondovač is currently tested on major Linux distributions (in actual versions) 
+openSUSE, Debian, Ubuntu, Linux Mint, Fedora, Centos and Scientific Linux; and 
+on Mac OS X (version 10.10 Yosemite).
 
 In order to run Sondovač you need a UNIX-based operating system (preferably 
-Linux or Mac OS X) equipped with BASH or compatible shell interpreter (this 
-should be by default available for any Linux distribution, Mac OS X and any 
-other UNIX-based operating system like Solaris, BSD and its variants etc). You 
-should use the current operating system version supported by upstream. 
-Otherwise we will not be able to help you in case of problems. Older operating 
-systems can have different versions of shell and system libraries, which can 
-cause various problems and incompatibilities.
+Linux, alternatively Mac OS X) equipped with BASH or compatible shell 
+interpreter (this should be by default available for any Linux distribution, 
+Mac OS X and any other UNIX-based operating system like Solaris, BSD and its 
+variants etc). You should use the current operating system version supported by 
+upstream. Otherwise we will not be able to help you in case of problems. Older 
+operating systems can have different versions of shell and system libraries, 
+which can cause various problems and incompatibilities.
 
 Sondovač is using several scientific software packages (namely bam2fastq, BLAT, 
 Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, Picard 
@@ -31,15 +34,15 @@ the documentation for your operating system.
 
 If required scientific programs are not installed, Sondovač will offer you 
 installation. You can use precompiled binaries available together with the 
-script or (sometimes) from the web. This is the recommended way. In case you 
-would like to compile required software yourselves, the script will guide you 
-through this process. Anyway, it is recommended only for advanced users, as 
-compilation might sometimes be very tricky. It is currently fully implemented 
-only for the Linux distributions Ubuntu and openSUSE. Support for other Linux 
-distributions and Mac OS X will be added soon. For compilation you need Apache 
-Ant, GNU G++, GNU GCC, GIT, Java, libpng developmental files and zlib 
-developmental files. Ensure you have those tools available - they should be 
-readily available for any UNIX-based operating system.
+script (this is the recommended option) or (sometimes) from the web. This is 
+the recommended way. In case you would like to compile required software 
+yourselves, the script will guide you through this process. Anyway, it is 
+recommended only for advanced users, as compilation might sometimes be very 
+tricky. Users of Mac OS X can install those applications also using Homebrew 
+(see http://brew.sh/). For compilation you need Apache Ant, GNU G++, GNU GCC, 
+GIT, Java/OpenJDK, libpng developmental files and zlib developmental files. 
+Ensure you have those tools available - they should be readily available for 
+any UNIX-based operating system.
 
 sondovac_part_a.sh requires (and will install) following software packages:
 * BLAT
@@ -56,11 +59,22 @@ sondovac_part_b.sh requires (and will install) following software packages:
 Geneious is required for step of the pipeline. See below and README for details.
 
 Following UNIX tools are required to run Sondovač. They are usually readily 
-available in Mac OS X, any Linux distribution or another UNIX system, so there 
-is usually no need to install them manually. The tools are awk, bc, bunzip2, 
-cat, cp, curl, cut, dirname, echo, egrep, cd, g++, gcc, grep, gunzip, join, 
-less, lsb_release, make, mkdir, perl, pkg-config, pwd, sed, sort, tar, tr, 
-uname, uniq, unzip, wc. See also details in PDF manual.
+available in UNIX systems (but see note for Mac OS X below), so there is 
+usually no need to install them manually. The tools are awk, bc, bunzip2, cat, 
+cp, curl, cut, dirname, echo, egrep, cd, g++, gcc, grep, gunzip, join, less, 
+lsb_release, make, mkdir, perl, pkg-config, pwd, sed, sort, tar, tr, uname, 
+uniq, unzip, wc.
+
+For Mac OS X users, Homebrew (http://brew.sh/) will be installed and it will 
+instal newer versions of Apache Ant, BASH (the shell interpreter), GNU AWK, GNU 
+coreutils, GNU GCC, git, GNU grep, GNU make, pkg-config, GNU sed and wget. Mac 
+OS X is missing some tools and for others (typically sed, grep, awk) contains 
+too old BSD versions. The script will guide user through the process and if 
+user would wish, it is possible safely and easily remove those tools afterward.
+
+See PDF manual for details about tools required by Sondovač and their manual 
+installation. For most users should be sufficient to be guided by the script 
+to install needed tools automatically.
 
 
 First launch of Sondovač
@@ -117,6 +131,10 @@ need to be specified explicitly:
 
   ./sondovac_part_a.sh -s 950
 
+We recommend to launch Sondovač at least for first time in an interactive mode, 
+so that the script will verify all requirements and install missing tools when 
+needed. We then recommend to use non-interactive mode for routine usage.
+
 
 Help for usage of terminal
 ================================================================================
@@ -129,6 +147,8 @@ first. You can try some of those:
 * https://www.gnu.org/software/bash/manual/ (advanced - full reference manual)
 * http://ubuntuguide.org/
 * https://www.debian.org/doc/manuals/debian-reference/ch01.en.html
+* https://en.wikibooks.org/wiki/Guide_to_Unix
+* http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html
 * https://trapa.cz/en/course-linux-command-line-2015
 * https://docs.fedoraproject.org/en-US/Fedora/22/html/System_Administrators_Guide
 
@@ -155,7 +175,7 @@ higher then noted. Generally, any current version should usually be fine.
 
 * Apache Ant 1.9.X - https://ant.apache.org/
 * bam2fastq 1.1.0 - http://gsl.hudsonalpha.org/information/software/bam2fastq
-* BASH v. > 3 - https://www.gnu.org/software/bash/bash.html
+* BASH v. > 4 - https://www.gnu.org/software/bash/bash.html
 * BLAT v.36 - http://genome.ucsc.edu/FAQ/FAQblat.html
 * Bowtie2 2.2.6 - http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
 * CD-HIT 4.6 - http://weizhongli-lab.org/cd-hit/
@@ -187,8 +207,8 @@ Vocabulary
   https://en.wikipedia.org/wiki/Berkeley_Software_Distribution
 * Compilation - "Translation" of software application from the source code 
   (text readable by human programmer) into binary form launchable by the 
-  computer. It requires special tools, and it usually must be done for every 
-  operating system and hardware platform.
+  computer. It requires special tools (compilers), and it usually must be done 
+  for every operating system and hardware platform.
 * Console - see "shell".
 * GNU - Major project providing free software widely used in many operating 
   systems, see https://gnu.org/

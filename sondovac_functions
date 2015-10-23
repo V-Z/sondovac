@@ -1,8 +1,8 @@
 # Functions required by probe design script
 
 # Version of the script
-SCRIPTVERSION=0.8
-RELEASEDATE=2015-10-09
+SCRIPTVERSION=0.9
+RELEASEDATE=2015-10-23
 # Web page of the script
 WEB="https://github.com/V-Z/sondovac/"
 
@@ -436,6 +436,66 @@ function debinstall {
     fi
   }
 
+# Install needed packages for RPM based distributions derived from RedHat - Fedora, Centos and Scientific Linux
+function rpminstall {
+  echo
+  PACKAGES=''
+  # Check if all required packages are installed
+  while read PACKAGENAME; do
+    if rpm -q --quiet $PACKAGENAME; then
+      echo "Package \"$PACKAGENAME\" is available. OK."
+      else
+	echo "Package \"$PACKAGENAME\" is missing. It will be installed."
+	PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
+      fi
+    done < $SCRIPTDIR/pkgs/packages-rh || {
+      echo
+      echo "${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
+      cat $SCRIPTDIR/pkgs/packages-rh || {
+	echo "${BOLD}Error!${NORM} Can not find file $SCRIPTDIR/pkgs/packages-rh"
+	echo "Go to $WEB and verify if your installation is correct."
+	echo
+	exit 1
+	}
+      confirmgo
+      }
+  if [ -n "$PACKAGES" ]; then
+    # Install missing packages
+    echo "Packages \"$PACKAGES\" are missing."
+    echo
+    echo "Compilation may require to install them. Would you like to install them now?"
+    echo "It requires administrative privileges. (Yes/No)"
+    read FEDORAI
+    while :
+    do
+      case "$FEDORAI" in
+	Y|y|YES|Yes|yes)
+	  echo "Installing required packages..."
+	  { sudo yum install $PACKAGES || su -c "yum install $PACKAGES"; } || {
+	    echo
+	    echo "Installation of packages \"$PACKAGES\" failed."
+	    echo "Those packages may be required to install software used by Sondovač."
+	    echo "If so, install those packages manually. See INSTALL for details."
+	    confirmgo
+	    }
+	  break
+	  ;;
+	N|n|NO|No|no)
+	  echo
+	  echo "You may need packages \"$PACKAGES\""
+	  echo "If compilation of some software required for the pipeline fails,"
+	  echo "install them manually. See INSTALL for details."
+	  confirmgo
+	  break
+	  ;;
+	*) echo "Wrong option. Use Y or N." && read FEDORAI;;
+      esac
+    done
+    else
+      echo "Packages required for compilation are installed. OK."
+    fi
+  }
+
 # Check operating system
 function oscheck {
 
@@ -547,337 +607,289 @@ function oscheck {
       }
     if [ "$STARTINI" == "I" ]; then
       if [ -n "$OSCHECKS" ]; then
-      
       echo
-      echo "If you prefer to compile some of software required by Sondovač, although we recommed to use binaries provided by the script, you will need compilation tools."
-      echo "Following section will check for presence of compilation tools for your Linux distribution. If you pefer usage of provided binaries, you can skip it."
+      echo "If you prefer to compile some of software required by Sondovač, although we"
+      echo "recommed to use binaries provided by the script, you will need compilation tools."
+      echo "Following section will check for presence of compilation tools for your Linux"
+      echo "distribution. If you pefer usage of provided binaries, you can skip it."
       confirmgo
-      
-	case "$DISTRIBUTION" in
-	  *[Ss][Uu][Ss][Ee]*)
-	    LINUX="SUSE"
-	    echo "Linux distribution is SUSE, openSUSE or derivative."
-	    echo
-	    PACKAGES=''
-	    # Check if all required packages are installed
-	    while read PACKAGENAME; do
-	      if rpm -q --quiet $PACKAGENAME; then
-		echo "Package \"$PACKAGENAME\" is available. OK."
-		else
-		  echo "Package \"$PACKAGENAME\" is missing. It will be installed."
-		  PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
-		fi
-	      done < $SCRIPTDIR/pkgs/packages-suse || {
-		echo
-		echo "${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
-		cat $SCRIPTDIR/pkgs/packages-suse || {
-		  echo "${BOLD}Error!${NORM} Can not find file $SCRIPTDIR/pkgs/packages-suse"
-		  echo "Go to $WEB and verify if your installation is correct."
-		  echo
-		  exit 1
-		  }
-		confirmgo
-		}
-	    if [ -n "$PACKAGES" ]; then
-	      # Install missing packages
-	      echo "Packages \"$PACKAGES\" are missing."
-	      echo
-	      echo "Compilation may require to install them. Would you like to install them now?"
-	      echo "It requires administrative privileges. (Yes/No)"
-	      read SUSEI
-	      while :
-	      do
-		case "$SUSEI" in
-		  Y|y|YES|Yes|yes)
-		    echo "Installing required packages..."
-		    { sudo zypper in $PACKAGES || su -c "zypper in $PACKAGES"; } || {
-		      echo
-		      echo "Installation of packages \"$PACKAGES\" failed."
-		      echo "Those packages may be required to install software used by Sondovač."
-		      echo "If so, install those packages manually. See INSTALL for details."
-		      confirmgo
-		      }
-		    break
-		    ;;
-		  N|n|NO|No|no)
-		    echo
-		    echo "You may need packages \"$PACKAGES\""
-		    echo "If compilation of some software required for the pipeline fails,"
-		    echo "install them manually. See INSTALL for details."
-		    confirmgo
-		    break
-		    ;;
-		  *) echo "Wrong option. Use Y or N." && read SUSEI;;
-		esac
-	      done
+      case "$DISTRIBUTION" in
+	*[Ss][Uu][Ss][Ee]*)
+	  LINUX="SUSE"
+	  echo "Linux distribution is SUSE, openSUSE or derivative."
+	  echo
+	  PACKAGES=''
+	  # Check if all required packages are installed
+	  while read PACKAGENAME; do
+	    if rpm -q --quiet $PACKAGENAME; then
+	      echo "Package \"$PACKAGENAME\" is available. OK."
 	      else
-		echo "Packages required for compilation are installed. OK."
+		echo "Package \"$PACKAGENAME\" is missing. It will be installed."
+		PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
 	      fi
-	    ;;
-	  *[Uu]buntu*)
-	    LINUX=Ubuntu
-	    echo "Linux distribution is Ubuntu or derivative."
-	    debinstall
-	    ;;
-	  *[Dd]ebian*)
-	    LINUX=Debian
-	    echo "Linux distribution is Debian or derivative."
-	    debinstall
-	    ;;
-	  *[Mm]int*)
-	    LINUX=Debian
-	    echo "Linux distribution is Linux Mint or derivative."
-	    debinstall
-	    ;;
-	  *[Ff]edora*)
-	    LINUX="Fedora"
-	    echo "Linux distribution is Fedora or derivative."
-	    echo
-	    PACKAGES=''
-	    # Check if all required packages are installed
-	    while read PACKAGENAME; do
-	      if rpm -q --quiet $PACKAGENAME; then
-		echo "Package \"$PACKAGENAME\" is available. OK."
-		else
-		  echo "Package \"$PACKAGENAME\" is missing. It will be installed."
-		  PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
-		fi
-	      done < $SCRIPTDIR/pkgs/packages-rh || {
-		echo
-		echo "${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
-		cat $SCRIPTDIR/pkgs/packages-rh || {
-		  echo "${BOLD}Error!${NORM} Can not find file $SCRIPTDIR/pkgs/packages-rh"
-		  echo "Go to $WEB and verify if your installation is correct."
-		  echo
-		  exit 1
-		  }
-		confirmgo
-		}
-	    if [ -n "$PACKAGES" ]; then
-	      # Install missing packages
-	      echo "Packages \"$PACKAGES\" are missing."
+	    done < $SCRIPTDIR/pkgs/packages-suse || {
 	      echo
-	      echo "Compilation may require to install them. Would you like to install them now?"
-	      echo "It requires administrative privileges. (Yes/No)"
-	      read FEDORAI
-	      while :
-	      do
-		case "$FEDORAI" in
-		  Y|y|YES|Yes|yes)
-		    echo "Installing required packages..."
-		    { sudo yum install $PACKAGES || su -c "yum install $PACKAGES"; } || {
-		      echo
-		      echo "Installation of packages \"$PACKAGES\" failed."
-		      echo "Those packages may be required to install software used by Sondovač."
-		      echo "If so, install those packages manually. See INSTALL for details."
-		      confirmgo
-		      }
-		    break
-		    ;;
-		  N|n|NO|No|no)
-		    echo
-		    echo "You may need packages \"$PACKAGES\""
-		    echo "If compilation of some software required for the pipeline fails,"
-		    echo "install them manually. See INSTALL for details."
-		    confirmgo
-		    break
-		    ;;
-		  *) echo "Wrong option. Use Y or N." && read FEDORAI;;
-		esac
-	      done
-	      else
-		echo "Packages required for compilation are installed. OK."
-	      fi
-	    ;;
-	  *[Cc]entos*)
-	  
-	  ;;
-	  # Another distros...
-	  *) echo
-	      echo "Unknown Linux distribution, probably not openSUSE, SUSE, RedHat, Fedora,"
-	      echo "Centos, Scientific, Debian, Ubuntu, Linux Mint or derivatives. For some"
-	      echo "steps you may need compilation tools (see INSTALL or manual for details)."
-	      echo "Ensure you have those tools available."
+	      echo "${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
+	      cat $SCRIPTDIR/pkgs/packages-suse || {
+		echo "${BOLD}Error!${NORM} Can not find file $SCRIPTDIR/pkgs/packages-suse"
+		echo "Go to $WEB and verify if your installation is correct."
+		echo
+		exit 1
+		}
 	      confirmgo
-	      break
-	      ;;
-	esac
-	fi
-      fi
-    fi
-	
-    # If on Mac, notify user about need of compilation tools
-    if [ "$OS" == "Mac" ]; then
-      if [ "$STARTINI" == "I" ]; then
-	echo
-	# Check for Xcode
-	echo "Xcode is required to install Homebrew, which is required to upgrade and install"
-	echo "software used by Sondovač. See INSTALL or manual for details."
-	echo
-	echo "Unfortunatelly, it is not easily possible to universally check for presence of"
-	echo "Xcode."
-	echo "If you have never used command \"make\" or not installed Xcode manually, you"
-	echo "probably do not have it. If you have ever compiled any software, you probably"
-	echo "have Xcode installed. After installation of Xcode you will probably have to"
-	echo "restart Sondovač."
-	echo "Would you like to install Xcode now? (Yes/No)"
-	read XCODEI
-	while :
-	  do
-	  case "$XCODEI" in
-	    Y|y|YES|Yes|yes)
-	      echo "Installing Xcode..."
-	      xcode-select --install || {
-		echo
-		echo "Installation of Xcode failed. This is commonly because it has been already"
-		echo "installed."
-		echo "If you see in output below Xcode path and version, you can safely continue."
-		echo "Otherwise see, please, command \"xcode-select --help\""
-		echo "and https://developer.apple.com/xcode/ and install Xcode manually."
-		xcode-select --print-path
-		xcode-select --version
-		confirmgo
-		}
-	    break
-	    ;;
-	  N|n|NO|No|no)
+	      }
+	  if [ -n "$PACKAGES" ]; then
+	    # Install missing packages
+	    echo "Packages \"$PACKAGES\" are missing."
 	    echo
-	    echo "Xcode is required for installation of software needed by Sondovač."
-	    echo "If you do not have Xcode installed, install it manually."
-	    echo "See INSTALL or manual for details. If you see in output below Xcode path and"
-	    echo "version, you can safely continue."
-	    xcode-select --print-path
-	    xcode-select --version
+	    echo "Compilation may require to install them. Would you like to install them now?"
+	    echo "It requires administrative privileges. (Yes/No)"
+	    read SUSEI
+	    while :
+	    do
+	      case "$SUSEI" in
+		Y|y|YES|Yes|yes)
+		  echo "Installing required packages..."
+		  { sudo zypper in $PACKAGES || su -c "zypper in $PACKAGES"; } || {
+		    echo
+		    echo "Installation of packages \"$PACKAGES\" failed."
+		    echo "Those packages may be required to install software used by Sondovač."
+		    echo "If so, install those packages manually. See INSTALL for details."
+		    confirmgo
+		    }
+		  break
+		  ;;
+		N|n|NO|No|no)
+		  echo
+		  echo "You may need packages \"$PACKAGES\""
+		  echo "If compilation of some software required for the pipeline fails,"
+		  echo "install them manually. See INSTALL for details."
+		  confirmgo
+		  break
+		  ;;
+		*) echo "Wrong option. Use Y or N." && read SUSEI;;
+	      esac
+	    done
+	    else
+	      echo "Packages required for compilation are installed. OK."
+	    fi
+	  ;;
+	*[Uu]buntu*)
+	  LINUX=Ubuntu
+	  echo "Linux distribution is Ubuntu or derivative."
+	  debinstall
+	  ;;
+	*[Dd]ebian*)
+	  LINUX=Debian
+	  echo "Linux distribution is Debian or derivative."
+	  debinstall
+	  ;;
+	*[Mm]int*)
+	  LINUX=Debian
+	  echo "Linux distribution is Linux Mint or derivative."
+	  debinstall
+	  ;;
+	*[Ff]edora*)
+	  LINUX="Fedora"
+	  echo "Linux distribution is Fedora or derivative."
+	  rpminstall
+	  ;;
+	*[Cc]entos*)
+	  LINUX="Centos"
+	  echo "Linux distribution is Centos or derivative."
+	  rpminstall
+	;;
+	*[Rr]ed[Hh]at*|*[Ss]cientific*)
+	  LINUX="RedHat"
+	  echo "Linux distribution is RedHat, Scientific Linux or derivative."
+	  rpminstall
+	;;
+	# Another distros...
+	*) echo
+	    echo "Unknown Linux distribution, probably not openSUSE, SUSE, RedHat, Fedora,"
+	    echo "Centos, Scientific, Debian, Ubuntu, Linux Mint or derivatives. For some"
+	    echo "steps you may need compilation tools (see INSTALL or manual for details)."
+	    echo "Ensure you have those tools available."
 	    confirmgo
 	    break
 	    ;;
-	  *) echo "Wrong option. Use Y or N." && read XCODEI;;
-	  esac
-	  done
-	echo
-	# Check for Homebrew, install if not available
-	echo "Homebrew is service allowing to install and manage various applications."
-	echo "See http://brew.sh/ and/or manual for more information."
-	echo "Testing if there is Homebrew available..."
-	{ command -v brew >/dev/null 2>&1 &&
-	  echo "Homebrew is available. OK." &&
-	  echo "Checking for Homebrew updates..." &&
-	  echo &&
-	  brew update
-	  } || {
-	    echo "Homebrew is not available."
-	    echo "Homebrew is service allowing to install and manage various applications."
-	    echo "See http://brew.sh/ and/or manual for more information."
-	    echo "Homebrew is required to install software required by Sondovač."
-	    echo "Would you like to install it now? (Yes/No)"
-	    read BREWI
-	    while :
-	      do
-	      case "$BREWI" in
-		Y|y|YES|Yes|yes)
-		  echo "Installing Xcode..."
-		  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" || {
-		  echo
-		  echo "Error! Installation of Homebrew failed. Please, go to http://brew.sh/ and"
-		  echo "install it manally."
-		  echo
-		  exit 1
-		  }
-		break
-		;;
-	      N|n|NO|No|no)
+      esac
+      fi
+    fi
+  fi
+
+  # If on Mac, notify user about need of compilation tools
+  if [ "$OS" == "Mac" ]; then
+    if [ "$STARTINI" == "I" ]; then
+      echo
+      # Check for Xcode
+      echo "Xcode is required to install Homebrew, which is required to upgrade and install"
+      echo "software used by Sondovač. See INSTALL or manual for details."
+      echo
+      echo "Unfortunately, it is not easily possible to universally check for presence of"
+      echo "Xcode."
+      echo "If you have never used command \"make\" or not installed Xcode manually, you"
+      echo "probably do not have it. If you have ever compiled any software, you probably"
+      echo "have Xcode installed. After installation of Xcode you will probably have to"
+      echo "restart Sondovač."
+      echo "Would you like to install Xcode now? (Yes/No)"
+      read XCODEI
+      while :
+	do
+	case "$XCODEI" in
+	  Y|y|YES|Yes|yes)
+	    echo "Installing Xcode..."
+	    xcode-select --install || {
+	      echo
+	      echo "Installation of Xcode failed. This is commonly because it has been already"
+	      echo "installed."
+	      echo "If you see in output below Xcode path and version, you can safely continue."
+	      echo "Otherwise see, please, command \"xcode-select --help\""
+	      echo "and https://developer.apple.com/xcode/ and install Xcode manually."
+	      xcode-select --print-path
+	      xcode-select --version
+	      confirmgo
+	      }
+	  break
+	  ;;
+	N|n|NO|No|no)
+	  echo
+	  echo "Xcode is required for installation of software needed by Sondovač."
+	  echo "If you do not have Xcode installed, install it manually."
+	  echo "See INSTALL or manual for details. If you see in output below Xcode path and"
+	  echo "version, you can safely continue."
+	  xcode-select --print-path
+	  xcode-select --version
+	  confirmgo
+	  break
+	  ;;
+	*) echo "Wrong option. Use Y or N." && read XCODEI;;
+	esac
+	done
+      echo
+      # Check for Homebrew, install if not available
+      echo "Homebrew is service allowing to install and manage various applications."
+      echo "See http://brew.sh/ and/or manual for more information."
+      echo "Testing if there is Homebrew available..."
+      { command -v brew >/dev/null 2>&1 &&
+	echo "Homebrew is available. OK." &&
+	echo "Checking for Homebrew updates..." &&
+	echo &&
+	brew update
+	} || {
+	  echo "Homebrew is not available."
+	  echo "Homebrew is required to install software required by Sondovač."
+	  echo "Would you like to install it now? (Yes/No)"
+	  read BREWI
+	  while :
+	    do
+	    case "$BREWI" in
+	      Y|y|YES|Yes|yes)
+		echo "Installing Homebrew..."
+		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" || {
 		echo
-		echo "Homebrew is required for installation of software needed by Sondovač."
-		echo "Please, go to http://brew.sh/ install it manually."
-		echo "See INSTALL or manual for details."
+		echo "Error! Installation of Homebrew failed. Please, go to http://brew.sh/ and"
+		echo "install it manually."
 		echo
-		exit
-		;;
-	      *) echo "Wrong option. Use Y or N." && read BREWI;;
-	      esac
-	      done
+		exit 1
+		}
+	      break
+	      ;;
+	    N|n|NO|No|no)
+	      echo
+	      echo "Homebrew is required for installation of software needed by Sondovač."
+	      echo "Please, go to http://brew.sh/ install it manually."
+	      echo "See INSTALL or manual for details."
+	      echo
+	      exit
+	      ;;
+	    *) echo "Wrong option. Use Y or N." && read BREWI;;
+	    esac
+	    done
+	  }
+      echo
+      echo "Script will now check for presence of required Homebrew formulae."
+      echo "Formulae will be installed when needed."
+      confirmgo
+      echo "Checking for installed packages (brew formulae)..."
+      while read BREWFORMULA; do
+	if [[ ! $(brew ls --versions $BREWFORMULA) ]]; then
+	  echo
+	  echo "Formula \"$BREWFORMULA\" is missing. Going to install it..."
+	  brew install $BREWFORMULA || {
+	    echo "Installation of formula \"$BREWFORMULA\" failed."
+	    echo "Please, install Homebrew formula \"$BREWFORMULA\" and ensure it is available."
+	    echo "See manual for details."
+	    confirmgo
 	    }
-	echo
-	echo "Script will now check for presence of required Homebrew formulae."
-	echo "Formulae will be installed according to needs."
-	confirmgo
-	echo "Checking for installed packages (brew formulae)..."
-	while read BREWFORMULA; do
-	  if [[ ! $(brew ls --versions $BREWFORMULA) ]]; then
+	  else
 	    echo
-	    echo "Formula \"$BREWFORMULA\" is missing. Going to install it..."
-	    brew install $BREWFORMULA || {
-	      echo "Installation of formula \"$BREWFORMULA\" failed."
-	      echo "Please, install Homebrew formula \"$BREWFORMULA\" and ensure it is available."
+	    echo "Formula \"$BREWFORMULA\" is present."
+	    echo "Going to reinstall it to ensure it is up-to-date and installed in correct place."
+	    brew reinstall $BREWFORMULA || {
+	      echo "Reinstallation of formula \"$BREWFORMULA\" failed."
+	      echo "Please, check Homebrew formula \"$BREWFORMULA\" and ensure it is available."
 	      echo "See manual for details."
 	      confirmgo
 	      }
-	    else
-	      echo
-	      echo "Formula \"$BREWFORMULA\" is present."
-	      echo "Going to reinstall it to ensure it is up-to-date and installed in correct place."
-	      brew reinstall $BREWFORMULA || {
-		echo "Reinstallation of formula \"$BREWFORMULA\" failed."
-		echo "Please, check Homebrew formula \"$BREWFORMULA\" and ensure it is available."
-		echo "See manual for details."
-		confirmgo
-		}
-	    fi
-	    echo
-	    echo "Information about formula \"$BREWFORMULA\":"
-	    brew info $BREWFORMULA
-	    echo
-	  done < $SCRIPTDIR/pkgs/packages-brew
-	echo
-	echo "List of currently installed Homebrew formulae:"
-	brew list
-	echo
-	echo "See \"brew help\" or manual for information about management of Homebrew formulae."
-	confirmgo
-	echo "Modifying PATH to contain binaries installed by Homebrew in correct place."
-	export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
-	export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),"");if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
-	echo "Current PATH is: $PATH"
-	echo "Consider to make this PATH permanent as it contains more utilities and newer"
-	echo "versions of various tools than in original installation of Mac OS X."
-	confirmgo
-      else
-	echo
-	echo "Checking if Homebrew and required formulae are installed."
-	{ command -v brew >/dev/null 2>&1 && echo "Homebrew is available. OK."; } || {
+	  fi
 	  echo
-	  echo "Error! Homebrew is missing! Check INSTALL and manual for details or run Sondovač"
-	  echo "interactively to install it automatically:"
+	  echo "Information about formula \"$BREWFORMULA\":"
+	  brew info $BREWFORMULA
+	  echo
+	done < $SCRIPTDIR/pkgs/packages-brew
+      echo
+      echo "List of currently installed Homebrew formulae:"
+      brew list
+      echo
+      echo "See \"brew help\" or manual for information about management of Homebrew formulae."
+      confirmgo
+      # Modify PATH to contain newly installed software
+      echo "Modifying PATH to contain binaries installed by Homebrew in correct place."
+      export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
+      # Remove duplicities from PATH
+      export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),"");if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
+      echo "Current PATH is: $PATH"
+      echo "Consider to make this PATH permanent as it contains more utilities and newer"
+      echo "versions than in original installation of Mac OS X."
+      confirmgo
+    else
+      echo
+      echo "Checking if Homebrew and required formulae are installed."
+      { command -v brew >/dev/null 2>&1 && echo "Homebrew is available. OK."; } || {
+	echo
+	echo "Error! Homebrew is missing! Check INSTALL and manual for details or run Sondovač"
+	echo "interactively to install it automatically:"
+	echo -e "\t$0 -i"
+	echo
+	exit 1
+	}
+      while read BREWFORMULA; do
+	if [[ $(brew ls --versions $BREWFORMULA) ]]; then
+	  echo "Formula \"$BREWFORMULA\" is installed. OK."
+	else
+	  echo
+	  echo "Error! Formula \"$BREWFORMULA\" is missing."
+	  echo "Check INSTALL and manual for details or run Sondovač interactively to install"
+	  echo "it automatically:"
 	  echo -e "\t$0 -i"
 	  echo
 	  exit 1
-	  }
-	while read BREWFORMULA; do
-	  if [[ $(brew ls --versions $BREWFORMULA) ]]; then
-	    echo "Formula \"$BREWFORMULA\" is installed. OK."
-	  else
-	    echo
-	    echo "Error! Formula \"$BREWFORMULA\" is missing."
-	    echo "Check INSTALL and manual for details or run Sondovač interactively to install"
-	    echo "it automatically:"
-	    echo -e "\t$0 -i"
-	    echo
-	    exit 1
-	  fi
-	  echo
-	  done < $SCRIPTDIR/pkgs/packages-brew
-	echo
-	# Modify PATH to contain newly installed software
-	echo "Modifying PATH to contain binaries installed by Homebrew in correct place."
-	export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
-	# Remove duplicities from PATH
-	export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),"");if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
-	echo "Current PATH is: $PATH"
-	echo "Consider to make this PATH permanent as it contains more utilities and newer"
-	echo "versions than in original installation of Mac OS X."
-	echo
 	fi
+	echo
+	done < $SCRIPTDIR/pkgs/packages-brew
+      echo
+      # Modify PATH to contain newly installed software
+      echo "Modifying PATH to contain binaries installed by Homebrew in correct place."
+      export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
+      # Remove duplicities from PATH
+      export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),"");if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
+      echo "Current PATH is: $PATH"
+      echo "Consider to make this PATH permanent as it contains more utilities and newer"
+      echo "versions than in original installation of Mac OS X."
+      echo
       fi
+    fi
   } # End of OS checking
 
 # Set variables for working directory and PATH

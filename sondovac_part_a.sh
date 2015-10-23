@@ -309,7 +309,7 @@ function compilebowtie {
     echo "Type \"B\" to copy Bowtie2-2.$BOWTIE2V binary available together with the script"
     echo "  (recommended, available for Linux and Mac OS X)"
     echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
-		echo "  See \"brew info homebrew/science/bowtie2\" for more details."
+    echo "  See \"brew info homebrew/science/bowtie2\" for more details."
     echo "Type \"M\" for manual installation - script will exit and you will have to install"
     echo "  Bowtie2 yourselves"
     read BOWTIE
@@ -418,24 +418,24 @@ function compilebowtie {
 	  break
 	  ;;
 	H|h)
-		if [ "$OS" == "Mac" ]; then
-			{ echo "Installing Bowtie2 using Homebrew" &&
-			brew install homebrew/science/bowtie2 &&
-			echo "\"Bowtie2\" is available. OK."
-			} || {
-				echo
-				echo "Installation of \"Bowtie2\" failed. Please, do it manually. For details see"
-				echo "\"brew info homebrew/science/bowtie2\" and \"brew help\"."
-				echo
-				exit 1
-				}
-			else
-				echo "This is not Mac OS X. Going to compile..."
-				compilebowtie $SCRIPTDIR/src/bowtie2-$BOWTIE2V
-			fi
-		break
-		;;
-	M|m) 
+	  if [ "$OS" == "Mac" ]; then
+	    { echo "Installing Bowtie2 using Homebrew" &&
+	    brew install homebrew/science/bowtie2 &&
+	    echo "\"Bowtie2\" is available. OK."
+	    } || {
+	      echo
+	      echo "Installation of \"Bowtie2\" failed. Please, do it manually. For details see"
+	      echo "\"brew info homebrew/science/bowtie2\" and \"brew help\"."
+	      echo
+	      exit 1
+	      }
+	    else
+	      echo "This is not Mac OS X. Going to compile..."
+	      compilebowtie $SCRIPTDIR/src/bowtie2-$BOWTIE2V
+	    fi
+	  break
+	  ;;
+	M|m)
 	  echo "Please, go to http://bowtie-bio.sourceforge.net/bowtie2/index.shtml and install"
 	  echo " latest Bowtie2 and ensure it is in PATH."
 	  exit 2
@@ -475,7 +475,7 @@ function compilesamtools {
     echo "Type \"B\" to copy SAMtools-1.2 binary available together with the script"
     echo "  (recommended, available for Linux and Mac OS X)."
     echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
-		echo "  See \"brew info homebrew/science/samtools\" for more details."
+    echo "  See \"brew info homebrew/science/samtools\" for more details."
     echo "Type \"M\" for manual installation - script will exit and you will have to"
     echo "  install SAMtools yourselves."
     read SAMTOOLS
@@ -587,20 +587,20 @@ function compilesamtools {
 	  ;;
 	H|h)
 	 if [ "$OS" == "Mac" ]; then			
-		{ echo "Installing SAMtools using Homebrew" &&
-		brew install homebrew/science/samtools &&
-		echo "\"SAMtools\" is available. OK."
-		} || {
-			echo
-			echo "Installation of \"SAMtools\" failed. Please, do it manually. For details see"
-			echo "\"brew info homebrew/science/samtools\" and \"brew help\"."
-			echo
-			exit 1
-			}
-		else
-			echo "This is not Mac OS X. Going to compile..."
-			compilesamtools
-		fi
+	  { echo "Installing SAMtools using Homebrew" &&
+	  brew install homebrew/science/samtools &&
+	  echo "\"SAMtools\" is available. OK."
+	  } || {
+	    echo
+	    echo "Installation of \"SAMtools\" failed. Please, do it manually. For details see"
+	    echo "\"brew info homebrew/science/samtools\" and \"brew help\"."
+	    echo
+	    exit 1
+	    }
+	  else
+	    echo "This is not Mac OS X. Going to compile..."
+	    compilesamtools
+	  fi
 	break
 	;;
 	M|m)
@@ -758,7 +758,7 @@ function compileflash {
     echo "Type \"B\" to copy FLASH 1.2.11 binary available together with the script"
     echo "  (recommended, available for Linux and Mac OS X)."
     echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
-		echo "  See \"brew info homebrew/science/flash\" for more details."
+    echo "  See \"brew info homebrew/science/flash\" for more details."
     echo "Type \"M\" for manual installation - script will exit and you will have to"
     echo "  install FLASH yourselves."
     read FLASH
@@ -833,23 +833,23 @@ function compileflash {
 	  break
 	  ;;
 	H|h)
-		if [ "$OS" == "Mac" ]; then			
-			{ echo "Installing FLASH using Homebrew" &&
-			brew install homebrew/science/flash &&
-			echo "\"FLASH\" is available. OK."
-			} || {
-				echo
-				echo "Installation of \"FLASH\" failed. Please, do it manually. For details see"
-				echo "\"brew info homebrew/science/flash\" and \"brew help\"."
-				echo
-				exit 1
-				}
-			else
-				echo "This is not Mac OS X. Going to compile..."
-				compileflash $SCRIPTDIR/src/FLASH-1.2.11
-			fi
-		break
-		;;
+	  if [ "$OS" == "Mac" ]; then			
+	    { echo "Installing FLASH using Homebrew" &&
+	    brew install homebrew/science/flash &&
+	    echo "\"FLASH\" is available. OK."
+	    } || {
+	      echo
+	      echo "Installation of \"FLASH\" failed. Please, do it manually. For details see"
+	      echo "\"brew info homebrew/science/flash\" and \"brew help\"."
+	      echo
+	      exit 1
+	      }
+	    else
+	      echo "This is not Mac OS X. Going to compile..."
+	      compileflash $SCRIPTDIR/src/FLASH-1.2.11
+	    fi
+	  break
+	  ;;
 	M|m)
 	  echo "Please, go to http://ccb.jhu.edu/software/FLASH/ and install FLASH and ensure it"
 	  echo "  is in PATH"
@@ -914,7 +914,7 @@ function compilefastx {
     echo "Type \"B\" to copy FASTX-Toolkit 0.0.14 binary available together with the"
     echo "  script (recommended, available for Linux and Mac OS X)."
     echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
-		echo "  See \"brew info homebrew/science/fastx_toolkit\" for more details."
+    echo "  See \"brew info homebrew/science/fastx_toolkit\" for more details."
     echo "Type \"M\" for manual installation - script will exit and you will have to"
     echo "  install FASTX-Toolkit yourselves."
     read FASTX
@@ -981,23 +981,23 @@ function compilefastx {
 	  break
 	  ;;
 	H|h)
-		if [ "$OS" == "Mac" ]; then			
-			{ echo "Installing FASTX Toolkit using Homebrew" &&
-			brew install homebrew/science/fastx_toolkit &&
-			echo "\"FASTX Toolkit\" is available. OK."
-			} || {
-				echo
-				echo "Installation of \"FASTX Toolkit\" failed. Please, do it manually. For details see"
-				echo "\"brew info homebrew/science/fastx_toolkit\" and \"brew help\"."
-				echo
-				exit 1
-				}
-			else
-				echo "This is not Mac OS X. Going to compile..."
-				compilefastx $SCRIPTDIR/src/libgtextutils-0.7/ $SCRIPTDIR/src/fastx_toolkit-0.0.14/
-			fi
-		break
-		;;
+	  if [ "$OS" == "Mac" ]; then			
+	    { echo "Installing FASTX Toolkit using Homebrew" &&
+	    brew install homebrew/science/fastx_toolkit &&
+	    echo "\"FASTX Toolkit\" is available. OK."
+	    } || {
+	      echo
+	      echo "Installation of \"FASTX Toolkit\" failed. Please, do it manually. For details see"
+	      echo "\"brew info homebrew/science/fastx_toolkit\" and \"brew help\"."
+	      echo
+	      exit 1
+	      }
+	    else
+	      echo "This is not Mac OS X. Going to compile..."
+	      compilefastx $SCRIPTDIR/src/libgtextutils-0.7/ $SCRIPTDIR/src/fastx_toolkit-0.0.14/
+	    fi
+	  break
+	  ;;
 	M|m)
 	  echo "Please, go to http://hannonlab.cshl.edu/fastx_toolkit/download.html download"
 	  echo "  libgtextutils-*.tar.gz and fastx_toolkit-*.tar.bz2, compile them and ensure"
@@ -1519,16 +1519,28 @@ grep -v n $TABREMOVED | awk '{print $1"\t"length($2)}' | awk '{s+=$2;a++}END{pri
 
 # Remove unneeded temporal files - keep only *.pslx, *.fasta and *.bam
 echo "Removing unneeded temporal files"
-rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $REFERENCEMT2* $BOWTIE2MT $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
-  echo
-  echo "${BOLD}Error!${NORM} Removal of temporal files failed. Remove following files manually:"
-  echo "$UNIQUELIST, $INPUTTAB, $SORTEDINPUT,"
-  echo "$JOINEDTS, $JOINEDTABS, $REFERENCECP2*,"
-  echo "$BOWTIE2CP, $REFERENCEMT2*, $BOWTIE2MT,"
-  echo "$FLASHOUT.extendedFrags.fastq, $TAB, $TABLIST,"
-  echo "$TABBLAT and $TABREMOVED."
-  confirmgo
-  }
+if [ -n "$REFERENCEMT" ]; then
+  rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $REFERENCEMT2* $BOWTIE2MT $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
+    echo
+    echo "${BOLD}Error!${NORM} Removal of temporal files failed. Remove following files manually:"
+    echo "$UNIQUELIST, $INPUTTAB, $SORTEDINPUT,"
+    echo "$JOINEDTS, $JOINEDTABS, $REFERENCECP2*,"
+    echo "$BOWTIE2CP, $REFERENCEMT2*, $BOWTIE2MT,"
+    echo "$FLASHOUT.extendedFrags.fastq, $TAB, $TABLIST,"
+    echo "$TABBLAT and $TABREMOVED."
+    confirmgo
+    }
+  else
+    rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
+      echo
+      echo "${BOLD}Error!${NORM} Removal of temporal files failed. Remove following files manually:"
+      echo "$UNIQUELIST, $INPUTTAB, $SORTEDINPUT,"
+      echo "$JOINEDTS, $JOINEDTABS, $REFERENCECP2*,"
+      echo "$BOWTIE2CP, $FLASHOUT.extendedFrags.fastq, $TAB,"
+      echo "$TABLIST, $TABBLAT and $TABREMOVED."
+      confirmgo
+      }
+  fi
 
 # List kept files which user can use for another analysis
 echo

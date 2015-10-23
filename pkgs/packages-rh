@@ -1,4 +1,17 @@
+bash
 coreutils
+gawk
+bc
+bzip2
+grep
+gzip
+less
+lsb
+perl
+pkgconfig
+sed
+tar
+unzip
 gcc
 gcc-c++
 cpp

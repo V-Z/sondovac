@@ -1,6 +1,10 @@
 Sondovač changelog
 
-Version 0.9 beta released 2015-10-
+Sondovač is a script to create orthologous low-copy nuclear probes from 
+transcriptome and genome skim data for target enrichment.
+
+
+Version 0.9 beta released 2015-10-23
 ================================================================================
 
 * Highly enhanced part B.
@@ -10,6 +14,8 @@ Version 0.9 beta released 2015-10-
   and derivatives.
 * Enhanced documentation.
 * Support for Mac OS X, package management using Homebrew.
+* Support for RedHat based Linux distributions - Fedora, Centos and Scientific
+  Linux and derivatives.
 * Better compilation and installation of required software.
 * For downloading automatically select if to use wget (preferred) or curl.
 * Various fixes.
