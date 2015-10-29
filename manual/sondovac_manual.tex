@@ -15,7 +15,7 @@
 
 % Better bibliography
 \usepackage[round, semicolon, authoryear]{natbib}
-% \citet{} > Author (year); \citep{} > (Author, year);	 natbib: \citet/p[text][p.~1]{} > text Author year, p. 1; with * lists all authors
+% \citet{} > Author (year); \citep{} > (Author, year); natbib: \citet/p[text][p.~1]{} > text Author year, p. 1; with * lists all authors
 \bibliographystyle{plainnat}
 
 % Various logos
@@ -171,7 +171,7 @@ See below for details about tools required by Sondovač and their manual install
 
 Linux distributions have precise packages management tools (similar, but with more functions, to various app stores known from Android, iOS or recent Mac OS~X, MS~Windows, etc.), but unfortunately Linux repositories commonly do not contain all needed scientific packages (or not enough recent versions). We recommend pre-compiled binaries of scientific applications available together with the script. If the user for whatever reason wishes to compile the software, the script will guide through that process.
 
-\subsubsection{openSUSE and SUSE Linux Enterprise}
+\subsubsection{openSUSE and SUSE Linux Enterprise (SLE)}
 
 SUSE Linux Enterprise (\href{https://www.suse.com/}{https://www.suse.com/}) and openSUSE (\href{https://www.opensuse.org/}{https://www.opensuse.org/}) use for package management command \texttt{zypper}\footnote{See \href{https://en.opensuse.org/Zypper}{https://en.opensuse.org/Zypper} and \href{https://activedoc.opensuse.org/book/opensuse-start-up/chapter-9-managing-software-with-command-line-tools}{https://activedoc.opensuse.org/book/opensuse-start-up/chapter-9-managing-software-with-command-line-tools} for details.}. The script will check if all required software packages are installed and if not, it will install them. You can do it also manually:
 
@@ -484,6 +484,27 @@ Papers describing the software used by Sondovač:
   \end{itemize}
 % \item[Sondovač]
 \end{description}
+
+\subsection{The PATH variable}
+
+PATH (\$PATH) is system variable used in every UNIX system. It lists directories (separated by colon ":") where current shell (see also Chapter~\ref{vocabulary} Vocabulary at page~\pageref{vocabulary}) searches for binaries (commands). So that user does not have to specify full path to the software (e.g. just \texttt{sed} instead of \texttt{/usr/bin/sed}). If some software is installed outside standard locations, user must specify full path, even if user is located in same directory as the software (e.g. \texttt{./sondovac$\_$part$\_$a.sh} -- this is for security reasons). In case there are two commands with same name (e.g. \texttt{/bin/somecommand} and \texttt{/usr/bin/somecommand}), order of directories in \$PATH matters -- the first occurrence is used and any possible latter is ignored (but it uses to be rare case). PATH can be managed using following commands:
+
+\begin{bashcode}
+  # See the $PATH variable
+  echo $PATH # Sample output is on next line:
+  /home/$USER/bin:/usr/local/bin:/usr/bin:/bin:/opt/bin:/sbin:/usr/sbin
+  # Adding new directory to $PATH
+  export PATH=$PATH:/some/new/directory
+  # Do not use following way - it would overwrite $PATH and there would be only
+  #   the new directory (not original content)!
+  export PATH=/some/new/directory # Wrong! Old $PATH is missing and will be lost!
+  # Removing possible duplicate entries in $PATH with regular expressions and awk
+  export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),""); \
+    if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
+  echo $PATH # See it after modifications
+\end{bashcode}
+
+Sondovač requires certain software to be installed (see Table~\ref{software-links} at page~\pageref{software-links}) and if some software is missing, script offers installation. By default, Sondovač creates directory \texttt{bin} in current working directory and installs there required software. It then temporarily modifies content of \$PATH variable to contain this new directory. Sondovač notes user about it and user can then -- if he wishes to keep the newly installed software for later usage -- (1) move content of this directory to some better place or (2) add this directory to the \$PATH. This directory can also be safely removed. Permanent modification of \$PATH variable is done by adding line \texttt{export PATH=\$PATH:/some/new/directory} (same as the above example) to file \texttt{$\sim$/.bashrc} or \texttt{$\sim$/.bash$\_$profile} (usage of those files vary little bit among UNIX systems, see manual for your operating system). On Mac OS~X, installation of \href{http://brew.sh/}{Homebrew} is required. In order to correct functioning of Sondovač, \$PATH is modified to contain directories \texttt{/usr/local/opt/coreutils/libexec/gnubin} and \texttt{/usr/local/bin} containing new and updated UNIX tools. The first directory must be on beginning as it contains updated versions of basic command line utilities -- replacing outdated versions provided with Mac OS~X. All those modifications are temporal and used only within Sondovač scripts.
 
 \subsection{Vocabulary}
 \label{vocabulary}
