@@ -219,6 +219,7 @@ function compilecdhit {
 # Check if cd-hit-est is available
 { command -v cd-hit-est >/dev/null 2>&1 && echo "\"cd-hit-est\" is available. OK."; } || {
   echo "\"cd-hit-est\" is required but not installed or available in PATH"
+  if [ "$STARTINI" == "I" ]; then
   echo
   echo "Type \"C\" to compile CD-HIT 4.6.4 from source available together with this script."
   echo "Type \"S\" to download latest CD-HIT source from"
@@ -292,6 +293,9 @@ function compilecdhit {
       *) echo "Wrong option. Use C, S, B, H or M." && read CDHIT;;
     esac
   done
+else
+	exit 1
+fi
   }
 
 # Input files

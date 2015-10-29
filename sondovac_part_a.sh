@@ -677,6 +677,7 @@ function compilebam2fastq {
 	    echo
 	    exit 1
 	    }
+		break
 	  ;;
 	B|b)
 	  case "$OS" in
