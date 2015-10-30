@@ -205,27 +205,58 @@ Vocabulary
   extension *.sh.
 * BSD - Group of popular UNIX-based operating systems. See 
   https://en.wikipedia.org/wiki/Berkeley_Software_Distribution
+* C - Popular programming language. Source code must be compiled for each 
+  operating system.
+* C++ - Popular programming language. Source code must be compiled for each 
+  operating system.
+* Centos - Popular Linux distribution. Community remake of RedHat Enterprise 
+  Linux. See https://centos.org/
 * Compilation - "Translation" of software application from the source code 
   (text readable by human programmer) into binary form launchable by the 
   computer. It requires special tools (compilers), and it usually must be done 
   for every operating system and hardware platform.
 * Console - see "shell".
+* Debian - One of the oldest and most popular Linux distributions. See 
+  https://www.debian.org/
+* Fedora - Popular Linux distribution developed together with RedHat Linux as 
+  its free community testing platform. See https://getfedora.org/
 * GNU - Major project providing free software widely used in many operating 
   systems, see https://gnu.org/
+* Homebrew - Tool primarily for Mac OS X (although there is also Linux version 
+  available) replacing practically missing package manager for this system. Can 
+  be used to install plenty of various applications as well as updating tools 
+  already available in Mac OS X. See http://brew.sh/
+* Java - Very popular programming language. It requires Java runtime 
+  environment to be installed, but the applications are very well transferable 
+  among operating systems. See https://www.java.com/
 * Library - Pack of software tools and functions used by another applications.
+* License - Conditions under which the software is distributed. Can be very 
+  restrictive (typically paid software) or permissive (typically free and 
+  open-source software).
 * Linux - One of the most common variants of UNIX-based operating systems. 
   Linux kernel is used by many developers, so that there are plenty of Linux 
   distributions ("flavors") from various sources (e.g. Ubuntu and derivatives, 
   openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.). They share 
   many features although on the first look they can look differently. See
   https://en.wikipedia.org/wiki/Linux
+* Linux Mint - Popular Linux distribution based on Debian and Ubuntu. See 
+  http://linuxmint.com/
 * Mac OS X - Popular operating system produced by Apple. The system kernel is 
   based on UNIX, see https://www.apple.com/osx/
+* Open-source - Generally, source code of an application is available together 
+  with the application and can be under certain conditions defined in license 
+  modified, redistributed etc. See 
+  https://en.wikipedia.org/wiki/Free_and_open-source_software
 * openSUSE - Popular Linux distribution, see https://www.opensuse.org/
 * Operating system - Basic system running on your computer - typically MS 
-  Windows (not supported by Sondovač, although it might be working), Mac OS X or 
-  some Linux distribution (Ubuntu and derivatives, openSUSE, SLE, Debian, Linux 
-  Mint, Fedora, Centos, RedHat etc.).
+  Windows (not supported by Sondovač, although it might be working), Mac OS X 
+  or some Linux distribution (Ubuntu and derivatives, openSUSE, SLE, Debian, 
+  Linux Mint, Fedora, Centos, RedHat etc.).
+* Package - Software or its part, group of tools, library, etc. Basic unit of 
+  software management in most of UNIX systems (mainly Linux, Solaris, BSD, 
+  practically missing in Mac OS X). Those systems use to have special 
+  applications (command line as well as graphical tools) to easily manage 
+  (install, remove, update) software.
 * Parameter(s) - Option(s) passed to any function/command line application to 
   modify its usage. Some can be required, some are optional and some can be 
   used only in particular cases. In case of shell applications, parameters are 
@@ -233,9 +264,18 @@ Vocabulary
   "application -Param SomeValue" and so on. See manual for particular 
   application (e.g. "man application"), in case of Sondovač see README.
 * PATH - Directories in the computer where the system is looking for installed 
-  software (in a UNIX-based system you can view it by the command "echo $PATH"). 
-  If you need to modify it manually, see the documentation for your operating 
-  system.
+  software (in a UNIX-based system you can view it by the command "echo 
+  $PATH"). If you need to modify it manually, see the documentation for your 
+  operating system.
+* Perl - Popular interpreted programming language excelling mainly in system 
+  tasks working with text. Perl scripts are easily transferable among operating 
+  systems. See https://www.perl.org/
+* RedHat - Probably the biggest Linux company providing mainly solutions for 
+  big companies. See https://www.redhat.com/
+* Repository - Internet folder (available through HTTP or FTP) containing 
+  software packages for UNIX systems.
+* Scientific Linux - Popular Linux distribution. Community remake of RedHat 
+  Enterprise Linux. See https://www.scientificlinux.org/
 * Script - Software application. It requires an interpreter (application 
   installed on the computer that is able to launch scripts written in a 
   particular language), but the application itself is portable among operating 
@@ -246,13 +286,24 @@ Vocabulary
 * Solaris - Popular (mainly on servers) UNIX-based operating system, now 
   developed by Oracle and including several independent clones. See
   http://distrowatch.com/table.php?distribution=solaris
+* Source code - Human-readable code written in any text editor used to develop 
+  any application. Applications written in interpreted languages (BASH, Perl, 
+  Python , ...) can be distributed just in form of source code (nothing else is 
+  required). Other programming languages (C, C++, ...) require compilation to 
+  get fully functional application.
+* SUSE Linux Enterprise (SLE) - Large Linux company providing mainly solutions 
+  for big companies. See https://www.suse.com/
 * Terminal - see "shell".
-* Ubuntu - Popular Linux distribution, see http://www.ubuntu.com/
+* Ubuntu - Popular Linux distribution, see http://www.ubuntu.com/ There are 
+  plenty of Linux distributions based on Ubuntu. See 
+  http://distrowatch.com/search.php?basedon=Ubuntu
 * Upstream - Developers usually support (e.g. by fixing of bugs) only newer 
   versions of an application. If you use an older version and you encounter 
   problems, no one will probably help you. Moreover, using old versions of 
   software can be a security risk because of security issues fixed in newer 
   versions.
+* Variable - Named value storing various information, one of basic part of any 
+  programming language, application, operating system.
 * UNIX (UNIX-like, UN*X, *nix, ...) - Family of operating systems sharing the 
   same logic, software architecture and plenty of tools. See 
   https://en.wikipedia.org/wiki/Unix-like for details.
