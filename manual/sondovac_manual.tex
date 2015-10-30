@@ -191,7 +191,7 @@ SUSE Linux Enterprise (\href{https://www.suse.com/}{https://www.suse.com/}) and 
   # More information about zypper usage:
   zypper --help
   man zypper
-  # Note backslash ("\") means the code continues on next line
+  # Note backslash ("\") means that the code continues on next line
 \end{bashcode}
 
 Originally, those distributions used only \texttt{rpm*} commands (see \texttt{rpm --help} and \texttt{man rpm} for basic usage).
@@ -226,7 +226,7 @@ Debian (\href{https://www.debian.org/}{https://www.debian.org/}), Linux Mint (\h
   # Help for aptitude
   aptitude --help
   man aptitude
-  # Note backslash ("\") means the code continues on next line
+  # Note backslash ("\") means that the code continues on next line
 \end{bashcode}
 
 Note you can use \texttt{aptitude} in similar way as \texttt{apt-*} commands (e.g \texttt{aptitude instal \ldots} etc.). For special package operations, there are plenty of \texttt{dpkg} commands for advanced management.
@@ -250,7 +250,7 @@ RedHat (\href{https://www.redhat.com/}{https://www.redhat.com/}), Fedora (\href{
   # More information about yum usage:
   yum --help
   man yum
-  # Note backslash ("\") means the code continues on next line
+  # Note backslash ("\") means that the code continues on next line
 \end{bashcode}
 
 Fedora uses since version 22 for package management command \texttt{dnf}. It replaces older \texttt{yum} and \texttt{yum} commands are redirected to \texttt{dnf}. Basic usage is same, so that one can just replace \texttt{yum} by \texttt{dnf} in above examples. Originally, those distributions used only \texttt{rpm*} commands (see \texttt{rpm --help} and \texttt{man rpm} for basic usage).
@@ -310,7 +310,7 @@ Script will guide user through all those steps and basic usage of Homebrew. Manu
   # Completely remove Homebrew (after uninstallation of all formulae)
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/ \
     master/uninstall)"
-  # Note backslash ("\") means the code continues on next line
+  # Note backslash ("\") means that the code continues on next line
 \end{bashcode}
 
 Within Homebrew project, there is also scientific section (Homebrew Science, \href{http://brew.sh/homebrew-science/}{http://brew.sh\\/homebrew-science/}) containing plenty of software\footnote{See \href{https://github.com/Homebrew/homebrew-science/wiki/List-of-homebrew-science-formulae}{https://github.com/Homebrew/homebrew-science/wiki/List-of-homebrew-science-formulae} for complete list of available scientific packages.}. When script checks for required scientific packages, it offers several ways to install missing software. Mac OS~X users can use also Homebrew. It is the recommended way. If user wish to install the software manually, it is possible to use following commands:
@@ -320,7 +320,7 @@ Within Homebrew project, there is also scientific section (Homebrew Science, \hr
   brew install homebrew/science/blat homebrew/science/bowtie2 \
     homebrew/science/samtools homebrew/science/flash \
     homebrew/science/fastx_toolkit
-  # Note backslash ("\") means the code continues on next line
+  # Note backslash ("\") means that the code continues on next line
 \end{bashcode}
 
 Using Homebrew, software will be installed system-wide and Homebrew allows easily check for updates. The only software missing in Homebrew science is \href{http://gsl.hudsonalpha.org/information/software/bam2fastq}{bam2fastq} -- it is easily installable by another method offered by the script.
@@ -371,7 +371,7 @@ example data downloaded from \href{https://github.com/V-Z/sondovac/wiki/Sample-d
     input5_Ricinus_communis_reference_mitochondrial_genome.fasta -t \
     input3_J12_Oxalis_obtusa_genome_skim_data_R1.fastq -q \
     input4_J12_Oxalis_obtusa_genome_skim_data_R2.fastq -n
-  # Note backslash ("\") means the code continues on next line
+  # Note backslash ("\") means that the code continues on next line
 \end{bashcode}
 
 Modify parameter "\texttt{-a}", otherwise run interactively:
@@ -508,7 +508,7 @@ PATH (\$PATH) is system variable used in every UNIX system. It lists directories
   export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),""); \
     if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
   echo $PATH # See it after modifications
-  # Note backslash ("\") means the code continues on next line
+  # Note backslash ("\") means that the code continues on next line
 \end{bashcode}
 
 Sondovač requires certain software to be installed (see Table~\ref{software-links} at page~\pageref{software-links}) and if some software is missing, script offers installation. By default, Sondovač creates directory \texttt{bin} in current working directory and installs there required software. It then temporarily modifies content of \$PATH variable to contain this new directory. Sondovač notes user about it and user can then -- if he wishes to keep the newly installed software for later usage -- (1) move content of this directory to some better place or (2) add this directory to the \$PATH. This directory can also be safely removed. Permanent modification of \$PATH variable is done by adding line \texttt{export PATH=\$PATH:/some/new/directory} (same as the above example) to file \texttt{$\sim$/.bashrc} or \texttt{$\sim$/.bash$\_$profile} (usage of those files vary little bit among UNIX systems, see manual for your operating system). On Mac OS~X, installation of \href{http://brew.sh/}{Homebrew} is required. In order to correct functioning of Sondovač, \$PATH is modified to contain directories \texttt{/usr/local/opt/coreutils/libexec/gnubin} and \texttt{/usr/local/bin} containing new and updated UNIX tools. The first directory must be on beginning as it contains updated versions of basic command line utilities -- replacing outdated versions provided with Mac OS~X. All those modifications are temporal and used only within Sondovač scripts.
@@ -548,7 +548,7 @@ Sondovač requires certain software to be installed (see Table~\ref{software-lin
 \item[Script] Software application. It requires an interpreter (application installed on the computer that is able to launch scripts written in a particular language), but the application itself is portable among operating systems and hardware architectures, and it is written in plain text, so that developers can easily modify it. Common examples are Python, Perl or BASH.
 \item[Shell] "The command line" -- the interface to interact with software using commands typed into the terminal window (See Figure~\ref{terminal}).
 \item[Solaris] Popular (mainly on servers) UNIX-based operating system, now developed by Oracle and including several independent clones. See \href{http://distrowatch.com/table.php?distribution=solaris}{http://distrowatch.com/table.php?distribu\\tion=solaris}.
-\item[Source code] Human-readable code written in any text editor used to develop any application. Applications written in interpreted languages (BASH, Perl, Python , ...) can be distributed just in form of source code (nothing else is required). Other programming languages (C, C++, ...) require compilation to get fully functional application.
+\item[Source code] Human-readable code written in any text editor used to develop any application. Applications written in interpreted languages (BASH, Perl, Python , \ldots) can be distributed just in form of source code (nothing else is required). Other programming languages (C, C++, \ldots) require compilation to get fully functional application.
 \item[SUSE Linux Enterprise (SLE)] Large Linux company providing mainly solutions for big companies. See \href{https://www.suse.com/}{https://www.suse.com/}.
 \item[Terminal] see "Shell".
 \item[Ubuntu] Popular Linux distribution, see \href{http://www.ubuntu.com/}{http://www.ubuntu.com/}. There are plenty of distributions based on Ubuntu. See \href{http://distrowatch.com/search.php?basedon=Ubuntu}{http://distrowatch.com/search.php?basedon=Ubuntu}.
@@ -821,6 +821,55 @@ Explanation of command line parameters is at page~\pageref{script-usage}.
 \section{Questions not covered here, reporting bugs and wishes}
 
 If you have any question or you encounter some problem, please, see \href{https://github.com/V-Z/sondovac/issues}{https://github.com/V-Z/sondovac/issues} and feel free to ask any question and/or express any wish. The authors will do their best to help you.
+
+\section{Changelog}
+
+List of changes in released versions of Sondovač.
+
+\subsection{Version 0.9 beta released 2015-10-23}
+
+\begin{itemize}
+\item Highly enhanced part B.
+\item Better handling of variable output from Geneious.
+\item Possibility to specify custom output files name.
+\item Full support for Linux distributions using DEB -- Debian, Ubuntu, Linux Mint and derivatives.
+\item Enhanced documentation.
+\item Support for Mac OS X, package management using Homebrew.
+\item Support for RedHat based Linux distributions -- Fedora, Centos and Scientific Linux and derivatives.
+\item Better compilation and installation of required software.
+\item For downloading automatically select if to use wget (preferred) or curl.
+\item Various fixes.
+\end{itemize}
+
+\subsection{Version 0.8 alpha released 2015-10-09}
+
+\begin{itemize}
+\item Usage of mitochondrial reference sequence is optional.
+\item Better formatting of script messages.
+\item Various fixes and enhancements.
+\end{itemize}
+
+\subsection{Version 0.7 alpha released 2015-10-06}
+
+\begin{itemize}
+\item Fixed reported problems with sed differences among Linux and Mac OS X.
+\item Added more exhaustive documentation.
+\item Various fixes and enhancements.
+\end{itemize}
+
+\subsection{Version 0.6 alpha released 2015-08-10}
+
+\begin{itemize}
+\item Fixed problems with some versions of output of Geneious.
+\item Better compilation and installation of required additional software packages.
+\item Various fixes and enhancements.
+\end{itemize}
+
+\subsection{Version 0.5 alpha released 2015-07-24}
+
+\begin{itemize}
+\item First public release, early alpha stage.
+\end{itemize}
 
 \section{Licenses}
 
