@@ -313,6 +313,8 @@ Optional parameters:
          hybridization and thereby reduce enrichment efficiency.
          DEFAULT: 0.9 (highly recommended).
          OPTIONS: Decimal ranging from 0.85 to 0.95
+-g	 Use genome skim sequences instead of transcripts for making the probes.
+	 Default is usage of transcripts (no parameter).
 
 Examples:
 

@@ -36,17 +36,20 @@ FLASHM=250
 BLATIDENT=85
 # Remove transcripts with >1000 BLAT scores (or another value selected by user)
 BLATSCORE=1000
+# Default name of output files
+OUTPUTFILENAME="output"
+# Usage of transcriptome (22) or genome skim data (23, parameter "-g")
+PSLXCUT=22
+
 # Create empty variables for file names
 INPUTFILE=""
 REFERENCECP=""
 INPUTFQ1=""
 INPUTFQ2=""
 REFERENCEMT=""
-# Default name of output files
-OUTPUTFILENAME="output"
 
 # Parse initial arguments
-while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:" START; do
+while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
   case "$START" in
     h|v)
       generaloptions
@@ -77,9 +80,11 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:" START; do
       echo -e "\t-s\tNumber of BLAT hits per transcript when matching unique"
       echo -e "\t\t  transcripts and the filtered, combined genome skim reads."
       echo -e "\t\tDefault value: 1000 (integer ranging from 100 to 10000)"
-      echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-a, -y${NORM} or ${BOLD}-s${NORM} are not provided, default values are"
-      echo -e "\t\t  taken and it is not possible to change them later (not even in"
-      echo -e "\t\t  interactive mode)."
+      echo -e "\t-g\tUse genome skim sequences instead of transcripts for making the"
+      echo -e "\t\t  probes. Default is usage of transcripts (no parameter)."
+      echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-a, -y${NORM}, ${BOLD}-s${NORM} or ${BOLD}-g${NORM} are not provided, default values"
+      echo -e "\t\t are taken and it is not possible to change them later (not even"
+      echo -e "\t\t in interactive mode)."
       echo
       echo "Examples:"
       echo "Basic and the most simple usage:"
@@ -163,7 +168,7 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:" START; do
 	  echo
 	  exit 1
 	  ;;
-      esac
+	esac
       echo "Read length of paired-end reads: $FLASHM"
       ;;
     y)
@@ -190,6 +195,10 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:" START; do
 	  exit 1
 	fi
       ;;
+    g)
+      PSLXCUT=23
+      echo "The script will use genome skim data instead of transcriptome."
+      ;;
     ?)
       echo
       echo "Invalid option(s)!"
@@ -206,7 +215,7 @@ checkmodef
 # Ensure user reads introductory information
 confirmgo
 
-# Warn user this is not yet for daily usage
+# NOTE: warn user this is not yet for daily usage
 devrelease
 
 # Check operating system
@@ -1424,7 +1433,7 @@ echo "Step 6 of the pipeline - filtering of BLAT output."
 # Modification of the PSLX file is needed (remove headers, select the field with the transcript (target) sequence names and the field with the query sequences, convert to FASTA) for usage in Geneious
 echo
 echo "Modifying PSLX BLAT output for usage in Geneious"
-{ sed 1,5d $BLATOUTFIN | cut -f14,22 | awk '{n=split($2,a,",");for(i=1;i<=n;i++)print $1"_"NR"_"i,a[i]}' | sed 's/^/>/' | sed 's/ /\n/' > $BLATOUTFIN2; } || {
+{ sed 1,5d $BLATOUTFIN | cut -f14,$PSLXCUT | awk '{n=split($2,a,",");for(i=1;i<=n;i++)print $1"_"NR"_"i,a[i]}' | sed 's/^/>/' | sed 's/ /\n/' > $BLATOUTFIN2; } || {
   echo
   echo "${BOLD}Error!${NORM} Modifying PSLX BLAT output failed. Aborting."
   echo "Check if file $BLATOUTFIN is correct."
@@ -1628,7 +1637,7 @@ echo "  as one FASTA file."
 echo "Go to menu File | Export | Selected Documents... and choose FASTA file type."
 echo
 echo "Use exported files from Geneious as input for part B of the script"
-echo "  (sondovac_part_b.sh; see README and manual for details)."
+echo "  (sondovac_part_b.sh; see README and/or PDF manual for details)."
 echo
 echo "Script exited successfully..."
 echo

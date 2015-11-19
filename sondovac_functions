@@ -121,7 +121,7 @@ function confirmgo {
     fi
   }
 
-# This version is not yet ready for daily usage...
+# NOTE: this version is not yet ready for daily usage...
 function devrelease {
     echo
     echo "${REDF}${BOLD}Warning!${NORM} This is developmental, not fully tested version."
@@ -263,7 +263,7 @@ function readmeview {
   exit
   }
 
-# Display ${REDF}INSTALL${NORM}
+# Display INSTALL
 function installview {
   checktools less
   less $SCRIPTDIR/INSTALL || {
@@ -934,7 +934,7 @@ function compileblat {
   echo "Downloading BLAT source code" &&
   if [ -z $MACHTYPE ]; then
     echo
-    echo "${REDF}${BOLD}Error!${CYAF} Variable ${BOLD}\$MACHTYPE required by BLAT is missing.${NORM}"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Variable ${BOLD}\$MACHTYPE required by BLAT is missing.${NORM}"
     echo "Trying to create it. If it fails, create global variable ${BOLD}\$MACHTYPE${NORM} manually,"
     echo "download binary or compile it on another comparable machine."
     MACHTYPE=$HOME/bin/$OSB
@@ -949,7 +949,7 @@ function compileblat {
   cd blatSrc &&
   { mkdir -p $HOME/bin/$MACHTYPE || {
     echo
-    echo "${REDF}${BOLD}Error!${CYAF} Can not create directory"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not create directory"
     echo "\"${REDF}$HOME/bin/$MACHTYPE${NORM}\" required by BLAT. Aborting."
     echo
     exit 1
@@ -957,7 +957,7 @@ function compileblat {
   PATH=$PATH:$HOME/bin/$MACHTYPE &&
   { mkdir -p lib/$MACHTYPE || {
     echo
-    echo "${REDF}${BOLD}Error!${CYAF} Can not create directory"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not create directory"
     echo "\"${REDF}$(pwd)/lib/$MACHTYPE${NORM}\" required by BLAT. Aborting."
     echo
     exit 1
@@ -969,7 +969,7 @@ function compileblat {
   echo "\"${REDF}BLAT${NORM}\" is available. ${GREF}OK.${NORM}"
   } || {
     echo
-    echo "${REDF}${BOLD}Error!${CYAF} Compilation failed.${NORM} Please, go to ${REDF}https://users.soe.ucsc.edu/~kent/src/${NORM}"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please, go to ${REDF}https://users.soe.ucsc.edu/~kent/src/${NORM}"
     echo "download latest blatSrc*.zip, compile it and ensure it is in PATH"
     exit 1
     }
@@ -1013,7 +1013,7 @@ function checkblat {
 	      echo "\"${REDF}BLAT${NORM}\" is available. ${GREF}OK.${NORM}"
 	      } || {
 		echo
-		echo "${REDF}${BOLD}Error!${CYAF} Download of BLAT failed.${NORM} Please, go to"
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download of BLAT failed.${NORM} Please, go to"
 		echo "${REDF}http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/${NORM}"
 		echo "and download blat binary yourselves."
 		echo
@@ -1028,7 +1028,7 @@ function checkblat {
 		echo "\"${REDF}BLAT${NORM}\" is available. ${GREF}OK.${NORM}"
 		} || {
 		  echo
-		  echo "${REDF}${BOLD}Error!${CYAF} Download of BLAT failed.${NORM} Please, go to"
+		  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download of BLAT failed.${NORM} Please, go to"
 		  echo "${REDF}http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/${NORM}"
 		  echo "and download blat binary yourselves."
 		  echo
@@ -1047,7 +1047,7 @@ function checkblat {
 	      echo "\"${REDF}BLAT${NORM}\" is available. ${GREF}OK.${NORM}"
 	      } || {
 		echo
-		echo "${REDF}${BOLD}Error!${CYAF} Installation of \"${REDF}BLAT${NORM}\" failed.${NORM} Please, do it manually. For details see"
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Installation of \"${REDF}BLAT${NORM}\" failed.${NORM} Please, do it manually. For details see"
 		echo "\"${REDF}brew info homebrew/science/blat${NORM}\" and \"${REDF}brew help${NORM}\"."
 		echo
 		exit 1
@@ -1089,7 +1089,7 @@ function readinputfile {
 	  echo "Input file \"${REDF}$CHECKFILEREAD${NORM}\" exists and is readable. ${CYAF}Proceeding...${NORM}"
 	  break
 	  else
-	    echo "${REDF}${BOLD}Error!${CYAF} File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
+	    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
 	    echo "Provide new one:"
 	  fi
 	done
@@ -1106,7 +1106,7 @@ function readinputfile {
 	      if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
 		echo "Input file \"${REDF}$CHECKFILEREAD${NORM}\" exists and is readable. ${CYAF}Proceeding..${NORM}."
 		else
-		  echo "${REDF}${BOLD}Error!${CYAF} File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
+		  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
 		  echo "Provide new one:"
 		  while :
 		    do
@@ -1117,7 +1117,7 @@ function readinputfile {
 		      echo "Input file \"${REDF}$CHECKFILEREAD${NORM}\" exists and is readable. ${CYAF}Proceeding...${NORM}"
 		      break
 		      else
-			echo "${REDF}${BOLD}Error!${CYAF} File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
+			echo "${REDF}${BOLD}Error!${NORM} ${CYAF}File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
 			echo "Provide new one:"
 		      fi
 		    done
@@ -1135,7 +1135,7 @@ function readinputfile {
 		  echo "Input file \"${REDF}$CHECKFILEREAD${NORM}\" exists and is readable. ${CYAF}Proceeding...${NORM}"
 		  break
 		  else
-		    echo "${REDF}${BOLD}Error!${CYAF} File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
+		    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
 		    echo "Provide new one:"
 		  fi
 	      done
@@ -1153,7 +1153,7 @@ function readinputfile {
 	  echo
 	  echo "Input file \"${REDF}$CHECKFILEREAD${NORM}\" exists and is readable. ${CYAF}Proceeding...${NORM}"
 	  else
-	    echo "${REDF}${BOLD}Error!${CYAF} File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
+	    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
 	    exit 1
 	  fi
     fi

@@ -19,7 +19,7 @@ source $SCRIPTDIR/sondovac_functions || {
   exit 1
   }
 
-echo "This is part B of the pipeline."
+echo "${REDF}This is part B of the pipeline.${NORM}"
 echo
 echo "This part processes assembly output from Geneious and produces the final list of"
 echo "low-copy nuclear probe sequences."
@@ -33,17 +33,18 @@ STARTINI="I"
 BAITL=120
 # CD-HIT sequence similarity
 CDHITSIM=0.9
+# Default name of output files
+OUTPUTFILENAME="output"
+
 # Create empty variables for file names
 REFERENCECP=""
 TSVLIST=""
 SEQUENCES=""
-# Default name of output files
-OUTPUTFILENAME="output"
 
 # Parse initial arguments
 while getopts "hvulrpeo:inc:x:z:b:d:" START; do
   case "$START" in
-    h|v)
+    h|v) # add possibility to edit blat -minIdentity (0.85-0.95)
       generaloptions
       echo
       echo -e "\tIf options ${BOLD}-c${NORM}, ${BOLD}-x${NORM} and/or ${BOLD}-z${NORM} are used and script is running in"
@@ -51,15 +52,15 @@ while getopts "hvulrpeo:inc:x:z:b:d:" START; do
       echo -e "\t  later overwritten."
       echo
       echo -e "\tOptions required for running in non-interactive mode:"
-      echo -e "\t-c\tPlastome reference sequence input file in FASTA format."
-      echo -e "\t-x\tInput file in TSV format (output of Geneious assembly)."
-      echo -e "\t-z\tInput file in FASTA format (output of Geneious assembly)."
+      echo -e "\t${REDF}-c${NORM}\t${CYAF}Plastome reference sequence${NORM} input file in FASTA format."
+      echo -e "\t${REDF}-x${NORM}\t${CYAF}Input file in TSV${NORM} format (output of Geneious assembly)."
+      echo -e "\t${REDF}-z${NORM}\t${CYAF}Input file in FASTA${NORM} format (output of Geneious assembly)."
       echo
       echo -e "\tOther optional arguments (if not provided, default values are used):"
-      echo -e "\t-b\tBait length"
-      echo -e "\t\tDefault value: 120 (optimal length for phylogeny, use integer"
-      echo -e "\t\t  between 120 and 200)."
-      echo -e "\t-d\tSequence similarity between the developed probe sequences"
+      echo -e "\t${REDF}-b${NORM}\t${CYAF}Bait length${NORM}"
+      echo -e "\t\tDefault value: 120 (optimal length for phylogeny, use any of"
+      echo -e "\t\t  values 80, 100 or 120)."
+      echo -e "\t${REDF}-d${NORM}\t${CYAF}Sequence similarity${NORM} between the developed probe sequences"
       echo -e "\t\t  (parameter \"-c\" of cd-hit-est, see its manual for details)."
       echo -e "\t\tDefault value: 0.9 (use decimal number ranging from 0.85 to 0.95)."
       echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-b${NORM} or ${BOLD}-d${NORM} are not provided, default values are"
@@ -85,7 +86,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:" START; do
       ;;
     o)
       OUTPUTFILENAME=$OPTARG
-      echo "Output files will start name with $OUTPUTFILENAME"
+      echo "Output files will start name with ${REDF}$OUTPUTFILENAME${NORM}"
       ;;
     i)
       echo "Running in interactive mode..."
@@ -99,26 +100,29 @@ while getopts "hvulrpeo:inc:x:z:b:d:" START; do
       ;;
     c)
       REFERENCECP=$OPTARG
-      echo "Plastom reference: $REFERENCECP"
+      echo "Plastom reference: ${REDF}$REFERENCECP${NORM}"
       ;;
     x)
       TSVLIST=$OPTARG
-      echo "Input file: $TSVLIST"
+      echo "Input file: ${REDF}$TSVLIST${NORM}"
       ;;
     z)
       SEQUENCES=$OPTARG
-      echo "Input file: $SEQUENCES"
+      echo "Input file: ${REDF}$SEQUENCES${NORM}"
       ;;
     b)
       BAITL=$OPTARG
-      if [[ "$BAITL" =~ ^[0-9]+$ ]] && [ "$BAITL" -ge 120 -a "$BAITL" -le 200 ]; then
-	echo "Bait length: $BAITL"
-	else
-	  echo
-	  echo "${BOLD}Error!${NORM} For parameter \"-b\" you did not provide an integer ranging from 120 to 200!"
+      case "$BAITL" in
+	80) BAITL=80;;
+	100) BAITL=100;;
+	120) BAITL=120;;
+	*) echo
+	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-b\" you did not provide any of values 80, 100 or 120!"
 	  echo
 	  exit 1
-	fi
+	esac
+      echo "Bait length: ${REDF}$BAITL${NORM}"
+      BAITLN=$(expr $BAITL - 1)
       ;;
     d)
       CDHITSIM=$OPTARG
@@ -126,7 +130,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:" START; do
 	echo "Sequence similarity: $CDHITSIM"
       else
 	echo
-	echo "${BOLD}Error!${NORM} For parameter \"-d\" you did not provide decimal number ranging from 0.85"
+	echo "${REDF}${BOLD}Error!${NORM} For parameter \"-d\" you did not provide decimal number ranging from 0.85"
 	echo "  to 0.95!"
 	echo
 	exit 1
@@ -150,7 +154,7 @@ checkmodef
 # Ensure user reads introductory information
 confirmgo
 
-# Warn user this is not yet for daily usage
+# NOTE: warn user this is not yet for daily usage
 devrelease
 
 # Check operating system
@@ -200,7 +204,7 @@ function compilecdhit {
   echo "Compiling CD-HIT from source code..." &&
   echo &&
   cd $1 &&
-  make -s openmp=yes || { echo "There is no MPI available - no multi-thread support." && make -s openmp=no; } &&
+  make -s openmp=yes || { echo "${CYAF}There is no MPI available${NORM} - no multi-thread support." && make -s openmp=no; } &&
   cp -a *.pl $BIN/ || echo "No Perl scripts in this build..." &&
   cp -a cd-hit* $BIN/ &&
   cd $WORKDIR &&
@@ -208,7 +212,7 @@ function compilecdhit {
   echo "\"CD-HIT\" is available. OK."
   } || {
     echo
-    echo "Compilation failed. Please go to https://github.com/weizhongli/cdhit"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please go to ${REDF}https://github.com/weizhongli/cdhit/releases${NORM}"
     echo "download cd-hit-*.tgz, compile it and ensure it is in PATH."
     echo "Check last error messages to find why compilation failed."
     echo
@@ -221,14 +225,14 @@ function compilecdhit {
   echo "\"cd-hit-est\" is required but not installed or available in PATH"
   if [ "$STARTINI" == "I" ]; then
   echo
-  echo "Type \"C\" to compile CD-HIT 4.6.4 from source available together with this script."
-  echo "Type \"S\" to download latest CD-HIT source from"
-  echo "  https://github.com/weizhongli/cdhit and compile it"
-  echo "Type \"B\" to copy CD-HIT 4.6.4 binary available together with the script"
+  echo "Type \"${REDF}C${NORM}\" ${CYAF}to compile CD-HIT 4.6.4 from source available together with this script.${NORM}"
+  echo "Type \"${REDF}S${NORM}\" ${CYAF}to download latest CD-HIT source${NORM} from"
+  echo "  ${REDF}https://github.com/weizhongli/cdhit${NORM} and compile it"
+  echo "Type \"${REDF}B${NORM}${NORM}\" ${CYAF}to copy CD-HIT 4.6.4 binary${NORM} available together with the script"
   echo "  (recommended, available for Linux and Mac OS X)."
-  echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
-  echo "  See \"brew info homebrew/science/cd-hit\" for more details."
-  echo "Type \"M\" for manual installation - script will exit and you will have to install"
+  echo "Type \"${REDF}H${NORM}\" ${CYAF}for installation using Homebrew${NORM} (only for Mac OS X, recommended)."
+  echo "  See \"${REDF}brew info homebrew/science/cd-hit${NORM}\" for more details."
+  echo "Type \"${REDF}M${NORM}\" ${CYAF}for manual installation${NORM} - script will exit and you will have to install"
   echo "  CD-HIT yourselves."
   read CDHIT
   while :
@@ -251,7 +255,7 @@ function compilecdhit {
 	case "$OS" in
 	  Mac)
 	    cp -pr $SCRIPTDIR/pkgs/macosx/bin/cd-hit* $BIN/
-	    #cp -p $SCRIPTDIR/pkgs/macosx/bin/*.pl $BIN/
+	    cp -p $SCRIPTDIR/pkgs/macosx/bin/*.pl $BIN/ || echo
 	    ;;
 	  Linux)
 	    cp -p $SCRIPTDIR/pkgs/linux64b/bin/cd-hit* $BIN/
@@ -381,32 +385,32 @@ if grep -q "# Sequences" $TSVLIST; then
 	    if grep -q "Sequence Length" $TSVLIST; then
 	      echo "Column \"Sequence Length\" is presented in $TSVLIST. OK."
 	    else
-	      echo "${BOLD}Error!${NORM} Column \"Sequence Length\" is missing!"
+	      echo "${REDF}${BOLD}Error!${NORM} Column \"Sequence Length\" is missing!"
 	      echo -e "$REQUIREDCOLS"
 	      exit 1
 	    fi
 	  else
-	    echo "${BOLD}Error!${NORM} Column \"Name\" is missing!"
+	    echo "${REDF}${BOLD}Error!${NORM} Column \"Name\" is missing!"
 	    echo -e "$REQUIREDCOLS"
 	    exit 1
 	  fi
 	else
-	  echo "${BOLD}Error!${NORM} Column \"Mean Coverage\" is missing!"
+	  echo "${REDF}${BOLD}Error!${NORM} Column \"Mean Coverage\" is missing!"
 	  echo -e "$REQUIREDCOLS"
 	  exit 1
 	fi
       else
-	echo "${BOLD}Error!${NORM} Column \"Description\" is missing!"
+	echo "${REDF}${BOLD}Error!${NORM} Column \"Description\" is missing!"
 	echo -e "$REQUIREDCOLS"
 	exit 1
       fi
     else
-      echo "${BOLD}Error!${NORM} Column \"Pairwise Identity\" is missing!"
+      echo "${REDF}${BOLD}Error!${NORM} Column \"Pairwise Identity\" is missing!"
       echo -e "$REQUIREDCOLS"
       exit 1
     fi
   else
-    echo "${BOLD}Error!${NORM} Column \"# Sequences\" is missing!"
+    echo "${REDF}${BOLD}Error!${NORM} Column \"# Sequences\" is missing!"
     echo -e "$REQUIREDCOLS"
     exit 1
   fi
@@ -422,7 +426,7 @@ if egrep -q "# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[[
     echo "Needed columns will be extracted."
     $SCRIPTDIR/geneious_column_separator.pl $TSVLIST || {
       echo
-      echo "${BOLD}Error!${NORM} Extraction failed. Aborting."
+      echo "${REDF}${BOLD}Error!${NORM} Extraction failed. Aborting."
       echo "Either script $SCRIPTDIR/geneious_column_separator.pl"
       echo "  is missing or there is something wrong with $TSVLIST"
       echo "Please, prepare required file manually."
@@ -442,11 +446,13 @@ echo
 echo "Assembly statistics"
 echo
 
+# NOTE: replace 119 with $BAITLN
+
 # Check total number of bp
 echo "Total number of base pairs:"
 { cut -f6 $TSVLIST2 | awk '$1>119' | awk '{s+=$1}END{print s}'; } || {
   echo
-  echo "${BOLD}Error!${NORM} Checking statistics failed. Aborting. Check if file"
+  echo "${REDF}${BOLD}Error!${NORM} Checking statistics failed. Aborting. Check if file"
   echo "$TSVLIST2 is correct TSV file containing all required columns:"
   echo -e "$REQUIREDCOLS"
   echo
@@ -459,7 +465,7 @@ echo
 echo "Number of contigs:"
 { cut -f6 $TSVLIST2 | awk '$1>119' | wc -l; } || {
   echo
-  echo "${BOLD}Error!${NORM} Checking number of contigs failed. Aborting. Check if file"
+  echo "${REDF}${BOLD}Error!${NORM} Checking number of contigs failed. Aborting. Check if file"
   echo "$TSVLIST2 is correct TSV file containing all required columns"
   echo -e "$REQUIREDCOLS"
   echo
@@ -472,7 +478,7 @@ echo
 echo "Converting FASTA to TAB"
 fasta2tab $SEQUENCES $SEQUENCESTAB || {
   echo
-  echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
   echo "Check if file $SEQUENCES is correct FASTA file."
   echo
   exit 1
@@ -488,6 +494,8 @@ echo
 echo "Separating unassembled sequences"
 grep -v '[Aa]ssembly' $SEQUENCESTAB > $SEQUENCESTABUNAS
 echo
+
+# NOTE: replace 959/599/399 with new variable, make loop in steps of 120 bp
 
 # Filter the file with the assembled sequences – count the assemblies (the ones indicated with "Contig") making up genes of ≥960 bp / ≥600 bp, comprised of putative exons ≥120 bp
 echo "Number of assembled sequences:"
@@ -586,7 +594,7 @@ echo
 echo "Converting FASTA to TAB"
 fasta2tab $PROBEPRELIMCDHIT $PROBEPRELIMCDHIT.txt || {
   echo
-  echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
   echo "Check if file $PROBEPRELIMCDHIT is correct FASTA file."
   echo
   exit 1
@@ -635,7 +643,7 @@ echo "Calculating of the total number of base pairs"
 echo "Converting FASTA to TAB"
 fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM || {
   echo
-  echo "${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
   echo
   exit 1
   }
@@ -680,7 +688,7 @@ echo
 echo "Removing unneeded temporal files"
 rm $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESTABUNAS $SEQUENCESPROBES600 $SEQUENCESPROBES600FORJOIN $SEQUENCESTABASSE120 $SEQUENCESTABASSE120SORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM || {
   echo
-  echo "${BOLD}Error!${NORM} Removal of temporal files failed. Remove following files manually:"
+  echo "${REDF}${BOLD}Error!${NORM} Removal of temporal files failed. Remove following files manually:"
   echo "$SEQUENCESTAB, $SEQUENCESTABASSE, $SEQUENCESTABUNAS,"
   echo "$SEQUENCESPROBES600, $SEQUENCESPROBES600FORJOIN, $SEQUENCESTABASSE120,"
   echo "$SEQUENCESTABASSE120SORT, $SEQUENCESPROBES120600FIN, $SEQUENCESPROBES120600MODIF,"
