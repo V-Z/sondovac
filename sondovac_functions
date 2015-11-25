@@ -283,10 +283,17 @@ function citationreference {
   echo
   echo "${BLUF}################################################################################${NORM}"
   echo
-  echo "${CYAF}When using Sondovač, please cite:${NORM}"
-  echo "${REDF}Schmickl et al 2015${NORM}"
+  echo "${CYAF}When using ${REDF}Sondovač${NORM}${CYAF}, please cite:${NORM}"
+  echo "Roswitha Schmickl, Aaron Liston, Vojtěch Zeisek, Kenneth Oberlander, Kevin"
+  echo "  Weitemier, Shannon C.K. Straub, Richard C. Cronn, Léanne L. Dreyer and Jan"
+  echo "  Suda"
+  echo "Phylogenetic marker development for target enrichment from transcriptome and"
+  echo "  genome skim data: the pipeline and its application in southern African Oxalis"
+  echo "  (Oxalidaceae)"
+  echo "Molecular Ecology Resources (2016) - early view available on-line"
+  echo "http://onlinelibrary.wiley.com/doi/10.1111/1755-0998.12487/abstract"
   echo
-  echo "Please, cite also software used by Sondovač:"
+  echo "Citations of scientific software used by Sondovač:"
   echo "${REDF}bam2fastq:${NORM}"
   echo "${MAGF}${BOLD}*${NORM} http://gsl.hudsonalpha.org/information/software/bam2fastq"
   echo "${REDF}BLAT:${NORM}"

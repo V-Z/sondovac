@@ -8,8 +8,10 @@ Version 0.95 beta released 2015-11-
 ================================================================================
 
 * Offer the possibility to choose between transcripts or genome skim sequences 
-  for further processing
-* Colorization of command-line user interface
+  for further processing.
+* Colorization of command-line user interface.
+* Fixed problems with some transcriptome input files.
+* Added information about article in MER introducing Sondovač.
 
 
 Version 0.9 beta released 2015-10-23

@@ -1170,7 +1170,7 @@ confirmgo
 # Make a list of these unique transcripts (names and sequences) and convert this file to FASTA
 echo
 echo "Making list of unique transcripts"
-cut -f 10 $BLATOUT | uniq -c | awk '{if($1==1){print $0}}' | awk '{print $2}' | awk '{printf "%05d\n", $0;}' > $UNIQUELIST || {
+cut -f 10 $BLATOUT | uniq -c | awk '{if($1==1){print $0}}' | awk '{print $2}' | awk '{printf "%09d\n", $0;}' > $UNIQUELIST || {
   echo
   echo "${BOLD}Error!${NORM} Making list of unique transcripts failed. Aborting."
   echo "Check if files $BLATOUT and $INPUTFILE are correct."
@@ -1192,7 +1192,7 @@ fasta2tab $INPUTFILE $INPUTTAB || {
 echo
 
 echo "Sorting unique transcripts"
-{ awk '{$1=sprintf("%05d", $1); print $0}' $INPUTTAB | sort > $SORTEDINPUT; } || {
+{ awk '{$1=sprintf("%09d", $1); print $0}' $INPUTTAB | sort > $SORTEDINPUT; } || {
   echo
   echo "${BOLD}Error!${NORM} Sorting of unique transcripts failed. Aborting. Check if"
   echo "$INPUTFILE is correct FASTA file and check if file $INPUTTAB is correct."
