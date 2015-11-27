@@ -33,6 +33,8 @@ STARTINI="I"
 BAITL=120
 # CD-HIT sequence similarity
 CDHITSIM=0.9
+# BLAT -minIdentity between the list of probes and plostome sequence
+BLATIDENT=90
 # Default name of output files
 OUTPUTFILENAME="output"
 
@@ -42,9 +44,9 @@ TSVLIST=""
 SEQUENCES=""
 
 # Parse initial arguments
-while getopts "hvulrpeo:inc:x:z:b:d:" START; do
+while getopts "hvulrpeo:inc:x:z:b:d:y:" START; do
   case "$START" in
-    h|v) # add possibility to edit blat -minIdentity (0.85-0.95)
+    h|v)
       generaloptions
       echo
       echo -e "\tIf options ${BOLD}-c${NORM}, ${BOLD}-x${NORM} and/or ${BOLD}-z${NORM} are used and script is running in"
@@ -60,11 +62,17 @@ while getopts "hvulrpeo:inc:x:z:b:d:" START; do
       echo -e "\t${REDF}-b${NORM}\t${CYAF}Bait length${NORM}"
       echo -e "\t\tDefault value: 120 (optimal length for phylogeny, use any of"
       echo -e "\t\t  values 80, 100 or 120)."
-      echo -e "\t${REDF}-d${NORM}\t${CYAF}Sequence similarity${NORM} between the developed probe sequences"
+      echo -e "\t${REDF}-d${NORM}\t${CYAF}Sequence similarity between the developed probe sequences${NORM}"
       echo -e "\t\t  (parameter \"-c\" of cd-hit-est, see its manual for details)."
       echo -e "\t\tDefault value: 0.9 (use decimal number ranging from 0.85 to 0.95)."
-      echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-b${NORM} or ${BOLD}-d${NORM} are not provided, default values are"
-      echo -e "\t  taken and it is not possible to change them later (not even in"
+      echo -e "\t${REDF}-y${NORM}\t${CYAF}Sequence similarity between the probes and plastome reference${NORM}"
+      echo -e "\t\t  searching for possible plastid genes in probe set (parameter"
+      echo -e "\t\t  \"-minIdentity\" of BLAT, see its manual for details)."
+      echo -e "\t\tDefault value: 90 (integer ranging from 85 to 95; consider the"
+      echo -e "\t\t  trade-off between probe specificity and number of remaining"
+      echo -e "\t\t  matching sequences for probe design)"
+      echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-b${NORM}, ${BOLD}-d${NORM} or ${BOLD}-y${NORM} are not provided, default values"
+      echo -e "\t  are taken and it is not possible to change them later (not even in"
       echo -e "\t  interactive mode)."
       echo
       exit 2
@@ -122,7 +130,6 @@ while getopts "hvulrpeo:inc:x:z:b:d:" START; do
 	  exit 1
 	esac
       echo "Bait length: ${REDF}$BAITL${NORM}"
-      BAITLN=$(expr $BAITL - 1)
       ;;
     d)
       CDHITSIM=$OPTARG
@@ -136,6 +143,18 @@ while getopts "hvulrpeo:inc:x:z:b:d:" START; do
 	exit 1
       fi
       ;;
+    y)
+      BLATIDENT=$OPTARG
+      # Check if provided value makes sense
+      if [[ "$BLATIDENT" =~ ^[0-9]+$ ]] && [ "$BLATIDENT" -ge 85 -a "$BLATIDENT" -le 95 ]; then
+	echo "BLAT score for identity between unique transcripts and genome skimming data: $BLATIDENT"
+	else
+	  echo
+	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-y\" you did not provide an integer of range from 85 to 95!"
+	  echo
+	  exit 1
+	fi
+      ;;
     ?)
       echo
       echo "Invalid option(s)!"
@@ -145,6 +164,9 @@ while getopts "hvulrpeo:inc:x:z:b:d:" START; do
       ;;
     esac
   done
+
+# Set bait length
+BAITLN=$(expr $BAITL - 1)
 
 # Check if user didn't use together -n and -i
 checkmodef
@@ -446,11 +468,9 @@ echo
 echo "Assembly statistics"
 echo
 
-# NOTE: replace 119 with $BAITLN
-
 # Check total number of bp
 echo "Total number of base pairs:"
-{ cut -f6 $TSVLIST2 | awk '$1>119' | awk '{s+=$1}END{print s}'; } || {
+{ cut -f6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | awk '{s+=$1}END{print s}'; } || {
   echo
   echo "${REDF}${BOLD}Error!${NORM} Checking statistics failed. Aborting. Check if file"
   echo "$TSVLIST2 is correct TSV file containing all required columns:"
@@ -463,7 +483,7 @@ echo
 
 # Check number of contigs
 echo "Number of contigs:"
-{ cut -f6 $TSVLIST2 | awk '$1>119' | wc -l; } || {
+{ cut -f6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | wc -l; } || {
   echo
   echo "${REDF}${BOLD}Error!${NORM} Checking number of contigs failed. Aborting. Check if file"
   echo "$TSVLIST2 is correct TSV file containing all required columns"
@@ -499,34 +519,34 @@ echo
 
 # Filter the file with the assembled sequences – count the assemblies (the ones indicated with "Contig") making up genes of ≥960 bp / ≥600 bp, comprised of putative exons ≥120 bp
 echo "Number of assembled sequences:"
-awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | awk '{s+=$3;c++}END{print s}'
-awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | wc -l
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | awk '{s+=$3;c++}END{print s}'
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>959' | wc -l
 confirmgo
 echo
 
 # Genes of ≥960 bp (exons ≥120 bp), total bp
-echo "Genes of ≥960 bp (exons ≥120 bp), total bp:"
-awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
-awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
+echo "Genes of ≥960 bp (exons ≥$BAITL bp), total bp:"
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
 confirmgo
 echo
 
 # Genes of ≥600 bp (exons ≥120 bp), total bp
-echo "Genes of ≥600 bp (exons ≥120 bp), total bp:"
-awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > $SEQUENCESPROBES600
+echo "Genes of ≥600 bp (exons ≥$BAITL bp), total bp:"
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > $SEQUENCESPROBES600
 confirmgo
 echo
 
 # Filter the file with the unassembled sequences
 echo "Filtering the file with the unassembled sequences:"
-awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed 's/_/\t/g' | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>399' | wc -l
+awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed 's/_/\t/g' | cut -f1,4 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>399' | wc -l
 confirmgo
 echo
 
 # Unassembled sequences making up genes of ≥400 bp
 echo "Unassembled sequences making up genes of ≥400 bp:"
-awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed 's/_/\t/g' | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
-awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed 's/_/\t/g' | cut -f1,4 | awk '$2>119' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
+awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed 's/_/\t/g' | cut -f1,4 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
+awk '{print $1"\t"length($2)}' $SEQUENCESTABUNAS | sed 's/_/\t/g' | cut -f1,4 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
 confirmgo
 echo
 
@@ -538,17 +558,17 @@ sed 's/^/Assembly_/' $SEQUENCESPROBES600 | cut -f1 -d " " | sort -k1,1 > $SEQUEN
 echo
 
 # Make a file with all exons ≥120 bp
-echo "Selecting ≥120 bp exons"
-awk '{print $1"\t"length($2)"\t"$2}' $SEQUENCESTABASSE | awk '$2>119' > $SEQUENCESTABASSE120
+echo "Selecting ≥$BAITL bp exons"
+awk '{print $1"\t"length($2)"\t"$2}' $SEQUENCESTABASSE | awk '$2>'"$BAITLN"'' > $SEQUENCESTABASSE120
 echo
 
 # Make the assembly number the first field and sort
-echo "Sorting exons ≥120 bp"
+echo "Sorting exons ≥$BAITL bp"
 sed 's/^.*\(Assembly\)/\1/' $SEQUENCESTABASSE120 | sed 's/_C/\tC/' | sort -k1,1 > $SEQUENCESTABASSE120SORT
 echo
 
 # Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
-echo "Selecting all exons ≥120 bp and all assemblies making up genes of ≥600 bp"
+echo "Selecting all exons ≥$BAITL bp and all assemblies making up genes of ≥600 bp"
 join $SEQUENCESPROBES600FORJOIN $SEQUENCESTABASSE120SORT > $SEQUENCESPROBES120600FIN
 echo
 
@@ -602,13 +622,13 @@ fasta2tab $PROBEPRELIMCDHIT $PROBEPRELIMCDHIT.txt || {
 echo
 
 # Count all assemblies, comprised of putative exons ≥120 bp
-echo "Number of all assemblies, comprised of putative exons ≥120 bp:"
+echo "Number of all assemblies, comprised of putative exons ≥$BAITL bp:"
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | awk '{s+=$2;c++}END{print s}'
 echo
 confirmgo
 
 # Count the assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
-echo "Number of the assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp:"
+echo "Number of the assemblies making up genes of ≥600 bp, comprised of putative exons ≥$BAITL bp:"
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
 echo
@@ -629,7 +649,7 @@ sed 's/_C/\tC/' $PROBEPRELIMCDHIT.txt | sort -k1,1 > $PROBEPRELIMSORT
 echo
 
 # Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
-echo "Joining all exons ≥120 bp and all assemblies making up genes of ≥600 bp"
+echo "Joining all exons ≥$BAITL bp and all assemblies making up genes of ≥600 bp"
 join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT > $PROBEPRELIMFIN
 echo
 
@@ -672,7 +692,7 @@ echo
 
 # Remove remaining cp genes from probe set
 echo "Removing remaining plastid genes from probe set"
-blat -t=dna -q=dna -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCESCP
+blat -t=dna -q=dna -minIdentity=$BLATIDENT -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCESCP
 echo
 
 echo "================================================================================"

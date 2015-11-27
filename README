@@ -215,33 +215,33 @@ General parameters:
 
 -h, -v   Print help message and exit.
 -u       Check for updates. If there is newer version of Sondovač available on
-         https://github.com/V-Z/sondovac/releases/ download of newer version
-         will be offered to the user.
+           https://github.com/V-Z/sondovac/releases/ download of newer version
+           will be offered to the user.
 -l       Display LICENSE for license information (this script is licensed under 
-         GNU GPL v.3, other software under variable licenses). Exit viewing by 
-         pressing the "Q" key.
+           GNU GPL v.3, other software under variable licenses). Exit viewing 
+           by pressing the "Q" key.
 -r       Display README (this file) for detailed usage instructions. Exit 
-         viewing by pressing the "Q" key. More information is available in 
-         PDF manual.
+           viewing by pressing the "Q" key. More information is available in 
+           PDF manual.
 -p       Display INSTALL for detailed installation instructions. Exit viewing 
-         by pressing the "Q" key. More information is available in PDF manual.
+           by pressing the "Q" key. More information is available in PDF manual.
 -e       Display detailed citation information and exit. See PDF manual for 
-         more information.
+           more information.
 -o       Set name of output files. Output files will start with that name. Do 
-         not use spaces or special characters - some software can not handle 
-         them correctly. Default value (if user does not provide) another name 
-         is "output". See below for list of produced output files.
+           not use spaces or special characters - some software can not handle 
+           them correctly. Default value (if user does not provide) another 
+           name is "output". See below for list of produced output files.
 -i       Running in interactive mode - script will on-demand ask for required 
-         input files, installation of missing software etc. This is recommended 
-         default value (the script runs interactively without explicit using 
-         option "-n").
+           input files, installation of missing software etc. This is 
+           recommended default value (the script runs interactively without 
+           explicit using option "-n").
 -n       Running in non-interactive mode. User must provide at least required 
-         input files (see below). You can use only one of parameters "-i" or 
-         "-n" (not both of them). If script fails to find some of required 
-         software packages, it will exit. This is recommended for batch or 
-         repeated analysis, on remote servers and for more advanced users. User 
-         must be sure that all required software is installed (see INSTALL and
-         PDF manual for details).
+           input files (see below). You can use only one of parameters "-i" or 
+           "-n" (not both of them). If script fails to find some of required 
+           software packages, it will exit. This is recommended for batch or 
+           repeated analysis, on remote servers and for more advanced users. 
+           User must be sure that all required software is installed (see 
+           INSTALL and PDF manual for details).
 
 Input files:
   Those parameters are required when running in non-interactive mode.
@@ -276,41 +276,42 @@ Optional parameters:
     possible to change them any time later (not even in interactive mode).
 
 -a ###   Read length of paired-end genome skim reads (parameter -M of FLASH, 
-         see its manual for details).
+           see its manual for details).
          Step 4 of Sondovač, sondovac_part_a.sh.
          Ensure to use a certain insert size of the genome skim genomic library 
-         in combination with an appropriate read length for sequencing in order 
-         to enable merging of the paired-end genome skim reads.
+           in combination with an appropriate read length for sequencing in order 
+           to enable merging of the paired-end genome skim reads.
          DEFAULT: 250
          OPTIONS: 125, 150, 250, 300
 -y ##    Sequence similarity between unique transcripts and the filtered, 
-         combined genome skim reads (parameter -minIdentity of BLAT, see its 
-         manual for details).
-         Step 5 of Sondovač, sondovac_part_a.sh.
+           combined genome skim reads (parameter -minIdentity of BLAT, see its 
+           manual for details).
+         Step 5 of Sondovač, sondovac_part_a.sh. Step 11 of Sondovač,
+           sondovac_part_b.sh.
          Consider the trade-off between probe specificity and number of 
-         remaining matching sequences for probe design. Sequence similarity is 
-         in percent.
+           remaining matching sequences for probe design. Sequence similarity 
+           is in percent.
          DEFAULT: 85
          OPTIONS: Integer ranging from 70 to 100
 -s ####  Number of BLAT hits per transcript when matching unique transcripts 
-         and the filtered, combined genome skim reads.
+           and the filtered, combined genome skim reads.
 	 Step 6.2 of Sondovač, sondovac_part_a.sh.
          Transcripts with a high number of BLAT hits, indicating repetitive 
-         elements, need to be removed from the putative probe sequences.
+           elements, need to be removed from the putative probe sequences.
          DEFAULT: 1000
          OPTIONS: Integer ranging from 100 to 10000
 -b ###   Minimum exon (bait) length.
          Steps 8 and 10 of Sondovač, sondovac_part_b.sh.
          The minimum exon length should not fall below the bait length in order 
-         to facilitate specific binding between genomic libraries and baits 
-         during hybridization.
+           to facilitate specific binding between genomic libraries and baits 
+           during hybridization.
          DEFAULT: 120 (optimal length for phylogeny).
          OPTIONS: Integer ranging from 120 to 200
 -d 0.##  Sequence similarity between probe sequences (parameter -c of 
-         cd-hit-est, see its manual for details).
+           cd-hit-est, see its manual for details).
          Step 9 of Sondovač, sondovac_part_b.sh.
          Too similar probe sequences will interact with each other during 
-         hybridization and thereby reduce enrichment efficiency.
+           hybridization and thereby reduce enrichment efficiency.
          DEFAULT: 0.9 (highly recommended).
          OPTIONS: Decimal ranging from 0.85 to 0.95
 -g	 Use genome skim sequences instead of transcripts for making the probes.
@@ -349,32 +350,42 @@ All names of input files and paths to them must be without spaces and without
 special characters (some software has difficulties to handle them in such case).
 
 Script sondovac_part_a.sh requires as input files:
-1) Transcriptome input file in FASTA format.
+1) Transcriptome input file in FASTA format. Note: For technical reasons, names 
+   of FASTA sequences in must be only unique number (no any other characters). 
+   Sondovač will check the names and if they are not in appropriate form, copy 
+   of this input files with correct names will be created.
 2) Plastome reference sequence input file in FASTA format.
-3) Paired-end genome skim input file in FASTQ format (two files).
+3) Paired-end genome skim input file in FASTQ format (two files - forward and 
+   reverse reads).
 4) OPTIONAL: Mitochondriome reference sequence input file in FASTA format.
    This file is not required.
 
 Script sondovac_part_a.sh creates the following files:
+0)  *_renamed.fasta - If needed, copy of transcriptome input file with changed 
+      names of FASTA sequences (unique numbers respective to line numbers in 
+      original file) will be created. File *_old_and_new_names.tsv then 
+      contains two columns: 1) original sequence names as in user provided 
+      transcriptome input file and 2) new sequence names. This might be useful 
+      to trace back some sequences/probes.
 1)  *_blat_unique_transcripts.psl - Output of BLAT (removal of transcripts 
-      sharing ≥90% sequence similarity)
-2)  *_unique_transcripts.fasta - Unique transcripts in FASTA format
+      sharing ≥90% sequence similarity).
+2)  *_unique_transcripts.fasta - Unique transcripts in FASTA format.
 3)  *_genome_skim_data_no_cp_reads.bam - SAM converted to BAM (removal of reads 
-      of plastid origin)
-4)  *_genome_skim_data_no_cp_reads* - Genome skim data without cpDNA reads
+      of plastid origin).
+4)  *_genome_skim_data_no_cp_reads* - Genome skim data without cpDNA reads.
 5)  *_genome_skim_data_no_cp_no_mt_reads.bam - SAM converted to BAM (removal of 
       reads of mitochondrial origin) - only if mitochondriome reference 
-      sequence was used
+      sequence was used.
 6)  *_genome_skim_data_no_cp_no_mt_reads* - Genome skim data without mtDNA 
-      reads - only if mitochondriome reference sequence was used
-7)  *_combined_reads_co_cp_no_mt_reads* - Combined paired-end genome skim reads
+      reads - only if mitochondriome reference sequence was used.
+7)  *_combined_reads_co_cp_no_mt_reads* - Combined paired-end genome skim reads.
 8)  *_blat_unique_transcripts_versus_genome_skim_data.pslx - Output of BLAT 
       (matching of the unique transcripts and the filtered, combined genome 
-      skim reads sharing ≥85% sequence similarity)
+      skim reads sharing ≥85% sequence similarity).
 9)  *_blat_unique_transcripts_versus_genome_skim_data.fasta - Matching 
-      sequences in FASTA
+      sequences in FASTA.
 10) *_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa - 
-      Final FASTA sequences for usage in Geneious
+      Final FASTA sequences for usage in Geneious.
 Files 1-9 are not necessary for further processing by this pipeline, but may be 
 useful for the user. The last file (10) is used as input file for Geneious in 
 the next step. Asterisk (*) denotes beginning of the output files names 

@@ -30,7 +30,7 @@
 \setdefaultlanguage{english}
 
 % Opening
-\title{Manual for Sondovač 0.9 beta}
+\title{Manual for Sondovač 0.95 beta}
 \author{Roswitha Schmickl, Aaron Liston, Vojtěch Zeisek and others}
 
 % Allow line breaks within URLs
@@ -42,7 +42,7 @@
   unicode=true,
   colorlinks=true,
   pagebackref=true,
-  pdftitle={Sondovac manual 0.9 beta},
+  pdftitle={Sondovac manual 0.95 beta},
   plainpages=false,
   pdfauthor={Roswitha Schmickl, Aaron Liston, Vojtech Zeisek and others},
   pdfsubject={Software manual},
@@ -640,7 +640,7 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
   \end{itemize}
 \item[\texttt{-y \#\#}] Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details).
   \begin{itemize}
-    \item Step 5 of Sondovač, \texttt{sondovac$\_$part$\_$a.sh}.
+    \item Step 5 of Sondovač, \texttt{sondovac$\_$part$\_$a.sh}. Step 11 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
     \item Consider the trade-off between probe specificity and number of remaining matching sequences for probe design. Sequence similarity is in percent.
     \item DEFAULT: 85
     \item OPTIONS: Integer ranging from 70 to 100
@@ -679,15 +679,16 @@ All names of input files and paths to them must be without spaces and without sp
 \textbf{Script \texttt{sondovac$\_$part$\_$a.sh} requires as input files:}
 
 \begin{enumerate}
-  \item Transcriptome input file in FASTA format.
+  \item Transcriptome input file in FASTA format. \textbf{Note:} For technical reasons, names of FASTA sequences in \textit{must} be only unique number (no any other characters). Sondovač will check the names and if they are not in appropriate form, copy of this input files with correct names will be created.
   \item Plastome reference sequence input file in FASTA format.
-  \item Paired-end genome skim input file in FASTQ format (two files).
+  \item Paired-end genome skim input file in FASTQ format (two files -- forward and reverse reads).
   \item OPTIONAL: Mitochondriome reference sequence input file in FASTA format. This file is not required.
 \end{enumerate}
 
 \textbf{Script \texttt{sondovac$\_$part$\_$a.sh} creates the following files:}
 
-\begin{enumerate}
+\begin{enumerate}[start=0]
+  \item \texttt{*$\_$renamed.fasta} -- If needed, copy of transcriptome input file with changed names of FASTA sequences (unique numbers respective to line numbers in original file) will be created. File \texttt{*$\_$old$\_$and$\_$new$\_$names.tsv} then contains two columns: \textbf{1)} original sequence names as in user provided transcriptome input file and \textbf{2)} new sequence names. This might be useful to trace back some sequences/probes.
   \item \texttt{*$\_$blat$\_$unique$\_$transcripts.psl} -- Output of BLAT (removal of transcripts sharing $\geq$90\% sequence similarity).
   \item \texttt{*$\_$unique$\_$transcripts.fasta} -- Unique transcripts in FASTA format.
   \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$reads.bam} -- SAM converted to BAM (removal of reads of plastid origin).
@@ -830,12 +831,14 @@ If you have any question or you encounter some problem, please, see \href{https:
 
 List of changes in released versions of Sondovač.
 
-\subsection{Version 0.95 beta released 2015-11-}
+\subsection{Version 0.95 beta released 2015-11-27}
 
 \begin{itemize}
 \item Offer the possibility to choose between transcripts or genome skim sequences for further processing.
-\item Colorization of command-line user interface.
+\item Colorization of command-line user interface (incomplete).
+\item Added possibility to change -minIdentity parameter of BLAT in step 11, part B.
 \item Fixed problems with some transcriptome input files.
+\item Added possibility to set custom bait length.
 \item Added information about article in MER introducing Sondovač.
 \end{itemize}
 
@@ -1508,6 +1511,8 @@ THE SOFTWARE IS PROVIDED “AS IS“, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 \vfill
 \hrule
 \vfill
-Created in typographical system \XeLaTeX, \href{http://www.xelatex.org/}{http://www.xelatex.org/}, references with \BibTeX, \href{http://www.bibtex.org/}{http://www.bibtex.org/} on openSUSE GNU/Linux, \href{http://www.opensuse.org/}{http://www.opensuse.org/}, \today.
+\begin{tiny}
+  Created in typographical system \XeLaTeX, \href{http://www.xelatex.org/}{http://www.xelatex.org/}, references with \BibTeX, \href{http://www.bibtex.org/}{http://www.bibtex.org/} on openSUSE GNU/Linux, \href{http://www.opensuse.org/}{http://www.opensuse.org/}, \today.
+\end{tiny}
 
 \end{document}

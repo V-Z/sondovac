@@ -43,6 +43,7 @@ PSLXCUT=22
 
 # Create empty variables for file names
 INPUTFILE=""
+INPUTFILE0=""
 REFERENCECP=""
 INPUTFQ1=""
 INPUTFQ2=""
@@ -68,12 +69,12 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
       echo -e "\t-q\tPaired-end genome skim input file in FASTQ format (second file)."
       echo
       echo -e "\tOther optional arguments (if not provided, default values are used):"
-      echo -e "\t-a\tRead length of paired-end genome skim reads (parameter -M of"
+      echo -e "\t-a\tRead length of paired-end genome skim reads (parameter \"-M\" of"
       echo -e "\t\t  FLASH, see its manual for details)."
       echo -e "\t\tDefault value: 250 (allowed values are 125, 150, 250 or 300)"
       echo -e "\t-y\tSequence similarity between unique transcripts and the filtered,"
-      echo -e "\t\t  combined genome skim reads (parameter -minIdentity of BLAT,"
-      echo -e "\t\t  seeits manual for details)."
+      echo -e "\t\t  combined genome skim reads (parameter \"-minIdentity\" of BLAT,"
+      echo -e "\t\t  see its manual for details)."
       echo -e "\t\tDefault value: 85 (integer ranging from 70 to 100; consider the"
       echo -e "\t\t  trade-off between probe specificity and number of remaining"
       echo -e "\t\t  matching sequences for probe design)"
@@ -135,8 +136,8 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
       CHECKMODE=$((CHECKMODE+1))
       ;;
     f)
-      INPUTFILE=$OPTARG
-      echo "Input file: $INPUTFILE"
+      INPUTFILE0=$OPTARG
+      echo "Input file: $INPUTFILE0"
       ;;
     c)
       REFERENCECP=$OPTARG
@@ -178,7 +179,7 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
 	echo "BLAT score for identity between unique transcripts and genome skimming data: $BLATIDENT"
 	else
 	  echo
-	  echo "${BOLD}Error!${NORM} For parameter \"-y\" you did not provide an integer of range from 1 to 100!"
+	  echo "${BOLD}Error!${NORM} For parameter \"-y\" you did not provide an integer of range from 70 to 100!"
 	  echo
 	  exit 1
 	fi
@@ -1026,8 +1027,8 @@ function compilefastx {
 CHECKFILEREADOUT=""
 
 # Input data, transcriptomic data in FASTA format
-readinputfile -f "transcriptome input file in FASTA format" $INPUTFILE
-INPUTFILE=$CHECKFILEREADOUT
+readinputfile -f "transcriptome input file in FASTA format" $INPUTFILE0
+INPUTFILE0=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
 # Input data, plastom reference in FASTA format
@@ -1079,7 +1080,10 @@ if [ -z "$REFERENCEMT" ]; then
   fi
 
 # Input file in FASTA format
-echo "Input file: $INPUTFILE"
+echo "Input file: $INPUTFILE0"
+INPUTFILE="${INPUTFILE0%.*}_renamed.fasta"
+# List of old and new names of the transcriptome FASTA sequences
+TRANSCRIPTOMEFASTANAMES="${INPUTFILE0%.*}_old_and_new_names.tsv"
 # Output of BLAT (removal of transcripts sharing ≥90% sequence similarity)
 BLATOUT="${OUTPUTFILENAME%.*}_blat_unique_transcripts.psl"
 # List of unique transcripts - temporary file - will be deleted
@@ -1136,6 +1140,57 @@ TABREMOVED="${OUTPUTFILENAME%.*}_1k_transcripts-removed.tab"
 # Final FASTA sequences for usage in Geneious
 FINALA="${OUTPUTFILENAME%.*}_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa"
 
+# Checking if transcriptome input file has required naming scheme - only unique numbers
+
+function renamefastanames {
+  checktools paste
+  echo "Input file $1"
+  echo "  contains some non-allowed names. New file with correct names"
+  echo "  (only increasing unique numbers) will be created."
+  echo "Depending on size of your transcriptome file it can take longer time."
+  while read LINE; do
+    N=$((++N)) &&
+    echo $LINE | sed -e 's/^>.*$/>'$N'/'
+    done < $1 > $2 || {
+      echo "${BOLD}Error!${NORM} Renaming failed. Aborting. Ensure $1"
+      echo "  has as names of sequences only unique numbers (nothing else)."
+      echo
+      exit 1
+      }
+  # Giving to user list of old and new names
+  grep '^>' $1 > transcript_fasta_names_old
+  grep '^>' $2 > transcript_fasta_names_new
+  echo -e "Old FASTA names\tNew FASTA names" > $TRANSCRIPTOMEFASTANAMES
+  paste transcript_fasta_names_old transcript_fasta_names_new >> $TRANSCRIPTOMEFASTANAMES
+  sed -i 's/>//g' $TRANSCRIPTOMEFASTANAMES
+  rm transcript_fasta_names_old transcript_fasta_names_new
+  echo
+  echo "File $TRANSCRIPTOMEFASTANAMES contains two columns:"
+  echo "  1) Old names in original $1 and"
+  echo "  2) New names in required format as in $2"
+  echo "  The sequences remain intact. This might be needed to trace back some sequences."
+  confirmgo
+  RENAMEDFASTASEQENCES="YES"
+  }
+
+echo
+echo "Checking if transcriptome input file $INPUTFILE0"
+echo "  has required naming scheme - only unique numbers."
+if grep '>' $INPUTFILE0 | grep -q -v '^[> ]\+[[:digit:]]\+$'; then
+  echo
+  renamefastanames $INPUTFILE0 $INPUTFILE
+  elif  grep '>' $INPUTFILE0 | grep '^[> ]\+[[:digit:]]\+$' | uniq -c | grep -q -v '^[ ]*1'; then
+    echo
+    renamefastanames $INPUTFILE0 $INPUTFILE
+    else
+      sed -i 's/ *//g' $INPUTFILE0
+      echo
+      echo "Input file $INPUTFILE0"
+      echo " has correct names. Continuing."
+      INPUTFILE=$INPUTFILE0
+      RENAMEDFASTASEQENCES="NO"
+    fi
+
 # Step 1: Obtain unique transcripts.
 
 echo
@@ -1170,7 +1225,7 @@ confirmgo
 # Make a list of these unique transcripts (names and sequences) and convert this file to FASTA
 echo
 echo "Making list of unique transcripts"
-cut -f 10 $BLATOUT | uniq -c | awk '{if($1==1){print $0}}' | awk '{print $2}' | awk '{printf "%09d\n", $0;}' > $UNIQUELIST || {
+cut -f 10 $BLATOUT | uniq -c | awk '{if($1==1){print $0}}' | awk '{print $2}' | awk '{printf "%012d\n", $0;}' > $UNIQUELIST || {
   echo
   echo "${BOLD}Error!${NORM} Making list of unique transcripts failed. Aborting."
   echo "Check if files $BLATOUT and $INPUTFILE are correct."
@@ -1192,7 +1247,7 @@ fasta2tab $INPUTFILE $INPUTTAB || {
 echo
 
 echo "Sorting unique transcripts"
-{ awk '{$1=sprintf("%09d", $1); print $0}' $INPUTTAB | sort > $SORTEDINPUT; } || {
+{ awk '{$1=sprintf("%012d", $1); print $0}' $INPUTTAB | sort > $SORTEDINPUT; } || {
   echo
   echo "${BOLD}Error!${NORM} Sorting of unique transcripts failed. Aborting. Check if"
   echo "$INPUTFILE is correct FASTA file and check if file $INPUTTAB is correct."
@@ -1557,6 +1612,11 @@ echo
 echo "Following files are kept for possible later usage (see manual for details):"
 echo "================================================================================"
 if [ -n "$REFERENCEMT" ]; then
+  if [ "$RENAMEDFASTASEQENCES" == "YES" ]; then
+    echo "0)  List of old names of FASTA sequences in $INPUTFILE0 and"
+    echo "    renamed FASTA sequences in $INPUTFILE:"
+    echo "$TRANSCRIPTOMEFASTANAMES"
+    fi
   echo "1)  Output of BLAT (removal of transcripts sharing ≥90% sequence similarity):"
   echo "$BLATOUT"
   echo "2)  Unique transcripts in FASTA format:"
@@ -1579,6 +1639,11 @@ if [ -n "$REFERENCEMT" ]; then
   echo "10) Final FASTA sequences for usage in Geneious:"
   echo "$FINALA"
   else
+    if [ "$RENAMEDFASTASEQENCES" == "YES" ]; then
+      echo "0)  List of old names of FASTA sequences in $INPUTFILE0 and"
+      echo "    renamed FASTA sequences in $INPUTFILE:"
+      echo "$TRANSCRIPTOMEFASTANAMES"
+      fi
     echo "1) Output of BLAT (removal of transcripts sharing ≥90% sequence similarity):"
     echo "$BLATOUT"
     echo "2) Unique transcripts in FASTA format:"
