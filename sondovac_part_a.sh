@@ -19,7 +19,7 @@ source $SCRIPTDIR/sondovac_functions || {
   exit 1
   }
 
-echo "This is part A of the pipeline."
+echo "${REDF}This is part A of the pipeline.${NORM}"
 echo
 echo "This part is for filtering of raw data and their preparation for assembly in"
 echo "Geneious. Results of Geneious assembly are processed in part B to get the final"
@@ -60,28 +60,28 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
       echo -e "\t  later be overwritten."
       echo
       echo -e "\tOptions required for running in non-interactive mode:"
-      echo -e "\t-f\tTranscriptome input file in FASTA format."
-      echo -e "\t-c\tPlastome reference sequence input file in FASTA format."
-      echo -e "\t-m\tMitochondriome reference sequence input file in FASTA format."
+      echo -e "\t${REDF}-f${NORM}\t${CYAF}Transcriptome input file${NORM} in FASTA format."
+      echo -e "\t${REDF}-c${NORM}\t${CYAF}Plastome reference sequence${NORM} input file in FASTA format."
+      echo -e "\t${REDF}-m${NORM}\t${CYAF}Mitochondriome reference sequence${NORM} input file in FASTA format."
       echo -e "\t\t  This file is optional. In interactive mode you will be every"
       echo -e "\t\t  time asked if you wish to use it."
-      echo -e "\t-t\tPaired-end genome skim input file in FASTQ format (first file)."
-      echo -e "\t-q\tPaired-end genome skim input file in FASTQ format (second file)."
+      echo -e "\t${REDF}-t${NORM}\t${CYAF}Paired-end genome skim input file${NORM} in FASTQ format (first file)."
+      echo -e "\t${REDF}-q${NORM}\t${CYAF}Paired-end genome skim input file${NORM} in FASTQ format (second file)."
       echo
       echo -e "\tOther optional arguments (if not provided, default values are used):"
-      echo -e "\t-a\tRead length of paired-end genome skim reads (parameter \"-M\" of"
+      echo -e "\t${REDF}-a${NORM}\t${CYAF}Read length of paired-end genome skim reads${NORM} (parameter \"-M\" of"
       echo -e "\t\t  FLASH, see its manual for details)."
       echo -e "\t\tDefault value: 250 (allowed values are 125, 150, 250 or 300)"
-      echo -e "\t-y\tSequence similarity between unique transcripts and the filtered,"
-      echo -e "\t\t  combined genome skim reads (parameter \"-minIdentity\" of BLAT,"
+      echo -e "\t${REDF}-y${NORM}\t${CYAF}Sequence similarity between unique transcripts and the filtered,"
+      echo -e "\t\t  combined genome skim reads${NORM} (parameter \"-minIdentity\" of BLAT,"
       echo -e "\t\t  see its manual for details)."
       echo -e "\t\tDefault value: 85 (integer ranging from 70 to 100; consider the"
       echo -e "\t\t  trade-off between probe specificity and number of remaining"
       echo -e "\t\t  matching sequences for probe design)"
-      echo -e "\t-s\tNumber of BLAT hits per transcript when matching unique"
+      echo -e "\t${REDF}-s${NORM}\t${CYAF}Number of BLAT hits per transcript${NORM} when matching unique"
       echo -e "\t\t  transcripts and the filtered, combined genome skim reads."
       echo -e "\t\tDefault value: 1000 (integer ranging from 100 to 10000)"
-      echo -e "\t-g\tUse genome skim sequences instead of transcripts for making the"
+      echo -e "\t${REDF}-g${NORM}\t${CYAF}Use genome skim sequences instead of transcripts${NORM} for making the"
       echo -e "\t\t  probes. Default is usage of transcripts (no parameter)."
       echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-a, -y${NORM}, ${BOLD}-s${NORM} or ${BOLD}-g${NORM} are not provided, default values"
       echo -e "\t\t are taken and it is not possible to change them later (not even"
@@ -89,20 +89,20 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
       echo
       echo "Examples:"
       echo "Basic and the most simple usage:"
-      echo "$0 -i"
+      echo "${REDF}$0${NORM} ${CYAF}-i${NORM}"
       echo "Specify some of required input files, otherwise run interactively:"
-      echo "$0 -i -f input.fa -t reads1.fastq -q reads2.fastq"
+      echo "${REDF}$0${NORM} ${CYAF}-i -f${NORM} input.fa ${CYAF}-t${NORM} reads1.fastq ${CYAF}-q${NORM} reads2.fastq"
       echo "Running in non-interactive automated way:"
-      echo "$0 -n -f input.fa -c referencecp.fa -m referencemt.fa -t reads1.fastq -q reads2.fastq"
+      echo "${REDF}$0${NORM} ${CYAF}-n -f${NORM} input.fa ${CYAF}-c${NORM} referencecp.fa ${CYAF}-m${NORM} referencemt.fa ${CYAF}-t${NORM} reads1.fastq ${CYAF}-q${NORM} reads2.fastq"
       echo "Modify parameter ${BOLD}-a${NORM}, otherwise run interactively:"
-      echo "$0 -i -a 300"
+      echo "${REDF}$0${NORM} ${CYAF}-i -a${NORM} 300"
       echo "Run in non-interactive mode (parameter ${BOLD}-n${NORM}) - in such case user must specify all"
       echo "  required input files (parameters ${BOLD}-f${NORM}, ${BOLD}-c${NORM}, ${BOLD}-m${NORM}, ${BOLD}-t${NORM} and ${BOLD}-q${NORM}). Moreover, parameter"
       echo "  ${BOLD}-y${NORM} is modified:"
-      echo "$0 -n -f input.fa -c referencecp.fa -m referencemt.fa -t reads1.fastq -q reads2.fastq -y 90"
+      echo "${REDF}$0${NORM} ${CYAF}-n -f${NORM} input.fa ${CYAF}-c${NORM} referencecp.fa ${CYAF}-m${NORM} referencemt.fa ${CYAF}-t${NORM} reads1.fastq ${CYAF}-q${NORM} reads2.fastq ${CYAF}-y${NORM} 90"
       echo "Modifying parameter ${BOLD}-s${NORM}. Note interactive mode ${BOLD}-i${NORM} is implicit and does not need"
       echo "  to be specified explicitly:"
-      echo "$0 -s 950"
+      echo "${REDF}$0${NORM} ${CYAF}-s${NORM} 950"
       echo
       exit 2
       ;;
@@ -123,7 +123,7 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
       ;;
     o)
       OUTPUTFILENAME=$OPTARG
-      echo "Output files will start name with $OUTPUTFILENAME"
+      echo "Output files will start name with ${REDF}$OUTPUTFILENAME${NORM}"
       ;;
     i)
       echo "Running in interactive mode..."
@@ -137,23 +137,23 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
       ;;
     f)
       INPUTFILE0=$OPTARG
-      echo "Input file: $INPUTFILE0"
+      echo "Input file: ${REDF}$INPUTFILE0${NORM}"
       ;;
     c)
       REFERENCECP=$OPTARG
-      echo "Plastom reference: $REFERENCECP"
+      echo "Plastom reference: ${REDF}$REFERENCECP${NORM}"
       ;;
     m)
       REFERENCEMT=$OPTARG
-      echo "Chondrion reference: $REFERENCEMT"
+      echo "Chondrion reference: ${REDF}$REFERENCEMT${NORM}"
       ;;
     t)
       INPUTFQ1=$OPTARG
-      echo "FASTQ reads 1: $INPUTFQ1"
+      echo "FASTQ reads 1: ${REDF}$INPUTFQ1${NORM}"
       ;;
     q)
       INPUTFQ2=$OPTARG
-      echo "FASTQ reads 2: $INPUTFQ2"
+      echo "FASTQ reads 2: ${REDF}$INPUTFQ2${NORM}"
       ;;
     a)
       FLASHM=$OPTARG
@@ -164,22 +164,22 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
 	250) FLASHM=250;;
 	300) FLASHM=300;;
 	*) echo
-	  echo "${BOLD}Error!${NORM} For parameter \"-a\" you did not provide any of the allowed values 125, 150,"
+	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-a\" you did not provide any of the allowed values 125, 150,"
 	  echo "   250, or 300!"
 	  echo
 	  exit 1
 	  ;;
 	esac
-      echo "Read length of paired-end reads: $FLASHM"
+      echo "Read length of paired-end reads: ${REDF}$FLASHM${NORM}"
       ;;
     y)
       BLATIDENT=$OPTARG
       # Check if provided value makes sense
       if [[ "$BLATIDENT" =~ ^[0-9]+$ ]] && [ "$BLATIDENT" -ge 70 -a "$BLATIDENT" -le 100 ]; then
-	echo "BLAT score for identity between unique transcripts and genome skimming data: $BLATIDENT"
+	echo "BLAT score for identity between unique transcripts and genome skimming data: ${REDF}$BLATIDENT${NORM}"
 	else
 	  echo
-	  echo "${BOLD}Error!${NORM} For parameter \"-y\" you did not provide an integer of range from 70 to 100!"
+	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-y\" you did not provide an integer of range from 70 to 100!"
 	  echo
 	  exit 1
 	fi
@@ -188,22 +188,22 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
       BLATSCORE=$OPTARG
       # Check if provided value makes sense
       if [[ "$BLATSCORE" =~ ^[0-9]+$ ]] && [ "$BLATSCORE" -ge 100 -a "$BLATSCORE" -le 10000 ]; then
-	echo "BLAT score: $BLATSCORE"
+	echo "BLAT score: ${REDF}$BLATSCORE${NORM}"
 	else
 	  echo
-	  echo "${BOLD}Error!${NORM} For parameter \"-s\" you did not provide an integer ranging from 100 to 10000!"
+	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-s\" you did not provide an integer ranging from 100 to 10000!"
 	  echo
 	  exit 1
 	fi
       ;;
     g)
       PSLXCUT=23
-      echo "The script will use genome skim data instead of transcriptome."
+      echo "${CYAF}The script will use genome skim data instead of transcriptome.${NORM}"
       ;;
     ?)
       echo
       echo "Invalid option(s)!"
-      echo "See \"$0 -h\" for usage options."
+      echo "See \"${REDF}$0 -h${NORM}\" for usage options."
       echo
       exit 1
       ;;
@@ -284,12 +284,12 @@ function compilebowtie {
   cp -r bowtie2* $BIN/ &&
   cd $WORKDIR &&
   echo &&
-  echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
-  echo "   and \"bowtie2-build-s\" are available. OK."
+  echo "\"${REDF}bowtie2${NORM}\", \"${REDF}bowtie-align-l${NORM}\", \"${REDF}bowtie-align-s${NORM}\", \"${REDF}bowtie2-build${NORM}\", \"${REDF}bowtie2-build-l${NORM}\"" &&
+  echo "   and \"${REDF}bowtie2-build-s${NORM}\" are available. ${GREF}OK.${NORM}"
   } || {
     echo
-    echo "Compilation failed. Please, go to"
-    echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please, go to"
+    echo "  ${REDF}http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/${NORM}"
     echo "  download bowtie2-$BOWTIE2V-source.zip, compile it and ensure it is in PATH."
     echo
     exit 1
@@ -303,25 +303,25 @@ function compilebowtie {
   command -v bowtie2-build >/dev/null 2>&1 &&
   command -v bowtie2-build-l >/dev/null 2>&1 &&
   command -v bowtie2-build-s >/dev/null 2>&1 &&
-  echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
-  echo "  and \"bowtie2-build-s\" are available. OK."
+  echo "\"${REDF}bowtie2${NORM}\", \"${REDF}bowtie-align-l${NORM}\", \"${REDF}bowtie-align-s${NORM}\", \"${REDF}bowtie2-build${NORM}\", \"${REDF}bowtie2-build-l${NORM}\"" &&
+  echo "  and \"${REDF}bowtie2-build-s${NORM}\" are available. ${GREF}OK.${NORM}"
   } || {
   echo
-  echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\""
-  echo "  and \"bowtie2-build-s\" are required but not installed or available in PATH."
+  echo "\"${CYAF}bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\""
+  echo "  and \"bowtie2-build-s\" are required but not installed or available in PATH.${NORM}"
   if [ "$STARTINI" == "I" ]; then
     echo
-    echo "Type \"C\" to compile Bowtie2-$BOWTIE2V from source available together with this script"
-    echo "Type \"S\" to compile Bowtie2-$BOWTIE2V from source code downloaded from"
-    echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
-    echo "Type \"D\" to download Bowtie2-$BOWTIE2V binary from"
-    echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/ for your OS"
-    echo "Type \"B\" to copy Bowtie2-2.$BOWTIE2V binary available together with the script"
-    echo "  (recommended, available for Linux and Mac OS X)"
-    echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
-    echo "  See \"brew info homebrew/science/bowtie2\" for more details."
-    echo "Type \"M\" for manual installation - script will exit and you will have to install"
-    echo "  Bowtie2 yourselves"
+    echo "Type \"${REDF}C${NORM}\" ${CYAF}to compile Bowtie2-$BOWTIE2V from source available together with this script.${NORM}"
+    echo "Type \"${REDF}S${NORM}\" ${CYAF}to compile Bowtie2-$BOWTIE2V from source code${NORM} downloaded from"
+    echo "  ${REDF}http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/${NORM}"
+    echo "Type \"${REDF}D${NORM}\" ${CYAF}to download Bowtie2-$BOWTIE2V binary${NORM} from"
+    echo "  ${REDF}http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/${NORM} for your OS."
+    echo "Type \"${REDF}B${NORM}\" ${CYAF}to copy Bowtie2-2.$BOWTIE2V binary available together with the script${NORM}"
+    echo "  (recommended, available for Linux and Mac OS X)."
+    echo "Type \"${REDF}H${NORM}\" ${CYAF}for installation using Homebrew${NORM} (only for Mac OS X, recommended)."
+    echo "  See \"${REDF}brew info homebrew/science/bowtie2${NORM}\" for more details."
+    echo "Type \"${REDF}M${NORM}\" ${CYAF}for manual installation${NORM} - script will exit and you will have to install"
+    echo "  Bowtie2 yourselves."
     read BOWTIE
     while :
     do
@@ -337,12 +337,12 @@ function compilebowtie {
 	    $DOWNLOADER bowtie2-$BOWTIE2V-linux-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-linux-x86_64.zip &&
 	    unzip -nq bowtie2-$BOWTIE2V-linux-x86_64.zip &&
 	    cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
-	    echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
-	    echo "  and \"bowtie2-build-s\" are available. OK."
+	    echo "\"${REDF}bowtie2${NORM}\", \"${REDF}bowtie-align-l${NORM}\", \"${REDF}bowtie-align-s${NORM}\", \"${REDF}bowtie2-build${NORM}\", \"${REDF}bowtie2-build-l${NORM}\"" &&
+	    echo "  and \"${REDF}bowtie2-build-s${NORM}\" are available. ${GREF}OK.${NORM}"
 	    } || {
 	      echo
-	      echo "Download failed. Please, go to"
-	      echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
+	      echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download failed.${NORM} Please, go to"
+	      echo "  ${REDF}http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/${NORM}"
 	      echo "  and download and unpack bowtie2-$BOWTIE2V-linux-x86_64.zip manually."
 	      echo
 	      exit 1
@@ -353,12 +353,12 @@ function compilebowtie {
 	    $DOWNLOADER bowtie2-$BOWTIE2V-macos-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-macos-x86_64.zip &&
 	    unzip -nq bowtie2-$BOWTIE2V-macos-x86_64.zip &&
 	    cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
-	    echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
-	    echo "  and \"bowtie2-build-s\" are available. OK."
+	    echo "\"${REDF}bowtie2${NORM}\", \"${REDF}bowtie-align-l${NORM}\", \"${REDF}bowtie-align-s${NORM}\", \"${REDF}bowtie2-build${NORM}\", \"${REDF}bowtie2-build-l${NORM}\"" &&
+	    echo "  and \"${REDF}bowtie2-build-s${NORM}\" are available. ${GREF}OK.${NORM}"
 	    } || {
 	      echo
-	      echo "Download failed. Please, go to"
-	      echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
+	      echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download failed.${NORM} Please, go to"
+	      echo "  ${REDF}http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/${NORM}"
 	      echo "  and download and unpack bowtie2-$BOWTIE2V-macos-x86_64.zip manually."
 	      echo
 	      exit 1
@@ -369,12 +369,12 @@ function compilebowtie {
 	    $DOWNLOADER bowtie2-$BOWTIE2V-mingw-win64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-mingw-win64.zip &&
 	    unzip -nq bowtie2-$BOWTIE2V-mingw-win64.zip &&
 	    cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
-	    echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\""
-	    echo "  and \"bowtie2-build-s\" are available. OK."
+	    echo "\"${REDF}bowtie2${NORM}\", \"${REDF}bowtie-align-l${NORM}\", \"${REDF}bowtie-align-s${NORM}\", \"${REDF}bowtie2-build${NORM}\", \"${REDF}bowtie2-build-l${NORM}\""
+	    echo "  and \"${REDF}bowtie2-build-s${NORM}\" are available. ${GREF}OK.${NORM}"
 	    } || {
 	      echo
-	      echo "Download failed. Please, go to"
-	      echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
+	      echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download failed.${NORM} Please, go to"
+	      echo "  ${REDF}http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/${NORM}"
 	      echo "  and download and unpack bowtie2-$BOWTIE2V-mingw-win64.zip manually."
 	      echo
 	      exit 1
@@ -393,8 +393,8 @@ function compilebowtie {
 	  echo "Downloading Bowtie2 source code"
 	  $DOWNLOADER bowtie2-$BOWTIE2V-source.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-source.zip || {
 	    echo
-	    echo "Download failed. Please, go to"
-	    echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
+	    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download failed.${NORM} Please, go to"
+	    echo "  ${REDF}http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/${NORM}"
 	    echo "  and download bowtie2-$BOWTIE2V-source.zip and compile it manually."
 	    echo
 	    exit 1
@@ -429,13 +429,13 @@ function compilebowtie {
 	  ;;
 	H|h)
 	  if [ "$OS" == "Mac" ]; then
-	    { echo "Installing Bowtie2 using Homebrew" &&
+	    { echo "Installing ${REDF}Bowtie2${NORM} using Homebrew" &&
 	    brew install homebrew/science/bowtie2 &&
-	    echo "\"Bowtie2\" is available. OK."
+	    echo "\"${REDF}Bowtie2${NORM}\" is available. ${GREF}OK.${NORM}"
 	    } || {
 	      echo
-	      echo "Installation of \"Bowtie2\" failed. Please, do it manually. For details see"
-	      echo "\"brew info homebrew/science/bowtie2\" and \"brew help\"."
+	      echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Installation of${NORM} \"${REDF}Bowtie2${NORM}\" ${CYAF}failed.${NORM} Please, do it manually. For details see"
+	      echo "\"${REDF}brew info homebrew/science/bowtie2${NORM}\" and \"${REDF}brew help${NORM}\"."
 	      echo
 	      exit 1
 	      }
@@ -446,11 +446,11 @@ function compilebowtie {
 	  break
 	  ;;
 	M|m)
-	  echo "Please, go to http://bowtie-bio.sourceforge.net/bowtie2/index.shtml and install"
+	  echo "Please, go to ${REDF}http://bowtie-bio.sourceforge.net/bowtie2/index.shtml${NORM} and install"
 	  echo " latest Bowtie2 and ensure it is in PATH."
 	  exit 2
 	  ;;
-	*) echo "Wrong option. Use C, D, S, B, H or M." && read BOWTIE;;
+	*) echo "${CYAF}Wrong option.${NORM} Use ${REDF}C${NORM}, ${REDF}D${NORM}, ${REDF}S${NORM}, ${REDF}B${NORM}, ${REDF}H${NORM} or ${REDF}M${NORM}." && read BOWTIE;;
       esac
     done
   else
@@ -467,26 +467,26 @@ function compilesamtools {
   make -s &&
   make -s prefix=$WORKDIR/bin install &&
   cd $WORKDIR &&
-  echo "\"samtools\" is available. OK."
+  echo "\"${REDF}samtools${NORM}\" is available. ${GREF}OK.${NORM}"
   }
 
 # Check if samtools is available
-{ command -v samtools >/dev/null 2>&1 && echo "\"samtools\" is available. OK."; } || {
+{ command -v samtools >/dev/null 2>&1 && echo "\"${REDF}samtools${NORM}\" is available. ${GREF}OK.${NORM}"; } || {
   echo
-  echo >&2 "\"samtools\" is required but not installed or available in PATH."
+  echo >&2 "\"${REDF}samtools${NORM}\" is required but not installed or available in PATH."
   if [ "$STARTINI" == "I" ]; then
     echo
-    echo "Type \"C\" to compile SAMtools-1.2 from source available together with this script."
+    echo "Type \"${REDF}C${NORM}\" ${CYAF}to compile SAMtools-1.2 from source available together with this script.${NORM}"
     echo "  Makefile was modified not to require GNU ncurses library."
-    echo "Type \"S\" to download latest developmental SAMtools source from"
-    echo "  https://github.com/samtools/samtools/ and compile it. Compilation requires GNU"
+    echo "Type \"${REDF}S${NORM}\" ${CYAF}to download latest developmental SAMtools source${NORM} from"
+    echo "  ${REDF}https://github.com/samtools/samtools/${NORM} and compile it. Compilation requires GNU"
     echo "  ncurses library and is recommended only for advanced users. If compilation"
-    echo "  fails, check SAMtools' INSTALL file for details and adjust its Makefile."
-    echo "Type \"B\" to copy SAMtools-1.2 binary available together with the script"
+    echo "  fails, check SAMtools' ${REDF}INSTALL${NORM} file for details and adjust its Makefile."
+    echo "Type \"${REDF}B${NORM}\" ${CYAF}to copy SAMtools-1.2 binary${NORM} available together with the script"
     echo "  (recommended, available for Linux and Mac OS X)."
-    echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
-    echo "  See \"brew info homebrew/science/samtools\" for more details."
-    echo "Type \"M\" for manual installation - script will exit and you will have to"
+    echo "Type \"${REDF}H${NORM}\" ${CYAF}for installation using Homebrew${NORM} (only for Mac OS X, recommended)."
+    echo "  See \"${REDF}brew info homebrew/science/samtools${NORM}\" for more details."
+    echo "Type \"${REDF}M${NORM}\" ${CYAF}for manual installation${NORM} - script will exit and you will have to"
     echo "  install SAMtools yourselves."
     read SAMTOOLS
     while :
@@ -495,7 +495,7 @@ function compilesamtools {
 	C|c)
 	  compilesamtools || {
 	    echo
-	    echo "Compilation failed. Please, go to http://www.htslib.org/download/"
+	    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please, go to ${REDF}http://www.htslib.org/download/${NORM}"
 	    echo "  download samtools-1.2, compile it and ensure it is in PATH."
 	    echo
 	    exit 1
@@ -521,11 +521,11 @@ function compilesamtools {
 	  make -s HTSDIR=`pwd`/htslib-develop &&
 	  make -s prefix=$WORKDIR/bin install &&
 	  cd $WORKDIR &&
-	  echo "\"samtools\" is available. OK."
+	  echo "\"${REDF}samtools${NORM}\" is available. ${GREF}OK.${NORM}"
 	  } || {
 	    echo
-	    echo "Compilation failed. Please, go to http://www.htslib.org/download/ for latest"
-	    echo "  stable version of SAMtools or https://github.com/samtools/ for latest"
+	    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please, go to ${REDF}http://www.htslib.org/download/${NORM} for"
+	    echo "  latest stable version of SAMtools or ${REDF}https://github.com/samtools/${NORM} for latest"
 	    echo "  developmental version, download samtools, compile it and ensure it is in PATH."
 	    echo
 	    exit 1
@@ -597,13 +597,13 @@ function compilesamtools {
 	  ;;
 	H|h)
 	 if [ "$OS" == "Mac" ]; then			
-	  { echo "Installing SAMtools using Homebrew" &&
+	  { echo "Installing ${REDF}SAMtools using Homebrew" &&
 	  brew install homebrew/science/samtools &&
-	  echo "\"SAMtools\" is available. OK."
+	  echo "\"${REDF}SAMtools${NORM}\" is available. ${GREF}OK.${NORM}"
 	  } || {
 	    echo
-	    echo "Installation of \"SAMtools\" failed. Please, do it manually. For details see"
-	    echo "\"brew info homebrew/science/samtools\" and \"brew help\"."
+	    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Installation of${NORM} \"${REDF}SAMtools${NORM}\" ${CYAF}failed.${NORM} Please, do it manually. For details see"
+	    echo "\"${REDF}brew info homebrew/science/samtools${NORM}\" and \"${REDF}brew help${NORM}\"."
 	    echo
 	    exit 1
 	    }
@@ -614,11 +614,11 @@ function compilesamtools {
 	break
 	;;
 	M|m)
-	  echo "Please, go to http://www.htslib.org/ and install SAMtools 1.2 and ensure it is"
+	  echo "Please, go to ${REDF}http://www.htslib.org/${NORM} and install SAMtools 1.2 and ensure it is"
 	  echo "  in PATH."
 	  exit 2
 	  ;;
-	*) echo "Wrong option. Use C, S, B, H or M." && read SAMTOOLS;;
+	*) echo "${CYAF}Wrong option.${NORM} Use ${REDF}C${NORM}, ${REDF}S${NORM}, ${REDF}B${NORM}, ${REDF}H${NORM} or ${REDF}M${NORM}." && read SAMTOOLS;;
       esac
     done
   else
@@ -636,21 +636,21 @@ function compilebam2fastq {
   make -s &&
   cp bam2fastq $BIN/ &&
   cd $WORKDIR &&
-  echo "\"bam2fastq\" is available. OK."
+  echo "\"${REDF}bam2fastq${NORM}\" is available. ${GREF}OK.${NORM}"
   }
 
 # Check if bam2fastq is available
-{ command -v bam2fastq >/dev/null 2>&1 && echo "\"bam2fastq\" is available. OK."; } || {
+{ command -v bam2fastq >/dev/null 2>&1 && echo "\"${REDF}bam2fastq${NORM}\" is available. ${GREF}OK.${NORM}"; } || {
   echo
-  echo >&2 "\"bam2fastq\" is required but not installed or available in PATH."
+  echo >&2 "\"${REDF}bam2fastq${NORM}\" is required but not installed or available in PATH."
   if [ "$STARTINI" == "I" ]; then
     echo
-    echo "Type \"C\" to compile bam2fastq from source available together with this script."
-    echo "Type \"S\" to download bam2fastq source from"
-    echo "  http://gsl.hudsonalpha.org/information/software/bam2fastq and compile it."
-    echo "Type \"B\" to copy bam2fastq binary available together with the script"
+    echo "Type \"${REDF}C${NORM}\" ${CYAF}to compile bam2fastq from source available together with this script.${NORM}"
+    echo "Type \"${REDF}S${NORM}\" ${CYAF}to download bam2fastq source${NORM} from"
+    echo "  ${REDF}http://gsl.hudsonalpha.org/information/software/bam2fastq${NORM} and compile it."
+    echo "Type \"${REDF}B${NORM}\" ${CYAF}to copy bam2fastq binary available together with the script${NORM}"
     echo "  (recommended, available for Linux and Mac OS X)."
-    echo "Type \"M\" for manual installation - script will exit and you will have to"
+    echo "Type \"${REDF}M${NORM}\" ${CYAF}for manual installation${NORM} - script will exit and you will have to"
     echo "  install bam2fastq yourselves."
     read bam2fastq
     while :
@@ -659,8 +659,8 @@ function compilebam2fastq {
 	C|c)
 	  compilebam2fastq $SCRIPTDIR/src/bam2fastq-1.1.0 || {
 	    echo
-	    echo "Compilation failed. Please, go to"
-	    echo "  http://gsl.hudsonalpha.org/information/software/bam2fastq, download bam2fastq,"
+	    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please, go to"
+	    echo "  ${REDF}http://gsl.hudsonalpha.org/information/software/bam2fastq${NORM}, download bam2fastq,"
 	    echo "  compile it manually and ensure it is in PATH."
 	    echo
 	    exit 1
@@ -681,8 +681,8 @@ function compilebam2fastq {
 	  compilebam2fastq bam2fastq-1.1.0/
 	  } || {
 	    echo
-	    echo "Compilation failed. Please, go to"
-	    echo "  http://gsl.hudsonalpha.org/information/software/bam2fastq, download bam2fastq,"
+	    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please, go to"
+	    echo "  ${REDF}http://gsl.hudsonalpha.org/information/software/bam2fastq${NORM}, download bam2fastq,"
 	    echo "  compile it manually and ensure it is in PATH."
 	    echo
 	    exit 1
@@ -706,8 +706,8 @@ function compilebam2fastq {
 	      echo
 	      compilebam2fastq $SCRIPTDIR/src/bam2fastq-1.1.0 || {
 		echo
-		echo "Compilation failed. Please, go to"
-		echo "  http://gsl.hudsonalpha.org/information/software/bam2fastq, download bam2fastq,"
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please, go to"
+		echo "  ${REDF}http://gsl.hudsonalpha.org/information/software/bam2fastq${NORM}, download bam2fastq,"
 		echo "  compile it manually and ensure it is in PATH."
 		echo
 		exit 1
@@ -718,11 +718,11 @@ function compilebam2fastq {
 	  break
 	  ;;
 	M|m)
-	  echo "Please, go to http://gsl.hudsonalpha.org/information/software/bam2fastq"
+	  echo "Please, go to ${REDF}http://gsl.hudsonalpha.org/information/software/bam2fastq${NORM}"
 	  echo "  download bam2fastq, compile it manually and ensure it is in PATH."
 	  exit 2
 	  ;;
-	*) echo "Wrong option. Use C, S, B or M." && read bam2fastq;;
+	*) echo "${CYAF}Wrong option.${NORM} Use ${REDF}C${NORM}, ${REDF}S${NORM}, ${REDF}B${NORM} or ${REDF}M${NORM}." && read bam2fastq;;
       esac
     done
   else
@@ -744,11 +744,11 @@ function compileflash {
   cp flash $BIN/ &&
   cd $WORKDIR &&
   echo &&
-  echo "\"flash\" is available. OK."
+  echo "\"${REDF}flash${NORM}\" is available. ${GREF}OK.${NORM}"
   } || {
     echo
-    echo "Compilation failed. Please, go to"
-    echo "  http://sourceforge.net/projects/flashpage/files/ download latest"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please, go to"
+    echo "  ${REDF}http://sourceforge.net/projects/flashpage/files/${NORM} download latest"
     echo "  FLASH-*.tar.gz, compile it manually and ensure it is in PATH."
     echo
     exit 1
@@ -756,21 +756,21 @@ function compileflash {
   }
 
 # Check if FLASH is available
-{ command -v flash >/dev/null 2>&1 && echo "\"flash\" is available. OK."; } || {
+{ command -v flash >/dev/null 2>&1 && echo "\"${REDF}flash${NORM}\" is available. ${GREF}OK.${NORM}"; } || {
   echo
-  echo >&2 "\"FLASH\" is required but not installed or available in PATH."
+  echo >&2 "${CYAF}FLASH is required but not installed or available in PATH.${NORM}"
   if [ "$STARTINI" == "I" ]; then
     echo
-    echo "Type \"C\" to compile FLASH from source available together with this script."
-    echo "Type \"S\" to download FLASH source from"
-    echo "  http://sourceforge.net/projects/flashpage/ and compile it."
-    echo "Type \"D\" to download FLASH binary from"
-    echo "  http://sourceforge.net/projects/flashpage/ (available only for Windows)."
-    echo "Type \"B\" to copy FLASH 1.2.11 binary available together with the script"
+    echo "Type \"${REDF}C${NORM}\" ${CYAF}to compile FLASH from source available together with this script.${NORM}"
+    echo "Type \"${REDF}S${NORM}\" ${CYAF}to download FLASH source${NORM} from"
+    echo "  ${REDF}http://sourceforge.net/projects/flashpage/${NORM} and compile it."
+    echo "Type \"${REDF}D${NORM}\" ${CYAF}to download FLASH binary${NORM} from"
+    echo "  ${REDF}http://sourceforge.net/projects/flashpage/${NORM} (available only for Windows)."
+    echo "Type \"${REDF}B${NORM}\" ${CYAF}to copy FLASH 1.2.11 binary available together with the script${NORM}"
     echo "  (recommended, available for Linux and Mac OS X)."
-    echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
-    echo "  See \"brew info homebrew/science/flash\" for more details."
-    echo "Type \"M\" for manual installation - script will exit and you will have to"
+    echo "Type \"${REDF}H${NORM}\" ${CYAF}for installation using Homebrew${NORM} (only for Mac OS X, recommended)."
+    echo "  See \"${REDF}brew info homebrew/science/flash${NORM}\" for more details."
+    echo "Type \"${REDF}M${NORM}\" ${CYAF}for manual installation${NORM} - script will exit and you will have to"
     echo "  install FLASH yourselves."
     read FLASH
     while :
@@ -789,7 +789,7 @@ function compileflash {
 	  echo "Downloading FLASH source code"
 	  $DOWNLOADER FLASH-1.2.11.tar.gz http://downloads.sourceforge.net/project/flashpage/FLASH-1.2.11.tar.gz || {
 	    echo
-	    echo "Download failed. Please, go to http://sourceforge.net/projects/flashpage/files/"
+	    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download failed.${NORM} Please, go to ${REDF}http://sourceforge.net/projects/flashpage/files/${NORM}"
 	    echo "  download FLASH-*.tar.gz, compile it manually and ensure it is in PATH."
 	    echo
 	    exit 1
@@ -812,7 +812,7 @@ function compileflash {
 	      echo "Downloading FLASH for $OS"
 	      $DOWNLOADER FLASH-1.2.11-windows-bin.zip http://downloads.sourceforge.net/project/flashpage/FLASH-1.2.11-windows-bin.zip || {
 		echo
-		echo "Download failed. Please, go to http://sourceforge.net/projects/flashpage/files/"
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download failed.${NORM} Please, go to ${REDF}http://sourceforge.net/projects/flashpage/files/${NORM}"
 		echo "  download FLASH-*windows-bin.zip, unpack it and ensure it is in PATH."
 		echo
 		exit 1
@@ -847,11 +847,11 @@ function compileflash {
 	  if [ "$OS" == "Mac" ]; then			
 	    { echo "Installing FLASH using Homebrew" &&
 	    brew install homebrew/science/flash &&
-	    echo "\"FLASH\" is available. OK."
+	    echo "\"${REDF}FLASH${NORM}\" is available. ${GREF}OK.${NORM}"
 	    } || {
 	      echo
-	      echo "Installation of \"FLASH\" failed. Please, do it manually. For details see"
-	      echo "\"brew info homebrew/science/flash\" and \"brew help\"."
+	      echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Installation of${NORM} \"${REDF}FLASH${NORM}\" ${CYAF}failed.${NORM} Please, do it manually. For details see"
+	      echo "\"${REDF}brew info homebrew/science/flash${NORM}\" and \"${REDF}brew help${NORM}\"."
 	      echo
 	      exit 1
 	      }
@@ -862,11 +862,11 @@ function compileflash {
 	  break
 	  ;;
 	M|m)
-	  echo "Please, go to http://ccb.jhu.edu/software/FLASH/ and install FLASH and ensure it"
+	  echo "Please, go to ${REDF}http://ccb.jhu.edu/software/FLASH/${NORM} and install FLASH and ensure it"
 	  echo "  is in PATH"
 	  exit 2
 	  ;;
-	*) echo "Wrong option. Use C, S, D, B, H or M." && read FLASH;;
+	*) echo "${CYAF}Wrong option.${NORM} Use ${REDF}C${NORM}, ${REDF}S${NORM}, ${REDF}D${NORM}, ${REDF}B${NORM}, ${REDF}H${NORM} or ${REDF}M${NORM}." && read FLASH;;
       esac
     done
   else
@@ -900,11 +900,11 @@ function compilefastx {
   make -s installcheck &&
   cd $WORKDIR &&
   echo &&
-  echo "\"fastq_to_fasta\" is available. OK."
+  echo "\"${REDF}fastq_to_fasta${NORM}\" is available. ${GREF}OK.${NORM}"
   } || {
     echo
-    echo "Compilation failed. Please, go to"
-    echo "  http://hannonlab.cshl.edu/fastx_toolkit/download.html, download latest"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please, go to"
+    echo "  ${REDF}http://hannonlab.cshl.edu/fastx_toolkit/download.html${NORM}, download latest"
     echo "  libgtextutils-*.tar.gz and fastx_toolkit-*.tar.bz2, compile them and ensure"
     echo "  they are in PATH."
     echo
@@ -913,9 +913,9 @@ function compilefastx {
   }
 
 # Check if fastq_to_fasta is available
-{ command -v fastq_to_fasta >/dev/null 2>&1 && echo "\"fastq_to_fasta\" is available. OK."; } || {
+{ command -v fastq_to_fasta >/dev/null 2>&1 && echo "\"${REDF}fastq_to_fasta${NORM}\" is available. ${GREF}OK.${NORM}"; } || {
   echo
-  echo >&2 "\"fastq_to_fasta\" is required but not installed or available in PATH."
+  echo >&2 "\"${REDF}fastq_to_fasta${NORM}\" is required but not installed or available in PATH."
   if [ "$STARTINI" == "I" ]; then
     echo
     echo "Type \"C\" to compile FASTX-Toolkit from source available together with this"
@@ -995,7 +995,7 @@ function compilefastx {
 	  if [ "$OS" == "Mac" ]; then			
 	    { echo "Installing FASTX Toolkit using Homebrew" &&
 	    brew install homebrew/science/fastx_toolkit &&
-	    echo "\"FASTX Toolkit\" is available. OK."
+	    echo "\"FASTX Toolkit\" is available. ${GREF}OK.${NORM}"
 	    } || {
 	      echo
 	      echo "Installation of \"FASTX Toolkit\" failed. Please, do it manually. For details see"
@@ -1152,7 +1152,7 @@ function renamefastanames {
     N=$((++N)) &&
     echo $LINE | sed -e 's/^>.*$/>'$N'/'
     done < $1 > $2 || {
-      echo "${BOLD}Error!${NORM} Renaming failed. Aborting. Ensure $1"
+      echo "${REDF}${BOLD}Error!${NORM} Renaming failed. Aborting. Ensure $1"
       echo "  has as names of sequences only unique numbers (nothing else)."
       echo
       exit 1
@@ -1201,7 +1201,7 @@ echo
 echo "Launching BLAT between the transcriptome itself"
 blat -t=dna -q=dna -noHead -out=psl $INPUTFILE $INPUTFILE $BLATOUT || {
   echo
-  echo "${BOLD}Error!${NORM} BLAT failed. Aborting. Check if $INPUTFILE is correct."
+  echo "${REDF}${BOLD}Error!${NORM} BLAT failed. Aborting. Check if $INPUTFILE is correct."
   echo
   exit 1
   }
@@ -1212,7 +1212,7 @@ echo
 echo "Filtering for unique transcripts:"
 { cut -f 10 $BLATOUT | uniq -c | awk '{print$1}' | sort | uniq -c; } || {
   echo
-  echo "${BOLD}Error!${NORM} Filtering of BLAT output failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Filtering of BLAT output failed. Aborting."
   echo "Check if files $INPUTFILE and $BLATOUT are correct."
   echo
   exit 1
@@ -1227,7 +1227,7 @@ echo
 echo "Making list of unique transcripts"
 cut -f 10 $BLATOUT | uniq -c | awk '{if($1==1){print $0}}' | awk '{print $2}' | awk '{printf "%012d\n", $0;}' > $UNIQUELIST || {
   echo
-  echo "${BOLD}Error!${NORM} Making list of unique transcripts failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Making list of unique transcripts failed. Aborting."
   echo "Check if files $BLATOUT and $INPUTFILE are correct."
   echo
   exit 1
@@ -1239,7 +1239,7 @@ echo
 echo "Converting original data into TXT for subsequent joining"
 fasta2tab $INPUTFILE $INPUTTAB || {
   echo
-  echo "${BOLD}Error!${NORM} Conversion of $INPUTFILE failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Conversion of $INPUTFILE failed. Aborting."
   echo "Check if $INPUTFILE is valid FASTA file."
   echo
   exit 1
@@ -1249,7 +1249,7 @@ echo
 echo "Sorting unique transcripts"
 { awk '{$1=sprintf("%012d", $1); print $0}' $INPUTTAB | sort > $SORTEDINPUT; } || {
   echo
-  echo "${BOLD}Error!${NORM} Sorting of unique transcripts failed. Aborting. Check if"
+  echo "${REDF}${BOLD}Error!${NORM} Sorting of unique transcripts failed. Aborting. Check if"
   echo "$INPUTFILE is correct FASTA file and check if file $INPUTTAB is correct."
   echo
   exit 1
@@ -1259,7 +1259,7 @@ echo
 # Apply the join command
 join -j1 $UNIQUELIST $SORTEDINPUT > $JOINEDTS || {
   echo
-  echo "${BOLD}Error!${NORM} Joining failed. Aborting. Check files"
+  echo "${REDF}${BOLD}Error!${NORM} Joining failed. Aborting. Check files"
   echo "$UNIQUELIST and $SORTEDINPUT if they have same number of lines."
   echo
   exit 1
@@ -1270,7 +1270,7 @@ echo
 echo "Converting to FASTA"
 sed 's/ /\t/g' $JOINEDTS > $JOINEDTABS || {
   echo
-  echo "${BOLD}Error!${NORM} Conversion of $JOINEDTS to FASTA failed."
+  echo "${REDF}${BOLD}Error!${NORM} Conversion of $JOINEDTS to FASTA failed."
   echo "Aborting. Check if file $JOINEDTS is correct."
   echo
   exit 1
@@ -1279,7 +1279,7 @@ sed 's/ /\t/g' $JOINEDTS > $JOINEDTABS || {
 echo
 awk '{print ">"$1"\n"$2}' $JOINEDTABS > $JOINEDFA || {
   echo
-  echo "${BOLD}Error!${NORM} Conversion of $JOINEDTS to FASTA failed."
+  echo "${REDF}${BOLD}Error!${NORM} Conversion of $JOINEDTS to FASTA failed."
   echo "Aborting. Check if file $JOINEDTABS is correct."
   echo
   exit 1
@@ -1303,7 +1303,7 @@ echo "Creating a reference plastome index"
 echo
 bowtie2-build $REFERENCECP $REFERENCECP2 || {
   echo
-  echo "${BOLD}Error!${NORM} Creating a reference plastome index with bowtie2-build failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Creating a reference plastome index with bowtie2-build failed. Aborting."
   echo "Check if file $REFERENCECP is correct."
   echo
   exit 1
@@ -1316,7 +1316,7 @@ echo "Mapping cpDNA reads to the reference plastome. This may take longer time."
 echo
 bowtie2 -x $REFERENCECP2 -1 $INPUTFQ1 -2 $INPUTFQ2 -S $BOWTIE2CP || {
   echo
-  echo "${BOLD}Error!${NORM} Mapping cpDNA reads to the reference plastome with bowtie2 failed."
+  echo "${REDF}${BOLD}Error!${NORM} Mapping cpDNA reads to the reference plastome with bowtie2 failed."
   echo "Aborting. Check if files $REFERENCECP,"
   echo "$REFERENCECP2, $INPUTFQ1"
   echo "and $INPUTFQ2 are correct."
@@ -1331,7 +1331,7 @@ echo
 echo "Converting SAM to BAM. This may take longer time."
 samtools view -bT $REFERENCECP $BOWTIE2CP > $CPBAM || {
   echo
-  echo "${BOLD}Error!${NORM} Conversion of SAM to BAM with samtools failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Conversion of SAM to BAM with samtools failed. Aborting."
   echo "Check if files $REFERENCECP and $BOWTIE2CP are correct."
   echo
   exit 1
@@ -1345,7 +1345,7 @@ echo
 echo "Removing cpDNA reads. This may take longer time."
 bam2fastq --no-aligned $CPBAM -o $FASTQNOCP#.fq || {
   echo
-  echo "${BOLD}Error!${NORM} Removal of cpDNA reads with bam2fastq failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Removal of cpDNA reads with bam2fastq failed. Aborting."
   echo "Check if file $CPBAM is correct."
   echo
   exit 1
@@ -1368,7 +1368,7 @@ if [ -n "$REFERENCEMT" ]; then
   echo
   bowtie2-build $REFERENCEMT $REFERENCEMT2 || {
     echo
-    echo "${BOLD}Error!${NORM} Creating of reference mitochondrion index with bowtie2-build failed."
+    echo "${REDF}${BOLD}Error!${NORM} Creating of reference mitochondrion index with bowtie2-build failed."
     echo "Aborting. Check if files $REFERENCEMT and $REFERENCEMT2 are correct."
     echo
     exit 1
@@ -1381,7 +1381,7 @@ if [ -n "$REFERENCEMT" ]; then
   echo
   bowtie2 -x $REFERENCEMT2 -1 `echo $FASTQNOCP`_1.fq -2 `echo $FASTQNOCP`_2.fq -S $BOWTIE2MT || {
     echo
-    echo "${BOLD}Error!${NORM} Mapping mtDNA reads to reference mitochondrion with bowtie2 failed."
+    echo "${REDF}${BOLD}Error!${NORM} Mapping mtDNA reads to reference mitochondrion with bowtie2 failed."
     echo "Aborting. Check if files $REFERENCEMT2,"
     echo "`echo $FASTQNOCP`_1.fq and `echo $FASTQNOCP`_2.fq are correct."
     echo
@@ -1394,7 +1394,7 @@ if [ -n "$REFERENCEMT" ]; then
   echo "Converting SAM to BAM. This may take longer time."
   samtools view -bT $REFERENCEMT $BOWTIE2MT > $MTBAM || {
     echo
-    echo "${BOLD}Error!${NORM} Conversion of SAM to BAM failed. Aborting. Check if files"
+    echo "${REDF}${BOLD}Error!${NORM} Conversion of SAM to BAM failed. Aborting. Check if files"
     echo "$REFERENCEMT and $BOWTIE2MT are correct."
     echo
     exit 1
@@ -1408,7 +1408,7 @@ if [ -n "$REFERENCEMT" ]; then
   echo "Removing mtDNA reads. This may take longer time."
   bam2fastq --no-aligned $MTBAM -o $FASTQNOMT#.fq || {
     echo
-    echo "${BOLD}Error!${NORM} Removal of mtDNA reads failed. Aborting."
+    echo "${REDF}${BOLD}Error!${NORM} Removal of mtDNA reads failed. Aborting."
     echo "Check if file $MTBAM is correct."
     echo
     exit 1
@@ -1423,7 +1423,7 @@ if [ -n "$REFERENCEMT" ]; then
   echo
   flash -o $FLASHOUT -M $FLASHM `echo $FASTQNOMT`_1.fq `echo $FASTQNOMT`_2.fq || {
     echo
-    echo "${BOLD}Error!${NORM} Combining paired-end reads failed. Aborting. Check if files"
+    echo "${REDF}${BOLD}Error!${NORM} Combining paired-end reads failed. Aborting. Check if files"
     echo "$REFERENCEMT, `echo $FASTQNOMT`_1.fq and `echo $FASTQNOMT`_2.fq are correct."
     echo
     exit 1
@@ -1438,7 +1438,7 @@ if [ -n "$REFERENCEMT" ]; then
     echo
     flash -o $FLASHOUT -M $FLASHM `echo $FASTQNOCP`_1.fq `echo $FASTQNOCP`_2.fq || {
       echo
-      echo "${BOLD}Error!${NORM} Combining paired-end reads failed. Aborting. Check if files"
+      echo "${REDF}${BOLD}Error!${NORM} Combining paired-end reads failed. Aborting. Check if files"
       echo "$REFERENCECP, `echo $FASTQNOCP`_1.fq and `echo $FASTQNOCP`_2.fq are correct."
       echo
       exit 1
@@ -1456,7 +1456,7 @@ echo
 echo "Converting FASTQ to FASTA. This may take longer time."
 fastq_to_fasta -i $FLASHOUT.extendedFrags.fastq -o $FLASHOUT.extendedFrags.fa || {
   echo
-  echo "${BOLD}Error!${NORM} Conversion of FASTQ to FASTA failed. Aborting. Check if file"
+  echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTQ to FASTA failed. Aborting. Check if file"
   echo "$FLASHOUT.extendedFrags.fastq is correct."
   echo
   exit 1
@@ -1471,7 +1471,7 @@ echo "BLAT between the unique transcripts and the genome skimming data."
 echo "This may take longer time."
 blat -t=dna -q=dna -minIdentity=$BLATIDENT -out=pslx $JOINEDFA $FLASHOUT.extendedFrags.fa $BLATOUTFIN || {
   echo
-  echo "${BOLD}Error!${NORM} BLAT between the unique transcripts and the genome skimming data failed."
+  echo "${REDF}${BOLD}Error!${NORM} BLAT between the unique transcripts and the genome skimming data failed."
   echo "Aborting. Check if files $JOINEDFA and $FLASHOUT.extendedFrags.fa are correct."
   echo
   exit 1
@@ -1490,7 +1490,7 @@ echo
 echo "Modifying PSLX BLAT output for usage in Geneious"
 { sed 1,5d $BLATOUTFIN | cut -f14,$PSLXCUT | awk '{n=split($2,a,",");for(i=1;i<=n;i++)print $1"_"NR"_"i,a[i]}' | sed 's/^/>/' | sed 's/ /\n/' > $BLATOUTFIN2; } || {
   echo
-  echo "${BOLD}Error!${NORM} Modifying PSLX BLAT output failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Modifying PSLX BLAT output failed. Aborting."
   echo "Check if file $BLATOUTFIN is correct."
   echo
   exit 1
@@ -1505,7 +1505,7 @@ echo
 echo "Converting FASTA to TAB"
 fasta2tab $BLATOUTFIN2 $TAB || {
   echo
-  echo "${BOLD}Error!${NORM} Conversion of FASTA to TAB failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA to TAB failed. Aborting."
   echo "Check if file $BLATOUTFIN2 is correct."
   echo
   exit 1
@@ -1514,7 +1514,7 @@ echo
 
 { awk '{print $1"\t"length($2)"\t"$2}' $TAB | awk '{sum+=$2}END{print sum}'; } || {
   echo
-  echo "${BOLD}Error!${NORM} Conversion of FASTA to TAB failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA to TAB failed. Aborting."
   echo "Check if file $TAB is correct."
   echo
   exit 1
@@ -1527,7 +1527,7 @@ echo
 echo "Counting number of times each transcript hit a genom skim read"
 { cut -f1 -d_ $TAB | sort | uniq -c | sort -n -r > $TABLIST; } || {
   echo
-  echo "${BOLD}Error!${NORM} Counting of number of times each transcript hit a genom skim read failed."
+  echo "${REDF}${BOLD}Error!${NORM} Counting of number of times each transcript hit a genom skim read failed."
   echo "Aborting. Check if file $TAB is correct."
   echo
   exit 1
@@ -1538,7 +1538,7 @@ echo
 echo "Listing transcripts with >$BLATSCORE BLAT scores"
 { awk '$1>'"$BLATSCORE"'' $TABLIST | awk '{print $2}' > $TABBLAT; } || {
   echo
-  echo "${BOLD}Error!${NORM} Listing of transcripts with >$BLATSCORE BLAT scores failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Listing of transcripts with >$BLATSCORE BLAT scores failed. Aborting."
   echo "Check if file $TABLIST is correct."
   echo
   exit 1
@@ -1549,7 +1549,7 @@ echo
 echo "Removing transcripts with >$BLATSCORE BLAT score"
 grep -v -f $TABBLAT $TAB > $TABREMOVED || {
   echo
-  echo "${BOLD}Error!${NORM} Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting."
   echo "Check if files $TABBLAT and $TAB are correct."
   echo
   exit 1
@@ -1558,7 +1558,7 @@ echo
 
 { awk '{print $1"\t"length($2)"\t"$2}' $TABREMOVED | awk '{sum+=$2}END{print sum}'; } || {
   echo
-  echo "${BOLD}Error!${NORM} Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting."
   echo
   exit 1
   }
@@ -1568,7 +1568,7 @@ echo
 echo "Converting TAB to FASTA and removing sequences with \"n\""
 { grep -v n $TABREMOVED | sed 's/^/>/' | sed 's/\t/\n/' > $FINALA; } || {
   echo
-  echo "${BOLD}Error!${NORM} Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting."
   echo "Check if file $TABREMOVED is correct."
   echo
   exit 1
@@ -1576,7 +1576,7 @@ echo "Converting TAB to FASTA and removing sequences with \"n\""
 
 grep -v n $TABREMOVED | awk '{print $1"\t"length($2)}' | awk '{s+=$2;a++}END{print s}' || {
   echo
-  echo "${BOLD}Error!${NORM} Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting."
   echo "Check if file $TABREMOVED is correct."
   echo
   exit 1
@@ -1587,7 +1587,7 @@ echo "Removing unneeded temporal files"
 if [ -n "$REFERENCEMT" ]; then
   rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $REFERENCEMT2* $BOWTIE2MT $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
     echo
-    echo "${BOLD}Error!${NORM} Removal of temporal files failed. Remove following files manually:"
+    echo "${REDF}${BOLD}Error!${NORM} Removal of temporal files failed. Remove following files manually:"
     echo "$UNIQUELIST, $INPUTTAB, $SORTEDINPUT,"
     echo "$JOINEDTS, $JOINEDTABS, $REFERENCECP2*,"
     echo "$BOWTIE2CP, $REFERENCEMT2*, $BOWTIE2MT,"
@@ -1598,7 +1598,7 @@ if [ -n "$REFERENCEMT" ]; then
   else
     rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
       echo
-      echo "${BOLD}Error!${NORM} Removal of temporal files failed. Remove following files manually:"
+      echo "${REDF}${BOLD}Error!${NORM} Removal of temporal files failed. Remove following files manually:"
       echo "$UNIQUELIST, $INPUTTAB, $SORTEDINPUT,"
       echo "$JOINEDTS, $JOINEDTABS, $REFERENCECP2*,"
       echo "$BOWTIE2CP, $FLASHOUT.extendedFrags.fastq, $TAB,"
@@ -1610,7 +1610,7 @@ if [ -n "$REFERENCEMT" ]; then
 # List kept files which user can use for another analysis
 echo
 echo "Following files are kept for possible later usage (see manual for details):"
-echo "================================================================================"
+echo "${BLUF}================================================================================${NORM}"
 if [ -n "$REFERENCEMT" ]; then
   if [ "$RENAMEDFASTASEQENCES" == "YES" ]; then
     echo "0)  List of old names of FASTA sequences in $INPUTFILE0 and"
@@ -1662,7 +1662,7 @@ if [ -n "$REFERENCEMT" ]; then
     echo "8) Final FASTA sequences for usage in Geneious:"
     echo "$FINALA"
   fi
-echo "================================================================================"
+echo "${BLUF}================================================================================${NORM}"
 confirmgo
 
 echo
@@ -1671,7 +1671,7 @@ echo
 echo "Resulting FASTA was saved as"
 echo "${BOLD}$FINALA${NORM} for usage in Geneious (step 7 of the pipeline)."
 echo "Use this file in next step of the pipeline. See README and manual for details."
-echo "================================================================================"
+echo "${BLUF}================================================================================${NORM}"
 confirmgo
 
 echo "Run Geneious (tested with versions 6, 7 and 8). See README and manual for details."

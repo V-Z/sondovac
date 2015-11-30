@@ -61,7 +61,7 @@
 
 % Title page
 \maketitle
-\textbf{Sondovač}\footnote{English pronunciation is "Sondovach".} is a script to create orthologous low-copy nuclear probes from transcriptome and genome skim data for target enrichment \citep{Schmickl2016}.
+\textbf{Sondovač}\footnote{English pronunciation is "Sondovach". The word is Czech neologism meaning something like "The Prober" or "The Probe Maker".} is a script to create orthologous low-copy nuclear probes from transcriptome and genome skim data for target enrichment \citep{Schmickl2016}. See \href{https://github.com/V-Z/sondovac/wiki}{https://github.com/V-Z/sondovac/wiki}.
 
 \begin{abstract}
 Phylogenetics benefits from using a large number of putatively independent nuclear loci and the combination with other sources of information, such as the plastid and mitochondrial genome. Selecting such orthologous low-copy nuclear (LCN) loci is still a challenge for non-model organisms. In recently published phylogenies based on target enrichment of several hundred LCN genes, these loci were selected from transcriptomes, genomes, gene expression studies, the literature, or a combination of these sources. Automated bioinformatic pipelines for the selection of LCN genes are, however, largely absent. We created a user-friendly, automated and interactive script named Sondovač to design LCN loci by a comparison between transcriptome and genome skim data. The script is licensed under open-source license GPL v.3 allowing further modifications. It runs on major Linux distributions and Mac OS~X. Strong bioinformatics skills and access to high-performance computer clusters are not required; Sondovač runs on a standard desktop computer equipped with modern CPU like Intel i5 or i7.
@@ -83,7 +83,7 @@ High-throughput sequencing (HTS) has the potential to greatly increase the amoun
 
 Currently, target enrichment (sequence capture) of hundreds of loci is becoming increasingly popular in phylogenetics. In animal phylogenomics non-exonic or partly exonic ultraconserved elements and their quite variable flanking regions are often utilized \citep[e.g.][]{Faircloth2012, Hedtke2013, Smith2014}. For plant phylogenetics, low-copy nuclear (LCN) genes are targeted \citep{Mandel2014, Weitemier2014, Grover2015, Heyduk2015, Mandel2015, Nicholls2015, Stephens2015a, Stephens2015} due to the paucity of ultraconserved nuclear sequences \citep{Reneker2012}. Target sequencing strategies for plant nuclear genomes are largely lineage-specific, requiring the de novo design of target enrichment probes. \citet{Chamala2015a} recently introduced a pipeline for phylogenetic marker development in angiosperms using transcriptomes, and they obtained several hundred putative LCN genes that can be utilized at three phylogenetic levels (genus, family, order); however empirical evidence for the phylogenetic utility of these loci was not demonstrated. Alternative phylogenetic marker developments, also utilizing transcriptomes \citep{Pillon2014, Rothfels2013, Tonnabel2014}, resulted in a much smaller number (up to 20) of mainly LCN loci, but these loci were evaluated with PCR in the empirical datasets, not target enrichment. In recently published phylogenies based on target enrichment of several hundred LCN genes these loci were selected from transcriptomes, gene expression studies, the literature, or a combination of these sources \citep{Mandel2014, Grover2015, Heyduk2015, Mandel2015, Nicholls2015, Stephens2015a, Stephens2015}. \citet{Weitemier2014} designed LCN probes for target enrichment based on a combination of transcriptome and genome data. The limitation of this probe design pipeline is that (draft) genomes are still infrequent, especially for non-model species, and are costly to generate. This limitation also applies to the approach of \citet{DeSousa2014}, who selected 50 LCN loci from a genomic source and amplified them using target enrichment. Except for \citet{Chamala2015a}, who offer a user-friendly but empirically untested probe design pipeline, and \citet{Weitemier2014}, whose Hyb-Seq pipeline is designed for more advanced users, no automated probe design pipeline for LCN genes is currently available.
 
-In this study \citep{Schmickl2016} we developed a novel probe design pipeline for targeting orthologous LCN loci for phylogenetic reconstruction by using genome skim and transcriptome data. In particular, genome skim data of one accession of the studied plant group were combined with a congeneric transcriptome from the 1000 Plants (1KP) initiative (\href{http://www.onekp.com/}{http://www.onekp.com/}). We implemented our software workflow in the user-friendly, automated and interactive BASH script Sondovač, which allows a straightforward design of LCN probes also for users with limited bioinformatics skills.
+In this study \citep{Schmickl2016} we developed a novel probe design pipeline for targeting orthologous LCN loci for phylogenetic reconstruction by using genome skim and transcriptome data. In particular, genome skim data of one accession of the studied plant group were combined with a congeneric transcriptome from the 1000 Plants (1KP) initiative (\href{http://onekp.com/}{http://onekp.com/}). We implemented our software workflow in the user-friendly, automated and interactive BASH script Sondovač, which allows a straightforward design of LCN probes also for users with limited bioinformatics skills.
 
 Sondovač workflow is divided into three parts (see details at page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow}):
 
@@ -400,15 +400,15 @@ We recommend to launch Sondovač at least for first time in an interactive mode,
 If you are not familiar with the usage of command line, see some basic tutorial first. You can try some of those:
 
 \begin{itemize}
-\item \href{https://activedoc.opensuse.org/book/opensuse-start-up/chapter-17-shell-basics}{https://activedoc.opensuse.org/book/opensuse-start-up/chapter-17-shell-basics}
-\item \href{https://help.ubuntu.com/community/UsingTheTerminal}{https://help.ubuntu.com/community/UsingTheTerminal}
-\item \href{https://www.gnu.org/software/bash/manual/}{https://www.gnu.org/software/bash/manual/} (advanced -- full reference manual)
-\item \href{http://ubuntuguide.org/}{http://ubuntuguide.org/}
-\item \href{https://www.debian.org/doc/manuals/debian-reference/ch01.en.html}{https://www.debian.org/doc/manuals/debian-reference/ch01.en.html}
-\item \href{https://en.wikibooks.org/wiki/Guide_to_Unix}{https://en.wikibooks.org/wiki/Guide$\_$to$\_$Unix}
-\item \href{http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html}{http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html}
-\item \href{https://trapa.cz/en/course-linux-command-line-2015}{https://trapa.cz/en/course-linux-command-line-2015}
-\item \href{https://docs.fedoraproject.org/en-US/Fedora/22/html/System_Administrators_Guide}{https://docs.fedoraproject.org/en-US/Fedora/22/html/System$\_$Administrators$\_$Guide}
+  \item \href{https://activedoc.opensuse.org/book/opensuse-start-up/chapter-17-shell-basics}{https://activedoc.opensuse.org/book/opensuse-start-up/chapter-17-shell-basics}
+  \item \href{https://help.ubuntu.com/community/UsingTheTerminal}{https://help.ubuntu.com/community/UsingTheTerminal}
+  \item \href{https://www.gnu.org/software/bash/manual/}{https://www.gnu.org/software/bash/manual/} (advanced -- full reference manual)
+  \item \href{http://ubuntuguide.org/}{http://ubuntuguide.org/}
+  \item \href{https://www.debian.org/doc/manuals/debian-reference/ch01.en.html}{https://www.debian.org/doc/manuals/debian-reference/ch01.en.html}
+  \item \href{https://en.wikibooks.org/wiki/Guide_to_Unix}{https://en.wikibooks.org/wiki/Guide$\_$to$\_$Unix}
+  \item \href{http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html}{http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html}
+  \item \href{https://trapa.cz/en/course-linux-command-line-2015}{https://trapa.cz/en/course-linux-command-line-2015}
+  \item \href{https://docs.fedoraproject.org/en-US/Fedora/22/html/System_Administrators_Guide}{https://docs.fedoraproject.org/en-US/Fedora/22/html/System$\_$Administrators$\_$Guide}
 \end{itemize}
 
 \subsection{Geneious}
@@ -517,44 +517,44 @@ Sondovač requires certain software to be installed (see Table~\ref{software-lin
 \label{vocabulary}
 
 \begin{description}
-\item[Binary] An application in form understandable by the computer, but usually not transferable among operating systems and/or hardware platforms. Binaries in Windows usually have extension *.exe, in UNIX there use to be no extension.
-\item[BASH] "The command line" -- fully featured programming scripting language accessible through terminal of any UNIX-based operating system (any Linux, Mac OS~X, Solaris, any variant of BSD and more). BASH scripts usually have extension *.sh.
-\item[BSD] Group of popular UNIX-based operating systems. See \href{https://en.wikipedia.org/wiki/Berkeley_Software_Distribution}{https://en.wikipedia.org/wiki/\\Berkeley$\_$Software$\_$Distribution}.
-\item[C] Popular programming language. Source code must be compiled for each operating system. See \href{https://en.wikipedia.org/wiki/C_%28programming_language%29}{https://en.wikipedia.org/wiki/C$\_$(programming$\_$language)}.
-\item[C++] Popular programming language. Source code must be compiled for each operating system. See \href{https://en.wikipedia.org/wiki/C%2B%2B}{https://en.wikipedia.org/wiki/C++}.
-\item[Centos] Popular Linux distribution. Community remake of RedHat Enterprise Linux. See \href{https://centos.org/}{https://centos.org/}.
-\item[Compilation] "Translation" of software application from the source code (text readable by human programmer) into binary form launchable by the computer. It requires special tools (compilers), and it usually must be done for every operating system and hardware platform.
-\item[Console] See "Shell".
-\item[Debian] One of the oldest and most popular Linux distributions. See \href{https://www.debian.org/}{https://www.debian.org/}.
-\item[Fedora] Popular Linux distribution developed together with RedHat Linux as its free community testing platform. See \href{https://getfedora.org/}{https://getfedora.org/}
-\item[GNU] Major project providing free software widely used in many operating systems, see \href{https://gnu.org/}{https://\\gnu.org/}.
-\item[Homebrew] Tool primarily for Mac OS~X (although there is also Linux version available) replacing practically missing package manager for this system. Can be used to install plenty of various applications as well as updating tools already available in Mac OS~X. See \href{http://brew.sh/}{http://brew.sh/}.
-\item[Java] Very popular programming language. It requires Java runtime environment to be installed, but the applications are very well transferable among operating systems. See \href{https://www.java.com/}{https://www.java.com/}.
-\item[Library] Pack of software tools and functions used by another applications.
-\item[License] Conditions under which the software is distributed. Can be very restrictive (typically paid software) or permissive (typically free and open-source software).
-\item[Linux] One of the most common variants of UNIX-based operating systems. Linux kernel is used by many developers, so that there are plenty of Linux distributions ("flavors") from various sources (e.g. Ubuntu and derivatives, openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.). They share many features although on the first look they can look differently. See \href{https://en.wikipedia.org/wiki/Linux}{https://en.wikipedia.org/wiki/Linux}.
-\item[Linux Mint] Popular Linux distribution based on Debian and Ubuntu. See \href{http://linuxmint.com/}{http://linuxmint.\\com/}.
-\item[Mac OS~X] Popular operating system produced by Apple. The system kernel is based on UNIX, see \href{https://www.apple.com/osx/}{https://www.apple.com/osx/}.
-\item[Open-source] Generally, source code of an application is available together with the application and can be under certain conditions defined in license modified, redistributed etc. See \href{https://en.wikipedia.org/wiki/Free_and_open-source_software}{https://en.wikipedia.org/wiki/Free$\_$and$\_$open-source$\_$software}.
-\item[openSUSE] Popular Linux distribution, see \href{https://www.opensuse.org/}{https://www.opensuse.org/}.
-\item[Operating system] Basic system running on your computer -- typically MS Windows (not supported by Sondovač, although it might be working), Mac OS~X or some Linux distribution (Ubuntu and derivatives, openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.).
-\item[Package] Software or its part, group of tools, library, etc. Basic unit of software management in most of UNIX systems (mainly Linux, Solaris, BSD, practically missing in Mac OS~X). Those systems use to have special applications (command line as well as graphical tools) to easily manage (install, remove, update) software.
-\item[Parameter(s)] Option(s) passed to any function/command line application to modify its usage. Some can be required, some are optional and some can be used only in particular cases. In case of shell applications, parameters are usually given in way like "application -X", "application -parameter", "application -Param SomeValue" and so on. See manual for particular application (e.g. "man application"), in case of Sondovač see page~\pageref{script-usage}.
-\item[PATH] Directories in the computer where the system is looking for installed software (in a UNIX-based system you can view it by the command "\texttt{echo \$PATH}"). If you need to modify it manually, see the documentation for your operating system.
-\item[Perl] Popular interpreted programming language excelling mainly in system tasks working with text. Perl scripts are easily transferable among operating systems. See \href{https://www.perl.org/}{https://www.perl.\\org/}.
-\item[RedHat] Probably the biggest Linux company providing mainly solutions for big companies. See \href{https://www.redhat.com/}{https://www.redhat.com/}.
-\item[Repository] Internet folder (available through HTTP or FTP) containing software packages for UNIX systems.
-\item[Scientific Linux] Popular Linux distribution. Community remake of RedHat Enterprise Linux. See \href{https://www.scientificlinux.org/}{https://www.scientificlinux.org/}.
-\item[Script] Software application. It requires an interpreter (application installed on the computer that is able to launch scripts written in a particular language), but the application itself is portable among operating systems and hardware architectures, and it is written in plain text, so that developers can easily modify it. Common examples are Python, Perl or BASH.
-\item[Shell] "The command line" -- the interface to interact with software using commands typed into the terminal window (See Figure~\ref{terminal}).
-\item[Solaris] Popular (mainly on servers) UNIX-based operating system, now developed by Oracle and including several independent clones. See \href{http://distrowatch.com/table.php?distribution=solaris}{http://distrowatch.com/table.php?distribu\\tion=solaris}.
-\item[Source code] Human-readable code written in any text editor used to develop any application. Applications written in interpreted languages (BASH, Perl, Python , \ldots) can be distributed just in form of source code (nothing else is required). Other programming languages (C, C++, \ldots) require compilation to get fully functional application.
-\item[SUSE Linux Enterprise (SLE)] Large Linux company providing mainly solutions for big companies. See \href{https://www.suse.com/}{https://www.suse.com/}.
-\item[Terminal] see "Shell".
-\item[Ubuntu] Popular Linux distribution, see \href{http://www.ubuntu.com/}{http://www.ubuntu.com/}. There are plenty of distributions based on Ubuntu. See \href{http://distrowatch.com/search.php?basedon=Ubuntu}{http://distrowatch.com/search.php?basedon=Ubuntu}.
-\item[Upstream] Developers usually support (e.g. by fixing of bugs) only newer versions of an application. If you use an older version and you encounter problems, no one will probably help you. Moreover, using old versions of software can be a security risk because of security issues fixed in newer versions.
-\item[Variable] Named value storing various information, one of basic part of any programming language, application, operating system.
-\item[UNIX (UNIX-like, UN*X, *nix,~\ldots)] Family of operating systems sharing the same logic, software architecture and plenty of tools. See \href{https://en.wikipedia.org/wiki/Unix-like}{https://en.wikipedia.org/wiki/Unix-like} for details.
+  \item[Binary] An application in form understandable by the computer, but usually not transferable among operating systems and/or hardware platforms. Binaries in Windows usually have extension *.exe, in UNIX there use to be no extension.
+  \item[BASH] "The command line" -- fully featured programming scripting language accessible through terminal of any UNIX-based operating system (any Linux, Mac OS~X, Solaris, any variant of BSD and more). BASH scripts usually have extension *.sh.
+  \item[BSD] Group of popular UNIX-based operating systems. See \href{https://en.wikipedia.org/wiki/Berkeley_Software_Distribution}{https://en.wikipedia.org/wiki/\\Berkeley$\_$Software$\_$Distribution}.
+  \item[C] Popular programming language. Source code must be compiled for each operating system. See \href{https://en.wikipedia.org/wiki/C_%28programming_language%29}{https://en.wikipedia.org/wiki/C$\_$(programming$\_$language)}.
+  \item[C++] Popular programming language. Source code must be compiled for each operating system. See \href{https://en.wikipedia.org/wiki/C%2B%2B}{https://en.wikipedia.org/wiki/C++}.
+  \item[Centos] Popular Linux distribution. Community remake of RedHat Enterprise Linux. See \href{https://centos.org/}{https://centos.org/}.
+  \item[Compilation] "Translation" of software application from the source code (text readable by human programmer) into binary form launchable by the computer. It requires special tools (compilers), and it usually must be done for every operating system and hardware platform.
+  \item[Console] See "Shell".
+  \item[Debian] One of the oldest and most popular Linux distributions. See \href{https://www.debian.org/}{https://www.debian.org/}.
+  \item[Fedora] Popular Linux distribution developed together with RedHat Linux as its free community testing platform. See \href{https://getfedora.org/}{https://getfedora.org/}
+  \item[GNU] Major project providing free software widely used in many operating systems, see \href{https://gnu.org/}{https://\\gnu.org/}.
+  \item[Homebrew] Tool primarily for Mac OS~X (although there is also Linux version available) replacing practically missing package manager for this system. Can be used to install plenty of various applications as well as updating tools already available in Mac OS~X. See \href{http://brew.sh/}{http://brew.sh/}.
+  \item[Java] Very popular programming language. It requires Java runtime environment to be installed, but the applications are very well transferable among operating systems. See \href{https://www.java.com/}{https://www.java.com/}.
+  \item[Library] Pack of software tools and functions used by another applications.
+  \item[License] Conditions under which the software is distributed. Can be very restrictive (typically paid software) or permissive (typically free and open-source software).
+  \item[Linux] One of the most common variants of UNIX-based operating systems. Linux kernel is used by many developers, so that there are plenty of Linux distributions ("flavors") from various sources (e.g. Ubuntu and derivatives, openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.). They share many features although on the first look they can look differently. See \href{https://en.wikipedia.org/wiki/Linux}{https://en.wikipedia.org/wiki/Linux}.
+  \item[Linux Mint] Popular Linux distribution based on Debian and Ubuntu. See \href{http://linuxmint.com/}{http://linuxmint.\\com/}.
+  \item[Mac OS~X] Popular operating system produced by Apple. The system kernel is based on UNIX, see \href{https://www.apple.com/osx/}{https://www.apple.com/osx/}.
+  \item[Open-source] Generally, source code of an application is available together with the application and can be under certain conditions defined in license modified, redistributed etc. See \href{https://en.wikipedia.org/wiki/Free_and_open-source_software}{https://en.wikipedia.org/wiki/Free$\_$and$\_$open-source$\_$software}.
+  \item[openSUSE] Popular Linux distribution, see \href{https://www.opensuse.org/}{https://www.opensuse.org/}.
+  \item[Operating system] Basic system running on your computer -- typically MS Windows (not supported by Sondovač, although it might be working), Mac OS~X or some Linux distribution (Ubuntu and derivatives, openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.).
+  \item[Package] Software or its part, group of tools, library, etc. Basic unit of software management in most of UNIX systems (mainly Linux, Solaris, BSD, practically missing in Mac OS~X). Those systems use to have special applications (command line as well as graphical tools) to easily manage (install, remove, update) software.
+  \item[Parameter(s)] Option(s) passed to any function/command line application to modify its usage. Some can be required, some are optional and some can be used only in particular cases. In case of shell applications, parameters are usually given in way like "application -X", "application -parameter", "application -Param SomeValue" and so on. See manual for particular application (e.g. "man application"), in case of Sondovač see page~\pageref{script-usage}.
+  \item[PATH] Directories in the computer where the system is looking for installed software (in a UNIX-based system you can view it by the command "\texttt{echo \$PATH}"). If you need to modify it manually, see the documentation for your operating system.
+  \item[Perl] Popular interpreted programming language excelling mainly in system tasks working with text. Perl scripts are easily transferable among operating systems. See \href{https://www.perl.org/}{https://www.perl.\\org/}.
+  \item[RedHat] Probably the biggest Linux company providing mainly solutions for big companies. See \href{https://www.redhat.com/}{https://www.redhat.com/}.
+  \item[Repository] Internet folder (available through HTTP or FTP) containing software packages for UNIX systems.
+  \item[Scientific Linux] Popular Linux distribution. Community remake of RedHat Enterprise Linux. See \href{https://www.scientificlinux.org/}{https://www.scientificlinux.org/}.
+  \item[Script] Software application. It requires an interpreter (application installed on the computer that is able to launch scripts written in a particular language), but the application itself is portable among operating systems and hardware architectures, and it is written in plain text, so that developers can easily modify it. Common examples are Python, Perl or BASH.
+  \item[Shell] "The command line" -- the interface to interact with software using commands typed into the terminal window (See Figure~\ref{terminal}).
+  \item[Solaris] Popular (mainly on servers) UNIX-based operating system, now developed by Oracle and including several independent clones. See \href{http://distrowatch.com/table.php?distribution=solaris}{http://distrowatch.com/table.php?distribu\\tion=solaris}.
+  \item[Source code] Human-readable code written in any text editor used to develop any application. Applications written in interpreted languages (BASH, Perl, Python , \ldots) can be distributed just in form of source code (nothing else is required). Other programming languages (C, C++, \ldots) require compilation to get fully functional application.
+  \item[SUSE Linux Enterprise (SLE)] Large Linux company providing mainly solutions for big companies. See \href{https://www.suse.com/}{https://www.suse.com/}.
+  \item[Terminal] see "Shell".
+  \item[Ubuntu] Popular Linux distribution, see \href{http://www.ubuntu.com/}{http://www.ubuntu.com/}. There are plenty of distributions based on Ubuntu. See \href{http://distrowatch.com/search.php?basedon=Ubuntu}{http://distrowatch.com/search.php?basedon=Ubuntu}.
+  \item[Upstream] Developers usually support (e.g. by fixing of bugs) only newer versions of an application. If you use an older version and you encounter problems, no one will probably help you. Moreover, using old versions of software can be a security risk because of security issues fixed in newer versions.
+  \item[Variable] Named value storing various information, one of basic part of any programming language, application, operating system.
+  \item[UNIX (UNIX-like, UN*X, *nix,~\ldots)] Family of operating systems sharing the same logic, software architecture and plenty of tools. See \href{https://en.wikipedia.org/wiki/Unix-like}{https://en.wikipedia.org/wiki/Unix-like} for details.
 \end{description}
 
 \section{Usage of Sondovač}
@@ -640,7 +640,7 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
   \end{itemize}
 \item[\texttt{-y \#\#}] Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details).
   \begin{itemize}
-    \item Step 5 of Sondovač, \texttt{sondovac$\_$part$\_$a.sh}. Step 11 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
+    \item Step 5 of Sondovač, \texttt{sondovac$\_$part$\_$a.sh}, and step 11, \texttt{sondovac$\_$part$\_$b.sh}.
     \item Consider the trade-off between probe specificity and number of remaining matching sequences for probe design. Sequence similarity is in percent.
     \item DEFAULT: 85
     \item OPTIONS: Integer ranging from 70 to 100
@@ -831,60 +831,67 @@ If you have any question or you encounter some problem, please, see \href{https:
 
 List of changes in released versions of Sondovač.
 
+\subsection{Version 0.99 release candidate released 2015-12- (GIT)}
+
+\begin{itemize}
+  \item Fixed error with some input files for part B
+  \item Finished colorization of command-line user interface (part B)
+\end{itemize}
+
 \subsection{Version 0.95 beta released 2015-11-27}
 
 \begin{itemize}
-\item Offer the possibility to choose between transcripts or genome skim sequences for further processing.
-\item Colorization of command-line user interface (incomplete).
-\item Added possibility to change -minIdentity parameter of BLAT in step 11, part B.
-\item Fixed problems with some transcriptome input files.
-\item Added possibility to set custom bait length.
-\item Added information about article in MER introducing Sondovač.
+  \item Offer the possibility to choose between transcripts or genome skim sequences for further processing.
+  \item Colorization of command-line user interface (incomplete).
+  \item Added possibility to change -minIdentity parameter of BLAT in step 11, part B.
+  \item Fixed problems with some transcriptome input files.
+  \item Added possibility to set custom bait length.
+  \item Added information about article in MER introducing Sondovač.
 \end{itemize}
 
 \subsection{Version 0.9 beta released 2015-10-23}
 
 \begin{itemize}
-\item Highly enhanced part B.
-\item Better handling of variable output from Geneious.
-\item Possibility to specify custom output files name.
-\item Full support for Linux distributions using DEB -- Debian, Ubuntu, Linux Mint and derivatives.
-\item Enhanced documentation.
-\item Support for Mac OS X, package management using Homebrew.
-\item Support for RedHat based Linux distributions -- Fedora, Centos and Scientific Linux and derivatives.
-\item Better compilation and installation of required software.
-\item For downloading automatically select if to use wget (preferred) or curl.
-\item Various fixes.
+  \item Highly enhanced part B.
+  \item Better handling of variable output from Geneious.
+  \item Possibility to specify custom output files name.
+  \item Full support for Linux distributions using DEB -- Debian, Ubuntu, Linux Mint and derivatives.
+  \item Enhanced documentation.
+  \item Support for Mac OS X, package management using Homebrew.
+  \item Support for RedHat based Linux distributions -- Fedora, Centos and Scientific Linux and derivatives.
+  \item Better compilation and installation of required software.
+  \item For downloading automatically select if to use wget (preferred) or curl.
+  \item Various fixes.
 \end{itemize}
 
 \subsection{Version 0.8 alpha released 2015-10-09}
 
 \begin{itemize}
-\item Usage of mitochondrial reference sequence is optional.
-\item Better formatting of script messages.
-\item Various fixes and enhancements.
+  \item Usage of mitochondrial reference sequence is optional.
+  \item Better formatting of script messages.
+  \item Various fixes and enhancements.
 \end{itemize}
 
 \subsection{Version 0.7 alpha released 2015-10-06}
 
 \begin{itemize}
-\item Fixed reported problems with sed differences among Linux and Mac OS X.
-\item Added more exhaustive documentation.
-\item Various fixes and enhancements.
+  \item Fixed reported problems with sed differences among Linux and Mac OS X.
+  \item Added more exhaustive documentation.
+  \item Various fixes and enhancements.
 \end{itemize}
 
 \subsection{Version 0.6 alpha released 2015-08-10}
 
 \begin{itemize}
-\item Fixed problems with some versions of output of Geneious.
-\item Better compilation and installation of required additional software packages.
-\item Various fixes and enhancements.
+  \item Fixed problems with some versions of output of Geneious.
+  \item Better compilation and installation of required additional software packages.
+  \item Various fixes and enhancements.
 \end{itemize}
 
 \subsection{Version 0.5 alpha released 2015-07-24}
 
 \begin{itemize}
-\item First public release, early alpha stage.
+  \item First public release, early alpha stage.
 \end{itemize}
 
 \section{Licenses}

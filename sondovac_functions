@@ -1,8 +1,8 @@
 # Functions required by probe design script
 
 # Version of the script
-SCRIPTVERSION=0.9
-RELEASEDATE=2015-10-23
+SCRIPTVERSION=0.95
+RELEASEDATE=2015-11-27
 # Web page of the script
 WEB="https://github.com/V-Z/sondovac/"
 
@@ -41,7 +41,7 @@ echo " #${NORM}        ${REDF}from transcriptome and genome skim data for target
 echo " #${NORM}                                                                            ${BLUF}#"
 echo " #${NORM}       Copyright (C) 2015 R. Schmickl, A. Liston, V. Zeisek and others      ${BLUF}#"
 echo " #${NORM}                                                                            ${BLUF}#"
-echo " #${NORM}          When using this script, please, cite Schmickl et al. 2015         ${BLUF}#"
+echo " #${NORM}          When using this script, please, cite Schmickl et al. 2016         ${BLUF}#"
 echo " #${NORM}                                                                            ${BLUF}#"
 echo " ##############################################################################${NORM}"
 echo
@@ -113,11 +113,13 @@ function checkmodef {
 function confirmgo {
   if [ "$STARTINI" == "I" ]; then
     echo
-    echo "${REDF}${BOLD}Press any key to continue...${NORM} (or press ${BOLD}Ctrl${NORM}+${BOLD}C${NORM} to exit the script)."
+    echo "${REDF}${BOLD}Press any key to continue...${NORM} (or press ${CYAF}${BOLD}Ctrl${NORM}+${CYAF}${BOLD}C${NORM} to ${CYAF}exit${NORM} the script)."
     read -n 1
     echo
     echo "${CYAF}Continuing...${NORM}"
     echo
+    else
+      echo
     fi
   }
 
@@ -126,14 +128,12 @@ function devrelease {
     echo
     echo "${REDF}${BOLD}Warning!${NORM} This is developmental, not fully tested version."
     echo "${MAGF}You may encounter problems and some functions are still missing.${NORM}"
-    echo "Please, report any issues and/or wishes to zeisek@natur.cuni.cz."
-    echo "We hope you enjoy the script, but. ;-)"
+    echo "Please, report any issues and/or wishes to ${REDF}zeisek@natur.cuni.cz${NORM}."
+    echo "We hope you enjoy the script anyway. ;-)"
     echo "Full release will be available soon..."
     echo
-    if [ "$STARTINI" == "I" ]; then
-      confirmgo
-      fi
-  }
+    confirmgo
+    }
 
 # Select tool for downloading - wget or curl
 function downloaderselector {
@@ -1054,7 +1054,7 @@ function checkblat {
 	      echo "\"${REDF}BLAT${NORM}\" is available. ${GREF}OK.${NORM}"
 	      } || {
 		echo
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Installation of \"${REDF}BLAT${NORM}\" failed.${NORM} Please, do it manually. For details see"
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Installation of${NORM} \"${REDF}BLAT${NORM}\" ${CYAF}failed.${NORM} Please, do it manually. For details see"
 		echo "\"${REDF}brew info homebrew/science/blat${NORM}\" and \"${REDF}brew help${NORM}\"."
 		echo
 		exit 1

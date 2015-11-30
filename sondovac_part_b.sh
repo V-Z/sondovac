@@ -231,7 +231,7 @@ function compilecdhit {
   cp -a cd-hit* $BIN/ &&
   cd $WORKDIR &&
   echo &&
-  echo "\"CD-HIT\" is available. OK."
+  echo "\"CD-HIT\" is available. ${GREF}OK.${NORM}"
   } || {
     echo
     echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please go to ${REDF}https://github.com/weizhongli/cdhit/releases${NORM}"
@@ -243,8 +243,8 @@ function compilecdhit {
   }
 
 # Check if cd-hit-est is available
-{ command -v cd-hit-est >/dev/null 2>&1 && echo "\"cd-hit-est\" is available. OK."; } || {
-  echo "\"cd-hit-est\" is required but not installed or available in PATH"
+{ command -v cd-hit-est >/dev/null 2>&1 && echo "\"${REDF}cd-hit-est${NORM}\" is available. ${GREF}OK.${NORM}"; } || {
+  echo "${CYAF}CD-HIT is required but not installed or available in PATH.${NORM}"
   if [ "$STARTINI" == "I" ]; then
   echo
   echo "Type \"${REDF}C${NORM}\" ${CYAF}to compile CD-HIT 4.6.4 from source available together with this script.${NORM}"
@@ -267,7 +267,14 @@ function compilecdhit {
       S|s)
 	downloaderselector
 	checktools unzip
-	$DOWNLOADER cd-hit-master.zip https://github.com/weizhongli/cdhit/archive/master.zip
+	$DOWNLOADER cd-hit-master.zip https://github.com/weizhongli/cdhit/archive/master.zip || {
+	  echo
+	  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download failed.${NORM} Please, go to"
+	  echo "  ${REDF}https://github.com/weizhongli/cdhit/releases/${NORM}"
+	  echo "  and download latest cd-hit-*.tar.gz and compile it manually."
+	  echo
+	  exit 1
+	  }
 	unzip -nq cd-hit-master.zip
 	compilecdhit cdhit-master
 	break
@@ -293,13 +300,13 @@ function compilecdhit {
 	;;
 	H|h)
 	  if [ "$OS" == "Mac" ]; then
-	    { echo "Installing \"CD-HIT\" using Homebrew" &&
+	    { echo "Installing \"${REDF}CD-HIT${NORM}\" using Homebrew" &&
 	    brew install homebrew/science/cd-hit &&
-	    echo "\"CD-HIT\" is available. OK."
+	    echo "\"${REDF}CD-HIT${NORM}\" is available. ${GREF}OK.${NORM}"
 	    } || {
 	      echo
-	      echo "Installation of \"CD-HIT\" failed. Please, do it manually. For details see"
-	      echo "\"brew info homebrew/science/cd-hit\" and \"brew help\"."
+	      echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Installation of${NORM} \"${REDF}CD-HIT${NORM}\" ${CYAF}failed.${NORM} Please, do it manually. For details see"
+	      echo "\"${REDF}brew info homebrew/science/cd-hit${NORM}\" and \"${REDF}brew help${NORM}\"."
 	      echo
 	      exit 1
 	      }
@@ -311,12 +318,12 @@ function compilecdhit {
 	  ;;
       M|m)
 	echo
-	echo "Please, go to http://weizhongli-lab.org/cd-hit/ and install CD-HIT and ensure"
+	echo "Please, go to ${REDF}http://weizhongli-lab.org/cd-hit/${NORM} and install CD-HIT and ensure"
 	echo "  it is in PATH."
 	echo
 	exit
 	;;
-      *) echo "Wrong option. Use C, S, B, H or M." && read CDHIT;;
+      *) echo "${CYAF}Wrong option.${NORM} Use ${REDF}C${NORM}, ${REDF}S${NORM}, ${REDF}B${NORM}, ${REDF}H${NORM} or ${REDF}M${NORM}." && read CDHIT;;
     esac
   done
 else
@@ -328,7 +335,7 @@ fi
 CHECKFILEREADOUT=""
 
 # Plastom reference in FASTA
-readinputfile -c "plastome reference sequence input file in FASTA format" $TSVLIST
+readinputfile -c "plastome reference sequence input file in FASTA format" $REFERENCECP
 REFERENCECP=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
@@ -387,52 +394,53 @@ PROBESEQUENCESCP="${OUTPUTFILENAME%.*}_possible_cp_dna_genes_in_probe_set.pslx"
 
 # Step 8: Retention of those contigs that comprise exons ≥ bait length (default is 120 bp) and have a certain locus length
 
-echo "Step 8 of the pipeline - retention of those contigs that comprise exons ≥ bait"
-echo "length ($BAITL bp) and have a certain locus length"
+echo
+echo "${REDF}Step 8${NORM} of the pipeline - retention of those contigs that comprise exons ≥ bait"
+echo "length (${CYAF}$BAITL${NORM} bp) and have a certain locus length"
 echo
 
 # Check if TSV output of Geneious contains at least requested columns
-REQUIREDCOLS="Required columns in `echo $TSVLIST` are \"# Sequences\",\n  \"% Pairwise Identity\", \"Description\", \"Mean Coverage\", \"Name\"\n  and \"Sequence Length\". Please, export the TSV file again."
+REQUIREDCOLS="Required columns in `echo $TSVLIST` are \"`echo ${CYAF}`# Sequences`echo ${NORM}`\",\n  \"`echo ${CYAF}`% Pairwise Identity`echo ${NORM}`\", \"`echo ${CYAF}`Description`echo ${NORM}`\", \"`echo ${CYAF}`Mean Coverage`echo ${NORM}`\", \"`echo ${CYAF}`Name`echo ${NORM}`\"\n  and \"`echo ${CYAF}`Sequence Length`echo ${NORM}`\". Please, export the TSV file again."
 echo
 if grep -q "# Sequences" $TSVLIST; then
-    echo "Column \"# Sequences\" is presented in $TSVLIST. OK."
+    echo "Column \"# Sequences\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
     if grep -q "Pairwise Identity" $TSVLIST; then
-      echo "Column \"Pairwise Identity\" is presented in $TSVLIST. OK."
+      echo "Column \"Pairwise Identity\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
       if grep -q "Description" $TSVLIST; then
-	echo "Column \"Description\" is presented in $TSVLIST. OK."
+	echo "Column \"Description\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
 	if grep -q "Mean Coverage" $TSVLIST; then
-	  echo "Column \"Mean Coverage\" is presented in $TSVLIST. OK."
+	  echo "Column \"Mean Coverage\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
 	  if grep -q "Name" $TSVLIST; then
-	    echo "Column \"Name\" is presented in $TSVLIST. OK."
+	    echo "Column \"Name\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
 	    if grep -q "Sequence Length" $TSVLIST; then
-	      echo "Column \"Sequence Length\" is presented in $TSVLIST. OK."
+	      echo "Column \"Sequence Length\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
 	    else
-	      echo "${REDF}${BOLD}Error!${NORM} Column \"Sequence Length\" is missing!"
+	      echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Sequence Length\" is missing!"
 	      echo -e "$REQUIREDCOLS"
 	      exit 1
 	    fi
 	  else
-	    echo "${REDF}${BOLD}Error!${NORM} Column \"Name\" is missing!"
+	    echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Name${NORM}\" is missing!"
 	    echo -e "$REQUIREDCOLS"
 	    exit 1
 	  fi
 	else
-	  echo "${REDF}${BOLD}Error!${NORM} Column \"Mean Coverage\" is missing!"
+	  echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Mean Coverage${NORM}\" is missing!"
 	  echo -e "$REQUIREDCOLS"
 	  exit 1
 	fi
       else
-	echo "${REDF}${BOLD}Error!${NORM} Column \"Description\" is missing!"
+	echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Description${NORM}\" is missing!"
 	echo -e "$REQUIREDCOLS"
 	exit 1
       fi
     else
-      echo "${REDF}${BOLD}Error!${NORM} Column \"Pairwise Identity\" is missing!"
+      echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Pairwise Identity${NORM}\" is missing!"
       echo -e "$REQUIREDCOLS"
       exit 1
     fi
   else
-    echo "${REDF}${BOLD}Error!${NORM} Column \"# Sequences\" is missing!"
+    echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}# Sequences${NORM}\" is missing!"
     echo -e "$REQUIREDCOLS"
     exit 1
   fi
@@ -441,16 +449,16 @@ echo
 # Check if TSV output of Geneious contains only required columns or more
 if egrep -q "# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[[:blank:]]+Mean Coverage[[:blank:]]+Name[[:blank:]]+Sequence Length" $TSVLIST
   then
-    echo "OK, $TSVLIST is correct input file."
+    echo "${REDF}$TSVLIST${NORM} is correct input file. ${GREF}OK.${NORM}"
     TSVLIST2=$TSVLIST
   else
-    echo "Input file $TSVLIST seems to contain more columns than required."
+    echo "Input file ${REDF}$TSVLIST${NORM} seems to contain more columns than required."
     echo "Needed columns will be extracted."
     $SCRIPTDIR/geneious_column_separator.pl $TSVLIST || {
       echo
       echo "${REDF}${BOLD}Error!${NORM} Extraction failed. Aborting."
-      echo "Either script $SCRIPTDIR/geneious_column_separator.pl"
-      echo "  is missing or there is something wrong with $TSVLIST"
+      echo "Either script ${REDF}$SCRIPTDIR/geneious_column_separator.pl${NORM}"
+      echo "  is missing or there is something wrong with ${REDF}$TSVLIST${NORM}"
       echo "Please, prepare required file manually."
       echo -e "$REQUIREDCOLS"
       echo
@@ -458,22 +466,22 @@ if egrep -q "# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[[
       }
     TSVLIST2="${TSVLIST%.*}.columns.tsv"
     echo "File with extracted columns was saved as"
-    echo "$TSVLIST2 for possible later usage."
+    echo "${REDF}$TSVLIST2${NORM} for possible later usage."
     confirmgo
   fi
 echo
 
 # Check the statistics
 
-echo "Assembly statistics"
+echo "${REDF}Assembly statistics${NORM}"
 echo
 
 # Check total number of bp
-echo "Total number of base pairs:"
+echo "${CYAF}Total number of base pairs:${NORM}"
 { cut -f6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | awk '{s+=$1}END{print s}'; } || {
   echo
-  echo "${REDF}${BOLD}Error!${NORM} Checking statistics failed. Aborting. Check if file"
-  echo "$TSVLIST2 is correct TSV file containing all required columns:"
+  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking statistics failed.${NORM} Aborting. Check if file"
+  echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns:"
   echo -e "$REQUIREDCOLS"
   echo
   exit 1
@@ -482,11 +490,11 @@ confirmgo
 echo
 
 # Check number of contigs
-echo "Number of contigs:"
+echo "${CYAF}Number of contigs:${NORM}"
 { cut -f6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | wc -l; } || {
   echo
-  echo "${REDF}${BOLD}Error!${NORM} Checking number of contigs failed. Aborting. Check if file"
-  echo "$TSVLIST2 is correct TSV file containing all required columns"
+  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking number of contigs failed.${NORM} Aborting. Check if file"
+  echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns"
   echo -e "$REQUIREDCOLS"
   echo
   exit 1
@@ -498,8 +506,8 @@ echo
 echo "Converting FASTA to TAB"
 fasta2tab $SEQUENCES $SEQUENCESTAB || {
   echo
-  echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
-  echo "Check if file $SEQUENCES is correct FASTA file."
+  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA into TAB failed.${NORM} Aborting."
+  echo "Check if file ${REDF}$SEQUENCES${NORM} is correct FASTA file."
   echo
   exit 1
   }
@@ -525,14 +533,14 @@ confirmgo
 echo
 
 # Genes of ≥960 bp (exons ≥120 bp), total bp
-echo "Genes of ≥960 bp (exons ≥$BAITL bp), total bp:"
+echo "Genes of ≥960 bp (exons ≥${CYAF}$BAITL${NORM} bp), total bp:"
 awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
 awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
 confirmgo
 echo
 
 # Genes of ≥600 bp (exons ≥120 bp), total bp
-echo "Genes of ≥600 bp (exons ≥$BAITL bp), total bp:"
+echo "Genes of ≥600 bp (exons ≥${CYAF}$BAITL${NORM} bp), total bp:"
 awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > $SEQUENCESPROBES600
 confirmgo
 echo
@@ -558,17 +566,17 @@ sed 's/^/Assembly_/' $SEQUENCESPROBES600 | cut -f1 -d " " | sort -k1,1 > $SEQUEN
 echo
 
 # Make a file with all exons ≥120 bp
-echo "Selecting ≥$BAITL bp exons"
+echo "Selecting ≥${CYAF}$BAITL${NORM} bp exons"
 awk '{print $1"\t"length($2)"\t"$2}' $SEQUENCESTABASSE | awk '$2>'"$BAITLN"'' > $SEQUENCESTABASSE120
 echo
 
 # Make the assembly number the first field and sort
-echo "Sorting exons ≥$BAITL bp"
+echo "Sorting exons ≥${CYAF}$BAITL${NORM} bp"
 sed 's/^.*\(Assembly\)/\1/' $SEQUENCESTABASSE120 | sed 's/_C/\tC/' | sort -k1,1 > $SEQUENCESTABASSE120SORT
 echo
 
 # Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
-echo "Selecting all exons ≥$BAITL bp and all assemblies making up genes of ≥600 bp"
+echo "Selecting all exons ≥${CYAF}$BAITL${NORM} bp and all assemblies making up genes of ≥600 bp"
 join $SEQUENCESPROBES600FORJOIN $SEQUENCESTABASSE120SORT > $SEQUENCESPROBES120600FIN
 echo
 
@@ -589,25 +597,25 @@ cat $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG > $PROBEPRELIM0
 echo "Ensuring all sequences have correct labels"
 sed 's/^>.\+\(Assembly_[0-9]\+_\)/>\1Contig_0_/' $PROBEPRELIM0 > $PROBEPRELIM
 echo
-echo "Preliminary probe sequences saved as $PROBEPRELIM for possible later usage"
+echo "Preliminary probe sequences saved as ${REDF}$PROBEPRELIM${NORM} for possible later usage"
 confirmgo
 
 # Step 9: Make the final quality control of the probe sequences before sending them to company for bait synthesis
 
 echo
-echo "Step 9 of the pipeline - removal of probe sequences sharing ≥90% sequence"
+echo "${REDF}Step 9${NORM} of the pipeline - removal of probe sequences sharing ≥90% sequence"
 echo "similarity"
 echo
 
 # Check for sequence similarity between the developed probe sequences with CD-HIT-EST
-echo "Checking sequence similarity between the developed probe sequences"
+echo "${CYAF}Checking sequence similarity between the developed probe sequences${NORM}"
 cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCDHIT -c $CDHITSIM
 
 # Step 10: Retention of those contigs that comprise exons ≥ bait length (default is 120 bp) and have a certain locus length
 
 echo
-echo "Step 10 of the pipeline - retention of those contigs that comprise exons ≥ bait"
-echo "length ($BAITL bp) and have a certain locus length"
+echo "${REDF}Step 10${NORM} of the pipeline - retention of those contigs that comprise exons ≥ bait"
+echo "length (${CYAF}$BAITL${NORM} bp) and have a certain locus length"
 echo
 
 # One of the three outfiles is a FASTA file, it has to be converted to TAB
@@ -615,20 +623,20 @@ echo "Converting FASTA to TAB"
 fasta2tab $PROBEPRELIMCDHIT $PROBEPRELIMCDHIT.txt || {
   echo
   echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
-  echo "Check if file $PROBEPRELIMCDHIT is correct FASTA file."
+  echo "Check if file ${REDF}$PROBEPRELIMCDHIT${NORM} is correct FASTA file."
   echo
   exit 1
   }
 echo
 
 # Count all assemblies, comprised of putative exons ≥120 bp
-echo "Number of all assemblies, comprised of putative exons ≥$BAITL bp:"
+echo "${CYAF}Number of all assemblies, comprised of putative exons ≥$BAITL${NORM} bp:"
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | awk '{s+=$2;c++}END{print s}'
 echo
 confirmgo
 
 # Count the assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
-echo "Number of the assemblies making up genes of ≥600 bp, comprised of putative exons ≥$BAITL bp:"
+echo "${CYAF}Number of the assemblies making up genes of ≥600 bp, comprised of putative exons ≥$BAITL bp:${NORM}"
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
 echo
@@ -639,17 +647,17 @@ awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f2,
 echo
 
 # Extract and sort the assemblies making up genes of ≥600 bp
-echo "Extract and sort the assemblies making up genes of ≥600 bp:"
+echo "Extracti and sorting the assemblies making up genes of ≥600 bp"
 sed 's/^/Assembly_/' $PROBEPRELIMCDHIT2 | cut -f1 -d " " | sort -k1,1 > $PROBEPRELIMFORJOIN
 echo
 
 # Modify the assembly number and sort
-echo "Modify the assembly number and sort"
+echo "Modifying the assembly number and sorting"
 sed 's/_C/\tC/' $PROBEPRELIMCDHIT.txt | sort -k1,1 > $PROBEPRELIMSORT
 echo
 
 # Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
-echo "Joining all exons ≥$BAITL bp and all assemblies making up genes of ≥600 bp"
+echo "Joining all exons ≥${CYAF}$BAITL${NORM} bp and all assemblies making up genes of ≥600 bp"
 join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT > $PROBEPRELIMFIN
 echo
 
@@ -663,30 +671,30 @@ echo "Calculating of the total number of base pairs"
 echo "Converting FASTA to TAB"
 fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM || {
   echo
-  echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA into TAB failed.${NORM} Aborting."
   echo
   exit 1
   }
 
 echo
-echo "Total number of base pairs:"
+echo "${CYAF}Total number of base pairs:${NORM}"
 awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}'
 confirmgo
 echo
 
-echo "${BOLD}Success!${NORM}"
+echo "${REDF}${BOLD}Success!${NORM}"
 echo
-echo "================================================================================"
-echo "Final output file was written as"
-echo "${BOLD}$PROBESEQUENCES${NORM}"
-echo "This file contains the probe sequences."
-echo "================================================================================"
+echo "${BLUF}================================================================================${NORM}"
+echo "${CYAF}Final output file was written as${NORM}"
+echo "${REDF}${BOLD}$PROBESEQUENCES${NORM}"
+echo "${CYAF}This file contains the probe sequences.${NORM}"
+echo "${BLUF}================================================================================${NORM}"
 confirmgo
 
 # Step 11 - removal of possible cpDNA sequences in final probe list
 
 echo
-echo "Step 11 of the pipeline - removal of probe sequences sharing ≥90% sequence"
+echo "${REDF}Step 11${NORM} of the pipeline - removal of probe sequences sharing ${CYAF}≥$BLATIDENT%${NORM} sequence"
 echo "similarity with the plastome reference"
 echo
 
@@ -695,12 +703,12 @@ echo "Removing remaining plastid genes from probe set"
 blat -t=dna -q=dna -minIdentity=$BLATIDENT -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCESCP
 echo
 
-echo "================================================================================"
-echo "File $PROBESEQUENCESCP"
-echo "contains possible plastid genes in final probe set."
+echo "${BLUF}================================================================================${NORM}"
+echo "File ${REDF}${BOLD}$PROBESEQUENCESCP${NORM}"
+echo "contains ${CYAF}possible plastid genes in final probe set${NORM}."
 echo "We recommend to remove those genes from final probe set in file"
-echo "$PROBESEQUENCES."
-echo "================================================================================"
+echo "${REDF}$PROBESEQUENCES${NORM}."
+echo "${BLUF}================================================================================${NORM}"
 confirmgo
 echo
 
@@ -708,29 +716,29 @@ echo
 echo "Removing unneeded temporal files"
 rm $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESTABUNAS $SEQUENCESPROBES600 $SEQUENCESPROBES600FORJOIN $SEQUENCESTABASSE120 $SEQUENCESTABASSE120SORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM || {
   echo
-  echo "${REDF}${BOLD}Error!${NORM} Removal of temporal files failed. Remove following files manually:"
-  echo "$SEQUENCESTAB, $SEQUENCESTABASSE, $SEQUENCESTABUNAS,"
-  echo "$SEQUENCESPROBES600, $SEQUENCESPROBES600FORJOIN, $SEQUENCESTABASSE120,"
-  echo "$SEQUENCESTABASSE120SORT, $SEQUENCESPROBES120600FIN, $SEQUENCESPROBES120600MODIF,"
-  echo "$SEQUENCESPROBES120600ASSEM, $SEQUENCESPROBES120600CONTIG, $PROBEPRELIMCDHIT,"
-  echo "$PROBEPRELIMFORJOIN, $PROBEPRELIMSORT,"
-  echo "$PROBEPRELIMFIN and $PROBESEQUENCESNUM."
+  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
+  echo "\"$SEQUENCESTAB\", \"$SEQUENCESTABASSE\", \"$SEQUENCESTABUNAS\","
+  echo "\"$SEQUENCESPROBES600\", \"$SEQUENCESPROBES600FORJOIN\", \"$SEQUENCESTABASSE120\","
+  echo "\"$SEQUENCESTABASSE120SORT\", \"$SEQUENCESPROBES120600FIN\", \"$SEQUENCESPROBES120600MODIF\","
+  echo "\"$SEQUENCESPROBES120600ASSEM\", \"$SEQUENCESPROBES120600CONTIG\", \"$PROBEPRELIMCDHIT\","
+  echo "\"$PROBEPRELIMFORJOIN\", \"$PROBEPRELIMSORT\","
+  echo "\"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESNUM\"."
   confirmgo
   }
 
 # List kept files which user can use for another analysis
 echo
 echo "Following files are kept for possible later usage (see manual for details):"
-echo "================================================================================"
-echo "1) Preliminary probe sequences:"
-echo "$PROBEPRELIM"
-echo "2) Contigs comprising exons ≥ bait length and have a certain total locus length:"
-echo "$PROBEPRELIMCDHIT2"
-echo "3) Possible plastid genes in final probe set:"
-echo "$PROBESEQUENCESCP"
-echo "4) Final probe sequences in FASTA format:"
-echo "$PROBESEQUENCES"
-echo "================================================================================"
+echo "${BLUF}================================================================================${NORM}"
+echo "${CYAF}1)${NORM} Preliminary probe sequences:"
+echo "${REDF}$PROBEPRELIM${NORM}"
+echo "${CYAF}2)${NORM} Contigs comprising exons ≥ bait length and have a certain total locus length:"
+echo "${REDF}$PROBEPRELIMCDHIT2${NORM}"
+echo "${CYAF}3)${NORM} Possible plastid genes in final probe set:"
+echo "${REDF}$PROBESEQUENCESCP${NORM}"
+echo "${CYAF}4)${NORM} Final probe sequences in FASTA format:"
+echo "${REDF}$PROBESEQUENCES${NORM}"
+echo "${BLUF}================================================================================${NORM}"
 confirmgo
 
 echo
