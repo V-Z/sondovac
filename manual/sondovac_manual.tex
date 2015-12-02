@@ -526,7 +526,7 @@ Sondovač requires certain software to be installed (see Table~\ref{software-lin
   \item[Compilation] "Translation" of software application from the source code (text readable by human programmer) into binary form launchable by the computer. It requires special tools (compilers), and it usually must be done for every operating system and hardware platform.
   \item[Console] See "Shell".
   \item[Debian] One of the oldest and most popular Linux distributions. See \href{https://www.debian.org/}{https://www.debian.org/}.
-  \item[Fedora] Popular Linux distribution developed together with RedHat Linux as its free community testing platform. See \href{https://getfedora.org/}{https://getfedora.org/}
+  \item[Fedora] Popular Linux distribution developed together with RedHat Linux as its free community testing platform. See \href{https://getfedora.org/}{https://getfedora.org/}.
   \item[GNU] Major project providing free software widely used in many operating systems, see \href{https://gnu.org/}{https://\\gnu.org/}.
   \item[Homebrew] Tool primarily for Mac OS~X (although there is also Linux version available) replacing practically missing package manager for this system. Can be used to install plenty of various applications as well as updating tools already available in Mac OS~X. See \href{http://brew.sh/}{http://brew.sh/}.
   \item[Java] Very popular programming language. It requires Java runtime environment to be installed, but the applications are very well transferable among operating systems. See \href{https://www.java.com/}{https://www.java.com/}.
@@ -552,9 +552,9 @@ Sondovač requires certain software to be installed (see Table~\ref{software-lin
   \item[SUSE Linux Enterprise (SLE)] Large Linux company providing mainly solutions for big companies. See \href{https://www.suse.com/}{https://www.suse.com/}.
   \item[Terminal] see "Shell".
   \item[Ubuntu] Popular Linux distribution, see \href{http://www.ubuntu.com/}{http://www.ubuntu.com/}. There are plenty of distributions based on Ubuntu. See \href{http://distrowatch.com/search.php?basedon=Ubuntu}{http://distrowatch.com/search.php?basedon=Ubuntu}.
+  \item[UNIX (UNIX-like, UN*X, *nix,~\ldots)] Family of operating systems sharing the same logic, software architecture and plenty of tools. See \href{https://en.wikipedia.org/wiki/Unix-like}{https://en.wikipedia.org/wiki/Unix-like} for details.
   \item[Upstream] Developers usually support (e.g. by fixing of bugs) only newer versions of an application. If you use an older version and you encounter problems, no one will probably help you. Moreover, using old versions of software can be a security risk because of security issues fixed in newer versions.
   \item[Variable] Named value storing various information, one of basic part of any programming language, application, operating system.
-  \item[UNIX (UNIX-like, UN*X, *nix,~\ldots)] Family of operating systems sharing the same logic, software architecture and plenty of tools. See \href{https://en.wikipedia.org/wiki/Unix-like}{https://en.wikipedia.org/wiki/Unix-like} for details.
 \end{description}
 
 \section{Usage of Sondovač}
@@ -674,12 +674,13 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
 
 \subsection{Input and output files}
 
-All names of input files and paths to them must be without spaces and without special characters (some software has difficulties to handle them in such case).
+All names of input files and paths to them must be without spaces and without special characters (some software has difficulties to handle them in such case -- it can produce weird errors). \textbf{Important note:} NGS data are big. Sondovač pipeline is relatively long and part \texttt{A} contains several conversions and can (for some time) dozens of GB of disk space. Temporal files without potential usefulness for the user are deleted on the end of pipeline -- because those files may be useful for debugging if something would go wrong. For example, input data of \citet{Schmickl2016} has under 4.5~GB, overall output of part \texttt{A} has about 28~GB of which less then half is kept by the pipeline. Part \texttt{B} is very quick and does not consume significant amount of space.
 
+\vspace{10pt}
 \textbf{Script \texttt{sondovac$\_$part$\_$a.sh} requires as input files:}
 
 \begin{enumerate}
-  \item Transcriptome input file in FASTA format. \textbf{Note:} For technical reasons, names of FASTA sequences in \textit{must} be only unique number (no any other characters). Sondovač will check the names and if they are not in appropriate form, copy of this input files with correct names will be created.
+  \item Transcriptome input file in FASTA format. \textbf{Note:} For technical reasons, names of FASTA sequences in \textit{must} be only unique numbers (no any other characters). Sondovač will check the names and if they are not in appropriate form, copy of this input files with correct names will be created.
   \item Plastome reference sequence input file in FASTA format.
   \item Paired-end genome skim input file in FASTQ format (two files -- forward and reverse reads).
   \item OPTIONAL: Mitochondriome reference sequence input file in FASTA format. This file is not required.
@@ -747,7 +748,7 @@ Asterisk (*) denotes beginning of the output files names specified by the user w
 
 Import output file of part A of the script (\texttt{sondovac$\_$part$\_$a.sh}): go to menu \textbf{File | Import | From File\ldots} This file is named as: \texttt{*$\_$\allowbreak blat$\_$\allowbreak unique$\_$\allowbreak transcripts$\_$\allowbreak versus$\_$\allowbreak genome$\_$\allowbreak skim$\_$\allowbreak data-no$\_$\allowbreak missing$\_$\allowbreak fin.fsa} (see Figure~\ref{geneious-import}).
 
-\begin{figure}[htb]
+\begin{figure}[hbt]
   \includegraphics[width=\textwidth]{geneious1.png}
   \caption[Import into Geneious]{Import of output of \texttt{sondovac$\_$part$\_$a.sh} into Geneious for next processing (see page~\pageref{pipeline-overview}). Go to menu File \textbf{(1)} | Import \textbf{(2)} | From file\ldots \textbf{(3)} and import output of \texttt{sondovac$\_$part$\_$a.sh}. You should see similar result as \textbf{(4)}.}
   \label{geneious-import}
@@ -795,7 +796,22 @@ To record whole output of Sondovač script (regardless parameters used) use util
   rm records.log # Delete the log file
 \end{bashcode}
 
-You can use any command line arguments, script will behave as usually. Plain text file \texttt{records.log} will then contain all its output.
+You can use any command line arguments, script will behave as usually. Plain text file \texttt{records.log} will then contain all its output. Unfortunately, \texttt{tee} usually wrongly records "invisible" characters -- tabs and colorization used to highlight user messages in the script. If you see weird characters in texttt{records.log} disturbing reading, use following commands:
+
+\begin{bashcode}
+  # Assume output of Sondovač is name "records.log"
+  sed -i 's/.\[[[:digit:]]\{1,2\}m//g' records.log
+  # Explanation of regular expression (find pattern and replace by nothing):
+  # any character, [, one/two number(s), m (sequence defining text formatting)
+  sed -i 's/.(B.\[m//g' records.log
+  # Explanation of regular expression (find pattern and replace by nothing):
+  # any character, (, B, [, m (sequence defining text formatting)
+  # Escaping \[ \] is required to search specifically for brackets []
+  # (NOT searching for any character within [...] - there is no escaping)
+  # but \{...\} define number of occurrences of previous character(s)
+\end{bashcode}
+
+Note for Mac OS~X users: the regular expressions above require GNU \texttt{sed}, not version presented by default in Mac OS~X. It is installed by Sondovač using Homebrew (see page~\pageref{required-mac}), but to launch it you will probably must use command \texttt{gsed} instead of \texttt{sed}.
 
 \section{Sample data}
 
