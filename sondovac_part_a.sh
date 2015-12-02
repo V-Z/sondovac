@@ -30,9 +30,9 @@ echo "list of low-copy nuclear probe sequences. See README and/or manual for det
 CHECKMODE=0
 # If not specifying explicitly otherwise (using -n), running in interactive mode
 STARTINI="I"
-# flash -M read length of paired-end reads
-FLASHM=250
-# BLAT -minIdentity between the unique transcriptomes and the genome skim data
+# flash -M maximum overlap length expected in approximately 90% of read pairs
+FLASHM=65
+# BLAT -minIdentity between the unique transcripts and the genome skim data
 BLATIDENT=85
 # Remove transcripts with >1000 BLAT scores (or another value selected by user)
 BLATSCORE=1000
@@ -69,15 +69,13 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
       echo -e "\t${REDF}-q${NORM}\t${CYAF}Paired-end genome skim input file${NORM} in FASTQ format (second file)."
       echo
       echo -e "\tOther optional arguments (if not provided, default values are used):"
-      echo -e "\t${REDF}-a${NORM}\t${CYAF}Read length of paired-end genome skim reads${NORM} (parameter \"-M\" of"
+      echo -e "\t${REDF}-a${NORM}\t${CYAF}Maximum overlap length expected in approximately 90% of read pairs${NORM} (parameter \"-M\" of"
       echo -e "\t\t  FLASH, see its manual for details)."
-      echo -e "\t\tDefault value: 250 (allowed values are 125, 150, 250 or 300)"
+      echo -e "\t\tDefault value: 65 (integer ranging from 10 to 300)"
       echo -e "\t${REDF}-y${NORM}\t${CYAF}Sequence similarity between unique transcripts and the filtered,"
       echo -e "\t\t  combined genome skim reads${NORM} (parameter \"-minIdentity\" of BLAT,"
       echo -e "\t\t  see its manual for details)."
-      echo -e "\t\tDefault value: 85 (integer ranging from 70 to 100; consider the"
-      echo -e "\t\t  trade-off between probe specificity and number of remaining"
-      echo -e "\t\t  matching sequences for probe design)"
+      echo -e "\t\tDefault value: 85 (integer ranging from 70 to 100; the default value of 85% minimum sequence similarity suggests gene orthology)"
       echo -e "\t${REDF}-s${NORM}\t${CYAF}Number of BLAT hits per transcript${NORM} when matching unique"
       echo -e "\t\t  transcripts and the filtered, combined genome skim reads."
       echo -e "\t\tDefault value: 1000 (integer ranging from 100 to 10000)"
@@ -176,7 +174,7 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
       BLATIDENT=$OPTARG
       # Check if provided value makes sense
       if [[ "$BLATIDENT" =~ ^[0-9]+$ ]] && [ "$BLATIDENT" -ge 70 -a "$BLATIDENT" -le 100 ]; then
-	echo "BLAT score for identity between unique transcripts and genome skimming data: ${REDF}$BLATIDENT${NORM}"
+	echo "BLAT score for identity between unique transcripts and genome skim data: ${REDF}$BLATIDENT${NORM}"
 	else
 	  echo
 	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-y\" you did not provide an integer of range from 70 to 100!"
