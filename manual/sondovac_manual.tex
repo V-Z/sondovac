@@ -631,12 +631,12 @@ Those parameters are required when running in non-interactive mode. The paramete
 See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for steps referred here. If those parameters are not provided, default values are used and it is not possible to change them any time later (not even in interactive mode).
 
 \begin{description}
-\item[\texttt{-a \#\#\#}] Read length of paired-end genome skim reads (parameter -M of FLASH, see its manual for details).
+\item[\texttt{-a \#\#\#}] Maximum overlap length expected in approximately 90 percent of read pairs (parameter -M of FLASH, see its manual for details).
   \begin{itemize}
     \item Step 4 of Sondovač, \texttt{sondovac$\_$part$\_$a.sh}.
-    \item Ensure to use a certain insert size of the genome skim genomic library in combination with an appropriate read length for sequencing in order to enable merging of the paired-end genome skim reads.
-    \item DEFAULT: 250
-    \item OPTIONS: 125, 150, 250, 300
+    \item FLASH can not combine paired-end reads that do not overlap by at least 10 bp (default minimum overlap length).
+    \item DEFAULT: 65
+    \item OPTIONS: Integer ranging from 10 to 300
   \end{itemize}
 \item[\texttt{-y \#\#}] Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details).
   \begin{itemize}
