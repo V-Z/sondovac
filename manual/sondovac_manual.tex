@@ -638,11 +638,11 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
     \item DEFAULT: 65
     \item OPTIONS: Integer ranging from 10 to 300
   \end{itemize}
-\item[\texttt{-y \#\#}] Sequence similiarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details).
+\item[\texttt{-y \#\#}] Sequence similarity between unique transcripts and the filtered, combined genome skim reads (parameter -minIdentity of BLAT, see its manual for details).
   \begin{itemize}
-    \item Step 5 of Sondovač, \texttt{sondovac$\_$part$\_$a.sh}, and step 11, \texttt{sondovac$\_$part$\_$b.sh}.
-    \item Consider the trade-off between probe specificity and number of remaining matching sequences for probe design. Sequence similarity is in percent.
-    \item DEFAULT: 85
+    \item Step 5 of Sondovač, \texttt{sondovac$\_$part$\_$a.sh}.
+    \item Filtering for orthologs, using sequence similarity as criterion.
+    \item DEFAULT: 85 (highly recommended).
     \item OPTIONS: Integer ranging from 70 to 100
   \end{itemize}
 \item[\texttt{-g \#\#\#\#}] Choice of transcript or genome skim sequences for further processing.
@@ -666,13 +666,6 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
     \item DEFAULT: 120 (optimal length for phylogeny).
     \item OPTIONS: Integer ranging from 120 to 200
   \end{itemize}
-\item[\texttt{- \#\#\#}] Total locus length.
-  \begin{itemize}
-    \item Steps 8 and 10 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
-    \item The total locus length needs to be a multiple of the exon/bait length and should guarantee a sufficient amount of phylogenetically informative signal.
-    \item DEFAULT: 600
-    \item OPTIONS: 720, 840, 960, 1080
-  \end{itemize}
 \item[\texttt{-d 0.\#\#}] Sequence similarity between probe sequences (parameter -c of cd-hit-est, see its manual for details).
   \begin{itemize}
     \item Step 9 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
@@ -680,21 +673,24 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
     \item DEFAULT: 0.9 (highly recommended).
     \item OPTIONS: Decimal ranging from 0.85 to 0.95
   \end{itemize}
-\item[\texttt{-g}] Use genome skim sequences instead of transcripts for making the probes.
+\item[\texttt{-y \#\#}] Sequence similarity between probe sequences and plastome reference (parameter -minIdentity of BLAT, see its manual for details).
   \begin{itemize}
-    \item Default is usage of transcripts (no parameter).
+    \item Step 11 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
+    \item Some plastid reads might not have been removed in step 2; they should be removed in this step.
+    \item DEFAULT: 90 (highly recommended).
+    \item OPTIONS: Integer ranging from 70 to 100
   \end{itemize}
 \end{description}
 
 \subsection{Input and output files}
 
-All names of input files and paths to them must be without spaces and without special characters (some software has difficulties to handle them in such case -- it can produce weird errors). \textbf{Important note:} NGS data are big. Sondovač pipeline is relatively long and part \texttt{A} contains several conversions and can (for some time) dozens of GB of disk space. Temporal files without potential usefulness for the user are deleted on the end of pipeline -- because those files may be useful for debugging if something would go wrong. For example, input data of \citet{Schmickl2016} has under 4.5~GB, overall output of part \texttt{A} has about 28~GB of which less then half is kept by the pipeline. Part \texttt{B} is very quick and does not consume significant amount of space.
+All names of input files and paths to them must be without spaces and without special characters (some software has difficulties to handle them -- it can produce weird errors). \textbf{Important note:} HTS data are big. The Sondovač pipeline is relatively long, and part \texttt{A} contains several format conversions and can (for some time) use dozens of GB of disk space. Temporal files without potential usefulness for the user are deleted at the end of the pipeline -- because those files may be useful for debugging if something would go wrong. For example, input data of \citet{Schmickl2016} are approximately 4.5~GB, and the overall output of part \texttt{A} of the script has about 28~GB, of which less then half is kept by the pipeline. Part \texttt{B} is very quick and does not consume a significant amount of disk space.
 
 \vspace{10pt}
 \textbf{Script \texttt{sondovac$\_$part$\_$a.sh} requires as input files:}
 
 \begin{enumerate}
-  \item Transcriptome input file in FASTA format. \textbf{Note:} For technical reasons, names of FASTA sequences in \textit{must} be only unique numbers (no any other characters). Sondovač will check the names and if they are not in appropriate form, copy of this input files with correct names will be created.
+  \item Transcriptome input file in FASTA format. \textbf{Note:} For technical reasons, the labels of FASTA sequences in \textit{must} be unique numbers (no other characters). Sondovač will check the labels, and if they are not in an appropriate form, a copy of these input files with correct labels will be created.
   \item Plastome reference sequence input file in FASTA format.
   \item Paired-end genome skim input file in FASTQ format (two files -- forward and reverse reads).
   \item OPTIONAL: Mitochondriome reference sequence input file in FASTA format. This file is not required.
@@ -703,7 +699,7 @@ All names of input files and paths to them must be without spaces and without sp
 \textbf{Script \texttt{sondovac$\_$part$\_$a.sh} creates the following files:}
 
 \begin{enumerate}[start=0]
-  \item \texttt{*$\_$renamed.fasta} -- If needed, copy of transcriptome input file with changed names of FASTA sequences (unique numbers respective to line numbers in original file) will be created. File \texttt{*$\_$old$\_$and$\_$new$\_$names.tsv} then contains two columns: \textbf{1)} original sequence names as in user provided transcriptome input file and \textbf{2)} new sequence names. This might be useful to trace back some sequences/probes.
+  \item \texttt{*$\_$renamed.fasta} -- If needed, a copy of the transcriptome input file with the changed labels of the FASTA sequences (unique numbers respective to line numbers in the original file) will be created. File \texttt{*$\_$old$\_$and$\_$new$\_$names.tsv} then contains two columns: \textbf{1)} the original sequence labels as in the user-provided transcriptome input file and \textbf{2)} new sequence labels. This might be useful to trace back certain sequences/probes.
   \item \texttt{*$\_$blat$\_$unique$\_$transcripts.psl} -- Output of BLAT (removal of transcripts sharing $\geq$90\% sequence similarity).
   \item \texttt{*$\_$unique$\_$transcripts.fasta} -- Unique transcripts in FASTA format.
   \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$reads.bam} -- SAM converted to BAM (removal of reads of plastid origin).
@@ -716,7 +712,7 @@ All names of input files and paths to them must be without spaces and without sp
   \item \textbf{\texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa} -- Final FASTA sequences for usage in Geneious.}
 \end{enumerate}
 
-Files 1-9 are not necessary for further processing by this pipeline, but may be useful for the user. The last file (10) is used as input file for Geneious in the next step. Asterisk (*) denotes beginning of the output files names specified by the user with parameter \texttt{-o}. If user does not select custom name, default value (\texttt{output}) will be used.
+Files 1-9 are not necessary for further processing by this pipeline, but may be useful for the user. The last file (10) is used as input file for Geneious in the next step. An asterisk (*) denotes the beginning of the output files' names specified by the user with parameter \texttt{-o}. If the user does not select a custom name, default value (\texttt{output}) will be used.
 
 \textbf{Geneious} requires as input the last output file of \texttt{sondovac$\_$part$\_$a.sh} (file 10: \texttt{*$\_$blat$\_$\allowbreak unique$\_$\allowbreak transcripts$\_$\allowbreak versus$\_$\allowbreak genome$\_$\allowbreak skim$\_$\allowbreak data-no$\_$\allowbreak missing$\_$\allowbreak fin.fsa}). Output of Geneious are two exported files (see page~\pageref{geneious-usage}):
 
@@ -742,18 +738,18 @@ Files 1-9 are not necessary for further processing by this pipeline, but may be 
   \item \textbf{\texttt{*$\_$target$\_$enrichment$\_$probe$\_$sequences$\_$final.pslx} -- Final probes ready for bait synthesis.}
 \end{enumerate}
 
-Asterisk (*) denotes beginning of the output files names specified by the user with parameter \texttt{-o}. If user does not select custom name, default value (\texttt{output}) will be used. By default, output files are created in same directory from which Sondovač was launched. Output files can be saved in custom directory by specifying output directory together with parameter \texttt{-o}:
+An asterisk (*) denotes the beginning of the output files' names specified by the user with parameter \texttt{-o}. If the user does not select a custom name, default value (\texttt{output}) will be used. By default, output files are created in the same directory from which Sondovač was launched. Output files can be saved in a custom directory by specifying an output directory together with parameter \texttt{-o}:
 
 \begin{bashcode}
   # Find current directory (e.g. /home/user):
   pwd
   # Launching Sondovač located in directory /home/user/sondovac
-  # and save output to e.g. desktop (/home/user/Desktop):
+  # and save output to, e.g. desktop (/home/user/Desktop):
   ./sondovac/sondovac_part_a.sh -o Desktop/MyFile
   # Sondovač will save software (if needed) in "bin" directory
   # located in directory from which it was launched, see it:
   ls bin/*
-  # Output files are in desired directory, see them e.g. by:
+  # Output files are in desired directory, see them, e.g. by:
   ls -lh Desktop/MyFile*
 \end{bashcode}
 
@@ -764,19 +760,19 @@ Import output file of part A of the script (\texttt{sondovac$\_$part$\_$a.sh}): 
 
 \begin{figure}[hbt]
   \includegraphics[width=\textwidth]{geneious1.png}
-  \caption[Import into Geneious]{Import of output of \texttt{sondovac$\_$part$\_$a.sh} into Geneious for next processing (see page~\pageref{pipeline-overview}). Go to menu File \textbf{(1)} | Import \textbf{(2)} | From file\ldots \textbf{(3)} and import output of \texttt{sondovac$\_$part$\_$a.sh}. You should see similar result as \textbf{(4)}.}
+  \caption[Import into Geneious]{Import of output of \texttt{sondovac$\_$part$\_$a.sh} into Geneious for next processing (see page~\pageref{pipeline-overview}). Go to menu File \textbf{(1)} | Import \textbf{(2)} | From file\ldots \textbf{(3)} and import output of \texttt{sondovac$\_$part$\_$a.sh}. You should see a similar result as \textbf{(4)}.}
   \label{geneious-import}
 \end{figure}
 
 Select the file and go to menu \textbf{Tools | Align / Assemble | De Novo Assemble}. In \textbf{Data} frame select \textbf{Assembe by 1st (\ldots) Underscore}. In \textbf{Method} frame select \textbf{Geneious Assembler} (if you don't have other assemblers, this option might be missing) and \textbf{Medium Sensitivity / Fast Sensitivity} (see Figure~\ref{geneious-assembly}).
 
-In \textbf{Results} frame check \textbf{Save assembly report}, \textbf{Save list of unused reads}, \textbf{Save in sub-folder}, \textbf{Save contigs} (do not check \textbf{Maximum}) and \textbf{Save consensus sequences}. Do not trim. Otherwise keep defaults. Run it. Geneious may warn about possible hanging because of big file. Do not use Geneious for other tasks during the assembly. Running may take long time (see Figure~\ref{geneious-assembly}).
+In \textbf{Results} frame check \textbf{Save assembly report}, \textbf{Save list of unused reads}, \textbf{Save in sub-folder}, \textbf{Save contigs} (do not check \textbf{Maximum}) and \textbf{Save consensus sequences}. Do not trim. Otherwise keep defaults. Run it. Geneious may warn about possible hanging because of big file size. Do not use Geneious for other tasks during the assembly. Running Geneious may take a long time (see Figure~\ref{geneious-assembly}).
 
 \begin{figure}[htb]
   \begin{center}
     \includegraphics[width=12cm]{geneious2.png}
   \end{center}
-  \caption[Settings of Geneious assembly]{Settings of Geneious assembly as described in main text. It can take longer time to run it.}
+  \caption[Settings of Geneious assembly]{Settings of Geneious assembly as described in the main text. It can take a longer time to run it.}
   \label{geneious-assembly}
 \end{figure}
 
@@ -800,17 +796,17 @@ Use exported files from Geneious as input for part B of the script (\texttt{sond
 
 \subsection{Record output of Sondovač}
 
-To record whole output of Sondovač script (regardless parameters used) use utility \texttt{tee}. It will produce plain text output with everything printed to the screen. It can be useful for reference or explorations is something went wrong. Use it as follows:
+To record the whole output of Sondovač (regardless used parameters), use utility \texttt{tee}. This will produce a plain text output with everything printed to the screen. It can be useful for reference or explorations if something went wrong. Use it as follows:
 
 \begin{bashcode}
   ./sondovac_part_a.sh | tee records.log
-  man tee # See more options how tee can record script's output
-  # "|" is a pipe passing output of 1st command as input for 2nd command
+  man tee # See more options how tee can record the script's output
+  # "|" is a pipe passing output of the 1st command as input for the 2nd command
   less records.log # See the record. Quit viewing by "Q"
   rm records.log # Delete the log file
 \end{bashcode}
 
-You can use any command line arguments, script will behave as usually. Plain text file \texttt{records.log} will then contain all its output. Unfortunately, \texttt{tee} usually wrongly records "invisible" characters -- tabs and colorization used to highlight user messages in the script. If you see weird characters in texttt{records.log} disturbing reading, use following commands:
+You can use any command line arguments, the script will behave as usually. Plain text file \texttt{records.log} will then contain all its output. Unfortunately, \texttt{tee} usually wrongly records "invisible" characters -- tabs and coloration used to highlight user messages in the script. If you see weird characters in texttt{records.log} that disturb reading, use the following commands:
 
 \begin{bashcode}
   # Assume output of Sondovač is name "records.log"
@@ -825,7 +821,7 @@ You can use any command line arguments, script will behave as usually. Plain tex
   # but \{...\} define number of occurrences of previous character(s)
 \end{bashcode}
 
-Note for Mac OS~X users: the regular expressions above require GNU \texttt{sed}, not version presented by default in Mac OS~X. It is installed by Sondovač using Homebrew (see page~\pageref{required-mac}), but to launch it you will probably must use command \texttt{gsed} instead of \texttt{sed}.
+Note for Mac OS~X users: the regular expressions above require GNU \texttt{sed}, not the version presented by default in Mac OS~X. It is installed by Sondovač using Homebrew (see page~\pageref{required-mac}), but to launch it you probably must use the command \texttt{gsed} instead of \texttt{sed}.
 
 \section{Sample data}
 
@@ -834,14 +830,13 @@ Together with the script, we provide the ZIP archive (1.8 GB) that contains exem
 The package contains:
 
 \begin{enumerate}
- \item \texttt{input1$\_$JHCN$\_$Oxalis$\_$corniculata$\_$transcriptome$\_$data-unique$\_$transcripts.fa} -- reduced data of file \texttt{JHCN$\_$Oxalis$\_$corniculata$\_$transcriptome$\_$data.fa} (only unique transcripts) kindly provided by \href{http://www.flmnh.ufl.edu/museum-voices/soltis-lab/doug-soltis/}{Prof. Soltis} (parameter \texttt{-f}). See below for information how to get full dataset.
   \item \texttt{input2$\_$Ricinus$\_$communis$\_$reference$\_$plastid$\_$genome.fsa} -- cpDNA reference (pa\-ra\-meter \texttt{-c}), GenBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/372450118/}{NC$\_$016736}.
   \item \texttt{input3$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R1.fastq} -- paired-end genome skim data, file 1 (parameter \texttt{-t}).
   \item \texttt{input4$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R2.fastq} -- paired-end genome skim data, file 2 (parameter \texttt{-q}).
   \item \texttt{input5$\_$Ricinus$\_$communis$\_$reference$\_$mitochondrial$\_$genome.fasta} -- mtDNA reference (parameter \texttt{-m}), GenBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/323649872/}{NC$\_$015141}.
 \end{enumerate}
 
-Transcriptome input file is unpublished data from G. K.-S. Wong et al. (hopefully it will be published soon). When the data became public, we will post them on \href{https://github.com/V-Z/sondovac/wiki/Sample-data}{GitHub}. Data can be now found under
+The transcriptome input file is unpublished data from G. K.-S. Wong et al.. As soon as the data will be published, we will post them on \href{https://github.com/V-Z/sondovac/wiki/Sample-data}{GitHub}. Data can now be found under
 
 \begin{itemize}
   \item \href{http://www.onekp.com/}{http://www.onekp.com/}
@@ -851,7 +846,7 @@ Transcriptome input file is unpublished data from G. K.-S. Wong et al. (hopefull
 
 The transcriptome FASTA file used for the probe design is named JHCN-SOAPdenovo-Trans-assembly.dnas.out and can be found under JHCN/Assembly/JHCN-SOAPdenovo-Trans-translated/. Information about how to get access to data download is given in \citet{Matasci2014}.
 
-Explanation of command line parameters is at page~\pageref{script-usage}.
+Explanation of command line parameters is on page~\pageref{script-usage}.
 
 \section{Questions not covered here, reporting bugs and wishes}
 
@@ -865,14 +860,14 @@ List of changes in released versions of Sondovač.
 
 \begin{itemize}
   \item Fixed error with some input files for part B
-  \item Finished colorization of command-line user interface (part B)
+  \item Finished coloration of command-line user interface (part B)
 \end{itemize}
 
 \subsection{Version 0.95 beta released 2015-11-27}
 
 \begin{itemize}
-  \item Offer the possibility to choose between transcripts or genome skim sequences for further processing.
-  \item Colorization of command-line user interface (incomplete).
+  \item Offer the possibility to choose between transcripts or genome skim sequences for further processing in step 6.1, part A.
+  \item Coloration of command-line user interface (incomplete).
   \item Added possibility to change -minIdentity parameter of BLAT in step 11, part B.
   \item Fixed problems with some transcriptome input files.
   \item Added possibility to set custom bait length.
@@ -884,7 +879,7 @@ List of changes in released versions of Sondovač.
 \begin{itemize}
   \item Highly enhanced part B.
   \item Better handling of variable output from Geneious.
-  \item Possibility to specify custom output files name.
+  \item Possibility to specify the name of the custom output file.
   \item Full support for Linux distributions using DEB -- Debian, Ubuntu, Linux Mint and derivatives.
   \item Enhanced documentation.
   \item Support for Mac OS X, package management using Homebrew.
