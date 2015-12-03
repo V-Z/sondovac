@@ -69,13 +69,15 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
       echo -e "\t${REDF}-q${NORM}\t${CYAF}Paired-end genome skim input file${NORM} in FASTQ format (second file)."
       echo
       echo -e "\tOther optional arguments (if not provided, default values are used):"
-      echo -e "\t${REDF}-a${NORM}\t${CYAF}Maximum overlap length expected in approximately 90% of read pairs${NORM} (parameter \"-M\" of"
-      echo -e "\t\t  FLASH, see its manual for details)."
+      echo -e "\t${REDF}-a${NORM}\t${CYAF}Maximum overlap length expected in approximately 90% of read"
+      echo -e "\t\t  pairs${NORM} (parameter \"-M\" of FLASH, see its manual for details)."
       echo -e "\t\tDefault value: 65 (integer ranging from 10 to 300)"
       echo -e "\t${REDF}-y${NORM}\t${CYAF}Sequence similarity between unique transcripts and the filtered,"
       echo -e "\t\t  combined genome skim reads${NORM} (parameter \"-minIdentity\" of BLAT,"
       echo -e "\t\t  see its manual for details)."
-      echo -e "\t\tDefault value: 85 (integer ranging from 70 to 100; the default value of 85% minimum sequence similarity suggests gene orthology)"
+      echo -e "\t\tDefault value: 85 (integer ranging from 70 to 100; the default"
+      echo -e "\t\t  value of 85% minimum sequence similarity suggests gene"
+      echo -e "\t\t  orthology)"
       echo -e "\t${REDF}-s${NORM}\t${CYAF}Number of BLAT hits per transcript${NORM} when matching unique"
       echo -e "\t\t  transcripts and the filtered, combined genome skim reads."
       echo -e "\t\tDefault value: 1000 (integer ranging from 100 to 10000)"
@@ -156,19 +158,13 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
     a)
       FLASHM=$OPTARG
       # Check if provided value makes sense
-      case "$FLASHM" in
-	125) FLASHM=125;;
-	150) FLASHM=150;;
-	250) FLASHM=250;;
-	300) FLASHM=300;;
-	*) echo
-	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-a\" you did not provide any of the allowed values 125, 150,"
-	  echo "   250, or 300!"
+      if [[ "$FLASM" =~ ^[0-9]+$ ]] && [ "$FLASM" -ge 10 -a "$FLASM" -le 300 ]; then
+	echo "Maximum overlap length expected in approximately 90% of read pairs: ${REDF}$FLASHM${NORM}"
+	else
+	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-a\" you did not provide an integer ranging from 10 to 300!"
 	  echo
 	  exit 1
-	  ;;
-	esac
-      echo "Read length of paired-end reads: ${REDF}$FLASHM${NORM}"
+	fi
       ;;
     y)
       BLATIDENT=$OPTARG
