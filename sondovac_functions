@@ -146,7 +146,7 @@ function downloaderselector {
       echo "The script will use \"curl\" to download from the internet."
       else
 	echo
-	echo "${REDF}${BOLD}Error!${CYAF}Command \"${REDF}wget${CYAF}\" as well as \"${REDF}curl${CYAF}\" are missing.${NORM} The script can need one"
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Command \"${REDF}wget${CYAF}\" as well as \"${REDF}curl${CYAF}\" are missing.${NORM} The script can need one"
 	echo "of them to download some of required software packages and other things from the internet."
 	echo "Please, install one of them manually and restart previous task."
 	echo
@@ -158,8 +158,8 @@ function downloaderselector {
 # Check availability of basic UNIX binaries
 function checktools {
   { command -v $1 >/dev/null 2>&1 && echo "Command \"${REDF}$1${NORM}\" is available. ${GREF}OK.${NORM}"; } || {
-    echo "${REDF}${BOLD}Error!${CYAF}Command\"${REDF}$1${CYAF}\" is required but not installed!${NORM} ${REDF}Aborting.${NORM}"
-    echo "Please, install \"$1\" and ensure it is in PATH."
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Command\"${REDF}$1${CYAF}\" is required but not installed!${NORM} ${REDF}Aborting.${NORM}"
+    echo "Please, install \"$1\" and ensure it is in ${BOLD}PATH${NORM}."
     echo "It should be readily available for any UNIX-based system (Linux, Mac OS X, BSD, ...)."
     echo "See manual for more information."
     echo
@@ -180,7 +180,7 @@ function scriptupdater {
     mv .info .info~
     } || {
       echo
-      echo "${REDF}${BOLD}Error!${CYAF}Downloading of version information available on-line failed.${NORM} "
+      echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Downloading of version information available on-line failed.${NORM} "
       echo "Please, go to to ${REDF}$WEB${NORM} and check for available version manually."
       echo "Your current version is ${BOLD}$SCRIPTVERSION${NORM}."
       echo
@@ -238,7 +238,7 @@ function licenser {
   checktools less
   less $SCRIPTDIR/LICENSE || {
     echo
-    echo "${REDF}${BOLD}Error!${CYAF}Can not display file $SCRIPTDIR/LICENSE!${NORM}"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not display file $SCRIPTDIR/LICENSE!${NORM}"
     echo "Is your installation correct? See https://gnu.org/licenses/gpl.html for"
     echo "GNU GPL v.3 and ${REDF}$WEB${NORM} to ensure you have all needed files."
     echo
@@ -253,7 +253,7 @@ function readmeview {
   checktools less
   less $SCRIPTDIR/README || {
     echo
-    echo "${REDF}${BOLD}Error!${CYAF}Can not display file $SCRIPTDIR/README!${NORM}"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not display file $SCRIPTDIR/README!${NORM}"
     echo "Is your installation correct?"
     echo "See ${REDF}$WEB${NORM} to ensure you have all needed files."
     echo
@@ -268,7 +268,7 @@ function installview {
   checktools less
   less $SCRIPTDIR/INSTALL || {
     echo
-    echo "${REDF}${BOLD}Error!${CYAF}Can not display file $SCRIPTDIR/INSTALL!${NORM}"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not display file $SCRIPTDIR/INSTALL!${NORM}"
     echo "Is your installation correct?"
     echo "See ${REDF}$WEB${NORM} to ensure you have all needed files."
     echo
@@ -397,9 +397,9 @@ function debinstall {
       fi
     done < $SCRIPTDIR/pkgs/packages-deb || {
       echo
-      echo "${REDF}${BOLD}Error!${CYAF}Can not check installed packages.${NORM} Ensure following packages are installed:"
+      echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not check installed packages.${NORM} Ensure following packages are installed:"
       cat $SCRIPTDIR/pkgs/packages-deb || {
-	echo "${REDF}${BOLD}Error!${CYAF}Can not find file $SCRIPTDIR/pkgs/packages-deb${NORM}"
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not find file $SCRIPTDIR/pkgs/packages-deb${NORM}"
 	echo "Go to ${REDF}$WEB${NORM} and verify if your installation is correct."
 	echo
 	exit 1
@@ -460,9 +460,9 @@ function rpminstall {
       fi
     done < $SCRIPTDIR/pkgs/packages-rh || {
       echo
-      echo "${REDF}${BOLD}Error!${CYAF}Can not check installed packages. Ensure following packages are installed:${NORM}"
+      echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not check installed packages. Ensure following packages are installed:${NORM}"
       cat $SCRIPTDIR/pkgs/packages-rh || {
-	echo "${REDF}${BOLD}Error!${CYAF}Can not find file $SCRIPTDIR/pkgs/packages-rh${NORM}"
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not find file $SCRIPTDIR/pkgs/packages-rh${NORM}"
 	echo "Go to ${REDF}$WEB${NORM} and verify if your installation is correct."
 	echo
 	exit 1
@@ -603,7 +603,6 @@ function oscheck {
     confirmgo
     fi
 
-  echo
   echo "Current OS is ${REDF}$OS $OSB${NORM}."
   echo
 
@@ -642,7 +641,7 @@ function oscheck {
 	      echo
 	      echo "${REDF}${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
 	      cat $SCRIPTDIR/pkgs/packages-suse || {
-		echo "${REDF}${BOLD}Error!${CYAF}Can not find file $SCRIPTDIR/pkgs/packages-suse${NORM}"
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not find file $SCRIPTDIR/pkgs/packages-suse${NORM}"
 		echo "Go to ${REDF}$WEB${NORM} and verify if your installation is correct."
 		echo
 		exit 1
@@ -800,7 +799,7 @@ function oscheck {
 		echo "Installing Homebrew..."
 		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" || {
 		echo
-		echo "${REDF}${BOLD}Error!${CYAF}Installation of Homebrew failed.${NORM} Please, go to ${REDF}http://brew.sh/${NORM} and"
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Installation of Homebrew failed.${NORM} Please, go to ${REDF}http://brew.sh/${NORM} and"
 		echo "install it manually."
 		echo
 		exit 1
@@ -870,7 +869,7 @@ function oscheck {
       echo "${CYAF}Checking if Homebrew and required formulae are installed.${NORM}"
       { command -v brew >/dev/null 2>&1 && echo "Homebrew is available. ${GREF}OK.${NORM}"; } || {
 	echo
-	echo "${REDF}${BOLD}Error!${CYAF}Homebrew is missing!${NORM} Check ${REDF}INSTALL${NORM} and manual for details or run Sondovač"
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Homebrew is missing!${NORM} Check ${REDF}INSTALL${NORM} and manual for details or run Sondovač"
 	echo "interactively to install it automatically:"
 	echo -e "\t$0 -i"
 	echo
@@ -912,7 +911,7 @@ function workdirpath {
   WORKDIR=`pwd`
   mkdir -p $WORKDIR/bin/bin || {
     echo
-    echo "${REDF}${BOLD}Error!${CYAF}Can not create directory \"${REDF}bin\" in directory \"${REDF}$WORKDIR${NORM}\"!"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not create directory \"${REDF}bin\" in directory \"${REDF}$WORKDIR${NORM}\"!"
     echo "Do you have write permission for directory \"${REDF}$WORKDIR${NORM}\"?"
     echo
     exit 1
@@ -926,7 +925,7 @@ function workdirpath {
   confirmgo
   cd $WORKDIR
   # Add bin directory in current directory into PATH
-  PATH=$BIN:$PATH
+  export PATH=$BIN:$PATH
   }
 
 # Function to compile BLAT
@@ -938,7 +937,7 @@ function compileblat {
   checktools make &&
   checktools gcc &&
   checktools cp &&
-  echo "Downloading BLAT source code" &&
+  echo "Downloading \"${REDF}BLAT${NORM}\" source code" &&
   if [ -z $MACHTYPE ]; then
     echo
     echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Variable ${BOLD}\$MACHTYPE required by BLAT is missing.${NORM}"
@@ -947,7 +946,7 @@ function compileblat {
     MACHTYPE=$HOME/bin/$OSB
     else
       echo
-      echo "BLAT binaries will be available in ${REDF}$HOME/bin/$MACHTYPE${NORM} and ${REDF}$BIN${NORM} (consider adding them into the PATH)."
+      echo "BLAT binaries will be available in ${REDF}$HOME/bin/$MACHTYPE${NORM} and ${REDF}$BIN${NORM} (consider adding them into the ${BOLD}PATH${NORM})."
       confirmgo
     fi &&
   echo &&
@@ -961,7 +960,7 @@ function compileblat {
     echo
     exit 1
     }; } &&
-  PATH=$PATH:$HOME/bin/$MACHTYPE &&
+  export PATH=$PATH:$HOME/bin/$MACHTYPE &&
   { mkdir -p lib/$MACHTYPE || {
     echo
     echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not create directory"
@@ -969,7 +968,7 @@ function compileblat {
     echo
     exit 1
     }; } &&
-  echo "Compiling BLAT from source code" &&
+  echo "Compiling \"${REDF}BLAT${NORM}\" from source code" &&
   make -s &&
   cd $WORKDIR &&
   cp -p $HOME/bin/$MACHTYPE/* $BIN/ &&
@@ -977,7 +976,7 @@ function compileblat {
   } || {
     echo
     echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please, go to ${REDF}https://users.soe.ucsc.edu/~kent/src/${NORM}"
-    echo "download latest blatSrc*.zip, compile it and ensure it is in PATH"
+    echo "download latest blatSrc*.zip, compile it and ensure it is in ${BOLD}PATH${NORM}"
     exit 1
     }
   }
@@ -986,20 +985,20 @@ function compileblat {
 function checkblat {
   { command -v blat >/dev/null 2>&1 && echo "\"${REDF}BLAT${NORM}\" is available. ${GREF}OK.${NORM}"; } || {
     echo
-    echo "${CYAF}BLAT is required but not installed or available in PATH.${NORM}"
+    echo "${CYAF}BLAT is required but not installed or available in ${BOLD}PATH${NORM}.${NORM}"
     echo
     if [ "$STARTINI" == "I" ]; then
-      echo "Type \"${REDF}S${NORM}\" ${CYAF}to compile BLAT from source${NORM} available on ${REDF}https://users.soe.ucsc.edu/~kent/src/${NORM}"
-      echo "  (BLAT license does not allow redistributions; required if BLAT is not"
+      echo "Type \"${REDF}S${NORM}\" ${CYAF}to compile \"BLAT\" from source${NORM} available on ${REDF}https://users.soe.ucsc.edu/~kent/src/${NORM}"
+      echo "  (BLAT license does not allow redistributions; required if \"BLAT\" is not"
       echo "  available for your system). Together with standard compilation tools"
-      echo "  BLAT requires libpng developmental files."
-      echo "Type \"${REDF}D${NORM}\" ${CYAF}to download BLAT${NORM} from ${REDF}http://hgdownload.cse.ucsc.edu/admin/exe/${NORM}"
+      echo "  \"BLAT\" requires libpng developmental files."
+      echo "Type \"${REDF}D${NORM}\" ${CYAF}to download \"BLAT\"${NORM} from ${REDF}http://hgdownload.cse.ucsc.edu/admin/exe/${NORM}"
       echo "  automatically for your OS (BLAT license does not allow redistributions;"
       echo "  available for 64 bit Linux and Mac OS X, recommended)."
       echo "Type \"${REDF}H${NORM}\" ${CYAF}for installation using Homebrew${NORM} (only for Mac OS X, recommended)."
       echo "  See \"${REDF}brew info homebrew/science/blat${NORM}\" for more details."
       echo "Type \"${REDF}M${NORM}\" ${CYAF}for manual installation - script will exit${NORM} and you will have to"
-      echo "  install BLAT yourselves. Check ${REDF}http://genome.ucsc.edu/FAQ/FAQblat.html${NORM}"
+      echo "  install \"BLAT\" yourselves. Check ${REDF}http://genome.ucsc.edu/FAQ/FAQblat.html${NORM}"
       echo "  for more information."
       read BLAT
       while :
@@ -1020,7 +1019,7 @@ function checkblat {
 	      echo "\"${REDF}BLAT${NORM}\" is available. ${GREF}OK.${NORM}"
 	      } || {
 		echo
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download of BLAT failed.${NORM} Please, go to"
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download of \"${REDF}BLAT${NORM}\" failed.${NORM} Please, go to"
 		echo "${REDF}http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/${NORM}"
 		echo "and download blat binary yourselves."
 		echo
@@ -1035,14 +1034,14 @@ function checkblat {
 		echo "\"${REDF}BLAT${NORM}\" is available. ${GREF}OK.${NORM}"
 		} || {
 		  echo
-		  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download of BLAT failed.${NORM} Please, go to"
+		  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download of \"${REDF}BLAT${NORM}\" failed.${NORM} Please, go to"
 		  echo "${REDF}http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/${NORM}"
 		  echo "and download blat binary yourselves."
 		  echo
 		  exit 1
 		  }
 	      else
-		echo "Unknown OS or OS without BLAT binary available."
+		echo "Unknown OS or OS without \"${REDF}BLAT${NORM}\" binary available."
 		compileblat
 	      fi
 	      break
@@ -1066,7 +1065,7 @@ function checkblat {
 	    break
 	    ;;
 	  M|m) echo "Please, go to ${REDF}http://genome.ucsc.edu/FAQ/FAQblat.html${NORM} and download and install"
-	    echo "\"${REDF}BLAT${NORM}\" and ensure it is in PATH."
+	    echo "\"${REDF}BLAT${NORM}\" and ensure it is in ${BOLD}PATH${NORM}."
 	    echo
 	    exit 2
 	    ;;
@@ -1082,7 +1081,6 @@ function checkblat {
 # Function to check and read input files
 # Parameters: 1) parameter for particular file; 2) name (description) of input file; 3) variable for particular file (written into $CHECKFILEREADOUT)
 function readinputfile {
-  echo
   CHECKFILEREAD=$3
   if [ "$STARTINI" == "I" ]; then
     if [ -z "$CHECKFILEREAD" ]; then
