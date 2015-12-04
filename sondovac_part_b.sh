@@ -73,7 +73,11 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       echo -e "\t\tDefault value: 90 (integer ranging from 85 to 95; consider the"
       echo -e "\t\t  trade-off between probe specificity and number of remaining"
       echo -e "\t\t  matching sequences for probe design)"
-      echo -e "\t-k\t"
+      echo -e "\t${REDF}-k${NORM}\t${CYAF}Minimal exon length of the loci.${NORM} Total locus length."
+      echo -e "\t\tDefault value: 600. Allowed values are 600, 720, 840,"
+      echo -e "\t\t  960, 1080 and 1200. When running in interactive mode,"
+      echo -e "\t\t  user will be asked which value to use based on table"
+      echo -e "\t\t  of number of loci for respective locus length."
       echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-b${NORM}, ${BOLD}-d${NORM} or ${BOLD}-y${NORM} are not provided, default values"
       echo -e "\t  are taken and it is not possible to change them later (not even in"
       echo -e "\t  interactive mode)."
@@ -123,6 +127,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       ;;
     b)
       BAITL=$OPTARG
+      # Check if provided value makes sense
       case "$BAITL" in
 	80) BAITL=80;;
 	100) BAITL=100;;
@@ -136,15 +141,16 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       ;;
     d)
       CDHITSIM=$OPTARG
+      # Check if provided value makes sense
       if [ "$(echo 0.85 '<=' $CDHITSIM | bc -l)" = 1 ] && [ "$(echo $CDHITSIM '<=' 0.95 | bc -l)" = 1 ]; then
 	echo "Sequence similarity: $CDHITSIM"
-      else
-	echo
-	echo "${REDF}${BOLD}Error!${NORM} For parameter \"-d\" you did not provide decimal number ranging from 0.85"
-	echo "  to 0.95!"
-	echo
-	exit 1
-      fi
+	else
+	  echo
+	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-d\" you did not provide decimal number ranging from 0.85"
+	  echo "  to 0.95!"
+	  echo
+	  exit 1
+	fi
       ;;
     y)
       BLATIDENT=$OPTARG
@@ -161,7 +167,20 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
     k)
       MINLOCUSLENGTH=$OPTARG
       # Check if provided value makes sense
-      
+      case "$MINLOCUSLENGTH" in
+	600) MINLOCUSLENGTH=600;;
+	720) MINLOCUSLENGTH=720;;
+	840) MINLOCUSLENGTH=840;;
+	960) MINLOCUSLENGTH=960;;
+	1080) MINLOCUSLENGTH=1080;;
+	1200) MINLOCUSLENGTH=1200;;
+	*) echo
+	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-k\" you did not provide any of values 600, 720, 840, 960,"
+	  echo "  1080 or 1200!"
+	  echo
+	  exit 1
+	esac
+      echo "Minimal exon length: ${REDF}$MINLOCUSLENGTH${NORM}"
       ;;
     ?)
       echo
@@ -405,7 +424,7 @@ PROBESEQUENCESCP="${OUTPUTFILENAME%.*}_possible_cp_dna_genes_in_probe_set.pslx"
 
 echo
 echo "${REDF}Step 8 of the pipeline${NORM} - retention of those contigs that comprise exons ≥ bait"
-echo "length (${CYAF}$BAITL${NORM} bp) and have a certain locus length"
+echo "  length (${CYAF}$BAITL${NORM} bp) and have a certain locus length"
 
 # Check if TSV output of Geneious contains at least requested columns
 echo
@@ -531,14 +550,15 @@ echo "Separating unassembled sequences"
 grep -v '[Aa]ssembly' $SEQUENCESTAB > $SEQUENCESTABUNAS
 echo
 
-# Retention of those contigs that comprise exons ≥ bait length and have a certain total locus length. Allowing the values 80, 100, 120 for bait / minimum exon length and 600, 720, 840, 960, 1080, 1200 for total locus length.
+# Retention of those contigs that comprise exons ≥ bait length and have a certain total locus length.
+# Allowing the values 80, 100, 120 for bait / minimum exon length and 600, 720, 840, 960, 1080, 1200 for total locus length.
 
 echo "${CYAF}Number of assembled sequences:${NORM}"
-for LOCUSLENGTH in 600 720 840 960 1080 1200; do
+echo "Length of exons ≥${CYAF}$BAITL${NORM} bp."
+echo -e "${REDF}G${CYAF}enes of length\t${REDF}N${CYAF}umber of genes\t${REDF}T${CYAF}otal bp${NORM}"
+for LOCUSLENGTH in 0600 0720 0840 0960 1080 1200; do
   LOCUSLENGTHN=$(expr $LOCUSLENGTH - 1)
-  echo "Genes of ≥${CYAF}$LOCUSLENGTH${NORM} bp (exons ≥${CYAF}$BAITL${NORM} bp), total bp:"
-  awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}'
-  awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l
+  echo -e "≥$LOCUSLENGTH bp\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l)"
   done
 
 # Select the optimal locus length
@@ -580,7 +600,9 @@ if [ "$STARTINI" == "I" ]; then
     done
   fi
 
-echo "Total locus length is set to $MINLOCUSLENGTH bp."
+echo
+echo "${CYAF}Total locus length${NORM} is set to ${REDF}$MINLOCUSLENGTH bp${NORM}."
+echo
 
 # Saving sequences with selected length
 awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTH"'' > $SEQUENCESPROBESLOCUSLENGTH
@@ -631,7 +653,7 @@ confirmgo
 # Step 9: Make the final quality control of the probe sequences before sending them to company for bait synthesis
 
 echo "${REDF}Step 9 of the pipeline${NORM} - removal of probe sequences sharing ≥90% sequence"
-echo "similarity"
+echo "  similarity"
 echo
 
 # Check for sequence similarity between the developed probe sequences with CD-HIT-EST
@@ -642,7 +664,7 @@ cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCDHIT -c $CDHITSIM
 
 echo
 echo "${REDF}Step 10 of the pipeline${NORM} - retention of those contigs that comprise exons ≥ bait"
-echo "length (${CYAF}$BAITL${NORM} bp) and have a certain locus length"
+echo "  length (${CYAF}$BAITL${NORM} bp) and have a certain locus length"
 echo
 
 # One of the three outfiles is a FASTA file, it has to be converted to TAB
@@ -657,7 +679,7 @@ fasta2tab $PROBEPRELIMCDHIT $PROBEPRELIMCDHIT.txt || {
 echo
 
 # Count all assemblies, comprised of putative exons ≥120 bp
-echo "${CYAF}Number of all assemblies, comprised of putative exons ≥$BAITL${NORM} bp:"
+echo "${CYAF}Number of all assemblies, comprised of putative exons ≥$BAITL bp:${NORM}"
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | awk '{s+=$2;c++}END{print s}'
 confirmgo
 

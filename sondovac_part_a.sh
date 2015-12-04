@@ -1017,6 +1017,7 @@ function compilefastx {
   fi
   }
 
+echo
 # Input files
 CHECKFILEREADOUT=""
 
