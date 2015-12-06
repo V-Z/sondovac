@@ -642,15 +642,15 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
   \begin{itemize}
     \item Step 5 of Sondovač, \texttt{sondovac$\_$part$\_$a.sh}.
     \item Filtering for orthologs, using sequence similarity as criterion.
-    \item DEFAULT: 85 (highly recommended).
+    \item DEFAULT: 85 (highly recommended)
     \item OPTIONS: Integer ranging from 70 to 100
   \end{itemize}
 \item[\texttt{-g \#\#\#\#}] Choice of transcript or genome skim sequences for further processing.
   \begin{itemize}
     \item Step 6.1 of Sondovač, \texttt{sondovac$\_$part$\_$a.sh}.
     \item Depending on the phylogenetic depth that should be obtained, the probe sequences need to be designed from either the transcript or genome skim sequences, or it might not matter, if both of these input data sources are from close relatives.
-    \item DEFAULT: no usage of -g (genome skim sequences).
-    \item OPTIONS: usage of -g (transcript sequences).
+    \item DEFAULT: no usage of -g (probe design from genome skim sequences)
+    \item OPTIONS: usage of -g (probe design from transcript sequences)
   \end{itemize}
 \item[\texttt{-s \#\#\#\#}] Number of BLAT hits per transcript when matching unique transcripts and the filtered, combined genome skim reads.
   \begin{itemize}
@@ -662,29 +662,30 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
 \item[\texttt{-b \#\#\#}] Minimum exon (bait) length.
   \begin{itemize}
     \item Steps 8 and 10 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
-    \item The minimum exon length should not fall below the bait length in order to facilitate specific binding between genomic libraries and baits during hybridization.
-    \item DEFAULT: 120 (optimal length for phylogeny).
+    \item The minimum exon length should not fall below the bait length in order to facilitate sufficient specific binding between genomic libraries and baits during hybridization.
+    \item DEFAULT: 120 (optimal length for phylogeny)
     \item OPTIONS: Integer ranging from 120 to 200
   \end{itemize}
+\item [\texttt{-y \#\#\#}] Minimum total locus length.
+    \begin{itemize}
+     \item DEFAULT: 600
+     \item OPTIONS: 720, 840, 960, 1080, 1200
+     \item When running the script in interactive mode, the user will be asked which value to use. A table summarizing the total number of LCN loci, which will be the result of the probe design for all minimum total locus lengths that the user can select (600 bp, 720 bp, 840 bp, 960 bp, 1080 bp, 1200 bp), will be displayed to facilitate this choice.
+    \end{itemize}
 \item[\texttt{-d 0.\#\#}] Sequence similarity between probe sequences (parameter -c of cd-hit-est, see its manual for details).
   \begin{itemize}
     \item Step 9 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
-    \item Too similar probe sequences will interact with each other during hybridization and thereby reduce enrichment efficiency.
-    \item DEFAULT: 0.9 (highly recommended).
+    \item In order to obtain LCN genes, enrichment of multiple similar loci needs to be avoided.
+    \item DEFAULT: 0.9 (highly recommended)
     \item OPTIONS: Decimal ranging from 0.85 to 0.95
   \end{itemize}
 \item[\texttt{-y \#\#}] Sequence similarity between probe sequences and plastome reference (parameter -minIde\-ntity of BLAT, see its manual for details).
   \begin{itemize}
     \item Step 11 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
     \item Some plastid reads might not have been removed in step 2; they should be removed in this step.
-    \item DEFAULT: 90 (highly recommended).
+    \item DEFAULT: 90 (highly recommended)
     \item OPTIONS: Integer ranging from 70 to 100
   \end{itemize}
-  \item [\texttt{-y \#\#\#}] Minimal exon length of the loci.
-    \begin{itemize}
-     \item Default value: 600. Allowed values are 600, 720, 840, 960, 1080 and 1200.
-     \item When running in interactive mode, user will be asked which value to use based on table of number of loci for respective locus length.
-    \end{itemize}
 \end{description}
 
 \subsection{Input and output files}
