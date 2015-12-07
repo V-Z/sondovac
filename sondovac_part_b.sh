@@ -29,13 +29,13 @@ echo "low-copy nuclear probe sequences."
 CHECKMODE=0
 # If not specifying explicitly otherwise (using -n), running in interactive mode
 STARTINI="I"
-# Bait length
+# Bait/exon length
 BAITL=120
 # CD-HIT sequence similarity
 CDHITSIM=0.9
-# BLAT -minIdentity between the list of probes and plostome sequence
+# BLAT -minIdentity between the probe sequences and the plastome reference
 BLATIDENT=90
-# Default total locus length
+# Default minimum total locus length
 MINLOCUSLENGTH=600
 # Default name of output files
 OUTPUTFILENAME="output"
@@ -70,10 +70,8 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       echo -e "\t${REDF}-y${NORM}\t${CYAF}Sequence similarity between the probes and plastome reference${NORM}"
       echo -e "\t\t  searching for possible plastid genes in probe set (parameter"
       echo -e "\t\t  \"-minIdentity\" of BLAT, see its manual for details)."
-      echo -e "\t\tDefault value: 90 (integer ranging from 85 to 95; consider the"
-      echo -e "\t\t  trade-off between probe specificity and number of remaining"
-      echo -e "\t\t  matching sequences for probe design)"
-      echo -e "\t${REDF}-k${NORM}\t${CYAF}Minimal exon length of the loci.${NORM} Total locus length."
+      echo -e "\t\tDefault value: 90 (integer ranging from 85 to 95; default value highly recommended").
+      echo -e "\t${REDF}-k${NORM}\t${CYAF}Minimum total locus length.${NORM}."
       echo -e "\t\tDefault value: 600. Allowed values are 600, 720, 840,"
       echo -e "\t\t  960, 1080 and 1200. When running in interactive mode,"
       echo -e "\t\t  user will be asked which value to use based on table"
