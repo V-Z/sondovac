@@ -663,8 +663,8 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
   \begin{itemize}
     \item Steps 8 and 10 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
     \item The minimum exon length should not fall below the bait length in order to account for specific binding between genomic libraries and baits during hybridization.
-    \item DEFAULT: 120 (optimal length for phylogeny)
-    \item OPTIONS: Integer ranging from 120 to 200
+    \item DEFAULT: 120 (preferred length for phylogeny)
+    \item OPTIONS: 80, 100, 120
   \end{itemize}
 \item [\texttt{-k \#\#\#}] Minimum total locus length.
     \begin{itemize}
@@ -742,7 +742,7 @@ Files 1-9 are not necessary for further processing by this pipeline, but may be 
   \item \texttt{*$\_$prelim$\_$probe$\_$seq.fasta} -- Preliminary probe sequences.
   \item \texttt{*$\_$similarity$\_$test.fasta} -- Contigs that comprise exons $\geq$ bait length and have a certain total locus length.
   \item \texttt{*$\_$target$\_$enrichment$\_$probe$\_$sequences.fasta} -- Probes in FASTA.
-  \item \textbf{\texttt{*$\_$possible$\_$cp$\_$dna$\_$gene$\_$in$\_$probe$\_$set.pslx} -- In case of any BLAT hits, the user needs to manually remove these plastid probe sequences from {*$\_$target$\_$enrichment$\_$probe$\_$sequences.fasta} -- the remaining ones are the final probe sequences in FASTA.}
+  \item \textbf{\texttt{*$\_$possible$\_$cp$\_$dna$\_$gene$\_$in$\_$probe$\_$set.pslx} -- In case of any BLAT hits, the user needs to manually remove these plastid probe sequences from {*$\_$target$\_$enrichment$\_$probe$\_$sequences.fasta}; the remaining ones are the final probe sequences in FASTA.}
 \end{enumerate}
 
 An asterisk (*) denotes the beginning of the output files' names specified by the user with parameter \texttt{-o}. If the user does not select a custom name, default value (\texttt{output}) will be used. By default, output files are created in the same directory from which Sondovač was launched. Output files can be saved in a custom directory by specifying an output directory together with parameter \texttt{-o}:
