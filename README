@@ -311,8 +311,8 @@ not
            below the bait length in order to account for specific binding 
            between genomic libraries and baits during hybridization.
          Steps 8 and 10 of Sondovač, sondovac_part_b.sh.
-         DEFAULT: 120 (optimal length for phylogeny).
-         OPTIONS: Integer ranging from 120 to 200
+         DEFAULT: 120 (preferred length for phylogeny).
+         OPTIONS: 80, 100, 120
 -k ###   Minimum total locus length. When running the script in interactive 
            mode, the user will be asked which value to use. A table summarizing 
            the total number of LCN loci, which will be the result of the probe 
@@ -431,9 +431,8 @@ Script sondovac_part_b.sh creates the following files:
      a certain total locus length.
 3) *_target_enrichment_probe_sequences.fasta - Probes in FASTA.
 4) *_possible_cp_dna_genes_in_probe_set.pslx - In case of any BLAT hits, the 
-     user might needs to manually remove these probe sequences from 
-     *_target_enrichment_probe_sequences.fasta (the previous script outfile) - 
-     these are then the final probe sequences in FASTA.
+     user might needs to manually remove these plastid probe sequences from 
+     *_target_enrichment_probe_sequences.fasta (the previous script outfile); the remaining ones are the final probe sequences in FASTA.
 
 An asterisk (*) denotes the beginning of the output files' names specified by 
 the user with parameter "-o". If user does not select a custom name, default 
