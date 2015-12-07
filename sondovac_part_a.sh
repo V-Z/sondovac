@@ -158,7 +158,7 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
     a)
       FLASHM=$OPTARG
       # Check if provided value makes sense
-      if [[ "$FLASM" =~ ^[0-9]+$ ]] && [ "$FLASM" -ge 10 -a "$FLASM" -le 300 ]; then
+      if [[ "$FLASHM" =~ ^[0-9]+$ ]] && [ "$FLASHM" -ge 10 -a "$FLASHM" -le 300 ]; then
 	echo "Maximum overlap length expected in approximately 90% of read pairs: ${REDF}$FLASHM${NORM}"
 	else
 	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-a\" you did not provide an integer ranging from 10 to 300!"
