@@ -29,13 +29,13 @@ echo "low-copy nuclear probe sequences."
 CHECKMODE=0
 # If not specifying explicitly otherwise (using -n), running in interactive mode
 STARTINI="I"
-# Bait/exon length
+# Minimum bait/exon length
 BAITL=120
 # CD-HIT sequence similarity
 CDHITSIM=0.9
 # BLAT -minIdentity between the probe sequences and the plastome reference
 BLATIDENT=90
-# Default minimum total locus length
+# Minimum total locus length
 MINLOCUSLENGTH=600
 # Default name of output files
 OUTPUTFILENAME="output"
@@ -62,7 +62,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       echo
       echo -e "\tOther optional arguments (if not provided, default values are used):"
       echo -e "\t${REDF}-b${NORM}\t${CYAF}Bait length${NORM}"
-      echo -e "\t\tDefault value: 120 (optimal length for phylogeny, use any of"
+      echo -e "\t\tDefault value: 120 (preferred length for phylogeny, use any of"
       echo -e "\t\t  values 80, 100 or 120)."
       echo -e "\t${REDF}-d${NORM}\t${CYAF}Sequence similarity between the developed probe sequences${NORM}"
       echo -e "\t\t  (parameter \"-c\" of cd-hit-est, see its manual for details)."
@@ -70,14 +70,13 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       echo -e "\t${REDF}-y${NORM}\t${CYAF}Sequence similarity between the probes and plastome reference${NORM}"
       echo -e "\t\t  searching for possible plastid genes in probe set (parameter"
       echo -e "\t\t  \"-minIdentity\" of BLAT, see its manual for details)."
-      echo -e "\t\tDefault value: 90 (integer ranging from 85 to 95; default value highly recommended").
+      echo -e "\t\tDefault value: 90 (integer ranging from 85 to 95)."
       echo -e "\t${REDF}-k${NORM}\t${CYAF}Minimum total locus length.${NORM}."
       echo -e "\t\tDefault value: 600. Allowed values are 600, 720, 840,"
       echo -e "\t\t  960, 1080 and 1200. When running in interactive mode,"
-      echo -e "\t\t  user will be asked which value to use based on table"
-      echo -e "\t\t  of number of loci for respective locus length."
+      echo -e "\t\t  the user will be asked which value to use. A table summarizing the total number of LCN loci, which will be the result of the probe design for all minimum total locus lenghts that the user can select, will be displayed to facilitate this choice."
       echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-b${NORM}, ${BOLD}-d${NORM} or ${BOLD}-y${NORM} are not provided, default values"
-      echo -e "\t  are taken and it is not possible to change them later (not even in"
+      echo -e "\t  are taken, and it is not possible to change them later (not even in"
       echo -e "\t  interactive mode)."
       echo
       exit 2
@@ -178,7 +177,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
 	  echo
 	  exit 1
 	esac
-      echo "Minimal exon length: ${REDF}$MINLOCUSLENGTH${NORM}"
+      echo "Minimum exon length: ${REDF}$MINLOCUSLENGTH${NORM}"
       ;;
     ?)
       echo
@@ -261,7 +260,7 @@ function compilecdhit {
     echo
     echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please go to ${REDF}https://github.com/weizhongli/cdhit/releases${NORM}"
     echo "download cd-hit-*.tgz, compile it and ensure it is in ${BOLD}PATH${NORM}."
-    echo "Check last error messages to find why compilation failed."
+    echo "Check last error messages to find out why compilation failed."
     echo
     exit 1
     }
@@ -549,7 +548,7 @@ grep -v '[Aa]ssembly' $SEQUENCESTAB > $SEQUENCESTABUNAS
 echo
 
 # Retention of those contigs that comprise exons ≥ bait length and have a certain total locus length.
-# Allowing the values 80, 100, 120 for bait / minimum exon length and 600, 720, 840, 960, 1080, 1200 for total locus length.
+# Allowing the values 80, 100, 120 for bait / minimum exon length and 600, 720, 840, 960, 1080, 1200 for minimum total locus length.
 
 echo "${CYAF}Number of assembled sequences:${NORM}"
 echo "Length of exons ≥${CYAF}$BAITL${NORM} bp."
@@ -559,9 +558,9 @@ for LOCUSLENGTH in 0600 0720 0840 0960 1080 1200; do
   echo -e "≥$LOCUSLENGTH bp\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l)"
   done
 
-# Select the optimal locus length
+# Select the optimal minimum total locus length
 if [ "$STARTINI" == "I" ]; then
-  echo "${CYAF}Select total locus length.${NORM} Possible values are ${REDF}600${NORM}, ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM} or ${REDF}1200${NORM}."
+  echo "${CYAF}Select minimum total locus length.${NORM} Possible values are ${REDF}600${NORM}, ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM} or ${REDF}1200${NORM}."
   read MINLOCUSLENGTHTEST
   while :
   do
@@ -640,7 +639,7 @@ echo
 echo "Writing FASTA file with preliminary probe sequences"
 cat $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG > $PROBEPRELIM0
 
-# Ensure all sequences have correct labeling
+# Ensure all sequences have correct labels
 echo "Ensuring all sequences have correct labels"
 sed 's/^>.\+\(Assembly_[0-9]\+_\)/>\1Contig_0_/' $PROBEPRELIM0 > $PROBEPRELIM
 echo
@@ -648,7 +647,7 @@ echo "${CYAF}Preliminary probe sequences saved${NORM} as ${REDF}$PROBEPRELIM${NO
 echo "  for possible later usage."
 confirmgo
 
-# Step 9: Make the final quality control of the probe sequences before sending them to company for bait synthesis
+# Step 9: Make the final quality control of the probe sequences
 
 echo "${REDF}Step 9 of the pipeline${NORM} - removal of probe sequences sharing ≥90% sequence"
 echo "  similarity"
@@ -669,7 +668,7 @@ echo
 echo "Converting FASTA to TAB"
 fasta2tab $PROBEPRELIMCDHIT $PROBEPRELIMCDHIT.txt || {
   echo
-  echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA into TAB failed. Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA to TAB failed. Aborting."
   echo "Check if file ${REDF}$PROBEPRELIMCDHIT${NORM} is correct FASTA file."
   echo
   exit 1
@@ -693,7 +692,7 @@ awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f2,
 echo
 
 # Extract and sort the assemblies making up genes of ≥600 bp
-echo "Extracti and sorting the assemblies making up genes of ≥$MINLOCUSLENGTH bp"
+echo "Extracting and sorting the assemblies making up genes of ≥$MINLOCUSLENGTH bp"
 sed 's/^/Assembly_/' $PROBEPRELIMCDHIT2 | cut -f1 -d " " | sort -k1,1 > $PROBEPRELIMFORJOIN
 echo
 
@@ -712,8 +711,8 @@ echo "Converting TAB to FASTA"
 sed 's/^\(.\+\) \(Contig\)/>\1_\2/' $PROBEPRELIMFIN | sed 's/ /\n/' > $PROBESEQUENCES
 echo
 
-# Calculating of the total number of base pairs
-echo "Calculating of the total number of base pairs"
+# Calculation of the total number of base pairs
+echo "Calculating the total number of base pairs"
 echo "Converting FASTA to TAB"
 fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM || {
   echo
