@@ -128,7 +128,7 @@ For comprehension improvement the steps of Sondovač are consecutively numbered.
 
   \item Geneious: Covers step 7 (see page~\pageref{geneious}).
     \begin{enumerate}[label=\textbf{\arabic*.}, resume]
-    \item De novo assembly of the transcript or genome skim BLAT hits [depending on the selection in (6.1)] to larger contigs. Note you need a copy of Geneious for this step.
+    \item De novo assembly of the transcript or genome skim BLAT hits [depending on the selection in (6.1)] to larger contigs. Note that you need a copy of Geneious for this step.
     \end{enumerate}
 
   The output files of Geneious are input files for \texttt{sondovac$\_$part$\_$b.sh}.
@@ -158,9 +158,9 @@ Sondovač is currently tested on major Linux distributions (in current versions)
 
 In order to run Sondovač you need a UNIX-based operating system (preferably Linux, alternatively Mac OS~X) equipped with BASH or a compatible shell interpreter (this should by default be available for any Linux distribution, Mac OS~X and any other UNIX-based operating system like Solaris, BSD and its variants etc.). You should use the current operating system version supported by upstream. Otherwise we will not be able to help you in case of problems. Older operating systems can have different versions of shell and system libraries, which can cause various problems and incompatibilities.
 
-Sondovač uses several scientific software packages (namely bam2fastq, BLAT, Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, and SAMtools -- see required versions and links, Table~\ref{software-links}), and basic UNIX tools (see below). Sondovač will check if those programs are installed -- available in the PATH (i.e. if the shell application can locate and launch respective binaries, see also vocabulary at page~\pageref{vocabulary}). If you have those packages installed (in current versions, see Table~\ref{software-links}), ensure their binaries are in PATH. This should not be a problem for basic tools available in any UNIX-based operating system, as basic installation usually contains all needed tools. If you lack some of the required tools, the script will notify you, and you will have to install them manually. If this will be needed, check the documentation for your operating system. % Picard % will be used instead of bam2fastq
+Sondovač uses several scientific software packages (namely bam2fastq, BLAT, Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, Picard, and SAMtools -- see required versions and links, Table~\ref{software-links}), and basic UNIX tools (see below). Sondovač will check if those programs are installed -- available in the PATH (i.e. if the shell application can locate and launch respective binaries, see also vocabulary at page~\pageref{vocabulary}). If you have those packages installed (in current versions, see Table~\ref{software-links}), ensure that their binaries are in PATH. This should not be a problem for basic tools available in any UNIX-based operating system, as basic installation usually contains all needed tools. If you lack some of the required tools, the script will notify you, and you will have to install them manually. If this will be needed, check the documentation for your operating system. % Picard % will be used instead of bam2fastq
 
-If required scientific programs are not installed, Sondovač will offer you installation. You can use precompiled binaries available together with the script or (sometimes) from the web. This is the recommended way. In case you would like to compile required software yourself, the script will guide you through this process. Anyway, this is recommended only for advanced users, as compilation might sometimes be very tricky. Users of Mac OS~X can install those applications also using Homebrew (see \href{http://brew.sh/}{http://brew.sh/}). For compilation you need Apache Ant, GNU G++, GNU GCC, GIT, Java/OpenJDK, libpng developmental files and zlib developmental files. Ensure you have those tools available -- they should be readily available for any UNIX-based operating system. Chapters~\ref{required-linux} and~\ref{required-mac} give details about requirements and their manual fulfilling. This is mainly a reference for more advanced users or users with special needs. For most users it should be fully sufficient to run the script and let it do this job (see chapter~\ref{script-start} on page~\pageref{script-usage}).
+If required scientific programs are not installed, Sondovač will offer you installation. You can use precompiled binaries available together with the script (this is the recommended option) or (sometimes) from the web. This is the recommended way. In case you would like to compile required software yourself, the script will guide you through this process. Anyway, this is recommended only for advanced users, as compilation might sometimes be very tricky. Users of Mac OS~X can install those applications also using Homebrew (see \href{http://brew.sh/}{http://brew.sh/}). For compilation you need Apache Ant, GNU G++, GNU GCC, GIT, Java/OpenJDK, libpng developmental files, and zlib developmental files. Ensure you have those tools available -- they should be readily available for any UNIX-based operating system. Chapters~\ref{required-linux} and~\ref{required-mac} give details about requirements and their manual fulfilling. This is mainly a reference for more advanced users or users with special needs. For most users it should be fully sufficient to run the script and let it do this job (see chapter~\ref{script-start} on page~\pageref{script-usage}).
 
 The following UNIX tools are required to run Sondovač. They are usually readily available in UNIX systems (but see note for Mac OS~X below), so there is usually no need to install them manually. The tools are \texttt{awk}, \texttt{bc}, \texttt{bunzip2}, \texttt{cat}, \texttt{cp}, \texttt{curl} or \texttt{wget}, \texttt{cut}, \texttt{dirname}, \texttt{echo}, \texttt{egrep}, \texttt{cd}, \texttt{g++}, \texttt{gcc}, \texttt{grep}, \texttt{gunzip}, \texttt{join}, \texttt{less}, \texttt{lsb$\_$release} or \texttt{python} (for Linux), \texttt{make}, \texttt{mkdir}, \texttt{perl}, \texttt{pkg-config}, \texttt{pwd}, \texttt{sed}, \texttt{sort}, \texttt{tar}, \texttt{tr}, \texttt{uname}, \texttt{uniq}, \texttt{unzip}, \texttt{wc}. Not all tools are required every time -- some are used only during particular actions (e.g. when the user decides to compile the required software manually). And the user usually does not need to bother about them. See also details in the following subchapters for some common Linux distributions and Mac OS~X.
 
@@ -258,7 +258,7 @@ Fedora uses since version 22 for package management the command \texttt{dnf}. It
 \subsection{Installation of required software in Mac OS~X}
 \label{required-mac}
 
-For Mac OS~X users, Homebrew (see \href{http://brew.sh/}{http://brew.sh/} and \href{https://github.com/Homebrew/}{https://github.com/Homebrew/}) will be installed by the script, and it will install (new software or newer versions) Apache Ant, BASH (the shell interpreter), GNU AWK, GNU coreutils, GNU GCC, git, GNU grep, GNU make, pkg-config, GNU sed and wget. Mac OS~X is missing some tools and for others (typically sed, grep or awk) contains too old BSD versions. The script will guide the user through the process, and if the user would wish, it is possible to safely and easily remove these tools afterwards. Unfortunately, Mac OS~X does not have usable build-in package management, and it has too old versions of some required tools. Homebrew fills this gap. It is a simple command-line installer (similar to package managers known from Linux, BSD or Solaris) of various applications.
+For Mac OS~X users, Homebrew (see \href{http://brew.sh/}{http://brew.sh/} and \href{https://github.com/Homebrew/}{https://github.com/Homebrew/}) will be installed by the script, and it will install (new software or newer versions) Apache Ant, BASH (the shell interpreter), GNU AWK, GNU coreutils, GNU GCC, git, GNU grep, GNU make, pkg-config, GNU sed, and wget. Mac OS~X is missing some tools and for others (typically sed, grep or awk) contains too old BSD versions. The script will guide the user through the process, and if the user would wish, it is possible to safely and easily remove these tools afterwards. Unfortunately, Mac OS~X does not have usable build-in package management, and it has too old versions of some required tools. Homebrew fills this gap. It is a simple command-line installer (similar to package managers known from Linux, BSD or Solaris) of various applications.
 
 Homebrew requires Xcode\footnote{\href{https://developer.apple.com/xcode/}{https://developer.apple.com/xcode/}} (set of tools required to compile software) to be installed. Unfortunately, it is not easily universally possible to check if Xcode is installed, so that the script will ask if the user wishes to install it. If the user is unsure if Xcode is installed, it is safely possible to answer \texttt{Yes} and install it. The manual command to install Xcode is the following:
 
@@ -362,7 +362,7 @@ Specify some of the required input files, otherwise run interactively:
   ./sondovac_part_a.sh -i -f input.fa -t reads1.fastq -q reads2.fastq
 \end{bashcode}
 
-Running in non-interactive automated way (parameter "\texttt{-n}", see chapter~\ref{script-usage} at page~\pageref{script-usage}) with 
+Running in non-interactive, automated way (parameter "\texttt{-n}", see chapter~\ref{script-usage} at page~\pageref{script-usage}) with 
 example data downloaded from \href{https://github.com/V-Z/sondovac/wiki/Sample-data}{https://github.com/V-Z/sondovac/wiki/Sample-data}:
 
 \begin{bashcode}
@@ -387,7 +387,7 @@ Run in non-interactive mode (parameter "\texttt{-n}", see chapter~\ref{script-us
     -m referencemt.fsa -t reads1.fastq -q reads2.fastq -y 90
 \end{bashcode}
 
-Modifying parameter "\texttt{-s}". Note interactive mode "\texttt{-i}" is implicit and does not need to be specified explicitly:
+Modifying parameter "\texttt{-s}". Note that the interactive mode "\texttt{-i}" is implicit and does not need to be specified explicitly:
 
 \begin{bashcode}
   ./sondovac_part_a.sh -s 950
@@ -414,7 +414,7 @@ If you are not familiar with the usage of command line, see some basic tutorial 
 \subsection{Geneious}
 \label{geneious}
 
-For part (2) of the script the user must have Geneious \citep{Kearse2012}. Geneious is a DNA alignment, assembly, and analysis software and one of the most common software platforms used in genomics. It is utilized for de novo assembly in Sondovač. We plan to replace it by some free open-source command line tool in some future release of Sondovač. Visit \href{http://www.geneious.com/}{http://www.geneious.com/} for download, purchase, installation and usage of Geneious. It is a very feature-rich application. After the input data are processed (interactively or not) by \texttt{sondovac$\_$part$\_$a.sh}, the user must process its output manually with Geneious according to the instructions given below. The output of Geneious is then processed by \texttt{sondovac$\_$part$\_$b.sh}, which produces the final probe set. Geneious was tested with versions 6, 7 and 8.
+For part (2) of the script the user must have Geneious \citep{Kearse2012}. Geneious is a DNA alignment, assembly, and analysis software and one of the most common software platforms used in genomics. It is utilized for de novo assembly in Sondovač. We plan to replace it by some free open-source command line tool in some future release of Sondovač. Visit \href{http://www.geneious.com/}{http://www.geneious.com/} for download, purchase, installation and usage of Geneious. After the input data are processed (interactively or not) by \texttt{sondovac$\_$part$\_$a.sh}, the user must process its output manually with Geneious according to the instructions given below. The output of Geneious is then processed by \texttt{sondovac$\_$part$\_$b.sh}, which produces the final probe set. Geneious was tested with versions 6, 7 and 8.
 
 \subsection{Software used by Sondovač}
 
@@ -585,7 +585,7 @@ Shared by \texttt{sondovac$\_$part$\_$a.sh} as well as \texttt{sondovac$\_$part$
   \item[\texttt{-p}] Display INSTALL for detailed installation instructions. Exit viewing by pressing the \texttt{Q} key. See also page~\pageref{install}.
   \item[\texttt{-e}] Display detailed citation information and exit.
   \item[\texttt{-o}] Set name of output files. Output files will start with that name. Do not use spaces or special characters - some software can not handle them correctly. The default value (if the user does not provide another name) is "output". See below for the list of produced output files.
-  \item[\texttt{-i}] Running in interactive mode -- script will on-demand ask for the required input files, installation of missing software etc. This is the recommended default value (the script runs interactively without explicitely using option \texttt{-n}).
+  \item[\texttt{-i}] Running in interactive mode -- the script will on-demand ask for the required input files, installation of missing software etc.. This is the recommended default value (the script runs interactively without explicitely using option \texttt{-n}).
   \item[\texttt{-n}] Running in non-interactive mode. The user must provide at least the required input files (see below). You can use only one of the parameters \texttt{-i} or \texttt{-n} (not both of them). If the script fails to find some of the required software packages, it will exit. This is recommended for batch or repeated analysis, on remote servers and for more advanced users. The user must be sure that all required software is installed (see page~\pageref{install}).
 \end{description}
 
@@ -648,7 +648,7 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
 \item[\texttt{-g \#\#\#\#}] Choice of transcript or genome skim sequences for further processing.
   \begin{itemize}
     \item Step 6.1 of Sondovač, \texttt{sondovac$\_$part$\_$a.sh}.
-    \item Depending on the phylogenetic depth that should be obtained, the probe sequences need to be designed from either the transcript or genome skim sequences, or it might not matter, if both of these input data sources are from close relatives.
+    \item Depending on the phylogenetic depth that should be obtained, the probe sequences need to be designed from either the transcript or genome skim sequences, or it might not matter (if the taxa, from which the transcriptome and genome skim data were generated, are closely related).
     \item DEFAULT: no usage of -g (probe design from genome skim sequences)
     \item OPTIONS: usage of -g (probe design from transcript sequences)
   \end{itemize}
@@ -662,20 +662,21 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
 \item[\texttt{-b \#\#\#}] Minimum exon (bait) length.
   \begin{itemize}
     \item Steps 8 and 10 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
-    \item The minimum exon length should not fall below the bait length in order to facilitate sufficient specific binding between genomic libraries and baits during hybridization.
+    \item The minimum exon length should not fall below the bait length in order to account for specific binding between genomic libraries and baits during hybridization.
     \item DEFAULT: 120 (optimal length for phylogeny)
     \item OPTIONS: Integer ranging from 120 to 200
   \end{itemize}
 \item [\texttt{-k \#\#\#}] Minimum total locus length.
     \begin{itemize}
+     \item Steps 8 and 10 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
+     \item When running the script in interactive mode, the user will be asked which value to use. A table summarizing the total number of LCN loci, which will be the result of the probe design for all minimum total locus lengths that the user can select (600 bp, 720 bp, 840 bp, 960 bp, 1080 bp, 1200 bp), will be displayed to facilitate this choice.
      \item DEFAULT: 600
      \item OPTIONS: 720, 840, 960, 1080, 1200
-     \item When running the script in interactive mode, the user will be asked which value to use. A table summarizing the total number of LCN loci, which will be the result of the probe design for all minimum total locus lengths that the user can select (600 bp, 720 bp, 840 bp, 960 bp, 1080 bp, 1200 bp), will be displayed to facilitate this choice.
-    \end{itemize}
+     \end{itemize}
 \item[\texttt{-d 0.\#\#}] Sequence similarity between probe sequences (parameter -c of cd-hit-est, see its manual for details).
   \begin{itemize}
     \item Step 9 of Sondovač, \texttt{sondovac$\_$part$\_$b.sh}.
-    \item In order to obtain LCN genes, enrichment of multiple similar loci needs to be avoided.
+    \item Probes that target multiple similar loci need to be removed.
     \item DEFAULT: 0.9 (highly recommended)
     \item OPTIONS: Decimal ranging from 0.85 to 0.95
   \end{itemize}
@@ -690,13 +691,13 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
 
 \subsection{Input and output files}
 
-All names of input files and paths to them must be without spaces and without special characters (some software has difficulties to handle them -- it can produce weird errors). \textbf{Important note:} HTS data are big. The Sondovač pipeline is relatively long, and part \texttt{A} contains several format conversions and can (for some time) use dozens of GB of disk space. Temporal files without potential usefulness for the user are deleted at the end of the pipeline -- because those files may be useful for debugging if something would go wrong. For example, input data of \citet{Schmickl2016} are approximately 4.5~GB, and the overall output of part \texttt{A} of the script has about 28~GB, of which less then half is kept by the pipeline. Part \texttt{B} is very quick and does not consume a significant amount of disk space.
+All names of input files and paths to them must be without spaces and without special characters (some software have difficulties to handle them). \textbf{Important note:} HTS data are big. The Sondovač pipeline is relatively long, and part \texttt{A} contains several format conversions and can (for some time) use dozens of GB of disk space. Temporal files without potential usefulness for the user are deleted at the end of the pipeline -- because those files may be useful for debugging if something would go wrong. For example, input data of \citet{Schmickl2016} are approximately 4.5~GB, and the overall output of part \texttt{A} of the script has about 28~GB, of which less then half is kept by the pipeline. Part \texttt{B} is very quick and does not consume a significant amount of disk space.
 
 \vspace{10pt}
 \textbf{Script \texttt{sondovac$\_$part$\_$a.sh} requires as input files:}
 
 \begin{enumerate}
-  \item Transcriptome input file in FASTA format. \textbf{Note:} For technical reasons, the labels of FASTA sequences in \textit{must} be unique numbers (no other characters). Sondovač will check the labels, and if they are not in an appropriate form, a copy of these input files with correct labels will be created.
+  \item Transcriptome input file in FASTA format. \textbf{Note:} For technical reasons, the labels of FASTA sequences \textit{must} be unique numbers (no other characters). Sondovač will check the labels, and if they are not in an appropriate form, a copy of this input file with correct labels will be created.
   \item Plastome reference sequence input file in FASTA format.
   \item Paired-end genome skim input file in FASTQ format (two files -- forward and reverse reads).
   \item OPTIONAL: Mitochondriome reference sequence input file in FASTA format. This file is not required.
@@ -705,7 +706,7 @@ All names of input files and paths to them must be without spaces and without sp
 \textbf{Script \texttt{sondovac$\_$part$\_$a.sh} creates the following files:}
 
 \begin{enumerate}[start=0]
-  \item \texttt{*$\_$renamed.fasta} -- If needed, a copy of the transcriptome input file with the changed labels of the FASTA sequences (unique numbers respective to line numbers in the original file) will be created. File \texttt{*$\_$old$\_$and$\_$new$\_$names.tsv} then contains two columns: \textbf{1)} the original sequence labels as in the user-provided transcriptome input file and \textbf{2)} new sequence labels. This might be useful to trace back certain sequences/probes.
+  \item \texttt{*$\_$renamed.fasta} -- If needed, a copy of the transcriptome input file with the changed labels of the FASTA sequences (unique numbers corresponding to the line numbers in the original file) will be created. File \texttt{*$\_$old$\_$and$\_$new$\_$names.tsv} then contains two columns: \textbf{1)} the original sequence labels as in the user-provided transcriptome input file and \textbf{2)} new sequence labels. This might be useful to trace back certain sequences/probes.
   \item \texttt{*$\_$blat$\_$unique$\_$transcripts.psl} -- Output of BLAT (removal of transcripts sharing $\geq$90\% sequence similarity).
   \item \texttt{*$\_$unique$\_$transcripts.fasta} -- Unique transcripts in FASTA format.
   \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$reads.bam} -- SAM converted to BAM (removal of reads of plastid origin).
@@ -735,13 +736,13 @@ Files 1-9 are not necessary for further processing by this pipeline, but may be 
   \item Assembled sequences exported from Geneious as FASTA.
 \end{enumerate}
 
-\textbf{Script \texttt{sondovac$\_$part$\_$b.sh} creates following files:}
+\textbf{Script \texttt{sondovac$\_$part$\_$b.sh} creates the following files:}
 
 \begin{enumerate}
   \item \texttt{*$\_$prelim$\_$probe$\_$seq.fasta} -- Preliminary probe sequences.
   \item \texttt{*$\_$similarity$\_$test.fasta} -- Contigs that comprise exons $\geq$ bait length and have a certain total locus length.
   \item \texttt{*$\_$target$\_$enrichment$\_$probe$\_$sequences.fasta} -- Probes in FASTA.
-  \item \textbf{\texttt{*$\_$target$\_$enrichment$\_$probe$\_$sequences$\_$final.pslx} -- Final probes ready for bait synthesis.}
+  \item \textbf{\texttt{*$\_$possible$\_$cp$\_$dna$\_$gene$\_$in$\_$probe$\_$set.pslx} -- In case of any BLAT hits, the user needs to manually remove these plastid probe sequences from {*$\_$target$\_$enrichment$\_$probe$\_$sequences.fasta} -- the remaining ones are the final probe sequences in FASTA.}
 \end{enumerate}
 
 An asterisk (*) denotes the beginning of the output files' names specified by the user with parameter \texttt{-o}. If the user does not select a custom name, default value (\texttt{output}) will be used. By default, output files are created in the same directory from which Sondovač was launched. Output files can be saved in a custom directory by specifying an output directory together with parameter \texttt{-o}:
@@ -762,7 +763,7 @@ An asterisk (*) denotes the beginning of the output files' names specified by th
 \subsection{Geneious usage}
 \label{geneious-usage}
 
-Import output file of part A of the script (\texttt{sondovac$\_$part$\_$a.sh}): go to menu \textbf{File | Import | From File\ldots} This file is named as: \texttt{*$\_$\allowbreak blat$\_$\allowbreak unique$\_$\allowbreak transcripts$\_$\allowbreak versus$\_$\allowbreak genome$\_$\allowbreak skim$\_$\allowbreak data-no$\_$\allowbreak missing$\_$\allowbreak fin.fsa} (see Figure~\ref{geneious-import}).
+Import the output file of part A of the script (\texttt{sondovac$\_$part$\_$a.sh}): go to menu \textbf{File | Import | From File\ldots} This file is named as: \texttt{*$\_$\allowbreak blat$\_$\allowbreak unique$\_$\allowbreak transcripts$\_$\allowbreak versus$\_$\allowbreak genome$\_$\allowbreak skim$\_$\allowbreak data-no$\_$\allowbreak missing$\_$\allowbreak fin.fsa} (see Figure~\ref{geneious-import}).
 
 \begin{figure}[hbt]
   \includegraphics[width=\textwidth]{geneious1.png}
@@ -770,7 +771,7 @@ Import output file of part A of the script (\texttt{sondovac$\_$part$\_$a.sh}): 
   \label{geneious-import}
 \end{figure}
 
-Select the file and go to menu \textbf{Tools | Align / Assemble | De Novo Assemble}. In \textbf{Data} frame select \textbf{Assembe by 1st (\ldots) Underscore}. In \textbf{Method} frame select \textbf{Geneious Assembler} (if you don't have other assemblers, this option might be missing) and \textbf{Medium Sensitivity / Fast Sensitivity} (see Figure~\ref{geneious-assembly}).
+Select the file and go to menu \textbf{Tools | Align / Assemble | De Novo Assemble}. In \textbf{Data} frame select \textbf{Assemble by 1st (\ldots) Underscore}. In \textbf{Method} frame select \textbf{Geneious Assembler} (if you don't have other assemblers, this option might be missing) and \textbf{Medium Sensitivity / Fast Sensitivity} (see Figure~\ref{geneious-assembly}).
 
 In \textbf{Results} frame check \textbf{Save assembly report}, \textbf{Save list of unused reads}, \textbf{Save in sub-folder}, \textbf{Save contigs} (do not check \textbf{Maximum}) and \textbf{Save consensus sequences}. Do not trim. Otherwise keep defaults. Run it. Geneious may warn about possible hanging because of big file size. Do not use Geneious for other tasks during the assembly. Running Geneious may take a long time (see Figure~\ref{geneious-assembly}).
 
@@ -782,7 +783,7 @@ In \textbf{Results} frame check \textbf{Save assembly report}, \textbf{Save list
   \label{geneious-assembly}
 \end{figure}
 
-Select all resulting contigs (typically named \textbf{* Contig \#}) and export them (go to menu \textbf{File | Export | Selected Documents\ldots}) as \textbf{Tab-separated table values (*.tsv)}. Save following columns (Hold \texttt{Ctrl} key to mark more fields): \textbf{\# Sequences}, \textbf{\% Pairwise Identity}, \textbf{Description}, \textbf{Mean Coverage}, \textbf{Name} and \textbf{Sequence Length}. If this option would be inaccessible for you, export all columns (see Figure~\ref{geneious-export1}). Warning! Do not select and export \textbf{* Consensus Sequences}, \textbf{* Unused Reads} or \textbf{* Report} -- only the individual \textbf{* contig \#} files (see Figure~\ref{geneious-export1}).
+Select all resulting contigs (typically named \textbf{* Contig \#}) and export them (go to menu \textbf{File | Export | Selected Documents\ldots}) as \textbf{Tab-separated table values (*.tsv)}. Save the following columns (Hold \texttt{Ctrl} key to mark more fields): \textbf{\# Sequences}, \textbf{\% Pairwise Identity}, \textbf{Description}, \textbf{Mean Coverage}, \textbf{Name} and \textbf{Sequence Length}. If this option would be inaccessible for you, export all columns (see Figure~\ref{geneious-export1}). Warning! Do not select and export \textbf{* Consensus Sequences}, \textbf{* Unused Reads} or \textbf{* Report} -- only the individual \textbf{* contig \#} files (see Figure~\ref{geneious-export1}).
 
 \begin{figure}[p]
   \includegraphics[width=\textwidth]{geneious3.png}
@@ -798,7 +799,7 @@ Select items \textbf{Consensus Sequences} and \textbf{Unused Reads} and export t
   \label{geneious-export2}
 \end{figure}
 
-Use exported files from Geneious as input for part B of the script (\texttt{sondovac$\_$part$\_$b.sh}).
+Use the exported files from Geneious as input for part B of the script (\texttt{sondovac$\_$part$\_$b.sh}).
 
 \subsection{Record output of Sondovač}
 
@@ -812,7 +813,7 @@ To record the whole output of Sondovač (regardless used parameters), use utilit
   rm records.log # Delete the log file
 \end{bashcode}
 
-You can use any command line arguments, the script will behave as usually. Plain text file \texttt{records.log} will then contain all its output. Unfortunately, \texttt{tee} usually wrongly records "invisible" characters -- tabs and coloration used to highlight user messages in the script. If you see weird characters in texttt{records.log} that disturb reading, use the following commands:
+You can use any command line arguments, the script will behave as usually. The plain text file \texttt{records.log} will then contain all its output. Unfortunately, \texttt{tee} usually wrongly records "invisible" characters -- tabs and coloration used to highlight user messages in the script. If you see weird characters in texttt{records.log} that disturb reading, use the following commands:
 
 \begin{bashcode}
   # Assume output of Sondovač is name "records.log"
