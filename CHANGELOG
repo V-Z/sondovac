@@ -4,13 +4,14 @@ Sondovač is a script to create orthologous low-copy nuclear probes from
 transcriptome and genome skim data for target enrichment.
 
 
-Version 0.99 release candidate released 2015-12-07 (GIT)
+Version 0.99 release candidate released 2015-12-07
 ================================================================================
 
 * Fixed error with some input files for part B.
 * Finished colorization of command-line user interface.
 * Added possibility minimal exon length of the loci.
 * Various fixes and UI enhancements.
+* Improved documentation.
 
 
 Version 0.95 beta released 2015-11-27

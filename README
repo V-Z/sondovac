@@ -72,13 +72,13 @@ A) sondovac_part_a.sh: Covers steps 1 to 6.
        selection in (6.1)] containing masked nucleotides.
 
 Input files for sondovac_part_a.sh are FASTA transcriptome data, FASTQ 
-paired-end genome skim reads and a plastome (and possibly also mitochondriome) reference. The input file for Geneious is the output of 
-sondovac_part_a.sh.
+paired-end genome skim reads and a plastome (and possibly also mitochondriome) 
+reference. The input file for Geneious is the output of sondovac_part_a.sh.
 
 B) Geneious: Covers step 7 (see below and PDF manual)
   7)  De novo assembly of the transcript or genome skim BLAT hits [depending 
-      on the selection in (6.1)] to larger contigs. Note that you need a copy of 
-      Geneious for this step.
+      on the selection in (6.1)] to larger contigs. Note that you need a copy 
+      of Geneious for this step.
 
 The output files of Geneious are input files for sondovac_part_b.sh.
 
@@ -102,15 +102,15 @@ Requirements to run Sondovač
 
 Sondovač is using several scientific software packages (namely bam2fastq, BLAT, 
 Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, Picard, 
-and SAMtools - see required versions and links below), and basic UNIX tools (see below). 
-Sondovač will check if those programs are installed - available in the PATH 
-(i.e. if the shell application can locate and launch respective binaries). If 
-you have those packages installed (in current versions), ensure that their binaries 
-are in PATH. This should not be a problem for basic tools available in any 
-UNIX-based operating system, as basic installation usually contains all needed 
-tools. If you lack some of the required tools, the script will notify 
-you, and you will have to install them manually. If this will be needed, check 
-the documentation for your operating system.
+and SAMtools - see required versions and links below), and basic UNIX tools 
+(see below). Sondovač will check if those programs are installed - available in 
+the PATH (i.e. if the shell application can locate and launch respective 
+binaries). If you have those packages installed (in current versions), ensure 
+that their binaries are in PATH. This should not be a problem for basic tools 
+available in any UNIX-based operating system, as basic installation usually 
+contains all needed tools. If you lack some of the required tools, the script 
+will notify you, and you will have to install them manually. If this will be 
+needed, check the documentation for your operating system.
 
 If required scientific programs are not installed, Sondovač will offer you 
 installation. You can use precompiled binaries available together with the 
@@ -127,9 +127,9 @@ any UNIX-based operating system.
 The following UNIX tools are required to run Sondovač. They are usually readily 
 available in UNIX systems (but see note for Mac OS X below), so there is 
 usually no need to install them manually. The tools are awk, bc, bunzip2, cat, 
-cp, curl or wget, cut, dirname, echo, egrep, cd, g++, gcc, grep, gunzip, join, less, 
-lsb_release or python (for Linux), make, mkdir, perl, pkg-config, pwd, sed, sort, tar, tr, uname, 
-uniq, unzip, wc.
+cp, curl or wget, cut, dirname, echo, egrep, cd, g++, gcc, grep, gunzip, join, 
+less, lsb_release or python (for Linux), make, mkdir, perl, pkg-config, pwd, 
+sed, sort, tar, tr, uname, uniq, unzip, wc.
 
 sondovac_part_a.sh requires (and will install) the following software packages:
 * BLAT
@@ -143,21 +143,22 @@ sondovac_part_b.sh requires (and will install) the following software packages:
 * CD-HIT
 * BLAT
 
-For Mac OS X users, Homebrew (see http://brew.sh/ and https://github.com/Homebrew/) will be installed by the script, and it will 
-install (new software or newer versions) Apache Ant, BASH (the shell interpreter), GNU AWK, GNU 
-coreutils, GNU GCC, git, GNU grep, GNU make, pkg-config, GNU sed, and wget. Mac 
-OS X is missing some tools and for others (typically sed, grep or awk) contains 
-too old BSD versions. The script will guide the user through the process, and if 
-user would wish, it is possible to safely and easily remove these tools afterwards.
+For Mac OS X users, Homebrew (http://brew.sh/ and https://github.com/Homebrew/) 
+will be installed by the script, and it will install (new software or newer 
+versions) Apache Ant, BASH (the shell interpreter), GNU AWK, GNU coreutils, GNU 
+GCC, git, GNU grep, GNU make, pkg-config, GNU sed, and wget. Mac OS X is 
+missing some tools and for others (typically sed, grep or awk) contains too old 
+BSD versions. The script will guide the user through the process, and if user 
+would wish, it is possible to safely and easily remove these tools afterwards.
 
-See the PDF manual for details about tools required by Sondovač and their manual 
-installation. For most users it should be sufficient to be guided by the script 
-to install needed tools automatically.
+See the PDF manual for details about tools required by Sondovač and their 
+manual installation. For most users it should be sufficient to be guided by 
+the script to install needed tools automatically.
 
-When Sondovač starts, a directory "bin" is created in the current working directory. In there 
-Sondovač saves binaries of required software packages (if they are not 
-available). The user can then add this directory to PATH, move or delete it 
-afterwards. See the PDF manual for details.
+When Sondovač starts, a directory "bin" is created in the current working 
+directory. In there Sondovač saves binaries of required software packages (if 
+they are not available). The user can then add this directory to PATH, move or 
+delete it afterwards. See the PDF manual for details.
 
 Geneious
 --------------------------------------------------------------------------------
@@ -166,11 +167,11 @@ Geneious is a DNA alignment, assembly, and analysis software and one of the
 most common software platforms used in genomics. It is utilized for de novo 
 assembly in Sondovač. We plan to replace it by some free open-source command 
 line tool in some future release of Sondovač. Visit http://www.geneious.com/ 
-for download, purchase, installation and usage of Geneious. After the input data 
-are processed (interactively or not) by sondovac_part_a.sh, the user must 
-process its output manually by Geneious according to the instructions given below. The output 
-of Geneious is then processed by sondovac_part_b.sh, which produces the final probe 
-set. Geneious was tested with versions 6, 7 and 8.
+for download, purchase, installation and usage of Geneious. After the input 
+data are processed (interactively or not) by sondovac_part_a.sh, the user must 
+process its output manually by Geneious according to the instructions given 
+below. The output of Geneious is then processed by sondovac_part_b.sh, which 
+produces the final probe set. Geneious was tested with versions 6, 7 and 8.
 
 Import the output file of part A of the script (sondovac_part_a.sh): go to menu 
 File | Import | From File... This file is named as:
@@ -184,16 +185,16 @@ Sensitivity.
 
 In "Results" frame check "Save assembly report", "Save list of unused reads", 
 "Save in sub-folder", "Save contigs" (do not check "Maximum") and "Save 
-consensus sequences". Do not trim. Otherwise keep defaults. Run it.
-Geneious may warn about possible hanging because of big file size. Do not use 
-Geneious for other tasks during the assembly. Running Geneious may take a long time.
+consensus sequences". Do not trim. Otherwise keep defaults. Run it. Geneious 
+may warn about possible hanging because of big file size. Do not use Geneious 
+for other tasks during the assembly. Running Geneious may take a long time.
 
 Select all resulting contigs (typically named "* Contig #") and export them 
 (go to menu File | Export | Selected Documents...) as "Tab-separated table 
-values (*.tsv)". Save the following columns (Hold Ctrl key to mark more fields): 
-"# Sequences", "% Pairwise Identity", "Description", "Mean Coverage", "Name" 
-and "Sequence Length". If this option would be inaccessible for you, export 
-all columns.
+values (*.tsv)". Save the following columns (Hold Ctrl key to mark more 
+fields): "# Sequences", "% Pairwise Identity", "Description", "Mean Coverage", 
+"Name" and "Sequence Length". If this option would be inaccessible for you, 
+export all columns.
 
 Warning! Do not select and export "* Consensus Sequences", "* Unused Reads" or 
 "* Assembly Report" - only the individual "* contig #" files.
@@ -214,33 +215,34 @@ General parameters:
 
 -h, -v   Print help message and exit.
 -u       Check for updates. If there is newer version of Sondovač available on
-           https://github.com/V-Z/sondovac/releases/, download of the newer version
-           will be offered to the user.
+           https://github.com/V-Z/sondovac/releases/, download of the newer 
+           version will be offered to the user.
 -l       Display LICENSE for license information (this script is licensed under 
            GNU GPL v.3, other software under variable licenses). Exit viewing 
            by pressing the "Q" key.
 -r       Display README (this file) for detailed usage instructions. Exit 
-           viewing by pressing the "Q" key. More information is available in the  
-           PDF manual.
+           viewing by pressing the "Q" key. More information is available in 
+           the  PDF manual.
 -p       Display INSTALL for detailed installation instructions. Exit viewing 
-           by pressing the "Q" key. More information is available in the PDF manual.
+           by pressing the "Q" key. More information is available in the PDF 
+           manual.
 -e       Display detailed citation information and exit. See the PDF manual for 
            more information.
 -o       Set name of output files. Output files will start with that name. Do 
            not use spaces or special characters - some software can not handle 
            them correctly. Default value (if the user does not provide another 
            name) is "output". See below for the list of produced output files.
--i       Running in interactive mode - the script will on-demand ask for the required 
-           input files, installation of missing software etc.. This is the 
-           recommended default value (the script runs interactively without 
-           explicitely using option "-n").
--n       Running in non-interactive mode. The user must provide at least the required 
-           input files (see below). You can use only one of parameters "-i" or 
-           "-n" (not both of them). If script fails to find some of required 
-           software packages, it will exit. This is recommended for batch or 
-           repeated analysis, on remote servers and for more advanced users. 
-           The user must be sure that all required software is installed (see 
-           INSTALL and PDF manual for details).
+-i       Running in interactive mode - the script will on-demand ask for the 
+	   required input files, installation of missing software etc. This is 
+	   the recommended default value (the script runs interactively without 
+	   explicitly using option "-n").
+-n       Running in non-interactive mode. The user must provide at least the 
+	   required input files (see below). You can use only one of parameters 
+	   "-i" or "-n" (not both of them). If script fails to find some of 
+	   required software packages, it will exit. This is recommended for 
+	   batch or repeated analysis, on remote servers and for more advanced 
+	   users. The user must be sure that all required software is installed 
+	   (see INSTALL and PDF manual for details).
 
 Input files:
   Those parameters are required when running in non-interactive mode.
@@ -271,57 +273,69 @@ Input files:
 
 Optional parameters:
   See chapter "Pipeline" for steps referred here.
-  If those parameters are not provided, the default values are used, and it is not
+  If those parameters are not provided, the default values are used, and it is 
+not
     possible to change them any time later (not even in interactive mode).
 
--a ###   Maximum overlap length expected in approximately ≥90% of read pairs (parameter -M of FLASH, 
-           see its manual for details).
+-a ###   Maximum overlap length expected in approximately ≥90% of read pairs 
+	   (parameter -M of FLASH, see its manual for details). FLASH can not 
+	   combine paired-end reads that do not overlap by at least 10 bp 
+	   (default minimum overlap length).
          Step 4 of Sondovač, sondovac_part_a.sh.
-         FLASH can not combine paired-end reads that do not overlap by at least 10 bp (default minimum overlap length).
          DEFAULT: 65
          OPTIONS: Integer ranging from 10 to 300
 -y ##    Sequence similarity between unique transcripts and the filtered, 
            combined genome skim reads (parameter -minIdentity of BLAT, see its 
-           manual for details).
+           manual for details). Filtering for orthologs, using sequence 
+           similarity as criterion.
          Step 5 of Sondovač, sondovac_part_a.sh.
-         Filtering for orthologs, using sequence similarity as criterion.
          DEFAULT: 85 (highly recommended)
          OPTIONS: Integer ranging from 70 to 100
--g ####  Choice of transcript or genome skim sequences for further processing.
+-g       Choice of transcript or genome skim sequences for further processing. 
+           Depending on the phylogenetic depth that should be obtained, the 
+           probe sequences need to be designed from either the transcript or 
+           genome skim sequences, or it might not matter (if the taxa, from 
+           which the transcriptome and genome skim data were generated, are 
+           closely related).
          Step 6.1 of Sondovač, sondovac_part_a.sh.
-         Depending on the phylogenetic depth that should be obtained, the probe sequences need to be designed from either the transcript or genome skim sequences, or it might not matter (if the taxa, from which the transcriptome and genome skim data were generated, are closely related).
          DEFAULT: no usage of -g (genome skim sequences)
          OPTIONS: usage of -g (transcript sequences)
 -s ####  Number of BLAT hits per transcript when matching unique transcripts 
-           and the filtered, combined genome skim reads.
+           and the filtered, combined genome skim reads. Transcripts with a 
+           high number of BLAT hits, indicating repetitive elements, need to 
+           be removed from the putative probe sequences.
 	 Step 6.2 of Sondovač, sondovac_part_a.sh.
-         Transcripts with a high number of BLAT hits, indicating repetitive 
-           elements, need to be removed from the putative probe sequences.
          DEFAULT: 1000
          OPTIONS: Integer ranging from 100 to 10000
--b ###   Minimum exon (bait) length.
+-b ###   Minimum exon (bait) length. The minimum exon length should not fall 
+           below the bait length in order to account for specific binding 
+           between genomic libraries and baits during hybridization.
          Steps 8 and 10 of Sondovač, sondovac_part_b.sh.
-         The minimum exon length should not fall below the bait length in order 
-           to account for specific binding between genomic libraries and baits 
-           during hybridization.
          DEFAULT: 120 (optimal length for phylogeny).
          OPTIONS: Integer ranging from 120 to 200
--k ###   Minimum total locus length.
+-k ###   Minimum total locus length. When running the script in interactive 
+           mode, the user will be asked which value to use. A table summarizing 
+           the total number of LCN loci, which will be the result of the probe 
+           design for all minimum total locus lengths that the user can select 
+           (600 bp, 720 bp, 840 bp, 960 bp, 1080 bp, 1200 bp), will be 
+           displayed to facilitate this choice.
          Steps 8 and 10 of Sondovač, sondovac_part_b.sh.
-         When running the script in interactive mode, the user will be asked which value to use. A table summarizing the total number of LCN loci, which will be the result of the probe design for all minimum total locus lengths that the user can select (600 bp, 720 bp, 840 bp, 960 bp, 1080 bp, 1200 bp), will be displayed to facilitate this choice.
          DEFAULT: 600
-         OPTIONS: 720, 840, 960, 1080, 1200
--d 0.##  Sequence similarity between probe sequences (parameter -c of cd-hit-est, see its manual for details).
+         OPTIONS: 600, 720, 840, 960, 1080, 1200
+-d 0.##  Sequence similarity between probe sequences (parameter -c of 
+           cd-hit-est, see its manual for details). Probes that target multiple 
+           similar loci need to be removed.
          Step 9 of Sondovač, sondovac_part_b.sh.
-         Probes that target multiple similar loci need to be removed.
          DEFAULT: 0.9 (highly recommended).
          OPTIONS: Decimal ranging from 0.85 to 0.95
--y ##    Sequence similarity between probe sequences and plastome reference (parameter -minIdentity of BLAT, see its 
-           manual for details).
+-y ##    Sequence similarity between probe sequences and plastome reference 
+           (parameter -minIdentity of BLAT, see its manual for details). Some 
+           plastid reads might not have been removed in step2; they should be 
+           removed in this step.
          Step 11 of Sondovač, sondovac_part_b.sh.
-         Some plastid reads might not have been removed in step2; they should be removed in this step.
          DEFAULT: 90 (highly recommended)
          OPTIONS: Integer ranging from 70 to 100
+
 
 Examples:
 
@@ -338,14 +352,15 @@ Running in non-interactive, automated way:
 Modify parameter "-a", otherwise run interactively:
 ./sondovac_part_a.sh -i -a 300
 
-Run in non-interactive mode (parameter "-n") - in such case the user must specify 
-   all required input files (parameters "-f", "-c", "-m", "-t" and "-q"). 
-   Moreover, parameter "-y" is modified:
-./sondovac_part_a.sh -n -f input.fa -c referencecp.fa -m referencemt.fa 
+Run in non-interactive mode (parameter "-n") - in such case the user must 
+  specify all required input files (parameters "-f", "-c", "-m", "-t" and 
+"-q"). 
+  Moreover, parameter "-y" is modified:
+./sondovac_part_a.sh -n -f input.fa -c referencecp.fa -m referencemt.fa \
   -t reads1.fastq -q reads2.fastq -y 90
 
-Modifying parameter "-s". Note that the interactive mode -i is implicit and does not 
-  need to be specified explicitly:
+Modifying parameter "-s". Note that the interactive mode -i is implicit and 
+  does not need to be specified explicitly:
 ./sondovac_part_a.sh -s 950
 
 
@@ -356,10 +371,10 @@ All names of input files and paths to them must be without spaces and without
 special characters (some software have difficulties to handle them).
 
 Script sondovac_part_a.sh requires as input files:
-1) Transcriptome input file in FASTA format. Note: For technical reasons, the labels 
-   of FASTA sequences must be unique numbers (no other characters). 
-   Sondovač will check the labels, and if they are not in an appropriate form, a copy 
-   of this input file with correct labels will be created.
+1) Transcriptome input file in FASTA format. Note: For technical reasons, the 
+   labels of FASTA sequences must be unique numbers (no other characters). 
+   Sondovač will check the labels, and if they are not in an appropriate form, 
+   a copy of this input file with correct labels will be created.
 2) Plastome reference sequence input file in FASTA format.
 3) Paired-end genome skim input file in FASTQ format (two files - forward and 
    reverse reads).
@@ -367,14 +382,14 @@ Script sondovac_part_a.sh requires as input files:
    This file is not required.
 
 Script sondovac_part_a.sh creates the following files:
-0)  *_renamed.fasta - If needed, copy of the transcriptome input file with the changed 
-      labels of the FASTA sequences (unique numbers corresponding to the line numbers in the  
-      original file) will be created. File *_old_and_new_names.tsv then 
-      contains two columns: 1) the original sequence labels as in the user-provided 
-      transcriptome input file and 2) new sequence labels. This might be useful 
-      to trace back certain sequences/probes.
-1)  *_blat_unique_transcripts.psl - Output of BLAT (removal of transcripts 
-      sharing ≥90% sequence similarity).
+0)  *_renamed.fasta - If needed, copy of the transcriptome input file with the 
+      changed labels of the FASTA sequences (unique numbers corresponding to 
+      the line numbers in the  original file) will be created. File 
+      *_old_and_new_names.tsv then contains two columns: 1) the original 
+      sequence labels as in the user-provided transcriptome input file and 2) 
+      new sequence labels. This might be useful to trace back certain 
+      sequences/probes. 1)  *_blat_unique_transcripts.psl - Output of BLAT 
+      (removal of transcripts sharing ≥90% sequence similarity).
 2)  *_unique_transcripts.fasta - Unique transcripts in FASTA format.
 3)  *_genome_skim_data_no_cp_reads.bam - SAM converted to BAM (removal of reads 
       of plastid origin).
@@ -395,8 +410,8 @@ Script sondovac_part_a.sh creates the following files:
 Files 1-9 are not necessary for further processing by this pipeline, but may be 
 useful for the user. The last file (10) is used as input file for Geneious in 
 the next step. An asterisk (*) denotes the beginning of the output files' names 
-specified by the user with parameter "-o". If the user does not select a custom name, 
-default value ("output") will be used.
+specified by the user with parameter "-o". If the user does not select a custom 
+name, default value ("output") will be used.
 
 Geneious requires as input the last output file of sondovac_part_a.sh (file 10: 
 *_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa).
@@ -415,15 +430,18 @@ Script sondovac_part_b.sh creates the following files:
 2) *_similarity_test.fasta - Contigs that comprise exons ≥ bait length and have 
      a certain total locus length.
 3) *_target_enrichment_probe_sequences.fasta - Probes in FASTA.
-4) *_possible_cp_dna_genes_in_probe_set.pslx - In case of any BLAT hits, the user might needs to manually remove these probe sequences from *_target_enrichment_probe_sequences.fasta (the previous script outfile) - these are then the final probe sequences in FASTA.
+4) *_possible_cp_dna_genes_in_probe_set.pslx - In case of any BLAT hits, the 
+     user might needs to manually remove these probe sequences from 
+     *_target_enrichment_probe_sequences.fasta (the previous script outfile) - 
+     these are then the final probe sequences in FASTA.
 
-An asterisk (*) denotes the beginning of the output files' names specified by the user 
-with parameter "-o". If user does not select a custom name, default value 
-("output") will be used.
+An asterisk (*) denotes the beginning of the output files' names specified by 
+the user with parameter "-o". If user does not select a custom name, default 
+value ("output") will be used.
 
-By default, output files are created in the same directory from which Sondovač was 
-launched. Output files can be saved in a custom directory by specifying an output 
-directory together with parameter "-o":
+By default, output files are created in the same directory from which Sondovač 
+was launched. Output files can be saved in a custom directory by specifying an 
+output directory together with parameter "-o":
 
 # Find current directory (e.g. /home/user):
 pwd
@@ -456,13 +474,16 @@ The package contains:
 4) input5_Ricinus_communis_reference_mitochondrial_genome.fasta - mtDNA 
    reference (parameter -m), GenBank reference number NC_015141.
 
-The transcriptome input file is unpublished data from G. K.-S. Wong et al.. As soon as the data will be published, we will 
-post them on GitHub. Data can now be found under
+The transcriptome input file is unpublished data from G. K.-S. Wong et al. As 
+soon as the data will be published, we will post them on GitHub. Data can now 
+be found under
 * http://www.onekp.com/
 * http://www.onekp.com/samples/list.php
 * http://www.onekp.com/samples/single.php?id=JHCN
 
-The transcriptome FASTA file used for the probe design is named JHCN-SOAPdenovo-Trans-assembly.dnas.out and can be found under JHCN/Assembly/JHCN-SOAPdenovo-Trans-translated/.
+The transcriptome FASTA file used for the probe design is named 
+JHCN-SOAPdenovo-Trans-assembly.dnas.out and can be found under 
+JHCN/Assembly/JHCN-SOAPdenovo-Trans-translated/.
 
 Information about how to get access to data download is given in Matasci N, 
 Hung L-H, Yan Z, Carpenter EJ, Wickett NJ, Mirarab S, Nguyen N, Warnow T, 
@@ -479,14 +500,14 @@ Record output of Sondovač
 ================================================================================
 
 To record the whole output of Sondovač (regardless used parameters), use 
-utility "tee". This will produce a plain text output with everything printed to the 
-screen. It can be useful for reference or explorations is something went wrong. 
-Use it as follows:
+utility "tee". This will produce a plain text output with everything printed to 
+the screen. It can be useful for reference or explorations is something went 
+wrong. Use it as follows:
 
 ./sondovac_part_a.sh | tee records.log
 
-You can use any command line arguments, script will behave as usually. The plain 
-text file "records.log" will then contain all its output.
+You can use any command line arguments, script will behave as usually. The 
+plain text file "records.log" will then contain all its output.
 
 
 License
