@@ -7,28 +7,28 @@ transcriptome and genome skim data for target enrichment.
 Requirements to run Sondovač
 ================================================================================
 
-Sondovač is currently tested on major Linux distributions (in actual versions) 
+Sondovač is currently tested on major Linux distributions (in current versions) 
 openSUSE, Debian, Ubuntu, Linux Mint, Fedora, Centos and Scientific Linux; and 
 on Mac OS X (version 10.10 Yosemite).
 
 In order to run Sondovač you need a UNIX-based operating system (preferably 
 Linux, alternatively Mac OS X) equipped with BASH or compatible shell 
-interpreter (this should be by default available for any Linux distribution, 
+interpreter (this should by default be available for any Linux distribution, 
 Mac OS X and any other UNIX-based operating system like Solaris, BSD and its 
 variants etc). You should use the current operating system version supported by 
 upstream. Otherwise we will not be able to help you in case of problems. Older 
 operating systems can have different versions of shell and system libraries, 
 which can cause various problems and incompatibilities.
 
-Sondovač is using several scientific software packages (namely bam2fastq, BLAT, 
-Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, Picard 
+Sondovač uses several scientific software packages (namely bam2fastq, BLAT, 
+Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, Picard, 
 and SAMtools - see required versions and links below), and basic UNIX tools. 
 Sondovač will check if those programs are installed - available in the PATH 
 (i.e. if the shell application can locate and launch respective binaries). If 
 you have those packages installed (in current versions), ensure their binaries 
 are in PATH. This should not be a problem for basic tools available in any 
 UNIX-based operating system, as basic installation usually contains all needed 
-tools. If you are lacking some of the required tools, the script will notify 
+tools. If you lack some of the required tools, the script will notify 
 you, and you will have to install them manually. If this will be needed, check 
 the documentation for your operating system.
 
@@ -36,44 +36,44 @@ If required scientific programs are not installed, Sondovač will offer you
 installation. You can use precompiled binaries available together with the 
 script (this is the recommended option) or (sometimes) from the web. This is 
 the recommended way. In case you would like to compile required software 
-yourselves, the script will guide you through this process. Anyway, it is 
+yourself, the script will guide you through this process. Anyway, this is 
 recommended only for advanced users, as compilation might sometimes be very 
 tricky. Users of Mac OS X can install those applications also using Homebrew 
 (see http://brew.sh/). For compilation you need Apache Ant, GNU G++, GNU GCC, 
-GIT, Java/OpenJDK, libpng developmental files and zlib developmental files. 
-Ensure you have those tools available - they should be readily available for 
+GIT, Java/OpenJDK, libpng developmental files, and zlib developmental files. 
+Ensure that you have those tools available - they should be readily available for 
 any UNIX-based operating system.
 
-sondovac_part_a.sh requires (and will install) following software packages:
+sondovac_part_a.sh requires (and will install) the following software packages:
 * BLAT
 * Bowtie2
 * SAMtools
-* bam2fastq (will be replaced by Picard in future release)
+* bam2fastq (will be replaced by Picard in a future release)
 * FLASH
 * FASTX-toolkit
 
-sondovac_part_b.sh requires (and will install) following software packages:
+sondovac_part_b.sh requires (and will install) the following software packages:
 * CD-HIT
 * BLAT
 
-Geneious is required for step of the pipeline. See below and README for details.
+Geneious is required for step 7 of the pipeline. See below, README and PDF manual for details.
 
-Following UNIX tools are required to run Sondovač. They are usually readily 
+The following UNIX tools are required to run Sondovač. They are usually readily 
 available in UNIX systems (but see note for Mac OS X below), so there is 
 usually no need to install them manually. The tools are awk, bc, bunzip2, cat, 
-cp, curl, cut, dirname, echo, egrep, cd, g++, gcc, grep, gunzip, join, less, 
-lsb_release, make, mkdir, perl, pkg-config, pwd, sed, sort, tar, tr, uname, 
+cp, curl or wget, cut, dirname, echo, egrep, cd, g++, gcc, grep, gunzip, join, less, 
+lsb_release or python (for Linux), make, mkdir, perl, pkg-config, pwd, sed, sort, tar, tr, uname, 
 uniq, unzip, wc.
 
-For Mac OS X users, Homebrew (http://brew.sh/) will be installed and it will 
-instal newer versions of Apache Ant, BASH (the shell interpreter), GNU AWK, GNU 
-coreutils, GNU GCC, git, GNU grep, GNU make, pkg-config, GNU sed and wget. Mac 
-OS X is missing some tools and for others (typically sed, grep, awk) contains 
-too old BSD versions. The script will guide user through the process and if 
-user would wish, it is possible safely and easily remove those tools afterward.
+For Mac OS X users, Homebrew (http://brew.sh/) will be installed by the script, and it will 
+install (new software or newer versions) Apache Ant, BASH (the shell interpreter), GNU AWK, GNU 
+coreutils, GNU GCC, git, GNU grep, GNU make, pkg-config, GNU sed, and wget. Mac 
+OS X is missing some tools and for others (typically sed, grep or awk) contains 
+too old BSD versions. The script will guide the user through the process, and if the  
+user would wish, it is possible safely and easily remove these tools afterwards.
 
-See PDF manual for details about tools required by Sondovač and their manual 
-installation. For most users should be sufficient to be guided by the script 
+See the PDF manual for details about tools required by Sondovač and their manual 
+installation. For most users it should be sufficient to be guided by the script 
 to install needed tools automatically.
 
 
@@ -93,20 +93,20 @@ and start it by
 
   ./sondovac_part_a.sh -h
 
-to see basic usage instructions. See README for more information.
+to see basic usage instructions. See README and PDF manual for more information.
 
-Examples (see README for explanation of command line parameters)
+Examples (see README and PDF manual for explanation of command line parameters)
 --------------------------------------------------------------------------------
 
-Basic and the most simple usage (running in interactive mode, see README):
+The basic and most simple usage (running in interactive mode, see README and PDF manual):
 
   ./sondovac_part_a.sh -i
 
-Specify some of required input files, otherwise run interactively:
+Specify some of the required input files, otherwise run interactively:
 
   ./sondovac_part_a.sh -i -f input.fa -t reads1.fastq -q reads2.fastq
 
-Running in non-interactive automated way (parameter "-n", see README) with 
+Running in non-interactive, automated way (parameter "-n", see README) with 
 example data downloaded from https://github.com/V-Z/sondovac/wiki/Sample-data:
 
   ./sondovac_part_a.sh -f input1_JHCN_Oxalis_corniculata_transcriptome_data.fa \
@@ -119,7 +119,7 @@ Modify parameter "-a", otherwise run interactively:
 
   ./sondovac_part_a.sh -i -a 300
 
-Run in non-interactive mode (parameter "-n", see README) - i such case user 
+Running in non-interactive mode (parameter "-n", see README) - in such case the user 
 must specify all required input files (parameters "-f", "-c", "-m", "-t" and 
 "-q"). Moreover, parameter "-y" is modified:
 
@@ -131,7 +131,7 @@ need to be specified explicitly:
 
   ./sondovac_part_a.sh -s 950
 
-We recommend to launch Sondovač at least for first time in an interactive mode, 
+We recommend to launch Sondovač at least for the first time in an interactive mode, 
 so that the script will verify all requirements and install missing tools when 
 needed. We then recommend to use non-interactive mode for routine usage.
 
@@ -156,21 +156,21 @@ first. You can try some of those:
 Geneious
 ================================================================================
 
-Sondovač workflow is divided into three parts (see README for details):
+Sondovač workflow is divided into three parts (see README and PDF manual for details):
 1) Raw input data are analyzed by sondovac_part_a.sh.
-2) Obtained sequences are assembled by Geneious manually by user.
+2) Sequences obtained in part A are assembled by Geneious in a separate step by the user.
 3) Final probes are produced by sondovac_part_b.sh.
 
-For the part (2) user must have Geneious. We plan to replace it by some free 
+For part (2) of the script the user must have Geneious. We plan to replace it by some free 
 open-source command line tool in some future release of Sondovač. Visit 
 http://www.geneious.com/ for download, purchase, installation and usage of 
-Geneious. It is very feature-rich application.
+Geneious.
 
 
 Software links (including required versions)
 ================================================================================
 
-"X" denotes any subversion of particular lineage and "v. >" denotes any version 
+"X" denotes any subversion of a particular lineage, and "v. >" denotes any version 
 higher then noted. Generally, any current version should usually be fine.
 
 * Apache Ant 1.9.X - https://ant.apache.org/
@@ -196,86 +196,86 @@ higher then noted. Generally, any current version should usually be fine.
 Vocabulary
 ================================================================================
 
-* Binary - An application in form understandable by the computer, but usually 
+* Binary - An application in a form understandable by the computer, but usually 
   not transferable among operating systems and/or hardware platforms. Binaries 
-  in Windows usually have extension *.exe, in UNIX there use to be no extension.
+  in Windows usually have the extension *.exe, in UNIX there is usually no extension.
 * BASH - "The command line" - fully featured programming scripting language 
-  accessible through terminal of any UNIX-based operating system (any Linux, 
-  Mac OS X, Solaris, any variant of BSD and more). BASH scripts usually have 
+  accessible through the terminal of any UNIX-based operating system (any Linux, 
+  Mac OS X, Solaris, any variant of BSD and more). BASH scripts usually have the 
   extension *.sh.
 * BSD - Group of popular UNIX-based operating systems. See 
-  https://en.wikipedia.org/wiki/Berkeley_Software_Distribution
+  https://en.wikipedia.org/wiki/Berkeley_Software_Distribution.
 * C - Popular programming language. Source code must be compiled for each 
-  operating system.
+  operating system. See https://en.wikipedia.org/wiki/C_(programming_language).
 * C++ - Popular programming language. Source code must be compiled for each 
-  operating system.
+  operating system. See https://en.wikipedia.org/wiki/C++.
 * Centos - Popular Linux distribution. Community remake of RedHat Enterprise 
-  Linux. See https://centos.org/
+  Linux. See https://centos.org/.
 * Compilation - "Translation" of software application from the source code 
   (text readable by human programmer) into binary form launchable by the 
   computer. It requires special tools (compilers), and it usually must be done 
   for every operating system and hardware platform.
-* Console - see "shell".
+* Console - See "shell".
 * Debian - One of the oldest and most popular Linux distributions. See 
-  https://www.debian.org/
+  https://www.debian.org/.
 * Fedora - Popular Linux distribution developed together with RedHat Linux as 
-  its free community testing platform. See https://getfedora.org/
+  its free community testing platform. See https://getfedora.org/.
 * GNU - Major project providing free software widely used in many operating 
-  systems, see https://gnu.org/
-* Homebrew - Tool primarily for Mac OS X (although there is also Linux version 
-  available) replacing practically missing package manager for this system. Can 
+  systems, see https://gnu.org/.
+* Homebrew - Tool primarily for Mac OS X (although there is also a Linux version 
+  available) replacing the practically missing package manager for this system. Can 
   be used to install plenty of various applications as well as updating tools 
-  already available in Mac OS X. See http://brew.sh/
+  already available in Mac OS X. See http://brew.sh/.
 * Java - Very popular programming language. It requires Java runtime 
   environment to be installed, but the applications are very well transferable 
-  among operating systems. See https://www.java.com/
-* Library - Pack of software tools and functions used by another applications.
-* License - Conditions under which the software is distributed. Can be very 
+  among operating systems. See https://www.java.com/.
+* Library - Pack of software tools and functions used by other applications.
+* License - Conditions under which software is distributed. Can be very 
   restrictive (typically paid software) or permissive (typically free and 
   open-source software).
 * Linux - One of the most common variants of UNIX-based operating systems. 
   Linux kernel is used by many developers, so that there are plenty of Linux 
   distributions ("flavors") from various sources (e.g. Ubuntu and derivatives, 
   openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.). They share 
-  many features although on the first look they can look differently. See
-  https://en.wikipedia.org/wiki/Linux
+  many features, although at first sight they can look different. See
+  https://en.wikipedia.org/wiki/Linux.
 * Linux Mint - Popular Linux distribution based on Debian and Ubuntu. See 
-  http://linuxmint.com/
+  http://linuxmint.com/.
 * Mac OS X - Popular operating system produced by Apple. The system kernel is 
-  based on UNIX, see https://www.apple.com/osx/
-* Open-source - Generally, source code of an application is available together 
-  with the application and can be under certain conditions defined in license 
+  based on UNIX, see https://www.apple.com/osx/.
+* Open-source - Generally, the source code of an application is available together 
+  with the application and can, under certain conditions, be defined in license 
   modified, redistributed etc. See 
-  https://en.wikipedia.org/wiki/Free_and_open-source_software
-* openSUSE - Popular Linux distribution, see https://www.opensuse.org/
+  https://en.wikipedia.org/wiki/Free_and_open-source_software.
+* openSUSE - Popular Linux distribution, see https://www.opensuse.org/.
 * Operating system - Basic system running on your computer - typically MS 
-  Windows (not supported by Sondovač, although it might be working), Mac OS X 
+  Windows (not supported by Sondovač, although it might work), Mac OS X 
   or some Linux distribution (Ubuntu and derivatives, openSUSE, SLE, Debian, 
   Linux Mint, Fedora, Centos, RedHat etc.).
-* Package - Software or its part, group of tools, library, etc. Basic unit of 
-  software management in most of UNIX systems (mainly Linux, Solaris, BSD, 
-  practically missing in Mac OS X). Those systems use to have special 
+* Package - Software or its part, group of tools, library etc.. Basic unit of 
+  software management in most UNIX systems (mainly Linux, Solaris, BSD, 
+  practically missing in Mac OS X). Those systems usually have special 
   applications (command line as well as graphical tools) to easily manage 
   (install, remove, update) software.
 * Parameter(s) - Option(s) passed to any function/command line application to 
   modify its usage. Some can be required, some are optional and some can be 
   used only in particular cases. In case of shell applications, parameters are 
-  usually given in way like "application -X", "application --parameter", 
+  usually given such as "application -X", "application -parameter", 
   "application -Param SomeValue" and so on. See manual for particular 
-  application (e.g. "man application"), in case of Sondovač see README.
-* PATH - Directories in the computer where the system is looking for installed 
+  application (e.g. "man application"), in case of Sondovač see README and PDF manual.
+* PATH - Directories in the computer where the system looks for installed 
   software (in a UNIX-based system you can view it by the command "echo 
   $PATH"). If you need to modify it manually, see the documentation for your 
   operating system.
 * Perl - Popular interpreted programming language excelling mainly in system 
   tasks working with text. Perl scripts are easily transferable among operating 
-  systems. See https://www.perl.org/
+  systems. See https://www.perl.org/.
 * RedHat - Probably the biggest Linux company providing mainly solutions for 
-  big companies. See https://www.redhat.com/
+  big companies. See https://www.redhat.com/.
 * Repository - Internet folder (available through HTTP or FTP) containing 
   software packages for UNIX systems.
 * Scientific Linux - Popular Linux distribution. Community remake of RedHat 
-  Enterprise Linux. See https://www.scientificlinux.org/
+  Enterprise Linux. See https://www.scientificlinux.org/.
 * Script - Software application. It requires an interpreter (application 
   installed on the computer that is able to launch scripts written in a 
   particular language), but the application itself is portable among operating 
@@ -285,25 +285,25 @@ Vocabulary
   commands typed into the terminal window.
 * Solaris - Popular (mainly on servers) UNIX-based operating system, now 
   developed by Oracle and including several independent clones. See
-  http://distrowatch.com/table.php?distribution=solaris
+  http://distrowatch.com/table.php?distribution=solaris.
 * Source code - Human-readable code written in any text editor used to develop 
   any application. Applications written in interpreted languages (BASH, Perl, 
-  Python , ...) can be distributed just in form of source code (nothing else is 
+  Python, ...) can be distributed just in form of a source code (nothing else is 
   required). Other programming languages (C, C++, ...) require compilation to 
   get fully functional application.
 * SUSE Linux Enterprise (SLE) - Large Linux company providing mainly solutions 
-  for big companies. See https://www.suse.com/
-* Terminal - see "shell".
-* Ubuntu - Popular Linux distribution, see http://www.ubuntu.com/ There are 
+  for big companies. See https://www.suse.com/.
+* Terminal - See "Shell".
+* Ubuntu - Popular Linux distribution, see http://www.ubuntu.com/. There are 
   plenty of Linux distributions based on Ubuntu. See 
-  http://distrowatch.com/search.php?basedon=Ubuntu
+  http://distrowatch.com/search.php?basedon=Ubuntu.
+* UNIX (UNIX-like, UN*X, *nix, ...) - Family of operating systems sharing the 
+  same logic, software architecture and plenty of tools. See 
+  https://en.wikipedia.org/wiki/Unix-like for details.
 * Upstream - Developers usually support (e.g. by fixing of bugs) only newer 
   versions of an application. If you use an older version and you encounter 
   problems, no one will probably help you. Moreover, using old versions of 
   software can be a security risk because of security issues fixed in newer 
   versions.
-* Variable - Named value storing various information, one of basic part of any 
+* Variable - Named value storing various information, one of the basic part of any 
   programming language, application, operating system.
-* UNIX (UNIX-like, UN*X, *nix, ...) - Family of operating systems sharing the 
-  same logic, software architecture and plenty of tools. See 
-  https://en.wikipedia.org/wiki/Unix-like for details.
