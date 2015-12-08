@@ -63,13 +63,13 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
       echo -e "\t${REDF}-f${NORM}\t${CYAF}Transcriptome input file${NORM} in FASTA format."
       echo -e "\t${REDF}-c${NORM}\t${CYAF}Plastome reference sequence${NORM} input file in FASTA format."
       echo -e "\t${REDF}-m${NORM}\t${CYAF}Mitochondriome reference sequence${NORM} input file in FASTA format."
-      echo -e "\t\t  This file is optional. In interactive mode you will each time be"
-      echo -e "\t\t  asked if you wish to use it."
+      echo -e "\t\t  This file is optional. In interactive mode you will each time"
+      echo -e "\t\t  be asked if you wish to use it."
       echo -e "\t${REDF}-t${NORM}\t${CYAF}Paired-end genome skim input file${NORM} in FASTQ format (first file)."
       echo -e "\t${REDF}-q${NORM}\t${CYAF}Paired-end genome skim input file${NORM} in FASTQ format (second file)."
       echo
       echo -e "\tOther optional arguments (if not provided, default values are used):"
-      echo -e "\t${REDF}-a${NORM}\t${CYAF}Maximum overlap length expected in approximately 90% of read pairs"
+      echo -e "\t${REDF}-a${NORM}\t${CYAF}Maximum overlap length expected in approximately 90% of read"
       echo -e "\t\t  pairs${NORM} (parameter \"-M\" of FLASH, see its manual for details)."
       echo -e "\t\tDefault value: 65 (integer ranging from 10 to 300)"
       echo -e "\t${REDF}-y${NORM}\t${CYAF}Sequence similarity between unique transcripts and the filtered,"
@@ -1126,7 +1126,7 @@ FLASHOUT="${OUTPUTFILENAME%.*}_combined_reads_no_cp_no_mt_reads"
 BLATOUTFIN="${OUTPUTFILENAME%.*}_blat_unique_transcripts_versus_genome_skim_data.pslx"
 # Matching sequences in FASTA
 BLATOUTFIN2="${OUTPUTFILENAME%.*}_blat_unique_transcripts_versus_genome_skim_data.fasta"
-# FASTA converted into TAB - temporary file - will be deleted
+# FASTA converted into TSV - temporary file - will be deleted
 TAB="${OUTPUTFILENAME%.*}_final.tab"
 # Number of times each transcript hit a genome skim read - will be deleted
 TABLIST="${OUTPUTFILENAME%.*}_transcript_hits.txt"

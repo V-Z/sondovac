@@ -3,12 +3,12 @@ Sondovač 0.99 RC Licenses
 Sondovač is a script to create orthologous low-copy nuclear probes from 
 transcriptome and genome skim data for target enrichment.
 
-The set of BASH scripts Sondovač is licensed under GNU General Public License
-version 3. List of licenses of included software is in following table (see
-full texts below). License of BLAT does not allow redistribution, so that this
-software is not included and the software is downloaded on the fly. Script is
-also using software included in GNU core utilities (basic tools available in any
-UNIX-based system), see https://www.gnu.org/software/coreutils/ for details.
+The set of BASH scripts Sondovač is licensed under GNU General Public License 
+version 3. List of licenses of included software is in following table (see 
+full texts below). License of BLAT does not allow redistribution, so that this 
+software is not included and the software is downloaded on the fly. Script is 
+also using software included in GNU core utilities (basic tools available in 
+any UNIX-based system), see https://www.gnu.org/software/coreutils/ for details.
 
 Software   License            License details
 --------------------------------------------------------------------------------

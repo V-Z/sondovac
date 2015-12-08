@@ -2,7 +2,7 @@
 
 # Version of the script
 SCRIPTVERSION=0.99
-RELEASEDATE=2015-12-07
+RELEASEDATE=2015-12-08
 # Web page of the script
 WEB="https://github.com/V-Z/sondovac/"
 
@@ -998,7 +998,7 @@ function checkblat {
       echo "Type \"${REDF}H${NORM}\" ${CYAF}for installation using Homebrew${NORM} (only for Mac OS X, recommended)."
       echo "  See \"${REDF}brew info homebrew/science/blat${NORM}\" for more details."
       echo "Type \"${REDF}M${NORM}\" ${CYAF}for manual installation - script will exit${NORM} and you will have to"
-      echo "  install \"BLAT\" yourselves. Check ${REDF}http://genome.ucsc.edu/FAQ/FAQblat.html${NORM}"
+      echo "  install \"BLAT\" yourself. Check ${REDF}http://genome.ucsc.edu/FAQ/FAQblat.html${NORM}"
       echo "  for more information."
       read BLAT
       while :
@@ -1021,7 +1021,7 @@ function checkblat {
 		echo
 		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download of \"${REDF}BLAT${NORM}\" failed.${NORM} Please, go to"
 		echo "${REDF}http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/${NORM}"
-		echo "and download blat binary yourselves."
+		echo "and download blat binary yourself."
 		echo
 		exit 1
 		}
@@ -1036,7 +1036,7 @@ function checkblat {
 		  echo
 		  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download of \"${REDF}BLAT${NORM}\" failed.${NORM} Please, go to"
 		  echo "${REDF}http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/${NORM}"
-		  echo "and download blat binary yourselves."
+		  echo "and download blat binary yourself."
 		  echo
 		  exit 1
 		  }

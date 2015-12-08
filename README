@@ -1,8 +1,9 @@
 Sondovač 0.99 RC Basic help
 
-Sondovač (English pronunciation is "Sondovach") is a script to create 
-orthologous low-copy nuclear probes from transcriptome and genome skim data for 
-target enrichment.
+Sondovač (English pronunciation is "Sondovach". The word is a Czech neologism 
+meaning something like "The Prober" or "The Probe Maker".) is a script to 
+create orthologous low-copy nuclear probes from transcriptome and genome skim 
+data for target enrichment.
 
 
 Script summary
@@ -173,8 +174,8 @@ process its output manually by Geneious according to the instructions given
 below. The output of Geneious is then processed by sondovac_part_b.sh, which 
 produces the final probe set. Geneious was tested with versions 6, 7 and 8.
 
-Import the output file of part A of the script (sondovac_part_a.sh): go to menu 
-File | Import | From File... This file is named as:
+Import the output file of part A of the script (sondovac_part_a.sh): 
+go to menu File | Import | From File... This file is named as:
 *_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa
 
 Select the file and go to menu Tools | Align / Assemble | De Novo Assemble.
@@ -274,8 +275,7 @@ Input files:
 Optional parameters:
   See chapter "Pipeline" for steps referred here.
   If those parameters are not provided, the default values are used, and it is 
-not
-    possible to change them any time later (not even in interactive mode).
+  not possible to change them any time later (not even in interactive mode).
 
 -a ###   Maximum overlap length expected in approximately ≥90% of read pairs 
 	   (parameter -M of FLASH, see its manual for details). FLASH can not 
@@ -432,7 +432,8 @@ Script sondovac_part_b.sh creates the following files:
 3) *_target_enrichment_probe_sequences.fasta - Probes in FASTA.
 4) *_possible_cp_dna_genes_in_probe_set.pslx - In case of any BLAT hits, the 
      user might needs to manually remove these plastid probe sequences from 
-     *_target_enrichment_probe_sequences.fasta (the previous script outfile); the remaining ones are the final probe sequences in FASTA.
+     *_target_enrichment_probe_sequences.fasta (the previous script outfile); 
+     the remaining ones are the final probe sequences in FASTA.
 
 An asterisk (*) denotes the beginning of the output files' names specified by 
 the user with parameter "-o". If user does not select a custom name, default 
