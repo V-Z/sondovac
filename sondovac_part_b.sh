@@ -543,12 +543,12 @@ echo
 
 # Separate the assembled sequences
 echo "Separating assembled sequences"
-grep '[Aa]ssembly' $SEQUENCESTAB > $SEQUENCESTABASSE
+grep 'Contig' $SEQUENCESTAB > $SEQUENCESTABASSE
 echo
 
 # Separate the unassembled sequences
 echo "Separating unassembled sequences"
-grep -v '[Aa]ssembly' $SEQUENCESTAB > $SEQUENCESTABUNAS
+grep -v 'Contig' $SEQUENCESTAB > $SEQUENCESTABUNAS
 echo
 
 # Retention of those contigs that comprise exons ≥ bait length and have a certain total locus length.

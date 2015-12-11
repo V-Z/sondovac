@@ -691,7 +691,7 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
 
 \subsection{Input and output files}
 
-All names of input files and paths to them must be without spaces and without special characters (some software have difficulties to handle them). \textbf{Important note:} HTS data are big. The Sondovač pipeline is relatively long, and part \texttt{A} contains several format conversions and can (for some time) use dozens of GB of disk space. Temporal files without potential usefulness for the user are deleted at the end of the pipeline -- because those files may be useful for debugging if something would go wrong. For example, input data of \citet{Schmickl2016} are approximately 4.5~GB, and the overall output of part \texttt{A} of the script has about 28~GB, of which less then half is kept by the pipeline. Part \texttt{B} is very quick and does not consume a significant amount of disk space.
+All names of input files and paths to them must be without spaces and without special characters (some software have difficulties to handle them). \textbf{Important note:} HTS data are big. The Sondovač pipeline is relatively long, and part \texttt{A} contains several format conversions and can (for some time) use dozens of GB of disk space. Temporal files without potential usefulness for the user are deleted at the end of the pipeline -- because those files may be useful for debugging if something would go wrong. For example, input data of \citet{Schmickl2016} are approximately 4.5~GB, and the overall output of part \texttt{A} of the script has about 28~GB, of which less then half is kept by the pipeline. This analysis took on i7 3.4~GHz CPU less than hour. Part \texttt{B} is very quick and does not consume a significant amount of disk space.
 
 \vspace{10pt}
 \textbf{Script \texttt{sondovac$\_$part$\_$a.sh} requires as input files:}
@@ -838,8 +838,8 @@ The package contains:
 
 \begin{enumerate}
   \item \texttt{input2$\_$Ricinus$\_$communis$\_$reference$\_$plastid$\_$genome.fsa} -- cpDNA reference (pa\-ra\-meter \texttt{-c}), GenBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/372450118/}{NC$\_$016736}.
-  \item \texttt{input3$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R1.fastq} -- paired-end genome skim data, file 1 (parameter \texttt{-t}).
-  \item \texttt{input4$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R2.fastq} -- paired-end genome skim data, file 2 (parameter \texttt{-q}).
+  \item \texttt{input3$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R1.fastq} -- paired-end genome skim data, file 1 (forward reads, parameter \texttt{-t}).
+  \item \texttt{input4$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R2.fastq} -- paired-end genome skim data, file 2 (backward reads, parameter \texttt{-q}).
   \item \texttt{input5$\_$Ricinus$\_$communis$\_$reference$\_$mitochondrial$\_$genome.fasta} -- mtDNA reference (parameter \texttt{-m}), GenBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/323649872/}{NC$\_$015141}.
 \end{enumerate}
 
