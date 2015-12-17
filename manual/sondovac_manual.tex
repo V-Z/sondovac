@@ -26,11 +26,21 @@
 % Syntax higlight
 \usepackage{minted}
 \usemintedstyle{vim} % Styles are listed by pygmentize -L styles; languages are listed by pygmentize -L lexers
-\newminted{bash}{bgcolor=Ivory, fontfamily=tt, gobble=2, linenos}
+\newminted{bash}{bgcolor=Beige, fontfamily=tt, gobble=2, linenos, numbersep=-3pt}
 \newmint{bash}{}
 
+\renewcommand{\theFancyVerbLine}{
+  \sffamily
+  \textcolor{BlueViolet}{
+    \scriptsize
+    \oldstylenums{
+      \arabic{FancyVerbLine}
+      }
+    }
+  }
+
 % Add background for \texttt{} (using pacakge soul)
-\sethlcolor{Ivory}
+\sethlcolor{Beige}
 \renewcommand{\texttt}[1]{\hl{\ttfamily #1}}
 
 \setdefaultlanguage{english}
@@ -54,12 +64,12 @@
   pdfsubject={Software manual},
   pdfcreator={XeLaTeX, http://www.xelatex.org/},
   pdfkeywords={bioinformatics, genome skimming, manual, high-throughput sequencing},
-  linkcolor={red},
-  anchorcolor={black},
-  citecolor={green},
-  filecolor={magenta},
-  menucolor={brown},
-  urlcolor={blue},
+  linkcolor={DarkRed},
+  anchorcolor={DarkBlue},
+  citecolor={DarkGreen},
+  filecolor={DarkMagenta},
+  menucolor={Brown},
+  urlcolor={Blue},
   pdftex
   ]{hyperref}
 
@@ -409,12 +419,14 @@ If you are not familiar with the usage of command line, see some basic tutorial 
   \item \url{https://activedoc.opensuse.org/book/opensuse-start-up/chapter-17-shell-basics}
   \item \url{https://help.ubuntu.com/community/UsingTheTerminal}
   \item \url{https://www.gnu.org/software/bash/manual/} (advanced -- full reference manual)
-  \item \url{http://ubuntuguide.org/}
   \item \url{https://www.debian.org/doc/manuals/debian-reference/ch01.en.html}
   \item \url{https://en.wikibooks.org/wiki/Guide_to_Unix}
-  \item \url{http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html}
+  \item \url{http://tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html}
   \item \url{https://trapa.cz/en/course-linux-command-line-2015}
-  \item \url{https://docs.fedoraproject.org/en-US/Fedora/22/html/System_Administrators_Guide}
+  \item \url{http://linuxcourse.rutgers.edu/documents/Bash-Beginners-Guide/}
+  \item \url{http://ryanstutorials.net/linuxtutorial/}
+  \item \url{http://www.hypexr.org/bash_tutorial.php}
+  \item \url{http://mywiki.wooledge.org/BashGuide}
 \end{itemize}
 
 \subsection{Geneious}
@@ -507,10 +519,10 @@ PATH (\$PATH) is a~system variable used in every UNIX system. It lists directori
   /home/$USER/bin:/usr/local/bin:/usr/bin:/bin:/opt/bin:/sbin:/usr/sbin
   # Adding new directory to $PATH
   export PATH=$PATH:/some/new/directory
-  # Do not do it in the following way - it would overwrite $PATH, and there would
-  #   be only the new directory (not the original content)!
-  export PATH=/some/new/directory # Wrong! Old $PATH is missing and will be lost!
-  # Removing possible duplicate entries in $PATH with regular expressions and awk
+  # Do not do it in the following way - it would overwrite $PATH, and
+  #   there would be only the new directory (not the original content)!
+  export PATH=/some/new/directory # Wrong! Old PATH is missing and will be lost!
+  # Removing possible duplicate entries in PATH with regular expressions and awk
   export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),""); \
     if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
   echo $PATH # See it after modifications
@@ -539,7 +551,7 @@ Sondovač requires certain software to be installed (see Table~\ref{software-lin
   \item[Library] Pack of software tools and functions used by other applications.
   \item[License] Conditions under which software is distributed. Can be very restrictive (typically paid software) or permissive (typically free and open-source software).
   \item[Linux] One of the most common variants of UNIX-based operating systems. Linux kernel is used by many developers, so that there are plenty of Linux distributions ("flavors") from various sources (e.g. Ubuntu and derivatives, openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.). They share many features, although at first sight they can look different. See \url{https://en.wikipedia.org/wiki/Linux}.
-  \item[Linux Mint] Popular Linux distribution based on Debian and Ubuntu. See \url{http://linuxmint.com/}.
+  \item[Linux Mint] Popular Linux distribution based on Debian and Ubuntu, see \url{http://linuxmint.com/}.
   \item[Mac OS~X] Popular operating system produced by Apple. The system kernel is based on UNIX, see \url{https://www.apple.com/osx/}.
   \item[Open-source] Generally, the source code of an application is available together with the application and can, under certain conditions, be defined in license modified, redistributed etc. See \url{https://en.wikipedia.org/wiki/Free_and_open-source_software}.
   \item[openSUSE] Popular Linux distribution, see \url{https://www.opensuse.org/}.
@@ -722,12 +734,12 @@ All names of input files and paths to them must be without spaces and without sp
   \item \texttt{*$\_$combined$\_$reads$\_$co$\_$cp$\_$no$\_$mt$\_$reads} -- Combined paired-end genome skim reads.
   \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data.pslx} -- Output of BLAT (ma\-tching of the unique transcripts and the filtered, combined genome skim reads sharing $\geq$85\% sequence similarity).
   \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data.fasta} -- Matching sequences in FASTA.
-  \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa} -- \textbf{Final FASTA sequences for usage in Geneious.}
+  \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa} -- \textbf{Part A, final FASTA sequences for usage in Geneious} (step 7, see chapter~\ref{geneious-usage} at page~\pageref{geneious-usage}, and page~\pageref{pipeline-overview}).
 \end{enumerate}
 
 Files 1-9 are not necessary for further processing by this pipeline, but may be useful for the user. The last file (10) is used as input file for Geneious in the next step. An asterisk (*) denotes the beginning of the output files' names specified by the user with parameter \texttt{-o}. If the user does not select a~custom name, default value (\texttt{output}) will be used.
 
-\textbf{Geneious} requires as input the last output file of \texttt{sondovac$\_$part$\_$a.sh} (file 10: \texttt{*$\_$blat$\_$uni\allowbreak que$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa}). Output of Geneious are two exported files (see page~\pageref{geneious-usage}):
+\textbf{Geneious} requires as input the last output file of \texttt{sondovac$\_$part$\_$a.sh} (file 10: \texttt{*$\_$blat$\_$uni\- que$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa}). Output of Geneious are two exported files (see page~\pageref{geneious-usage}):
 
 \begin{enumerate}
   \item Final assembled sequences exported as TSV.
@@ -769,7 +781,7 @@ An asterisk (*) denotes the beginning of the output files' names specified by th
 \subsection{Geneious usage}
 \label{geneious-usage}
 
-Import the output file of part A~of the script (\texttt{sondovac$\_$part$\_$a.sh}): go to menu \textbf{File | Import | From File\ldots} This file is named as: \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data\allowbreak-no$\_$missing$\_$fin.fsa} (see Figure~\ref{geneious-import}).
+Import the output file of part A~of the script (\texttt{sondovac$\_$part$\_$a.sh}): go to menu \textbf{File | Import | From File\ldots} This file is named as: \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data\--no$\_$missing$\_$fin.fsa} (see Figure~\ref{geneious-import}).
 
 \begin{figure}[hbt]
   \includegraphics[width=\textwidth]{geneious1.png}
