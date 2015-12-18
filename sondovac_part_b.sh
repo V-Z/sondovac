@@ -433,19 +433,19 @@ echo "Checking if ${REDF}$TSVLIST${NORM} has all required columns"
 REQUIREDCOLS="Required columns in `echo $TSVLIST` are \"`echo ${CYAF}`# Sequences`echo ${NORM}`\",\n  \"`echo ${CYAF}`% Pairwise Identity`echo ${NORM}`\", \"`echo ${CYAF}`Description`echo ${NORM}`\", \"`echo ${CYAF}`Mean Coverage`echo ${NORM}`\", \"`echo ${CYAF}`Name`echo ${NORM}`\"\n  and \"`echo ${CYAF}`Sequence Length`echo ${NORM}`\". Please, export the TSV file again."
 echo
 if grep -q "# Sequences" $TSVLIST; then
-    echo "Column \"# Sequences\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+    echo "Column \"${CYAF}# Sequences${NORM}\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
     if grep -q "Pairwise Identity" $TSVLIST; then
-      echo "Column \"Pairwise Identity\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+      echo "Column \"${CYAF}Pairwise Identity${NORM}\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
       if grep -q "Description" $TSVLIST; then
-	echo "Column \"Description\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+	echo "Column \"${CYAF}Description${NORM}\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
 	if grep -q "Mean Coverage" $TSVLIST; then
-	  echo "Column \"Mean Coverage\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+	  echo "Column \"${CYAF}Mean Coverage${NORM}\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
 	  if grep -q "Name" $TSVLIST; then
-	    echo "Column \"Name\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+	    echo "Column \"${CYAF}Name${NORM}\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
 	    if grep -q "Sequence Length" $TSVLIST; then
-	      echo "Column \"Sequence Length\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+	      echo "Column \"${CYAF}Sequence Length${NORM}\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
 	    else
-	      echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Sequence Length\" is missing!"
+	      echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Sequence Length${NORM}\" is missing!"
 	      echo -e "$REQUIREDCOLS"
 	      exit 1
 	    fi
@@ -480,7 +480,9 @@ echo
 if egrep -q "# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[[:blank:]]+Mean Coverage[[:blank:]]+Name[[:blank:]]+Sequence Length" $TSVLIST
   then
     echo "${REDF}$TSVLIST${NORM} is correct input file. ${GREF}OK.${NORM}"
-    TSVLIST2=$TSVLIST
+    tail -n +2 $TSVLIST > ${TSVLIST%.*}.columns.tsv #
+    TSVLIST2="${TSVLIST%.*}.columns.tsv" #
+#     TSVLIST2=$TSVLIST
     echo
   else
     echo "Input file ${REDF}$TSVLIST${NORM} seems to contain more columns than required."
