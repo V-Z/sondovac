@@ -6,3 +6,4 @@ pkgs/macosx
 src
 *~
 *.backup
+manual/minted.sty
