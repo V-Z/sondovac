@@ -221,6 +221,9 @@ workdirpath
 
 # Check availability of all needed binaries
 
+# Check if paste is available
+checktools paste
+
 # Check if cut is available
 checktools cut
 
@@ -1137,56 +1140,35 @@ TABREMOVED="${OUTPUTFILENAME%.*}_1k_transcripts-removed.tab"
 # Final FASTA sequences for usage in Geneious
 FINALA="${OUTPUTFILENAME%.*}_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa"
 
-# Checking if transcriptome input file has required labeling scheme - only unique numbers
-
-function renamefastanames {
-  checktools paste
-  echo "Input file ${REDF}$1${NORM}"
-  echo "  ${CYAF}contains some non-allowed labels.${NORM} New file with correct labels"
-  echo "  (only increasing unique numbers) will be created."
-  echo "Depending on size of your transcriptome file ${CYAF}it can take longer time.${NORM}"
-  while read LINE; do
-    N=$((++N)) &&
-    echo $LINE | sed -e 's/^>.*$/>'$N'/'
-    done < $1 > $2 || {
-      echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Renaming failed.${NORM} Aborting. Ensure ${REDF}$1${NORM}"
-      echo "  has as labels of sequences only unique numbers (nothing else)."
-      echo
-      exit 1
-      }
-  # Giving to user list of old and new labels
-  grep '^>' $1 > transcript_fasta_labels_old
-  grep '^>' $2 > transcript_fasta_labels_new
-  echo -e "Old FASTA labels\tNew FASTA labels" > $TRANSCRIPTOMEFASTANAMES
-  paste transcript_fasta_labels_old transcript_fasta_labels_new >> $TRANSCRIPTOMEFASTANAMES
-  sed -i 's/>//g' $TRANSCRIPTOMEFASTANAMES
-  rm transcript_fasta_labels_old transcript_fasta_labels_new
-  echo
-  echo "File ${REDF}$TRANSCRIPTOMEFASTANAMES${NORM} contains two columns:"
-  echo "  ${CYAF}1)${NORM} Old labels in original ${REDF}$1${NORM} and"
-  echo "  ${CYAF}2)${NORM} New labels in required format as in ${REDF}$2${NORM}"
-  echo "  The sequences remain intact. This might be needed to trace back some sequences."
-  confirmgo
-  RENAMEDFASTASEQENCES="YES"
-  }
+# transcriptome input file has required labeling scheme - only unique numbers
 
 echo
-echo "${CYAF}Checking if transcriptome input file ${REDF}$INPUTFILE0${NORM}"
-echo "  has required labeling scheme - only unique numbers."
-if grep '>' $INPUTFILE0 | grep -q -v '^[> ]\+[[:digit:]]\+$'; then
-  echo
-  renamefastanames $INPUTFILE0 $INPUTFILE
-  elif  grep '>' $INPUTFILE0 | grep '^[> ]\+[[:digit:]]\+$' | uniq -c | grep -q -v '^[ ]*1'; then
+echo "FASTA sequence names in input file ${REDF}$INPUTFILE0${NORM}"
+echo "  ${CYAF}must be renamed to be correctly handled in part B.${NORM} New file with correct labels"
+echo "  (only increasing unique numbers) will be created."
+echo "Depending on size of your transcriptome file ${CYAF}it can take longer time.${NORM}"
+while read LINE; do
+  N=$((++N)) &&
+  echo $LINE | sed -e 's/^>.*$/>'$N'/'
+  done < $INPUTFILE0 > $INPUTFILE || {
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Renaming failed.${NORM} Aborting. Ensure ${REDF}$INPUTFILE0${NORM}"
+    echo "  has as labels of sequences only unique numbers (nothing else)."
     echo
-    renamefastanames $INPUTFILE0 $INPUTFILE
-    else
-      sed -i 's/ *//g' $INPUTFILE0
-      echo
-      echo "Input file ${REDF}$INPUTFILE0${NORM}"
-      echo " has correct names. ${CYAF}Continuing.${NORM}"
-      INPUTFILE=$INPUTFILE0
-      RENAMEDFASTASEQENCES="NO"
-    fi
+    exit 1
+    }
+# Giving to user list of old and new labels
+grep '^>' $INPUTFILE0 > transcript_fasta_labels_old
+grep '^>' $INPUTFILE > transcript_fasta_labels_new
+echo -e "Old FASTA labels\tNew FASTA labels" > $TRANSCRIPTOMEFASTANAMES
+paste transcript_fasta_labels_old transcript_fasta_labels_new >> $TRANSCRIPTOMEFASTANAMES
+sed -i 's/>//g' $TRANSCRIPTOMEFASTANAMES
+rm transcript_fasta_labels_old transcript_fasta_labels_new
+echo
+echo "File ${REDF}$TRANSCRIPTOMEFASTANAMES${NORM} contains two columns:"
+echo "  ${CYAF}1)${NORM} Old labels in original ${REDF}$INPUTFILE0${NORM} and"
+echo "  ${CYAF}2)${NORM} New labels in required format as in ${REDF}$INPUTFILE${NORM}"
+echo "  The sequences remain intact. This might be needed to trace back some sequences."
+confirmgo
 
 # Step 1: Obtain unique transcripts.
 
