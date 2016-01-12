@@ -9,3 +9,4 @@ make
 git
 ant
 wget
+dos2unix

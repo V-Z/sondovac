@@ -210,9 +210,6 @@ checkmodef
 # Ensure user reads introductory information
 confirmgo
 
-# NOTE: warn user this is not yet for daily usage
-devrelease
-
 # Check operating system
 oscheck
 
@@ -1139,6 +1136,16 @@ TABBLAT="${OUTPUTFILENAME%.*}_1k_transcripts"
 TABREMOVED="${OUTPUTFILENAME%.*}_1k_transcripts-removed.tab"
 # Final FASTA sequences for usage in Geneious
 FINALA="${OUTPUTFILENAME%.*}_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa"
+
+# Check EOL of input files
+echo
+eolcheck $INPUTFILE0
+eolcheck $REFERENCECP
+eolcheck $INPUTFQ1
+eolcheck $INPUTFQ2
+if [ -n "$REFERENCEMT" ]; then
+  eolcheck $REFERENCEMT
+  fi
 
 # transcriptome input file has required labeling scheme - only unique numbers
 

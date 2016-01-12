@@ -204,9 +204,6 @@ checkmodef
 # Ensure user reads introductory information
 confirmgo
 
-# NOTE: warn user this is not yet for daily usage
-devrelease
-
 # Check operating system
 oscheck
 
@@ -421,6 +418,12 @@ PROBESEQUENCESCP="${OUTPUTFILENAME%.*}_possible_cp_dna_genes_in_probe_set.pslx"
 
 # Step 8: Retention of those contigs that comprise exons ≥ bait length (default is 120 bp) and have a certain locus length
 
+# Check EOL of input files
+echo
+eolcheck $REFERENCECP
+eolcheck $TSVLIST
+eolcheck $SEQUENCES
+
 echo
 echo "${REDF}Step 8 of the pipeline${NORM} - retention of those contigs that comprise exons ≥ bait"
 echo "  length (${CYAF}$BAITL${NORM} bp) and have a certain locus length"
@@ -539,14 +542,13 @@ fasta2tab $SEQUENCES $SEQUENCESTAB || {
   }
 echo
 
-
-
+# Modify nams of FASTA sequences to ensure them to work correctly
+echo "Checking and modifying FASTA sequence names"
 sed -i 's/:.*\t/\t/' $SEQUENCESTAB
 awk -F '[_\t]' '{ printf "%012d_", $1; print; }' $SEQUENCESTAB > $SEQUENCESTAB.temp
 mv $SEQUENCESTAB.temp $SEQUENCESTAB
 sed -i 's/_[[:digit:]]\+//' $SEQUENCESTAB
-
-
+echo
 
 # Separate the assembled sequences
 echo "Separating assembled sequences"

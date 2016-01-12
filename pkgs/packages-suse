@@ -24,3 +24,4 @@ git-core
 ant
 pkg-config
 wget
+dos2unix

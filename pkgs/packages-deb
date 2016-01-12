@@ -25,3 +25,4 @@ ant
 pkg-config
 realpath
 wget
+dos2unix

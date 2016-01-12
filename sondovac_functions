@@ -1,8 +1,8 @@
 # Functions required by probe design script
 
 # Version of the script
-SCRIPTVERSION=0.99
-RELEASEDATE=2015-12-08
+SCRIPTVERSION=1.0
+RELEASEDATE=2016-01-12
 # Web page of the script
 WEB="https://github.com/V-Z/sondovac/"
 
@@ -122,18 +122,6 @@ function confirmgo {
       echo
     fi
   }
-
-# NOTE: this version is not yet ready for daily usage...
-function devrelease {
-    echo
-    echo "${REDF}${BOLD}Warning!${NORM} This is developmental, not fully tested version."
-    echo "${MAGF}You may encounter problems, and some functions are still missing.${NORM}"
-    echo "Please, report any issues and/or wishes to ${REDF}zeisek@natur.cuni.cz${NORM}."
-    echo "We hope you enjoy the script anyway. ;-)"
-    echo "Full release will be available soon..."
-    echo
-    confirmgo
-    }
 
 # Select tool for downloading - wget or curl
 function downloaderselector {
@@ -926,6 +914,19 @@ function workdirpath {
   cd $WORKDIR
   # Add bin directory in current directory into PATH
   export PATH=$BIN:$PATH
+  }
+
+# Check if input files have DOS or UNIX encoding
+function eolcheck {
+  if awk '/\r$/{exit 0;} 1{exit 1;}' $1; then
+    echo "Input file ${REDF}$1${NORM} ${CYAF}has DOS end of lines.${NORM}"
+    echo "It will be converted into UNIX end of lines"
+    dos2unix $1
+    echo
+    else
+      echo "Input file ${REDF}$1${NORM} ${CYAF}has UNIX end of lines.${NORM} ${GREF}OK.${NORM}"
+      echo
+    fi
   }
 
 # Function to compile BLAT
