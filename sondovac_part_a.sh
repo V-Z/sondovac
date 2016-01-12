@@ -1574,6 +1574,7 @@ if [ -n "$REFERENCEMT" ]; then
 echo
 echo "${CYAF}Following files are kept for possible later usage (see manual for details):${NORM}"
 echo "${BLUF}================================================================================${NORM}"
+if [ -n "$REFERENCEMT" ]; then
   echo "${CYAF}1)${NORM}  List of old names of FASTA sequences in ${REDF}$INPUTFILE0${NORM} and"
   echo "    renamed FASTA sequences in ${REDF}$INPUTFILE${NORM}:"
   echo "${REDF}$TRANSCRIPTOMEFASTANAMES${NORM}"

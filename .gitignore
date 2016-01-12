@@ -6,4 +6,5 @@ pkgs/macosx
 src
 *~
 *.backup
+manual/_minted-sondovac_manual
 manual/minted.sty
