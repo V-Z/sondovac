@@ -1,4 +1,4 @@
-Sondovač 0.99 RC Basic help
+Sondovač 1.0 Basic help
 
 Sondovač (English pronunciation is "Sondovach". The word is a Czech neologism 
 meaning something like "The Prober" or "The Probe Maker".) is a script to 
@@ -128,9 +128,9 @@ any UNIX-based operating system.
 The following UNIX tools are required to run Sondovač. They are usually readily 
 available in UNIX systems (but see note for Mac OS X below), so there is 
 usually no need to install them manually. The tools are awk, bc, bunzip2, cat, 
-cp, curl or wget, cut, dirname, echo, egrep, cd, g++, gcc, grep, gunzip, join, 
-less, lsb_release or python (for Linux), make, mkdir, perl, pkg-config, pwd, 
-sed, sort, tar, tr, uname, uniq, unzip, wc.
+cp, curl or wget, cut, dirname, dos2unis, echo, egrep, cd, g++, gcc, grep, 
+gunzip, join, less, lsb_release or python (for Linux), make, mkdir, paste, 
+perl, pkg-config, pwd, sed, sort, tar, tr, uname, uniq, unzip, wc.
 
 sondovac_part_a.sh requires (and will install) the following software packages:
 * BLAT
@@ -382,32 +382,32 @@ Script sondovac_part_a.sh requires as input files:
    This file is not required.
 
 Script sondovac_part_a.sh creates the following files:
-0)  *_renamed.fasta - If needed, copy of the transcriptome input file with the 
+1)  *_renamed.fasta - If needed, copy of the transcriptome input file with the 
       changed labels of the FASTA sequences (unique numbers corresponding to 
       the line numbers in the  original file) will be created. File 
-      *_old_and_new_names.tsv then contains two columns: 1) the original 
+2)  *_old_and_new_names.tsv then contains two columns: 1) the original 
       sequence labels as in the user-provided transcriptome input file and 2) 
       new sequence labels. This might be useful to trace back certain 
       sequences/probes. 1)  *_blat_unique_transcripts.psl - Output of BLAT 
       (removal of transcripts sharing ≥90% sequence similarity).
-2)  *_unique_transcripts.fasta - Unique transcripts in FASTA format.
-3)  *_genome_skim_data_no_cp_reads.bam - SAM converted to BAM (removal of reads 
+3)  *_unique_transcripts.fasta - Unique transcripts in FASTA format.
+4)  *_genome_skim_data_no_cp_reads.bam - SAM converted to BAM (removal of reads 
       of plastid origin).
-4)  *_genome_skim_data_no_cp_reads* - Genome skim data without cpDNA reads.
-5)  *_genome_skim_data_no_cp_no_mt_reads.bam - SAM converted to BAM (removal of 
+5)  *_genome_skim_data_no_cp_reads* - Genome skim data without cpDNA reads.
+6)  *_genome_skim_data_no_cp_no_mt_reads.bam - SAM converted to BAM (removal of 
       reads of mitochondrial origin) - only if mitochondriome reference 
       sequence was used.
-6)  *_genome_skim_data_no_cp_no_mt_reads* - Genome skim data without mtDNA 
+7)  *_genome_skim_data_no_cp_no_mt_reads* - Genome skim data without mtDNA 
       reads - only if mitochondriome reference sequence was used.
-7)  *_combined_reads_co_cp_no_mt_reads* - Combined paired-end genome skim reads.
-8)  *_blat_unique_transcripts_versus_genome_skim_data.pslx - Output of BLAT 
+8)  *_combined_reads_co_cp_no_mt_reads* - Combined paired-end genome skim reads.
+9)  *_blat_unique_transcripts_versus_genome_skim_data.pslx - Output of BLAT 
       (matching of the unique transcripts and the filtered, combined genome 
       skim reads sharing ≥85% sequence similarity).
-9)  *_blat_unique_transcripts_versus_genome_skim_data.fasta - Matching 
+10)  *_blat_unique_transcripts_versus_genome_skim_data.fasta - Matching 
       sequences in FASTA.
-10) *_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa - 
+11) *_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa - 
       Final FASTA sequences for usage in Geneious.
-Files 1-9 are not necessary for further processing by this pipeline, but may be 
+Files 1-10 are not necessary for further processing by this pipeline, but may be 
 useful for the user. The last file (10) is used as input file for Geneious in 
 the next step. An asterisk (*) denotes the beginning of the output files' names 
 specified by the user with parameter "-o". If the user does not select a custom 
