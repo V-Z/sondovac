@@ -43,13 +43,10 @@
   \textcolor{BlueViolet}{
     \scriptsize
     \oldstylenums{
-%       \stepcounter{bashnumber}
       \arabic{FancyVerbLine}
       }
     }
   }
-% \newcounter{bashnumber}
-% \setcounter{bashnumber}{1}
 
 % Add background for \texttt{} (using pacakge soul)
 \sethlcolor{Beige}
@@ -58,7 +55,7 @@
 \setdefaultlanguage{english}
 
 % Opening
-\title{Manual for Sondovač 0.99 release candidate}
+\title{Manual for Sondovač 1.0 regular release}
 \author{Roswitha Schmickl, Aaron Liston, Vojtěch Zeisek and others}
 
 % Allow line breaks within URLs
@@ -735,8 +732,8 @@ All names of input files and paths to them must be without spaces and without sp
 
 \textbf{Script \texttt{sondovac$\_$part$\_$a.sh} creates the following files:}
 
-\begin{enumerate}[start=0]
-  \item \texttt{*$\_$renamed.fasta} -- If needed, a~copy of the transcriptome input file with the changed labels of the FASTA sequences (unique numbers corresponding to the line numbers in the original file) will be created. File \texttt{*$\_$old$\_$and$\_$new$\_$names.tsv} then contains two columns: \textbf{1)} the original sequence labels as in the user-provided transcriptome input file and \textbf{2)} new sequence labels. This might be useful to trace back certain sequences/probes.
+\begin{enumerate}
+  \item \texttt{*$\_$renamed.fasta} -- A~copy of the transcriptome input file with the changed labels of the FASTA sequences (unique numbers corresponding to the line numbers in the original file). File \texttt{*$\_$old$\_$and$\_$new$\_$names.tsv} then contains two columns: \textbf{1)} the original sequence labels as in the user-provided transcriptome input file and \textbf{2)} new sequence labels. This might be useful to trace back certain sequences/probes.
   \item \texttt{*$\_$blat$\_$unique$\_$transcripts.psl} -- Output of BLAT (removal of transcripts sharing $\geq$90\% sequence similarity).
   \item \texttt{*$\_$unique$\_$transcripts.fasta} -- Unique transcripts in FASTA format.
   \item \texttt{*$\_$genome$\_$skim$\_$data$\_$no$\_$cp$\_$reads.bam} -- SAM converted to BAM (removal of reads of plastid origin).
@@ -746,10 +743,10 @@ All names of input files and paths to them must be without spaces and without sp
   \item \texttt{*$\_$combined$\_$reads$\_$co$\_$cp$\_$no$\_$mt$\_$reads} -- Combined paired-end genome skim reads.
   \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data.pslx} -- Output of BLAT (ma\-tching of the unique transcripts and the filtered, combined genome skim reads sharing $\geq$85\% sequence similarity).
   \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data.fasta} -- Matching sequences in FASTA.
-  \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa} -- \textbf{Part A, final FASTA sequences for usage in Geneious} (step 7, see chapter~\ref{geneious-usage} at page~\pageref{geneious-usage}, and page~\pageref{pipeline-overview}).
+  \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa} -- \textbf{Part~A, final FASTA sequences for usage in Geneious} (step 7, see chapter~\ref{geneious-usage} at page~\pageref{geneious-usage}, and page~\pageref{pipeline-overview}).
 \end{enumerate}
 
-Files 1-9 are not necessary for further processing by this pipeline, but may be useful for the user. The last file (10) is used as input file for Geneious in the next step. An asterisk (*) denotes the beginning of the output files' names specified by the user with parameter \texttt{-o}. If the user does not select a~custom name, default value (\texttt{output}) will be used.
+Files 1-10 are not necessary for further processing by this pipeline, but may be useful for the user. The last file (10) is used as input file for Geneious in the next step. An asterisk (*) denotes the beginning of the output files' names specified by the user with parameter \texttt{-o}. If the user does not select a~custom name, default value (\texttt{output}) will be used.
 
 \textbf{Geneious} requires as input the last output file of \texttt{sondovac$\_$part$\_$a.sh} (file 10: \texttt{*$\_$blat$\_$uni\- que$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa}). Output of Geneious are two exported files (see page~\pageref{geneious-usage}):
 
@@ -892,6 +889,16 @@ If you have any question or you encounter some problem, please, see \url{https:/
 \section{Changelog}
 
 List of changes in released versions of Sondovač.
+
+\subsection{Version 1.0 regular release released 2016-01-11}
+
+\begin{itemize}
+  \item Renaming of input FASTA sequences names is required - it ensures correct working of part B.
+  \item Added check if input files were created on Windows - if so, they are converted into UNIX style EOL.
+  \item Various smaller fixes.
+  \item Better showing of the information in part B.
+  \item Enhanced documentation.
+\end{itemize}
 
 \subsection{Version 0.99 release candidate released 2015-12-08}
 

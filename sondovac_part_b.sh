@@ -382,8 +382,6 @@ CHECKFILEREADOUT=""
 SEQUENCESTAB="${OUTPUTFILENAME%.*}.tab"
 # Assembled sequences in TSV - temporary file - will be deleted
 SEQUENCESTABASSE="${OUTPUTFILENAME%.*}_assembled.tab"
-# Unassembled sequences in TSV - temporary file - will be deleted
-SEQUENCESTABUNAS="${OUTPUTFILENAME%.*}_unassembled.tab"
 # Filtered probes - temporary file - will be deleted
 SEQUENCESPROBESLOCUSLENGTH="${OUTPUTFILENAME%.*}_probes_120-600bp.tab"
 # Numbers of usable contigs for joining - temporary file - will be deleted
@@ -480,9 +478,7 @@ echo
 if egrep -q "# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[[:blank:]]+Mean Coverage[[:blank:]]+Name[[:blank:]]+Sequence Length" $TSVLIST
   then
     echo "${REDF}$TSVLIST${NORM} is correct input file. ${GREF}OK.${NORM}"
-    tail -n +2 $TSVLIST > ${TSVLIST%.*}.columns.tsv #
-    TSVLIST2="${TSVLIST%.*}.columns.tsv" #
-#     TSVLIST2=$TSVLIST
+    TSVLIST2=$TSVLIST
     echo
   else
     echo "Input file ${REDF}$TSVLIST${NORM} seems to contain more columns than required."
@@ -510,7 +506,7 @@ echo
 
 # Check total number of bp
 echo "${CYAF}Total number of base pairs:${NORM}"
-{ cut -f6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | awk '{s+=$1}END{print s}'; } || {
+{ cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | awk '{s+=$1}END{print s}'; } || {
   echo
   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking statistics failed.${NORM} Aborting. Check if file"
   echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns:"
@@ -522,7 +518,7 @@ confirmgo
 
 # Check number of contigs
 echo "${CYAF}Number of contigs:${NORM}"
-{ cut -f6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | wc -l; } || {
+{ cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | wc -l; } || {
   echo
   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking number of contigs failed.${NORM} Aborting. Check if file"
   echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns"
@@ -543,14 +539,11 @@ fasta2tab $SEQUENCES $SEQUENCESTAB || {
   }
 echo
 
+sed -i 's/:.*\t/\t/' $SEQUENCESTAB
+
 # Separate the assembled sequences
 echo "Separating assembled sequences"
-grep 'Contig' $SEQUENCESTAB > $SEQUENCESTABASSE
-echo
-
-# Separate the unassembled sequences
-echo "Separating unassembled sequences"
-grep -v 'Contig' $SEQUENCESTAB > $SEQUENCESTABUNAS
+grep 'Assembly' $SEQUENCESTAB > $SEQUENCESTABASSE
 echo
 
 # Retention of those contigs that comprise exons ≥ bait length and have a certain total locus length.
@@ -558,10 +551,10 @@ echo
 
 echo "${CYAF}Number of assembled sequences:${NORM}"
 echo "Length of exons ≥${CYAF}$BAITL${NORM} bp."
-echo -e "${REDF}G${CYAF}enes of length\t${REDF}N${CYAF}umber of genes\t${REDF}T${CYAF}otal bp${NORM}"
+echo -e "${REDF}G${CYAF}enes of length${NORM}\t\t${REDF}T${CYAF}otal bp${NORM}\t${REDF}N${CYAF}umber of exons${NORM}"
 for LOCUSLENGTH in 0600 0720 0840 0960 1080 1200; do
   LOCUSLENGTHN=$(expr $LOCUSLENGTH - 1)
-  echo -e "≥$LOCUSLENGTH bp\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l)"
+  echo -e "≥$LOCUSLENGTH bp\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l)"
   done
 
 # Select the optimal minimum total locus length
@@ -608,13 +601,13 @@ echo "${CYAF}Total locus length${NORM} is set to ${REDF}$MINLOCUSLENGTH bp${NORM
 echo
 
 # Saving sequences with selected length
-awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/_/\t/g' | cut -f6,9 | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTH"'' > $SEQUENCESPROBESLOCUSLENGTH
+awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTH"'' > $SEQUENCESPROBESLOCUSLENGTH
 
 # Create the final FASTA file for the Hyb-Seq probes
 
 # Extract and sort the assemblies making up genes of ≥600 bp
 echo "Extracting and sorting the assemblies making up genes of ≥$MINLOCUSLENGTH bp"
-sed 's/^/Assembly_/' $SEQUENCESPROBESLOCUSLENGTH | cut -f1 -d " " | sort -k1,1 > $SEQUENCESPROBESLOCUSLENGTHFORJOIN
+cut -f 1 -d " " $SEQUENCESPROBESLOCUSLENGTH | sort -k 1,1 > $SEQUENCESPROBESLOCUSLENGTHFORJOIN
 echo
 
 # Make a file with all exons ≥120 bp
@@ -624,7 +617,7 @@ echo
 
 # Make the assembly number the first field and sort
 echo "Sorting exons ≥${CYAF}$BAITL${NORM} bp"
-sed 's/^.*\(Assembly\)/\1/' $SEQUENCESTABASSEBAITL | sed 's/_C/\tC/' | sort -k1,1 > $SEQUENCESTABASSEBAITLSORT
+grep '[Cc]ontig' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*\([Cc]ontig_[[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT
 echo
 
 # Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
@@ -638,7 +631,7 @@ sed 's/ /_/' $SEQUENCESPROBES120600FIN | sed 's/ /_/' > $SEQUENCESPROBES120600MO
 sed 's/^/>/' $SEQUENCESPROBES120600MODIF | sed 's/ /\n/' > $SEQUENCESPROBES120600ASSEM
 
 # Remaining assemblies have to be selected and added to the .fasta file of the probes:
-grep -v '[Cc]ontig' $SEQUENCESTABASSEBAITL | awk '$2>599' | sed 's/^/>/' | sed 's/\t/_/' | sed 's/\t/\n/' > $SEQUENCESPROBES120600CONTIG
+grep -v '[Cc]ontig' $SEQUENCESTABASSEBAITL | awk '$2>'"$MINLOCUSLENGTH"'' | sed 's/^/>/' | sed 's/\t/_/' | sed 's/\t/\n/' > $SEQUENCESPROBES120600CONTIG
 echo
 
 # Combine the two FASTA files
@@ -647,7 +640,7 @@ cat $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG > $PROBEPRELIM0
 
 # Ensure all sequences have correct labels
 echo "Ensuring all sequences have correct labels"
-sed 's/^>.\+\(Assembly_[0-9]\+_\)/>\1Contig_0_/' $PROBEPRELIM0 > $PROBEPRELIM
+sed 's/^>[^0123456789]*\([[:digit:]]\{12\}\)[^0123456789]*\([[:digit:]]\{1,\}\)[^0123456789]*\([[:digit:]]\{1,\}\)$/>Assembly_\1_Contig_\2_\3/' $PROBEPRELIM0 > $PROBEPRELIM
 echo
 echo "${CYAF}Preliminary probe sequences saved${NORM} as ${REDF}$PROBEPRELIM${NORM}"
 echo "  for possible later usage."
@@ -687,24 +680,23 @@ awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | awk '{s+=$2;c++}END{print
 confirmgo
 
 # Count the assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
-echo "${CYAF}Number of the assemblies making up genes of ≥$MINLOCUSLENGTH bp,"
-echo "  comprised of putative exons ≥$BAITL bp:${NORM}"
-awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | awk '{s+=$3;c++}END{print s}'
-awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' | wc -l
+echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTH"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}of the assemblies making up genes of ≥$MINLOCUSLENGTH bp,"
+echo "  comprised of ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTH"'' | wc -l)${NORM} ${CYAF}putative exons ≥${REDF}$BAITL${NORM} ${CYAF}bp${NORM}."
+
 confirmgo
 
 echo "Writing the assemblies into temporal file"
-awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>599' > $PROBEPRELIMCDHIT2
+awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTH"'' > $PROBEPRELIMCDHIT2
 echo
 
 # Extract and sort the assemblies making up genes of ≥600 bp
 echo "Extracting and sorting the assemblies making up genes of ≥$MINLOCUSLENGTH bp"
-sed 's/^/Assembly_/' $PROBEPRELIMCDHIT2 | cut -f1 -d " " | sort -k1,1 > $PROBEPRELIMFORJOIN
+sed 's/^/Assembly_/' $PROBEPRELIMCDHIT2 | cut -f 1 -d " " | sort -k 1,1 > $PROBEPRELIMFORJOIN
 echo
 
 # Modify the assembly number and sort
 echo "Modifying the assembly number and sorting"
-sed 's/_C/\tC/' $PROBEPRELIMCDHIT.txt | sort -k1,1 > $PROBEPRELIMSORT
+sed 's/_C/\tC/' $PROBEPRELIMCDHIT.txt | sort -k 1,1 > $PROBEPRELIMSORT
 echo
 
 # Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
@@ -761,18 +753,17 @@ echo "${BLUF}===================================================================
 confirmgo
 
 # Remove temporal files
-echo "Removing unneeded temporal files"
-rm $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESTABUNAS $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM || {
-  echo
-  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
-  echo "\"$SEQUENCESTAB\", \"$SEQUENCESTABASSE\", \"$SEQUENCESTABUNAS\","
-  echo "\"$SEQUENCESPROBESLOCUSLENGTH\", \"$SEQUENCESPROBESLOCUSLENGTHFORJOIN\", \"$SEQUENCESTABASSEBAITL\","
-  echo "\"$SEQUENCESTABASSEBAITLSORT\", \"$SEQUENCESPROBES120600FIN\", \"$SEQUENCESPROBES120600MODIF\","
-  echo "\"$SEQUENCESPROBES120600ASSEM\", \"$SEQUENCESPROBES120600CONTIG\", \"$PROBEPRELIMCDHIT\","
-  echo "\"$PROBEPRELIMFORJOIN\", \"$PROBEPRELIMSORT\","
-  echo "\"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESNUM\"."
-  confirmgo
-  }
+# echo "Removing unneeded temporal files"
+# rm $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM || {
+#   echo
+#   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
+#   echo "\"$SEQUENCESTAB\", \"$SEQUENCESTABASSE\", \"$SEQUENCESPROBESLOCUSLENGTH\","
+#   echo "\"$SEQUENCESPROBESLOCUSLENGTHFORJOIN\", \"$SEQUENCESTABASSEBAITL\", \"$SEQUENCESTABASSEBAITLSORT\","
+#   echo "\"$SEQUENCESPROBES120600FIN\", \"$SEQUENCESPROBES120600MODIF\", \"$SEQUENCESPROBES120600ASSEM\","
+#   echo "\"$SEQUENCESPROBES120600CONTIG\", \"$PROBEPRELIMCDHIT\", \"$PROBEPRELIMFORJOIN\","
+#   echo "\"$PROBEPRELIMSORT\", \"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESNUM\"."
+#   confirmgo
+#   }
 
 # List kept files which user can use for another analysis
 echo
