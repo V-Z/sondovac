@@ -187,7 +187,7 @@ Sondovač uses several scientific software packages (namely bam2fastq, BLAT, Bow
 
 If required scientific programs are not installed, Sondovač will offer you installation. You can use precompiled binaries available together with the script (this is the recommended option) or (sometimes) from the web. This is the recommended way. In case you would like to compile required software yourself, the script will guide you through this process. Anyway, this is recommended only for advanced users, as compilation might sometimes be very tricky. Users of Mac OS~X can install those applications also using Homebrew (see \url{http://brew.sh/}). For compilation you need Apache Ant, GNU G++, GNU GCC, GIT, Java/OpenJDK, libpng developmental files, and zlib developmental files. Ensure you have those tools available -- they should be readily available for any UNIX-based operating system. Chapters~\ref{required-linux} and~\ref{required-mac} give details about requirements and their manual fulfilling. This is mainly a~reference for more advanced users or users with special needs. For most users it should be fully sufficient to run the script and let it do this job (see chapter~\ref{script-start} on page~\pageref{script-usage}).
 
-The following UNIX tools are required to run Sondovač. They are usually readily available in UNIX systems (but see note for Mac OS~X below), so there is usually no need to install them manually. The tools are \texttt{awk}, \texttt{bc}, \texttt{bunzip2}, \texttt{cat}, \texttt{cp}, \texttt{curl} or \texttt{wget}, \texttt{cut}, \texttt{dirname}, \texttt{echo}, \texttt{egrep}, \texttt{cd}, \texttt{g++}, \texttt{gcc}, \texttt{grep}, \texttt{gunzip}, \texttt{join}, \texttt{less}, \texttt{lsb$\_$release} or \texttt{python} (for Linux), \texttt{make}, \texttt{mkdir}, \texttt{perl}, \texttt{pkg-config}, \texttt{pwd}, \texttt{sed}, \texttt{sort}, \texttt{tar}, \texttt{tr}, \texttt{uname}, \texttt{uniq}, \texttt{unzip}, \texttt{wc}. Not all tools are required every time -- some are used only during particular actions (e.g. when the user decides to compile the required software manually). And the user usually does not need to bother about them. See also details in the following subchapters for some common Linux distributions and Mac OS~X.
+The following UNIX tools are required to run Sondovač. They are usually readily available in UNIX systems (but see note for Mac OS~X below), so there is usually no need to install them manually. The tools are \texttt{awk}, \texttt{bc}, \texttt{bunzip2}, \texttt{cat}, \texttt{cp}, \texttt{curl} or \texttt{wget}, \texttt{cut}, \texttt{dirname}, \texttt{dos2unix}, \texttt{echo}, \texttt{egrep}, \texttt{cd}, \texttt{g++}, \texttt{gcc}, \texttt{grep}, \texttt{gunzip}, \texttt{join}, \texttt{less}, \texttt{lsb$\_$release} or \texttt{python} (for Linux), \texttt{make}, \texttt{mkdir}, \texttt{paste}, \texttt{perl}, \texttt{pkg-config}, \texttt{pwd}, \texttt{sed}, \texttt{sort}, \texttt{tar}, \texttt{tr}, \texttt{uname}, \texttt{uniq}, \texttt{unzip}, \texttt{wc}. Not all tools are required every time -- some are used only during particular actions (e.g. when the user decides to compile the required software manually). And the user usually does not need to bother about them. See also details in the following subchapters for some common Linux distributions and Mac OS~X.
 
 See below for details about tools required by Sondovač and their manual installation. For most users it should be sufficient to be guided by the script to install needed tools automatically.
 
@@ -317,7 +317,8 @@ The script will guide the user through all those steps and basic usage of Homebr
   # Basic help
   brew help
   # Install UNIX tools required by Sondovač
-  brew install coreutils gnu-sed gawk grep bash pkg-config gcc make git ant wget
+  brew install coreutils gnu-sed gawk grep bash dos2unix pkg-config gcc make \
+    git ant wget
   # List of installed packages (brew formulae)
   brew list
   # Information about particular formula
@@ -718,7 +719,7 @@ See page~\pageref{pipeline-overview} and Figure~\ref{pipeline-workflow} for step
 
 \subsection{Input and output files}
 
-All names of input files and paths to them must be without spaces and without special characters (some software have difficulties to handle them). \textbf{Important note:} HTS data are big. The Sondovač pipeline is relatively long, and part \texttt{A} contains several format conversions and can (for some time) use dozens of GB of disk space. Temporal files without potential usefulness for the user are deleted at the end of the pipeline -- because those files may be useful for debugging if something would go wrong. For example, input data of \citet{Schmickl2016} are approximately 4.5~GB, and the overall output of part \texttt{A} of the script has about 28~GB, of which less then half is kept by the pipeline. This analysis took on i7 3.4~GHz CPU less than hour. Part \texttt{B} is very quick and does not consume a~significant amount of disk space.
+All names of input files and paths to them must be without spaces and without special characters (some software have difficulties to handle them). \textbf{Important note:} HTS data are big. The Sondovač pipeline is relatively long, and part \texttt{A} contains several format conversions and can (for some time) use dozens of GB of disk space. Temporal files without potential usefulness for the user are deleted at the end of the pipeline -- because those files may be useful for debugging if something would go wrong. For example, input data of \citet{Schmickl2016} are approximately 4.5~GB, and the overall output of part \texttt{A} of the script has about 28~GB, of which less then half is kept by the pipeline. This analysis took on i7 3.4~GHz CPU less than hour. Part \texttt{B} is very quick and does not consume a~significant amount of disk space. All input files \textit{must} have UNIX end of lines. The script checks for it and converts the files, if needed (using \texttt{dos2unix}; typically when user runs Geneious on Windows).
 
 \vspace{10pt}
 \textbf{Script \texttt{sondovac$\_$part$\_$a.sh} requires as input files:}
@@ -743,7 +744,7 @@ All names of input files and paths to them must be without spaces and without sp
   \item \texttt{*$\_$combined$\_$reads$\_$co$\_$cp$\_$no$\_$mt$\_$reads} -- Combined paired-end genome skim reads.
   \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data.pslx} -- Output of BLAT (ma\-tching of the unique transcripts and the filtered, combined genome skim reads sharing $\geq$85\% sequence similarity).
   \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data.fasta} -- Matching sequences in FASTA.
-  \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa} -- \textbf{Part~A, final FASTA sequences for usage in Geneious} (step 7, see chapter~\ref{geneious-usage} at page~\pageref{geneious-usage}, and page~\pageref{pipeline-overview}).
+  \item \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data-no$\_$missing$\_$fin.fsa} -- \textbf{Part A, final FASTA sequences for usage in Geneious} (step 7, see chapter~\ref{geneious-usage} at page~\pageref{geneious-usage}, and page~\pageref{pipeline-overview}).
 \end{enumerate}
 
 Files 1-10 are not necessary for further processing by this pipeline, but may be useful for the user. The last file (10) is used as input file for Geneious in the next step. An asterisk (*) denotes the beginning of the output files' names specified by the user with parameter \texttt{-o}. If the user does not select a~custom name, default value (\texttt{output}) will be used.
@@ -800,7 +801,7 @@ Import the output file of part A~of the script (\texttt{sondovac$\_$part$\_$a.sh
 
 Select the file and go to menu \textbf{Tools | Align / Assemble | De Novo Assemble}. In \textbf{Data} frame select \textbf{Assemble by 1st (\ldots) Underscore}. In \textbf{Method} frame select \textbf{Geneious Assembler} (if you don't have other assemblers, this option might be missing) and \textbf{Medium Sensitivity / Fast Sensitivity} (see Figure~\ref{geneious-assembly}).
 
-In \textbf{Results} frame check \textbf{Save assembly report}, \textbf{Save list of unused reads}, \textbf{Save in sub-folder}, \textbf{Save contigs} (do not check \textbf{Maximum}) and \textbf{Save consensus sequences}. Do not trim. Otherwise keep defaults. Run it. Geneious may warn about possible hanging because of big file size. Do not use Geneious for other tasks during the assembly. Running Geneious may take a~long time (see Figure~\ref{geneious-assembly}).
+In \textbf{Results} frame check \textbf{Save assembly report}, \textbf{Save list of unused reads}, \textbf{Save in sub-folder}, \textbf{Save contigs} (do not check \textbf{Maximum}) and \textbf{Save consensus sequences} (Click to \textit{Options} button next to this checkbox and click to \textit{Reset to defaults} -- \textbf{Save consensus used by assembler} must be selected.). Do not trim. Otherwise keep defaults. Run it. Geneious may warn about possible hanging because of big file size. Do not use Geneious for other tasks during the assembly. Running Geneious may take a~long time (see Figure~\ref{geneious-assembly}).
 
 \begin{figure}[htb]
   \begin{center}
@@ -890,7 +891,7 @@ If you have any question or you encounter some problem, please, see \url{https:/
 
 List of changes in released versions of Sondovač.
 
-\subsection{Version 1.0 regular release released 2016-01-11}
+\subsection{Version 1.0 regular release released 2016-01-12}
 
 \begin{itemize}
   \item Renaming of input FASTA sequences names is required - it ensures correct working of part B.
