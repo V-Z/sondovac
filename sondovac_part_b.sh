@@ -667,8 +667,16 @@ echo "  similarity"
 echo
 
 # Check for sequence similarity between the developed probe sequences with CD-HIT-EST
+
+# Clustering exons with 100% sequence identity
 echo "${CYAF}Checking sequence similarity between the developed probe sequences${NORM}"
-cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCDHIT -c $CDHITSIM
+cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIM_cluster_100.fasta -d 0 -c 1.0 -p 1 > $cluster_100_PROBEPRELIM_log.txt
+
+# Clustering and removing exons with more than 90% sequence identity
+cd-hit-est -i $PROBEPRELIM_cluster_100.fasta -o $PROBEPRELIM_cluster_90.fasta -d 0 -c 0.9 -p 1 -g 1 > $cluster_90_PROBEPRELIM_log.txt
+python grab_singleton_clusters.py -i $PROBEPRELIM_cluster_90.fasta.clstr -o $unique_PROBEPRELIM_cluster_90.fasta.clstr
+grep -v '>Cluster' $unique_PROBEPRELIM_cluster_90.fasta.clstr | cut -d' ' -f2 | sed -e 's/\.\.\./\\\>' -e 's/^/^/' > $unique_PROBEPRELIM
+grep -A1 -f $unique_PROBEPRELIM $PROBEPRELIM_cluster_100.fasta | sed '/^--$/d' > $unique_PROBEPRELIM.fasta
 
 # Step 10: Retention of those contigs that comprise exons ≥ bait length (default is 120 bp) and have a certain locus length
 
@@ -679,7 +687,7 @@ echo
 
 # One of the three outfiles is a FASTA file, it has to be converted to TAB
 echo "Converting FASTA to TAB"
-fasta2tab $PROBEPRELIMCDHIT $PROBEPRELIMCDHIT.txt || {
+fasta2tab $unique_PROBEPRELIM.fasta $PROBEPRELIMCDHIT.txt || {
   echo
   echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA to TAB failed. Aborting."
   echo "Check if file ${REDF}$PROBEPRELIMCDHIT${NORM} is correct FASTA file."
