@@ -556,23 +556,31 @@ grep 'Assembly\|Contig' $SEQUENCESTAB > $SEQUENCESTABASSE
 echo
 
 # Retention of those contigs that comprise exons ≥ bait length and have a certain total locus length.
-# Allowing the values 80, 100, 120 for bait / minimum exon length and 600, 720, 840, 960, 1080, 1200 for minimum total locus length.
+# Allowing the values 80, 100, 120 for bait / minimum exon length and 360, 480, 600, 720, 840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920, 2040 for minimum total locus length.
 
 echo "${CYAF}Number of assembled sequences:${NORM}"
 echo "Length of exons ≥${CYAF}$BAITL${NORM} bp."
-echo -e "${REDF}G${CYAF}enes of length${NORM}\t\t${REDF}T${CYAF}otal bp${NORM}\t${REDF}N${CYAF}umber of exons${NORM}"
-for LOCUSLENGTH in 0600 0720 0840 0960 1080 1200; do
+echo -e "${REDF}G${CYAF}enes of length${NORM}\t\t${REDF}T${CYAF}otal bp${NORM}\t${REDF}N${CYAF}umber of genes${NORM}"
+for LOCUSLENGTH in 0360 0480 0600 0720 0840 0960 1080 1200 1320 1440 1560 1680 1800 1920 2040; do
   LOCUSLENGTHN=$(expr $LOCUSLENGTH - 1)
   echo -e "≥$LOCUSLENGTH bp\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l)"
   done
 
 # Select the optimal minimum total locus length
 if [ "$STARTINI" == "I" ]; then
-  echo "${CYAF}Select minimum total locus length.${NORM} Possible values are ${REDF}600${NORM}, ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM} or ${REDF}1200${NORM}."
+  echo "${CYAF}Select minimum total locus length.${NORM} Possible values are ${REDF}360${NORM}, ${REDF}480${NORM}, ${REDF}600${NORM}, ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM}, ${REDF}1200${NORM}$, {REDF}1320${NORM}, ${REDF}1440${NORM}, ${REDF}1560${NORM}, ${REDF}1680${NORM}, ${REDF}1800${NORM}, ${REDF}1920${NORM} or ${REDF}2040${NORM}."
   read MINLOCUSLENGTHTEST
   while :
   do
     case "$MINLOCUSLENGTHTEST" in
+      360)
+	MINLOCUSLENGTH=360
+	break
+	;;
+      480)
+	MINLOCUSLENGTH=480
+	break
+	;;
       600)
 	MINLOCUSLENGTH=600
 	break
@@ -597,8 +605,36 @@ if [ "$STARTINI" == "I" ]; then
 	MINLOCUSLENGTH=1200
 	break
 	;;
+      1320)
+	MINLOCUSLENGTH=1320
+	break
+	;;
+      1440)
+	MINLOCUSLENGTH=1440
+	break
+	;;
+      1560)
+	MINLOCUSLENGTH=1560
+	break
+	;;
+      1680)
+	MINLOCUSLENGTH=1680
+	break
+	;;	
+      1800)
+	MINLOCUSLENGTH=1800
+	break
+	;;
+      1920)
+	MINLOCUSLENGTH=1920
+	break
+	;;
+      2040)
+	MINLOCUSLENGTH=2040
+	break
+	;;
       *)
-	echo "${CYAF}Wrong option.${NORM} Use ${REDF}600${NORM}, ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM} or ${REDF}1200${NORM}."
+	echo "${CYAF}Wrong option.${NORM} Use ${REDF}360${NORM}, ${REDF}480${NORM}, ${REDF}600${NORM}, ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM}, ${REDF}1200${NORM}$, {REDF}1320${NORM}, ${REDF}1440${NORM}, ${REDF}1560${NORM}, ${REDF}1680${NORM}, ${REDF}1800${NORM}, ${REDF}1920${NORM} or ${REDF}2040${NORM}."
 	read MINLOCUSLENGTHTEST
 	;;
       esac
@@ -672,8 +708,8 @@ echo
 echo "${CYAF}Checking sequence similarity between the developed probe sequences${NORM}"
 cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIM_cluster_100.fasta -d 0 -c 1.0 -p 1 > $cluster_100_PROBEPRELIM_log.txt
 
-# Clustering and removing exons with more than 90% sequence identity
-cd-hit-est -i $PROBEPRELIM_cluster_100.fasta -o $PROBEPRELIM_cluster_90.fasta -d 0 -c 0.9 -p 1 -g 1 > $cluster_90_PROBEPRELIM_log.txt
+# Clustering and removing exons with more than a certain sequence identity
+cd-hit-est -i $PROBEPRELIM_cluster_100.fasta -o $PROBEPRELIM_cluster_90.fasta -d 0 -c $CDHITSIM -p 1 -g 1 > $cluster_90_PROBEPRELIM_log.txt
 python grab_singleton_clusters.py -i $PROBEPRELIM_cluster_90.fasta.clstr -o $unique_PROBEPRELIM_cluster_90.fasta.clstr
 grep -v '>Cluster' $unique_PROBEPRELIM_cluster_90.fasta.clstr | cut -d' ' -f2 | sed -e 's/\.\.\./\\\>' -e 's/^/^/' > $unique_PROBEPRELIM
 grep -A1 -f $unique_PROBEPRELIM $PROBEPRELIM_cluster_100.fasta | sed '/^--$/d' > $unique_PROBEPRELIM.fasta
@@ -696,12 +732,12 @@ fasta2tab $unique_PROBEPRELIM.fasta $PROBEPRELIMCDHIT.txt || {
   }
 echo
 
-# Count all assemblies, comprised of putative exons ≥120 bp
-echo "${CYAF}Number of all assemblies, comprised of putative exons ≥$BAITL bp:${NORM}"
+# Count the exons of a certain minimum length (default ≥120 bp)
+echo "${CYAF}Number of exons of a minimum length ≥$BAITL bp:${NORM}"
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | awk '{s+=$2;c++}END{print s}'
 confirmgo
 
-# Count the assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
+# Count the exons making up genes of ≥600 bp, comprised of putative exons ≥120 bp
 echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}of the assemblies making up genes of ≥$MINLOCUSLENGTH bp,"
 echo "  comprised of ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}putative exons ≥${REDF}$BAITL${NORM} ${CYAF}bp${NORM}."
 
@@ -746,6 +782,20 @@ echo "${CYAF}Total number of base pairs:${NORM}"
 awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}'
 confirmgo
 
+# Calculation of the total number of exons
+echo "Calculating the total number of exons"
+wc -l $PROBESEQUENCESNUM
+  echo
+  exit 1
+  }
+
+# Calculation of the total number of genes
+echo "Calculating the total number of genes"
+echo
+echo "${CYAF}Total number of genes:${NORM}"
+echo -e "≥$LOCUSLENGTH bp\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l)"
+confirmgo
+
 echo "${REDF}${BOLD}Success!${NORM}"
 echo
 echo "${BLUF}================================================================================${NORM}"
@@ -757,19 +807,19 @@ confirmgo
 
 # Step 11 - removal of possible cpDNA sequences in final probe list
 
-echo "${REDF}Step 11 of the pipeline${NORM} - removal of probe sequences sharing ${CYAF}≥$BLATIDENT%${NORM} sequence"
+echo "${REDF}Step 11 of the pipeline${NORM} - detection of probe sequences sharing ${CYAF}≥$BLATIDENT%${NORM} sequence"
 echo "similarity with the plastome reference"
 echo
 
 # Remove remaining cp genes from probe set
-echo "${CYAF}Removing remaining plastid genes from probe set${NORM}"
+echo "${CYAF}Detecting remaining plastid genes from probe set${NORM}"
 blat -t=dna -q=dna -minIdentity=$BLATIDENT -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCESCP
 echo
 
 echo "${BLUF}================================================================================${NORM}"
 echo "File ${REDF}${BOLD}$PROBESEQUENCESCP${NORM}"
 echo "contains ${CYAF}possible plastid genes in final probe set${NORM}."
-echo "We recommend to remove those genes from final probe set in file"
+echo "We STRONGLY RECOMMEND to remove those genes from the final probe set in file"
 echo "${REDF}${BOLD}$PROBESEQUENCES${NORM}."
 echo "${BLUF}================================================================================${NORM}"
 confirmgo
