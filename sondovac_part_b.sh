@@ -73,10 +73,10 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       echo -e "\t\t  \"-minIdentity\" of BLAT, see its manual for details)."
       echo -e "\t\tDefault value: 90 (integer ranging from 85 to 95)."
       echo -e "\t${REDF}-k${NORM}\t${CYAF}Minimum total locus length.${NORM}"
-      echo -e "\t\tDefault value: 600. Allowed values are 600, 720, 840,"
-      echo -e "\t\t  960, 1080 and 1200. When running in interactive mode, the user"
+      echo -e "\t\tDefault value: 600. Allowed values are 360, 480, 600, 720, 840,"
+      echo -e "\t\t  960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 and 2040 . When running in interactive mode, the user"
       echo -e "\t\t  will be asked which value to use. A table summarizing the total"
-      echo -e "\t\t  number of LCN loci, which will be the result of the probe design"
+      echo -e "\t\t  number of LCN loci and the total number of base pairs, which will be the result of the probe design"
       echo -e "\t\t  for all minimum total locus lenghts that the user can select,"
       echo -e "\t\t  will be displayed to facilitate this choice."
       echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-b${NORM}, ${BOLD}-d${NORM} or ${BOLD}-y${NORM} are not provided, default values"
@@ -169,15 +169,24 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       MINLOCUSLENGTH=$OPTARG
       # Check if provided value makes sense
       case "$MINLOCUSLENGTH" in
+	360) MINLOCUSLENGTH=360;;
+	480) MINLOCUSLENGTH=480;;
 	600) MINLOCUSLENGTH=600;;
 	720) MINLOCUSLENGTH=720;;
 	840) MINLOCUSLENGTH=840;;
 	960) MINLOCUSLENGTH=960;;
 	1080) MINLOCUSLENGTH=1080;;
 	1200) MINLOCUSLENGTH=1200;;
+	1320) MINLOCUSLENGTH=1320;;
+	1440) MINLOCUSLENGTH=1440;;
+	1560) MINLOCUSLENGTH=1560;;
+	1680) MINLOCUSLENGTH=1680;;
+	1800) MINLOCUSLENGTH=1800;;
+	1920) MINLOCUSLENGTH=1920;;
+	2040) MINLOCUSLENGTH=2040;;
 	*) echo
-	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-k\" you did not provide any of values 600, 720, 840, 960,"
-	  echo "  1080 or 1200!"
+	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-k\" you did not provide any of values 360, 480, 600, 720, 840, 960,"
+	  echo "  1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040!"
 	  echo
 	  exit 1
 	esac
@@ -542,7 +551,7 @@ fasta2tab $SEQUENCES $SEQUENCESTAB || {
   }
 echo
 
-# Modify nams of FASTA sequences to ensure them to work correctly
+# Modify names of FASTA sequences to ensure them to work correctly
 echo "Checking and modifying FASTA sequence names"
 sed -i 's/:.*\t/\t/' $SEQUENCESTAB
 awk -F '[_\t]' '{ printf "%012d_", $1; print; }' $SEQUENCESTAB > $SEQUENCESTAB.temp
@@ -655,12 +664,12 @@ echo
 
 # Create the final FASTA file for the Hyb-Seq probes
 
-# Extract and sort the assemblies making up genes of ≥600 bp
+# Extract and sort the assemblies making up genes of a certain minimum total locus length
 echo "Extracting and sorting the assemblies making up genes of ≥$MINLOCUSLENGTH bp"
 sed 's/^/Assembly_/' $SEQUENCESPROBESLOCUSLENGTH | cut -f 1 -d " " | sort -k 1,1 > $SEQUENCESPROBESLOCUSLENGTHFORJOIN
 echo
 
-# Make a file with all exons ≥120 bp
+# Make a file with all exons of a certain minimum length
 echo "Selecting ≥${CYAF}$BAITL${NORM} bp exons"
 awk '{print $1"\t"length($2)"\t"$2}' $SEQUENCESTABASSE | awk '$2>'"$BAITLN"'' > $SEQUENCESTABASSEBAITL
 echo
@@ -670,7 +679,7 @@ echo "Sorting exons ≥${CYAF}$BAITL${NORM} bp"
 grep '[Cc]ontig' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*\([Cc]ontig_[[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT
 echo
 
-# Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
+# Make a file with all exons of a certain minimum length and making up genes of a certain minimum length
 echo "Selecting all exons ≥${CYAF}$BAITL${NORM} bp and all assemblies making up genes of ≥$MINLOCUSLENGTH bp"
 join $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITLSORT > $SEQUENCESPROBES120600FIN
 echo
@@ -706,9 +715,11 @@ echo
 
 # Clustering exons with 100% sequence identity
 echo "${CYAF}Checking sequence similarity between the developed probe sequences${NORM}"
+echo "${CYAF}Detecting identical probe sequences and retaining the longest probe sequence in such a case${NORM}"
 cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIM_cluster_100.fasta -d 0 -c 1.0 -p 1 > $cluster_100_PROBEPRELIM_log.txt
 
-# Clustering and removing exons with more than a certain sequence identity
+# Clustering and removing exons with more than a certain sequence similarity
+echo "${CYAF}Detecting and removing probe sequences that are similar to each other above a certain threshold${NORM}"
 cd-hit-est -i $PROBEPRELIM_cluster_100.fasta -o $PROBEPRELIM_cluster_90.fasta -d 0 -c $CDHITSIM -p 1 -g 1 > $cluster_90_PROBEPRELIM_log.txt
 python grab_singleton_clusters.py -i $PROBEPRELIM_cluster_90.fasta.clstr -o $unique_PROBEPRELIM_cluster_90.fasta.clstr
 grep -v '>Cluster' $unique_PROBEPRELIM_cluster_90.fasta.clstr | cut -d' ' -f2 | sed -e 's/\.\.\./\\\>' -e 's/^/^/' > $unique_PROBEPRELIM
@@ -743,22 +754,22 @@ echo "  comprised of ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.t
 
 confirmgo
 
-echo "Writing the assemblies into temporal file"
+echo "Writing the exons into temporal file"
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' > $PROBEPRELIMCDHIT2
 echo
 
-# Extract and sort the assemblies making up genes of ≥600 bp
-echo "Extracting and sorting the assemblies making up genes of ≥$MINLOCUSLENGTH bp"
+# Extract and sort the exons making up genes of a minimum total length
+echo "Extracting and sorting the exons making up genes of ≥$MINLOCUSLENGTH bp"
 sed 's/^/Assembly_/' $PROBEPRELIMCDHIT2 | cut -f 1 -d " " | sort -k 1,1 > $PROBEPRELIMFORJOIN
 echo
 
-# Modify the assembly number and sort
-echo "Modifying the assembly number and sorting"
+# Modify the exon number and sort
+echo "Modifying the exon number and sorting"
 sed 's/_C/\tC/' $PROBEPRELIMCDHIT.txt | sort -k 1,1 > $PROBEPRELIMSORT
 echo
 
-# Make a file with all exons ≥120 bp and all assemblies making up genes of ≥600 bp
-echo "Joining all exons ≥${CYAF}$BAITL${NORM} bp and all assemblies making up genes of ≥$MINLOCUSLENGTH bp"
+# Make a file with all exons of a certain minimum length and all exons making up genes of a minimum total length
+echo "Joining all exons ≥${CYAF}$BAITL${NORM} bp and all exons making up genes of ≥$MINLOCUSLENGTH bp"
 join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT > $PROBEPRELIMFIN
 echo
 
