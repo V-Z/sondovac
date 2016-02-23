@@ -74,11 +74,11 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       echo -e "\t\tDefault value: 90 (integer ranging from 85 to 95)."
       echo -e "\t${REDF}-k${NORM}\t${CYAF}Minimum total locus length.${NORM}"
       echo -e "\t\tDefault value: 600. Allowed values are 360, 480, 600, 720, 840,"
-      echo -e "\t\t  960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 and 2040 . When running in interactive mode, the user"
-      echo -e "\t\t  will be asked which value to use. A table summarizing the total"
-      echo -e "\t\t  number of LCN loci and the total number of base pairs, which will be the result of the probe design"
-      echo -e "\t\t  for all minimum total locus lenghts that the user can select,"
-      echo -e "\t\t  will be displayed to facilitate this choice."
+      echo -e "\t\t  960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 and 2040."
+      echo -e "\t\t  When running in interactive mode, the user will be asked"
+      echo -e "\t\t  which value to use. A table summarizing the total number"
+      echo -e "\t\t  ofLCN loci and the total number of base pairs for these"
+      echo -e "\t\t  valueswill be displayed to facilitate this choice."
       echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-b${NORM}, ${BOLD}-d${NORM} or ${BOLD}-y${NORM} are not provided, default values"
       echo -e "\t  are taken, and it is not possible to change them later (not even in"
       echo -e "\t  interactive mode)."
@@ -185,8 +185,8 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
 	1920) MINLOCUSLENGTH=1920;;
 	2040) MINLOCUSLENGTH=2040;;
 	*) echo
-	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-k\" you did not provide any of values 360, 480, 600, 720, 840, 960,"
-	  echo "  1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040!"
+	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-k\" you did not provide any of values 360, 480, 600, 720,"
+	  echo "  840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040!"
 	  echo
 	  exit 1
 	esac
@@ -564,8 +564,8 @@ echo "Separating assembled sequences"
 grep 'Assembly\|Contig' $SEQUENCESTAB > $SEQUENCESTABASSE
 echo
 
-# Retention of those contigs that comprise exons ≥ bait length and have a certain total locus length.
-# Allowing the values 80, 100, 120 for bait / minimum exon length and 360, 480, 600, 720, 840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920, 2040 for minimum total locus length.
+# Retention of those contigs that comprise exons ≥ bait length and have a certain total locus length
+# Allowing the values 80, 100, 120 for bait / minimum exon length and 360, 480, 600, 720, 840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920, 2040 for minimum total locus length
 
 echo "${CYAF}Number of assembled sequences:${NORM}"
 echo "Length of exons ≥${CYAF}$BAITL${NORM} bp."
@@ -577,7 +577,8 @@ for LOCUSLENGTH in 0360 0480 0600 0720 0840 0960 1080 1200 1320 1440 1560 1680 1
 
 # Select the optimal minimum total locus length
 if [ "$STARTINI" == "I" ]; then
-  echo "${CYAF}Select minimum total locus length.${NORM} Possible values are ${REDF}360${NORM}, ${REDF}480${NORM}, ${REDF}600${NORM}, ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM}, ${REDF}1200${NORM}$, {REDF}1320${NORM}, ${REDF}1440${NORM}, ${REDF}1560${NORM}, ${REDF}1680${NORM}, ${REDF}1800${NORM}, ${REDF}1920${NORM} or ${REDF}2040${NORM}."
+  echo "${CYAF}Select minimum total locus length.${NORM} Possible values are ${REDF}360${NORM}, ${REDF}480${NORM}, ${REDF}600${NORM},"
+  echo "  ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM}, ${REDF}1200${NORM}, ${REDF}1320${NORM}, ${REDF}1440${NORM}, ${REDF}1560${NORM}, ${REDF}1680${NORM}, ${REDF}1800${NORM}, ${REDF}1920${NORM} or ${REDF}2040${NORM}."
   read MINLOCUSLENGTHTEST
   while :
   do
@@ -629,7 +630,7 @@ if [ "$STARTINI" == "I" ]; then
       1680)
 	MINLOCUSLENGTH=1680
 	break
-	;;	
+	;;
       1800)
 	MINLOCUSLENGTH=1800
 	break
@@ -643,7 +644,8 @@ if [ "$STARTINI" == "I" ]; then
 	break
 	;;
       *)
-	echo "${CYAF}Wrong option.${NORM} Use ${REDF}360${NORM}, ${REDF}480${NORM}, ${REDF}600${NORM}, ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM}, ${REDF}1200${NORM}$, {REDF}1320${NORM}, ${REDF}1440${NORM}, ${REDF}1560${NORM}, ${REDF}1680${NORM}, ${REDF}1800${NORM}, ${REDF}1920${NORM} or ${REDF}2040${NORM}."
+	echo "${CYAF}Wrong option.${NORM} Use ${REDF}360${NORM}, ${REDF}480${NORM}, ${REDF}600${NORM}, ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM}, ${REDF}1200${NORM}, ${REDF}1320${NORM}, ${REDF}1440${NORM},"
+	echo "  ${REDF}1560${NORM}, ${REDF}1680${NORM}, ${REDF}1800${NORM}, ${REDF}1920${NORM} or ${REDF}2040${NORM}."
 	read MINLOCUSLENGTHTEST
 	;;
       esac
