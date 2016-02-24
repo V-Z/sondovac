@@ -406,7 +406,17 @@ SEQUENCESPROBES120600CONTIG="${OUTPUTFILENAME%.*}_probes_120-600bp_contig_fin.fa
 PROBEPRELIM0="${OUTPUTFILENAME%.*}_prelim_probe_seq0.fasta"
 # Preliminary probe sequences - corrected labels
 PROBEPRELIM="${OUTPUTFILENAME%.*}_prelim_probe_seq.fasta"
-# Sequence similarity checked by \"${REDF}CD-HIT${NORM}\" - temporary file - will be deleted
+# NOTE Clustered exons with 100% sequence identity
+PROBEPRELIMCLUSTER100="${OUTPUTFILENAME%.*}_prelim_probe_seq_cluster_100.fasta"
+# NOTE Clustered exons with more than a certain sequence similarity
+PROBEPRELIMCLUSTER90="${OUTPUTFILENAME%.*}_prelim_probe_seq_cluster_90.fasta"
+# NOTE Clustered exons with more than a certain sequence similarity (CLSTR file)
+UNIQUEPROBEPRELIMCLUSTER90="${OUTPUTFILENAME%.*}_unique_prelim_probe_seq_cluster_90.clstr"
+# NOTE Clustered and filtered exons with more than a certain sequence similarity (TXT file)
+UNIQUEPROBEPRELIM="${OUTPUTFILENAME%.*}_unique_prelim_probe_seq.txt"
+# NOTE Clustered and filtered exons with more than a certain sequence similarity (FASTA file)
+UNIQUEPROBEPRELIMF="${OUTPUTFILENAME%.*}_unique_prelim_probe_seq.fasta"
+# Sequence similarity checked by CD-HIT - temporary file - will be deleted
 PROBEPRELIMCDHIT="${OUTPUTFILENAME%.*}_sim_test.fasta"
 # Assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
 PROBEPRELIMCDHIT2="${OUTPUTFILENAME%.*}_similarity_test.fasta"
@@ -715,17 +725,20 @@ echo
 
 # Check for sequence similarity between the developed probe sequences with CD-HIT-EST
 
-# Clustering exons with 100% sequence identity
+# NOTE Clustering exons with 100% sequence identity
 echo "${CYAF}Checking sequence similarity between the developed probe sequences${NORM}"
 echo "${CYAF}Detecting identical probe sequences and retaining the longest probe sequence in such a case${NORM}"
-cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIM_cluster_100.fasta -d 0 -c 1.0 -p 1 > $cluster_100_PROBEPRELIM_log.txt
+echo
+cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCLUSTER100 -d 0 -c 1.0 -p 1 > $cluster_100_PROBEPRELIM_log.txt
 
-# Clustering and removing exons with more than a certain sequence similarity
+# NOTE Clustering and removing exons with more than a certain sequence similarity
+echo
 echo "${CYAF}Detecting and removing probe sequences that are similar to each other above a certain threshold${NORM}"
-cd-hit-est -i $PROBEPRELIM_cluster_100.fasta -o $PROBEPRELIM_cluster_90.fasta -d 0 -c $CDHITSIM -p 1 -g 1 > $cluster_90_PROBEPRELIM_log.txt
-python grab_singleton_clusters.py -i $PROBEPRELIM_cluster_90.fasta.clstr -o $unique_PROBEPRELIM_cluster_90.fasta.clstr
-grep -v '>Cluster' $unique_PROBEPRELIM_cluster_90.fasta.clstr | cut -d' ' -f2 | sed -e 's/\.\.\./\\\>' -e 's/^/^/' > $unique_PROBEPRELIM
-grep -A1 -f $unique_PROBEPRELIM $PROBEPRELIM_cluster_100.fasta | sed '/^--$/d' > $unique_PROBEPRELIM.fasta
+echo
+cd-hit-est -i $PROBEPRELIMCLUSTER100 -o $PROBEPRELIMCLUSTER90 -d 0 -c $CDHITSIM -p 1 -g 1 > $cluster_90_PROBEPRELIM_log.txt
+python $SCRIPTDIR/grab_singleton_clusters.py -i $PROBEPRELIMCLUSTER90.clstr -o $UNIQUEPROBEPRELIMCLUSTER90
+grep -v '>Cluster' $UNIQUEPROBEPRELIMCLUSTER90 | cut -d ' ' -f 2 | sed -e 's/\.\.\./\\\>' -e 's/^/^/' > $UNIQUEPROBEPRELIM
+grep -A 1 -f $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 | sed '/^--$/d' > $UNIQUEPROBEPRELIMF
 
 # Step 10: Retention of those contigs that comprise exons ≥ bait length (default is 120 bp) and have a certain locus length
 
@@ -734,12 +747,12 @@ echo "${REDF}Step 10 of the pipeline${NORM} - retention of those contigs that co
 echo "  length (${CYAF}$BAITL${NORM} bp) and have a certain locus length"
 echo
 
-# One of the three outfiles is a FASTA file, it has to be converted to TAB
+# NOTE One of the three outfiles is a FASTA file, it has to be converted to TAB
 echo "Converting FASTA to TAB"
-fasta2tab $unique_PROBEPRELIM.fasta $PROBEPRELIMCDHIT.txt || {
+fasta2tab $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT.txt || {
   echo
   echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA to TAB failed. Aborting."
-  echo "Check if file ${REDF}$PROBEPRELIMCDHIT${NORM} is correct FASTA file."
+  echo "Check if file ${REDF}$UNIQUEPROBEPRELIMF${NORM} is correct FASTA file."
   echo
   exit 1
   }
@@ -798,15 +811,13 @@ confirmgo
 # Calculation of the total number of exons
 echo "Calculating the total number of exons"
 wc -l $PROBESEQUENCESNUM
-  echo
-  exit 1
-  }
 
-# Calculation of the total number of genes
+# NOTE Calculation of the total number of genes
 echo "Calculating the total number of genes"
 echo
-echo "${CYAF}Total number of genes:${NORM}"
-echo -e "≥$LOCUSLENGTH bp\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l)"
+echo -e "${REDF}G${CYAF}enes of length${NORM}:\t≥$LOCUSLENGTH bp"
+echo -e "${REDF}T${CYAF}otal bp${NORM}:\t\t$(awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')"
+echo -e "${REDF}N${CYAF}umber of genes${NORM}:\t$(awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l)"
 confirmgo
 
 echo "${REDF}${BOLD}Success!${NORM}"
@@ -832,12 +843,12 @@ echo
 echo "${BLUF}================================================================================${NORM}"
 echo "File ${REDF}${BOLD}$PROBESEQUENCESCP${NORM}"
 echo "contains ${CYAF}possible plastid genes in final probe set${NORM}."
-echo "We STRONGLY RECOMMEND to remove those genes from the final probe set in file"
+echo "We ${REDF}STRONGLY RECOMMEND${NORM} to manually ${CYAF}remove those genes${NORM} from the final probe set in file"
 echo "${REDF}${BOLD}$PROBESEQUENCES${NORM}."
 echo "${BLUF}================================================================================${NORM}"
 confirmgo
 
-# Remove temporal files
+# NOTE Remove temporal files
 echo "Removing unneeded temporal files"
 rm $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM || {
   echo
@@ -850,7 +861,7 @@ rm $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESL
   confirmgo
   }
 
-# List kept files which user can use for another analysis
+# NOTE List kept files which user can use for another analysis
 echo
 echo "${CYAF}Following files are kept for possible later usage (see manual for details):${NORM}"
 echo "${BLUF}================================================================================${NORM}"
