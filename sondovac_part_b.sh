@@ -804,13 +804,10 @@ fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM || {
   }
 
 echo
-echo "${CYAF}Total number of base pairs:${NORM}"
-awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}'
-confirmgo
-
+echo "${CYAF}Total number of base pairs:${NORM} $(awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}')"
 # Calculation of the total number of exons
-echo "Calculating the total number of exons"
-wc -l $PROBESEQUENCESNUM
+echo "${CYAF}Total number of exons:${NORM} $(wc -l $PROBESEQUENCESNUM)"
+confirmgo
 
 # NOTE Calculation of the total number of genes
 echo "Calculating the total number of genes"
