@@ -77,8 +77,8 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       echo -e "\t\t  960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 and 2040."
       echo -e "\t\t  When running in interactive mode, the user will be asked"
       echo -e "\t\t  which value to use. A table summarizing the total number"
-      echo -e "\t\t  ofLCN loci and the total number of base pairs for these"
-      echo -e "\t\t  valueswill be displayed to facilitate this choice."
+      echo -e "\t\t  of LCN loci and the total number of base pairs for these"
+      echo -e "\t\t  values will be displayed to facilitate this choice."
       echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-b${NORM}, ${BOLD}-d${NORM} or ${BOLD}-y${NORM} are not provided, default values"
       echo -e "\t  are taken, and it is not possible to change them later (not even in"
       echo -e "\t  interactive mode)."
@@ -116,7 +116,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       ;;
     c)
       REFERENCECP=$OPTARG
-      echo "Plastom reference: ${REDF}$REFERENCECP${NORM}"
+      echo "Plastome reference: ${REDF}$REFERENCECP${NORM}"
       ;;
     x)
       TSVLIST=$OPTARG
@@ -157,7 +157,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       BLATIDENT=$OPTARG
       # Check if provided value makes sense
       if [[ "$BLATIDENT" =~ ^[0-9]+$ ]] && [ "$BLATIDENT" -ge 85 -a "$BLATIDENT" -le 95 ]; then
-	echo "BLAT score for identity between unique transcripts and genome skimming data: $BLATIDENT"
+	echo "BLAT score for similarity between unique transcripts and genome skim data: $BLATIDENT"
 	else
 	  echo
 	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-y\" you did not provide an integer of range from 85 to 95!"
@@ -288,8 +288,8 @@ function compilecdhit {
   echo "  (recommended, available for Linux and Mac OS X)."
   echo "Type \"${REDF}H${NORM}\" ${CYAF}for installation using Homebrew${NORM} (only for Mac OS X, recommended)."
   echo "  See \"${REDF}brew info homebrew/science/cd-hit${NORM}\" for more details."
-  echo "Type \"${REDF}M${NORM}\" ${CYAF}for manual installation${NORM} - script will exit and you will have to install"
-  echo "  \"CD-HIT\" yourselves."
+  echo "Type \"${REDF}M${NORM}\" ${CYAF}for manual installation${NORM} - script will exit, and you will have to install"
+  echo "  \"CD-HIT\" yourself."
   read CDHIT
   while :
   do
@@ -304,8 +304,8 @@ function compilecdhit {
 	$DOWNLOADER cd-hit-master.zip https://github.com/weizhongli/cdhit/archive/master.zip || {
 	  echo
 	  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download failed.${NORM} Please, go to"
-	  echo "  ${REDF}https://github.com/weizhongli/cdhit/releases/${NORM}"
-	  echo "  and download latest cd-hit-*.tar.gz and compile it manually."
+	  echo "  ${REDF}https://github.com/weizhongli/cdhit/releases/${NORM},"
+	  echo "  download latest cd-hit-*.tar.gz and compile it manually."
 	  echo
 	  exit 1
 	  }
@@ -352,7 +352,7 @@ function compilecdhit {
 	  ;;
       M|m)
 	echo
-	echo "Please, go to ${REDF}http://weizhongli-lab.org/cd-hit/${NORM} and install \"${REDF}CD-HIT${NORM}\" and ensure"
+	echo "Please, go to ${REDF}http://weizhongli-lab.org/cd-hit/${NORM}, install \"${REDF}CD-HIT${NORM}\" and ensure"
 	echo "  it is in ${BOLD}PATH${NORM}."
 	echo
 	exit
@@ -369,17 +369,17 @@ fi
 CHECKFILEREADOUT=""
 echo
 
-# Plastom reference in FASTA
+# Plastome reference in FASTA
 readinputfile -c "plastome reference sequence input file in FASTA format" $REFERENCECP
 REFERENCECP=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
-# Geneious output files are infiles here - consensus and unused sequences (TSV)
+# Geneious output files are input files here - consensus and unused sequences (TSV)
 readinputfile -x "input file in TSV format (output of Geneious assembly)" $TSVLIST
 TSVLIST=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
-# Geneious output files are infiles here - consensus and unused sequences (FASTA)
+# Geneious output files are input files here - consensus and unused sequences (FASTA)
 readinputfile -z "input file in FASTA format (output of Geneious assembly)" $SEQUENCES
 SEQUENCES=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
@@ -390,13 +390,13 @@ SEQUENCESTAB="${OUTPUTFILENAME%.*}.tab"
 SEQUENCESTABASSE="${OUTPUTFILENAME%.*}_assembled.tab"
 # Filtered probes - temporary file - will be deleted
 SEQUENCESPROBESLOCUSLENGTH="${OUTPUTFILENAME%.*}_probes_120-600bp.tab"
-# Numbers of usable contigs for joining - temporary file - will be deleted
+# List of usable contigs for joining - temporary file - will be deleted
 SEQUENCESPROBESLOCUSLENGTHFORJOIN="${OUTPUTFILENAME%.*}_probes_120-600bp_fin_for_join"
-# All exons ≥120 bp - temporary file - will be deleted
+# Exons of a certain minimum length - temporary file - will be deleted
 SEQUENCESTABASSEBAITL="${OUTPUTFILENAME%.*}_120bp_assembled_less_than_1kb_transcript_fin.tab"
-# Sorted exons ≥120 bp - temporary file - will be deleted
+# Sorted exons of a certain minimum length - temporary file - will be deleted
 SEQUENCESTABASSEBAITLSORT="${OUTPUTFILENAME%.*}_120bp_assembled_less_than_1kb_transcript_fin_sorted.tab"
-# Exons ≥120 bp and all assemblies making up genes of ≥600 bp - temporary file - will be deleted
+# Exons of a certain minimum length and exons making up genes of a certain minimum total locus length - temporary file - will be deleted
 SEQUENCESPROBES120600FIN="${OUTPUTFILENAME%.*}_probes_120-600bp_fin.tab"
 # Temporal files when converting from TAB to FASTA - temporary file - will be deleted
 SEQUENCESPROBES120600MODIF="${OUTPUTFILENAME%.*}_probes_120-600bp_modified_fin.tab"
@@ -406,36 +406,36 @@ SEQUENCESPROBES120600CONTIG="${OUTPUTFILENAME%.*}_probes_120-600bp_contig_fin.fa
 PROBEPRELIM0="${OUTPUTFILENAME%.*}_prelim_probe_seq0.fasta"
 # Preliminary probe sequences - corrected labels
 PROBEPRELIM="${OUTPUTFILENAME%.*}_prelim_probe_seq.fasta"
-# NOTE Clustered exons with 100% sequence identity
+# NOTE Unclustered exons and clustered exons with 100% sequence identity
 PROBEPRELIMCLUSTER100="${OUTPUTFILENAME%.*}_prelim_probe_seq_cluster_100.fasta"
-# NOTE Clustered exons with more than a certain sequence similarity
+# NOTE Unclustered exons and clustered exons with more than a certain sequence similarity
 PROBEPRELIMCLUSTER90="${OUTPUTFILENAME%.*}_prelim_probe_seq_cluster_90.fasta"
-# NOTE Clustered exons with more than a certain sequence similarity (CLSTR file)
+# NOTE Unclustered exons and clustered exons with more than a certain sequence similarity (CLSTR file)
 UNIQUEPROBEPRELIMCLUSTER90="${OUTPUTFILENAME%.*}_unique_prelim_probe_seq_cluster_90.clstr"
-# NOTE Clustered and filtered exons with more than a certain sequence similarity (TXT file)
+# NOTE List of unclustered exons / exons with less than a certain sequence similarity (TXT file)
 UNIQUEPROBEPRELIM="${OUTPUTFILENAME%.*}_unique_prelim_probe_seq.txt"
-# NOTE Clustered and filtered exons with more than a certain sequence similarity (FASTA file)
+# NOTE Unclustered exons / exons with less than a certain sequence similarity (FASTA file)
 UNIQUEPROBEPRELIMF="${OUTPUTFILENAME%.*}_unique_prelim_probe_seq.fasta"
 # Sequence similarity checked by CD-HIT - temporary file - will be deleted
-PROBEPRELIMCDHIT="${OUTPUTFILENAME%.*}_sim_test.fasta"
-# Assemblies making up genes of ≥600 bp, comprised of putative exons ≥120 bp
+PROBEPRELIMCDHIT="${OUTPUTFILENAME%.*}_sim_test.txt"
+# Exons of a certain minimum length making up genes of a certain minimum total locus length
 PROBEPRELIMCDHIT2="${OUTPUTFILENAME%.*}_similarity_test.fasta"
-# Extracted assemblies making up genes of ≥600 bp - temporary file - will be deleted
+# Extracted exons making up genes of a certain minimum total locus length - temporary file - will be deleted
 PROBEPRELIMFORJOIN="${OUTPUTFILENAME%.*}_similarity_test_assemblies_for_join"
-# Modified and sorted assemblies - temporary file - will be deleted
+# Modified and sorted exons - temporary file - will be deleted
 PROBEPRELIMSORT="${OUTPUTFILENAME%.*}_similarity_test_assemblies_sort.tab"
-# All exons ≥120 bp and all assemblies making up genes of ≥600 bp - temporary file - will be deleted
+# Exons of a certain minimum length and exons making up genes of a certain minimum total locus length - temporary file - will be deleted
 PROBEPRELIMFIN="${OUTPUTFILENAME%.*}_similarity_test_assemblies_fin.tab"
 # Probes in FASTA
 PROBESEQUENCES="${OUTPUTFILENAME%.*}_target_enrichment_probe_sequences.fasta"
 # Probes in tab - temporary file - will be deleted
 PROBESEQUENCESNUM="${OUTPUTFILENAME%.*}_target_enrichment_probe_sequences.tab"
-# Possible cpDNA genes in probe set
+# Putative cpDNA genes in probe set
 PROBESEQUENCESCP="${OUTPUTFILENAME%.*}_possible_cp_dna_genes_in_probe_set.pslx"
 
 # Assemble the obtained sequences in contigs
 
-# Step 8: Retention of those contigs that comprise exons ≥ bait length (default is 120 bp) and have a certain locus length
+# Step 8: Retention of those contigs that comprise exons ≥ bait length (default is 120 bp) and have a certain minimum total locus length
 
 # Check EOL of input files
 echo
@@ -445,25 +445,25 @@ eolcheck $SEQUENCES
 
 echo
 echo "${REDF}Step 8 of the pipeline${NORM} - retention of those contigs that comprise exons ≥ bait"
-echo "  length (${CYAF}$BAITL${NORM} bp) and have a certain locus length"
+echo "  length (${CYAF}$BAITL${NORM} bp) and have a certain minimum total locus length"
 
-# Check if TSV output of Geneious contains at least requested columns
+# Check if TSV output of Geneious contains at least required columns
 echo
 echo "Checking if ${REDF}$TSVLIST${NORM} has all required columns"
 REQUIREDCOLS="Required columns in `echo $TSVLIST` are \"`echo ${CYAF}`# Sequences`echo ${NORM}`\",\n  \"`echo ${CYAF}`% Pairwise Identity`echo ${NORM}`\", \"`echo ${CYAF}`Description`echo ${NORM}`\", \"`echo ${CYAF}`Mean Coverage`echo ${NORM}`\", \"`echo ${CYAF}`Name`echo ${NORM}`\"\n  and \"`echo ${CYAF}`Sequence Length`echo ${NORM}`\". Please, export the TSV file again."
 echo
 if grep -q "# Sequences" $TSVLIST; then
-    echo "Column \"${CYAF}# Sequences${NORM}\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+    echo "Column \"${CYAF}# Sequences${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
     if grep -q "Pairwise Identity" $TSVLIST; then
-      echo "Column \"${CYAF}Pairwise Identity${NORM}\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+      echo "Column \"${CYAF}Pairwise Identity${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
       if grep -q "Description" $TSVLIST; then
-	echo "Column \"${CYAF}Description${NORM}\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+	echo "Column \"${CYAF}Description${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
 	if grep -q "Mean Coverage" $TSVLIST; then
-	  echo "Column \"${CYAF}Mean Coverage${NORM}\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+	  echo "Column \"${CYAF}Mean Coverage${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
 	  if grep -q "Name" $TSVLIST; then
-	    echo "Column \"${CYAF}Name${NORM}\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+	    echo "Column \"${CYAF}Name${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
 	    if grep -q "Sequence Length" $TSVLIST; then
-	      echo "Column \"${CYAF}Sequence Length${NORM}\" is presented in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+	      echo "Column \"${CYAF}Sequence Length${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
 	    else
 	      echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Sequence Length${NORM}\" is missing!"
 	      echo -e "$REQUIREDCOLS"
@@ -554,15 +554,15 @@ confirmgo
 echo "Converting FASTA to TAB"
 fasta2tab $SEQUENCES $SEQUENCESTAB || {
   echo
-  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA into TAB failed.${NORM} Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA to TAB failed.${NORM} Aborting."
   echo "Check if file ${REDF}$SEQUENCES${NORM} is correct FASTA file."
   echo
   exit 1
   }
 echo
 
-# Modify names of FASTA sequences to ensure them to work correctly
-echo "Checking and modifying FASTA sequence names"
+# Modify labels of FASTA sequences to ensure them to work correctly
+echo "Checking and modifying FASTA sequence labels"
 sed -i 's/:.*\t/\t/' $SEQUENCESTAB
 awk -F '[_\t]' '{ printf "%012d_", $1; print; }' $SEQUENCESTAB > $SEQUENCESTAB.temp
 mv $SEQUENCESTAB.temp $SEQUENCESTAB
@@ -574,7 +574,7 @@ echo "Separating assembled sequences"
 grep 'Assembly\|Contig' $SEQUENCESTAB > $SEQUENCESTABASSE
 echo
 
-# Retention of those contigs that comprise exons ≥ bait length and have a certain total locus length
+# Retention of those contigs that comprise exons ≥ bait length and have a certain minimum total locus length
 # Allowing the values 80, 100, 120 for bait / minimum exon length and 360, 480, 600, 720, 840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920, 2040 for minimum total locus length
 
 echo "${CYAF}Number of assembled sequences:${NORM}"
@@ -666,18 +666,18 @@ echo
 echo "${CYAF}Total locus length${NORM} is set to ${REDF}$MINLOCUSLENGTH bp${NORM}."
 echo
 
-# Variable to calculate with minimal locus length
+# Variable to calculate with minimal total locus length
 MINLOCUSLENGTHN=$(expr $MINLOCUSLENGTH - 1)
 
-# Saving sequences with selected length
+# Saving sequences with selected minimum total locus length
 echo "Saving sequences of selected length (≥$MINLOCUSLENGTH bp)"
 awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' > $SEQUENCESPROBESLOCUSLENGTH
 echo
 
 # Create the final FASTA file for the Hyb-Seq probes
 
-# Extract and sort the assemblies making up genes of a certain minimum total locus length
-echo "Extracting and sorting the assemblies making up genes of ≥$MINLOCUSLENGTH bp"
+# Extract and sort the exons making up genes of a certain minimum total length
+echo "Extracting and sorting the exons making up genes of ≥$MINLOCUSLENGTH bp"
 sed 's/^/Assembly_/' $SEQUENCESPROBESLOCUSLENGTH | cut -f 1 -d " " | sort -k 1,1 > $SEQUENCESPROBESLOCUSLENGTHFORJOIN
 echo
 
@@ -725,26 +725,26 @@ echo
 
 # Check for sequence similarity between the developed probe sequences with CD-HIT-EST
 
-# NOTE Clustering exons with 100% sequence identity
-echo "${CYAF}Checking sequence similarity between the developed probe sequences${NORM}"
-echo "${CYAF}Detecting identical probe sequences and retaining the longest probe sequence in such a case${NORM}"
+# NOTE Clustering exons with 100% sequence identity: retaining unclustered exons and, in case of 100% sequence identity, retaining the longest exon
+echo "${CYAF}Checking sequence similarity between the probe sequences (exons)${NORM}"
+echo "${CYAF}Detecting identical probe sequences and retaining the longest one in such a case. Retaining also the unclustered probe sequences.${NORM}"
 echo
 cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCLUSTER100 -d 0 -c 1.0 -p 1 > $cluster_100_PROBEPRELIM_log.txt
 
 # NOTE Clustering and removing exons with more than a certain sequence similarity
 echo
-echo "${CYAF}Detecting and removing probe sequences that are similar to each other above a certain threshold${NORM}"
+echo "${CYAF}Detecting and removing probe sequences (exons) that are similar to each other above a certain threshold${NORM}"
 echo
 cd-hit-est -i $PROBEPRELIMCLUSTER100 -o $PROBEPRELIMCLUSTER90 -d 0 -c $CDHITSIM -p 1 -g 1 > $cluster_90_PROBEPRELIM_log.txt
 python $SCRIPTDIR/grab_singleton_clusters.py -i $PROBEPRELIMCLUSTER90.clstr -o $UNIQUEPROBEPRELIMCLUSTER90
 grep -v '>Cluster' $UNIQUEPROBEPRELIMCLUSTER90 | cut -d ' ' -f 2 | sed -e 's/\.\.\./\\\>' -e 's/^/^/' > $UNIQUEPROBEPRELIM
 grep -A 1 -f $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 | sed '/^--$/d' > $UNIQUEPROBEPRELIMF
 
-# Step 10: Retention of those contigs that comprise exons ≥ bait length (default is 120 bp) and have a certain locus length
+# Step 10: Retention of those probe sequences that comprise exons of a certain minimum length (default is 120 bp) and have a certain minimum total locus length
 
 echo
-echo "${REDF}Step 10 of the pipeline${NORM} - retention of those contigs that comprise exons ≥ bait"
-echo "  length (${CYAF}$BAITL${NORM} bp) and have a certain locus length"
+echo "${REDF}Step 10 of the pipeline${NORM} - retention of those probe sequences that comprise exons of a certain minimum"
+echo "  length (${CYAF}$BAITL${NORM} bp) and have a certain minimum total locus length"
 echo
 
 # NOTE One of the three outfiles is a FASTA file, it has to be converted to TAB
@@ -763,7 +763,7 @@ echo "${CYAF}Number of exons of a minimum length ≥$BAITL bp:${NORM}"
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | awk '{s+=$2;c++}END{print s}'
 confirmgo
 
-# Count the exons making up genes of ≥600 bp, comprised of putative exons ≥120 bp
+# Count the exons of a certain minimum length making up genes of a certain minimum length
 echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}of the assemblies making up genes of ≥$MINLOCUSLENGTH bp,"
 echo "  comprised of ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}putative exons ≥${REDF}$BAITL${NORM} ${CYAF}bp${NORM}."
 
@@ -783,8 +783,8 @@ echo "Modifying the exon number and sorting"
 sed 's/_C/\tC/' $PROBEPRELIMCDHIT.txt | sort -k 1,1 > $PROBEPRELIMSORT
 echo
 
-# Make a file with all exons of a certain minimum length and all exons making up genes of a minimum total length
-echo "Joining all exons ≥${CYAF}$BAITL${NORM} bp and all exons making up genes of ≥$MINLOCUSLENGTH bp"
+# Make a file with all exons of a certain minimum length making up genes of a certain minimum total length
+echo "Joining all exons ≥${CYAF}$BAITL${NORM} bp and making up genes of ≥$MINLOCUSLENGTH bp"
 join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT > $PROBEPRELIMFIN
 echo
 
@@ -805,7 +805,9 @@ fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM || {
 
 echo
 echo "${CYAF}Total number of base pairs:${NORM} $(awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}')"
-# Calculation of the total number of exons
+
+# NOTE Calculation of the total number of exons
+echo "Calculating the total number of exons"
 echo "${CYAF}Total number of exons:${NORM} $(wc -l $PROBESEQUENCESNUM)"
 confirmgo
 
@@ -826,7 +828,7 @@ echo "${CYAF}This file contains the probe sequences.${NORM}"
 echo "${BLUF}================================================================================${NORM}"
 confirmgo
 
-# Step 11 - removal of possible cpDNA sequences in final probe list
+# Step 11 - removal of putative cpDNA sequences in final probe list
 
 echo "${REDF}Step 11 of the pipeline${NORM} - detection of probe sequences sharing ${CYAF}≥$BLATIDENT%${NORM} sequence"
 echo "similarity with the plastome reference"
@@ -839,8 +841,8 @@ echo
 
 echo "${BLUF}================================================================================${NORM}"
 echo "File ${REDF}${BOLD}$PROBESEQUENCESCP${NORM}"
-echo "contains ${CYAF}possible plastid genes in final probe set${NORM}."
-echo "We ${REDF}STRONGLY RECOMMEND${NORM} to manually ${CYAF}remove those genes${NORM} from the final probe set in file"
+echo "contains ${CYAF}putative plastid genes in final probe set${NORM}."
+echo "We ${REDF}STRONGLY RECOMMEND${NORM} to ${CYAF}remove those genes${NORM} from the final probe set in file"
 echo "${REDF}${BOLD}$PROBESEQUENCES${NORM}."
 echo "${BLUF}================================================================================${NORM}"
 confirmgo
@@ -864,9 +866,9 @@ echo "${CYAF}Following files are kept for possible later usage (see manual for d
 echo "${BLUF}================================================================================${NORM}"
 echo "${CYAF}1)${NORM} Preliminary probe sequences:"
 echo "${REDF}$PROBEPRELIM${NORM}"
-echo "${CYAF}2)${NORM} Contigs comprising exons ≥ bait length and have a certain total locus length:"
+echo "${CYAF}2)${NORM} Contigs comprising exons ≥ bait length and have a certain minimum total locus length:"
 echo "${REDF}$PROBEPRELIMCDHIT2${NORM}"
-echo "${CYAF}3)${NORM} Possible plastid genes in final probe set:"
+echo "${CYAF}3)${NORM} Putative plastid genes in final probe set:"
 echo "${REDF}$PROBESEQUENCESCP${NORM}"
 echo "${CYAF}4)${NORM} Final probe sequences in FASTA format:"
 echo "${REDF}$PROBESEQUENCES${NORM}"
