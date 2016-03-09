@@ -921,12 +921,31 @@ function eolcheck {
   if awk '/\r$/{exit 0;} 1{exit 1;}' $1; then
     echo "Input file ${REDF}$1${NORM} ${CYAF}has DOS end of lines.${NORM}"
     echo "It will be converted into UNIX end of lines"
-    dos2unix $1
+    dos2unix $1 || {
+      echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion to UNIX EOL failed.${NORM} Aborting."
+      echo "  Check if ${REDF}$1${NORM} is valid file."
+      echo
+      exit 1
+      }
     echo
     else
       echo "Input file ${REDF}$1${NORM} ${CYAF}has UNIX end of lines.${NORM} ${GREF}OK.${NORM}"
       echo
     fi
+  }
+
+# Function to convert interleaved FASTA into non-interleaved (if necessary)
+# $1 is input FASTA file provided by the user, $2 is output non-interleaved FASTA file
+function noninterleavedfasta {
+  echo "Converting possibly interleaved FASTA file ${REDF}$1${NORM}"
+  echo "  into non-interleaved FASTA file ${REDF}$2${NORM}"
+  { awk 'BEGIN{RS=">"}NR>1{sub("\n","\t");gsub("\n",""); print RS$0}' $1 | sed 's/\t/\n/g' > $2; } || {
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of ${REDF}$1${NORM}. Aborting"
+    echo " Check if ${REDF}$1${NORM} is correct FASTA file."
+    echo
+    exit 1
+    }
+  echo
   }
 
 # Function to compile BLAT

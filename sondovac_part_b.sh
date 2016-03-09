@@ -42,8 +42,10 @@ OUTPUTFILENAME="output"
 
 # Create empty variables for file names
 REFERENCECP=""
+REFERENCECP0=""
 TSVLIST=""
 SEQUENCES=""
+SEQUENCES0=""
 
 # Parse initial arguments
 while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
@@ -251,6 +253,9 @@ checktools cat
 # Check if BLAT is available
 checkblat
 
+# Check if Python is available
+checktools python
+
 # Function to compile CD-HIT
 function compilecdhit {
   {
@@ -370,8 +375,8 @@ CHECKFILEREADOUT=""
 echo
 
 # Plastome reference in FASTA
-readinputfile -c "plastome reference sequence input file in FASTA format" $REFERENCECP
-REFERENCECP=$CHECKFILEREADOUT
+readinputfile -c "plastome reference sequence input file in FASTA format" $REFERENCECP0
+REFERENCECP0=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
 # Geneious output files are input files here - consensus and unused sequences (TSV)
@@ -380,10 +385,20 @@ TSVLIST=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
 # Geneious output files are input files here - consensus and unused sequences (FASTA)
-readinputfile -z "input file in FASTA format (output of Geneious assembly)" $SEQUENCES
-SEQUENCES=$CHECKFILEREADOUT
+readinputfile -z "input file in FASTA format (output of Geneious assembly)" $SEQUENCES0
+SEQUENCES0=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
 
+# Input - reference genome - cpDNA
+echo "Input file: ${REDF}$REFERENCECP0${NORM}"
+# Input - reference genome - cpDNA - checked not to be interleaved - temporary file - will be deleted
+REFERENCECP="${REFERENCECP0%.*}_non-interleaved.fasta"
+# Input - Geneious output file in TSV
+echo "Input file: ${REDF}$TSVLIST${NORM}"
+# Input - Geneious output file in FASTA
+echo "Input file: ${REDF}$SEQUENCES0${NORM}"
+# Input - Geneious output file in FASTA - checked not to be interleaved - temporary file - will be deleted
+SEQUENCES="${SEQUENCES0%.*}_non-interleaved.fasta"
 # Sequences converted from FASTA to tabular format - temporary file - will be deleted
 SEQUENCESTAB="${OUTPUTFILENAME%.*}.tab"
 # Assembled sequences in TSV - temporary file - will be deleted
@@ -406,15 +421,15 @@ SEQUENCESPROBES120600CONTIG="${OUTPUTFILENAME%.*}_probes_120-600bp_contig_fin.fa
 PROBEPRELIM0="${OUTPUTFILENAME%.*}_prelim_probe_seq0.fasta"
 # Preliminary probe sequences - corrected labels
 PROBEPRELIM="${OUTPUTFILENAME%.*}_prelim_probe_seq.fasta"
-# NOTE Unclustered exons and clustered exons with 100% sequence identity
+# Unclustered exons and clustered exons with 100% sequence identity
 PROBEPRELIMCLUSTER100="${OUTPUTFILENAME%.*}_prelim_probe_seq_cluster_100.fasta"
-# NOTE Unclustered exons and clustered exons with more than a certain sequence similarity
+# Unclustered exons and clustered exons with more than a certain sequence similarity - temporary file - will be deleted
 PROBEPRELIMCLUSTER90="${OUTPUTFILENAME%.*}_prelim_probe_seq_cluster_90.fasta"
-# NOTE Unclustered exons and clustered exons with more than a certain sequence similarity (CLSTR file)
+# Unclustered exons and clustered exons with more than a certain sequence similarity (CLSTR file) - temporary file - will be deleted
 UNIQUEPROBEPRELIMCLUSTER90="${OUTPUTFILENAME%.*}_unique_prelim_probe_seq_cluster_90.clstr"
-# NOTE List of unclustered exons / exons with less than a certain sequence similarity (TXT file)
+# List of unclustered exons / exons with less than a certain sequence similarity (TXT file) - temporary file - will be deleted
 UNIQUEPROBEPRELIM="${OUTPUTFILENAME%.*}_unique_prelim_probe_seq.txt"
-# NOTE Unclustered exons / exons with less than a certain sequence similarity (FASTA file)
+# Unclustered exons / exons with less than a certain sequence similarity (FASTA file)
 UNIQUEPROBEPRELIMF="${OUTPUTFILENAME%.*}_unique_prelim_probe_seq.fasta"
 # Sequence similarity checked by CD-HIT - temporary file - will be deleted
 PROBEPRELIMCDHIT="${OUTPUTFILENAME%.*}_sim_test.txt"
@@ -439,11 +454,18 @@ PROBESEQUENCESCP="${OUTPUTFILENAME%.*}_possible_cp_dna_genes_in_probe_set.pslx"
 
 # Check EOL of input files
 echo
-eolcheck $REFERENCECP
+eolcheck $REFERENCECP0
 eolcheck $TSVLIST
-eolcheck $SEQUENCES
+eolcheck $SEQUENCES0
 
+# Check if FASTA input files are non-interleaved (required) - if not, FASTA input file converted
 echo
+echo "Checking if input FASTA files are non-interleaved (required) - interleaved"
+echo "  FASTA files are converted not to be interleaved"
+echo
+noninterleavedfasta $REFERENCECP0 $REFERENCECP
+noninterleavedfasta $SEQUENCES0 $SEQUENCES
+
 echo "${REDF}Step 8 of the pipeline${NORM} - retention of those contigs that comprise exons ≥ bait"
 echo "  length (${CYAF}$BAITL${NORM} bp) and have a certain minimum total locus length"
 
@@ -713,8 +735,8 @@ cat $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG > $PROBEPRELIM0
 echo "Ensuring all sequences have correct labels"
 sed 's/^>[^0123456789]*\([[:digit:]]\{12\}\)[^0123456789]*\([[:digit:]]\{1,\}\)[^0123456789]*\([[:digit:]]\{1,\}\)$/>Assembly_\1_Contig_\2_\3/' $PROBEPRELIM0 > $PROBEPRELIM
 echo
-echo "${CYAF}Preliminary probe sequences saved${NORM} as ${REDF}$PROBEPRELIM${NORM}"
-echo "  for possible later usage."
+echo "${CYAF}Preliminary probe sequences${NORM} saved as"
+echo "  ${REDF}$PROBEPRELIM${NORM} for possible later usage."
 confirmgo
 
 # Step 9: Make the final quality control of the probe sequences
@@ -725,30 +747,44 @@ echo
 
 # Check for sequence similarity between the developed probe sequences with CD-HIT-EST
 
-# NOTE Clustering exons with 100% sequence identity: retaining unclustered exons and, in case of 100% sequence identity, retaining the longest exon
+# Clustering exons with 100% sequence identity: retaining unclustered exons and, in case of 100% sequence identity, retaining the longest exon
 echo "${CYAF}Checking sequence similarity between the probe sequences (exons)${NORM}"
-echo "${CYAF}Detecting identical probe sequences and retaining the longest one in such a case. Retaining also the unclustered probe sequences.${NORM}"
+echo "  Detecting identical probe sequences and retaining the longest one in such a"
+echo "  case. Retaining also the unclustered probe sequences."
 echo
-cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCLUSTER100 -d 0 -c 1.0 -p 1 > $cluster_100_PROBEPRELIM_log.txt
+cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCLUSTER100 -d 0 -c 1.0 -p 1
+echo
+echo "Clustered exons with 100% sequence identity saved as"
+echo "${REDF}$PROBEPRELIMCLUSTER100${NORM} for possible later usage."
+confirmgo
 
-# NOTE Clustering and removing exons with more than a certain sequence similarity
+
+# Clustering and removing exons with more than a certain sequence similarity
+echo "${CYAF}Detecting and removing probe sequences (exons)${NORM} that are similar to each other"
+echo "  above a certain threshold"
 echo
-echo "${CYAF}Detecting and removing probe sequences (exons) that are similar to each other above a certain threshold${NORM}"
+cd-hit-est -i $PROBEPRELIMCLUSTER100 -o $PROBEPRELIMCLUSTER90 -d 0 -c $CDHITSIM -p 1 -g 1
 echo
-cd-hit-est -i $PROBEPRELIMCLUSTER100 -o $PROBEPRELIMCLUSTER90 -d 0 -c $CDHITSIM -p 1 -g 1 > $cluster_90_PROBEPRELIM_log.txt
+# Finding those clusters from a CD-HIT .clstr file that include only one sequence or multiple sequences with 100% identity (in which case the longest sequence is choosen)
 python $SCRIPTDIR/grab_singleton_clusters.py -i $PROBEPRELIMCLUSTER90.clstr -o $UNIQUEPROBEPRELIMCLUSTER90
+echo
+echo "Postprocessing extracted sequences"
 grep -v '>Cluster' $UNIQUEPROBEPRELIMCLUSTER90 | cut -d ' ' -f 2 | sed -e 's/\.\.\./\\\>' -e 's/^/^/' > $UNIQUEPROBEPRELIM
 grep -A 1 -f $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 | sed '/^--$/d' > $UNIQUEPROBEPRELIMF
+echo
+echo "Postprocessed extracted sequences were saved as"
+echo "${REDF}$UNIQUEPROBEPRELIMF${NORM} for possible later usage."
+confirmgo
+
 
 # Step 10: Retention of those probe sequences that comprise exons of a certain minimum length (default is 120 bp) and have a certain minimum total locus length
 
-echo
-echo "${REDF}Step 10 of the pipeline${NORM} - retention of those probe sequences that comprise exons of a certain minimum"
-echo "  length (${CYAF}$BAITL${NORM} bp) and have a certain minimum total locus length"
+echo "${REDF}Step 10 of the pipeline${NORM} - retention of those probe sequences that comprise exons"
+echo "  of a certain minimum length (${CYAF}$BAITL${NORM} bp) and have a certain minimum total locus length"
 echo
 
-# NOTE One of the three outfiles is a FASTA file, it has to be converted to TAB
-echo "Converting FASTA to TAB"
+# One of the three outfiles of last steps of part 9 is a FASTA file, it has to be converted to TAB
+echo "Converting FASTA from step 9 to TAB"
 fasta2tab $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT.txt || {
   echo
   echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA to TAB failed. Aborting."
@@ -766,7 +802,6 @@ confirmgo
 # Count the exons of a certain minimum length making up genes of a certain minimum length
 echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}of the assemblies making up genes of ≥$MINLOCUSLENGTH bp,"
 echo "  comprised of ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}putative exons ≥${REDF}$BAITL${NORM} ${CYAF}bp${NORM}."
-
 confirmgo
 
 echo "Writing the exons into temporal file"
@@ -805,13 +840,14 @@ fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM || {
 
 echo
 echo "${CYAF}Total number of base pairs:${NORM} $(awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}')"
+echo
 
-# NOTE Calculation of the total number of exons
+# Calculation of the total number of exons
 echo "Calculating the total number of exons"
 echo "${CYAF}Total number of exons:${NORM} $(wc -l $PROBESEQUENCESNUM)"
 confirmgo
 
-# NOTE Calculation of the total number of genes
+# Calculation of the total number of genes
 echo "Calculating the total number of genes"
 echo
 echo -e "${REDF}G${CYAF}enes of length${NORM}:\t≥$LOCUSLENGTH bp"
@@ -847,30 +883,36 @@ echo "${REDF}${BOLD}$PROBESEQUENCES${NORM}."
 echo "${BLUF}================================================================================${NORM}"
 confirmgo
 
-# NOTE Remove temporal files
+# Remove temporal files
 echo "Removing unneeded temporal files"
-rm $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM || {
+rm $REFERENCECP0 $SEQUENCES0 $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM || {
   echo
   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
-  echo "\"$SEQUENCESTAB\", \"$SEQUENCESTABASSE\", \"$SEQUENCESPROBESLOCUSLENGTH\","
-  echo "\"$SEQUENCESPROBESLOCUSLENGTHFORJOIN\", \"$SEQUENCESTABASSEBAITL\", \"$SEQUENCESTABASSEBAITLSORT\","
-  echo "\"$SEQUENCESPROBES120600FIN\", \"$SEQUENCESPROBES120600MODIF\", \"$SEQUENCESPROBES120600ASSEM\","
-  echo "\"$SEQUENCESPROBES120600CONTIG\", \"$PROBEPRELIMCDHIT\", \"$PROBEPRELIMFORJOIN\","
-  echo "\"$PROBEPRELIMSORT\", \"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESNUM\"."
+  echo "  \"$REFERENCECP0\", \"$SEQUENCES0\", \"$SEQUENCESTAB\","
+  echo "  \"$SEQUENCESTABASSE\", \"$SEQUENCESPROBESLOCUSLENGTH\",\"$SEQUENCESPROBESLOCUSLENGTHFORJOIN\","
+  echo "  \"$SEQUENCESTABASSEBAITL\", \"$SEQUENCESTABASSEBAITLSORT\",\"$SEQUENCESPROBES120600FIN\","
+  echo "  \"$SEQUENCESPROBES120600MODIF\", \"$SEQUENCESPROBES120600ASSEM\", \"$SEQUENCESPROBES120600CONTIG\","
+  echo "  \"$PROBEPRELIM0\", \"$PROBEPRELIMCLUSTER90\", \"$UNIQUEPROBEPRELIMCLUSTER90\","
+  echo "  \"$UNIQUEPROBEPRELIM\", \"$PROBEPRELIMCDHIT\", \"$PROBEPRELIMFORJOIN\","
+  echo "  \"$PROBEPRELIMSORT\", \"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESNUM\"."
   confirmgo
   }
 
-# NOTE List kept files which user can use for another analysis
+# List kept files which user can use for another analysis
 echo
 echo "${CYAF}Following files are kept for possible later usage (see manual for details):${NORM}"
 echo "${BLUF}================================================================================${NORM}"
 echo "${CYAF}1)${NORM} Preliminary probe sequences:"
 echo "${REDF}$PROBEPRELIM${NORM}"
-echo "${CYAF}2)${NORM} Contigs comprising exons ≥ bait length and have a certain minimum total locus length:"
+echo "${CYAF}2)${NORM} Unclustered exons and clustered exons with 100% sequence identity:"
+echo "${REDF}$PROBEPRELIMCLUSTER100${NORM}"
+echo "${CYAF}3)${NORM} Unclustered exons / exons with less than a certain sequence similarity:"
+echo "${REDF}$UNIQUEPROBEPRELIMF${NORM}"
+echo "${CYAF}4)${NORM} Contigs comprising exons ≥ bait length having a certain minimum total locus length:"
 echo "${REDF}$PROBEPRELIMCDHIT2${NORM}"
-echo "${CYAF}3)${NORM} Putative plastid genes in final probe set:"
+echo "${CYAF}5)${NORM} Putative plastid genes in final probe set:"
 echo "${REDF}$PROBESEQUENCESCP${NORM}"
-echo "${CYAF}4)${NORM} Final probe sequences in FASTA format:"
+echo "${CYAF}6)${NORM} Final probe sequences in FASTA format:"
 echo "${REDF}$PROBESEQUENCES${NORM}"
 echo "${BLUF}================================================================================${NORM}"
 confirmgo

@@ -26,3 +26,4 @@ pkg-config
 realpath
 wget
 dos2unix
+python
