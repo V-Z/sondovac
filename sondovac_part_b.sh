@@ -132,66 +132,66 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       BAITL=$OPTARG
       # Check if provided value makes sense
       case "$BAITL" in
-	80) BAITL=80;;
-	100) BAITL=100;;
-	120) BAITL=120;;
-	*) echo
-	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-b\" you did not provide any of values 80, 100 or 120!"
-	  echo
-	  exit 1
-	esac
+        80) BAITL=80;;
+        100) BAITL=100;;
+        120) BAITL=120;;
+        *) echo
+        echo "${REDF}${BOLD}Error!${NORM} For parameter \"-b\" you did not provide any of values 80, 100 or 120!"
+        echo
+        exit 1
+        esac
       echo "Bait length: ${REDF}$BAITL${NORM}"
       ;;
     d)
       CDHITSIM=$OPTARG
       # Check if provided value makes sense
       if [ "$(echo 0.85 '<=' $CDHITSIM | bc -l)" = 1 ] && [ "$(echo $CDHITSIM '<=' 0.95 | bc -l)" = 1 ]; then
-	echo "Sequence similarity: $CDHITSIM"
-	else
-	  echo
-	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-d\" you did not provide decimal number ranging from 0.85"
-	  echo "  to 0.95!"
-	  echo
-	  exit 1
-	fi
+        echo "Sequence similarity: $CDHITSIM"
+        else
+        echo
+        echo "${REDF}${BOLD}Error!${NORM} For parameter \"-d\" you did not provide decimal number ranging from 0.85"
+        echo "  to 0.95!"
+        echo
+        exit 1
+        fi
       ;;
     y)
       BLATIDENT=$OPTARG
       # Check if provided value makes sense
       if [[ "$BLATIDENT" =~ ^[0-9]+$ ]] && [ "$BLATIDENT" -ge 85 -a "$BLATIDENT" -le 95 ]; then
-	echo "BLAT score for similarity between unique transcripts and genome skim data: $BLATIDENT"
-	else
-	  echo
-	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-y\" you did not provide an integer of range from 85 to 95!"
-	  echo
-	  exit 1
-	fi
+        echo "BLAT score for similarity between unique transcripts and genome skim data: $BLATIDENT"
+        else
+        echo
+        echo "${REDF}${BOLD}Error!${NORM} For parameter \"-y\" you did not provide an integer of range from 85 to 95!"
+        echo
+        exit 1
+        fi
       ;;
     k)
       MINLOCUSLENGTH=$OPTARG
       # Check if provided value makes sense
       case "$MINLOCUSLENGTH" in
-	360) MINLOCUSLENGTH=360;;
-	480) MINLOCUSLENGTH=480;;
-	600) MINLOCUSLENGTH=600;;
-	720) MINLOCUSLENGTH=720;;
-	840) MINLOCUSLENGTH=840;;
-	960) MINLOCUSLENGTH=960;;
-	1080) MINLOCUSLENGTH=1080;;
-	1200) MINLOCUSLENGTH=1200;;
-	1320) MINLOCUSLENGTH=1320;;
-	1440) MINLOCUSLENGTH=1440;;
-	1560) MINLOCUSLENGTH=1560;;
-	1680) MINLOCUSLENGTH=1680;;
-	1800) MINLOCUSLENGTH=1800;;
-	1920) MINLOCUSLENGTH=1920;;
-	2040) MINLOCUSLENGTH=2040;;
-	*) echo
-	  echo "${REDF}${BOLD}Error!${NORM} For parameter \"-k\" you did not provide any of values 360, 480, 600, 720,"
-	  echo "  840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040!"
-	  echo
-	  exit 1
-	esac
+        360) MINLOCUSLENGTH=360;;
+        480) MINLOCUSLENGTH=480;;
+        600) MINLOCUSLENGTH=600;;
+        720) MINLOCUSLENGTH=720;;
+        840) MINLOCUSLENGTH=840;;
+        960) MINLOCUSLENGTH=960;;
+        1080) MINLOCUSLENGTH=1080;;
+        1200) MINLOCUSLENGTH=1200;;
+        1320) MINLOCUSLENGTH=1320;;
+        1440) MINLOCUSLENGTH=1440;;
+        1560) MINLOCUSLENGTH=1560;;
+        1680) MINLOCUSLENGTH=1680;;
+        1800) MINLOCUSLENGTH=1800;;
+        1920) MINLOCUSLENGTH=1920;;
+        2040) MINLOCUSLENGTH=2040;;
+        *) echo
+        echo "${REDF}${BOLD}Error!${NORM} For parameter \"-k\" you did not provide any of values 360, 480, 600, 720,"
+        echo "  840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040!"
+        echo
+        exit 1
+        esac
       echo "Minimum exon length: ${REDF}$MINLOCUSLENGTH${NORM}"
       ;;
     ?)
@@ -450,8 +450,6 @@ PROBESEQUENCESCP="${OUTPUTFILENAME%.*}_possible_cp_dna_genes_in_probe_set.pslx"
 
 # Assemble the obtained sequences in contigs
 
-# Step 8: Retention of those contigs that comprise exons ≥ bait length (default is 120 bp) and have a certain minimum total locus length
-
 # Check EOL of input files
 echo
 eolcheck $REFERENCECP0
@@ -465,6 +463,8 @@ echo "  FASTA files are converted not to be interleaved"
 echo
 noninterleavedfasta $REFERENCECP0 $REFERENCECP
 noninterleavedfasta $SEQUENCES0 $SEQUENCES
+
+# Step 8: Retention of those contigs that comprise exons ≥ bait length (default is 120 bp) and have a certain minimum total locus length
 
 echo "${REDF}Step 8 of the pipeline${NORM} - retention of those contigs that comprise exons ≥ bait"
 echo "  length (${CYAF}$BAITL${NORM} bp) and have a certain minimum total locus length"
@@ -584,16 +584,26 @@ fasta2tab $SEQUENCES $SEQUENCESTAB || {
 echo
 
 # Modify labels of FASTA sequences to ensure them to work correctly
-echo "Checking and modifying FASTA sequence labels"
-sed -i 's/:.*\t/\t/' $SEQUENCESTAB
-awk -F '[_\t]' '{ printf "%012d_", $1; print; }' $SEQUENCESTAB > $SEQUENCESTAB.temp
-mv $SEQUENCESTAB.temp $SEQUENCESTAB
-sed -i 's/_[[:digit:]]\+//' $SEQUENCESTAB
+{ echo "Checking and modifying FASTA sequence labels" &&
+sed -i 's/:.*\t/\t/' $SEQUENCESTAB &&
+awk -F '[_\t]' '{ printf "%012d_", $1; print; }' $SEQUENCESTAB > $SEQUENCESTAB.temp &&
+mv $SEQUENCESTAB.temp $SEQUENCESTAB &&
+sed -i 's/_[[:digit:]]\+//' $SEQUENCESTAB; } || {
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Modifications of FASTA labels failed.${NORM} Aborting."
+    echo "Check if ${REDF}$SEQUENCESTAB${NORM} is correct file."
+    echo
+    exit 1
+    }
 echo
 
 # Separate the assembled sequences
 echo "Separating assembled sequences"
-grep 'Assembly\|Contig' $SEQUENCESTAB > $SEQUENCESTABASSE
+grep 'Assembly\|Contig' $SEQUENCESTAB > $SEQUENCESTABASSE || {
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Separation of assembled sequences failed.${NORM} Aborting."
+    echo "Check if ${REDF}$SEQUENCESTAB${NORM} is correct file."
+    echo
+    exit 1
+    }
 echo
 
 # Retention of those contigs that comprise exons ≥ bait length and have a certain minimum total locus length
