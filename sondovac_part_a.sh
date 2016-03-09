@@ -1104,7 +1104,7 @@ echo "Input file: ${REDF}$INPUTFQ1${NORM}"
 echo "Input file: ${REDF}$INPUTFQ2${NORM}"
 # cpDNA reads mapped to reference - temporary file - will be deleted
 BOWTIE2CP="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_reads.sam"
-# SAM converted into BAM (removal of reads of plastid origin)
+# SAM converted into BAM (removal of reads of plastid origin) - temporary file - will be deleted
 CPBAM="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_reads.bam"
 # Genome skim data without cpDNA reads
 FASTQNOCP="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_reads"
@@ -1116,7 +1116,7 @@ if [ -n "$REFERENCEMT" ]; then
 REFERENCEMT2="${OUTPUTFILENAME%.*}.mt"
 # mtDNA reads mapped to reference - temporary file - will be deleted
 BOWTIE2MT="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads.sam"
-# SAM converted into BAM (removal of reads of mitochondrial origin)
+# SAM converted into BAM (removal of reads of mitochondrial origin) - temporary file - will be deleted
 MTBAM="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads.bam"
 # Genome skim data without mtDNA reads
 FASTQNOMT="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads"
@@ -1316,9 +1316,7 @@ samtools view -bT $REFERENCECP $BOWTIE2CP > $CPBAM || {
   echo
   exit 1
   }
-echo "${CYAF}Converted BAM file saved${NORM} as"
-echo "  ${REDF}$CPBAM${NORM} for possible later usage."
-confirmgo
+echo
 
 # Remove the cpDNA reads with bam2fastq
 echo "${CYAF}Removing cpDNA reads. This may take longer time.${NORM}"
@@ -1375,9 +1373,7 @@ if [ -n "$REFERENCEMT" ]; then
     echo
     exit 1
     }
-  echo "${CYAF}Converted file saved${NORM} as"
-  echo "  ${REDF}$MTBAM${NORM} for possible later usage."
-  confirmgo
+  echo
 
   # Remove the mtDNA reads with bam2fastq
   echo "${CYAF}Removing mtDNA reads. This may take longer time.${NORM}"
@@ -1555,24 +1551,26 @@ grep -v n $TABREMOVED | awk '{print $1"\t"length($2)}' | awk '{s+=$2;a++}END{pri
 echo
 echo "Removing unneeded temporal files"
 if [ -n "$REFERENCEMT" ]; then
-  rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $REFERENCEMT2* $BOWTIE2MT $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
+  rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $CPBAM $REFERENCEMT2* $BOWTIE2MT $MTBAM $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
     echo
     echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
     echo "\"$UNIQUELIST\", \"$INPUTTAB\", \"$SORTEDINPUT\","
     echo "\"$JOINEDTS\", \"$JOINEDTABS\", \"$REFERENCECP2*\","
-    echo "\"$BOWTIE2CP\", \"$REFERENCEMT2*\", \"$BOWTIE2MT\","
-    echo "\"$FLASHOUT.extendedFrags.fastq\", \"$TAB\", \"$TABLIST\","
-    echo "\"$TABBLAT\" and \"$TABREMOVED\"."
+    echo "\"$BOWTIE2CP\", \"$CPBAM\", \"$REFERENCEMT2*\","
+    echo "\"$BOWTIE2MT\", \"$CPBAM\", \"$FLASHOUT.extendedFrags.fastq\","
+    echo "\"$TAB\", \"$TABLIST\",, \"$TABBLAT\" and"
+    echo "\"$TABREMOVED\"."
     confirmgo
     }
   else
-    rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
+    rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $CPBAM $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
       echo
       echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
       echo "\"$UNIQUELIST\", \"$INPUTTAB\", \"$SORTEDINPUT\","
       echo "\"$JOINEDTS\", \"$JOINEDTABS\", \"$REFERENCECP2*\","
-      echo "\"$BOWTIE2CP\", \"$FLASHOUT.extendedFrags.fastq\", \"$TAB\","
-      echo "\"$TABLIST\", \"$TABBLAT\" and \"$TABREMOVED\"."
+      echo "\"$BOWTIE2CP\", \"$CPBAM\", \"$FLASHOUT.extendedFrags.fastq\","
+      echo "\"$TAB\", \"$TABLIST\", \"$TABBLAT\" and"
+      echo "\"$TABREMOVED\"."
       confirmgo
       }
   fi
@@ -1582,29 +1580,25 @@ echo
 echo "${CYAF}Following files are kept for possible later usage (see manual for details):${NORM}"
 echo "${BLUF}================================================================================${NORM}"
 if [ -n "$REFERENCEMT" ]; then
-  echo "${CYAF}1)${NORM}  List of old names of FASTA sequences in ${REDF}$INPUTFILE0${NORM} and"
-  echo "    renamed FASTA sequences in ${REDF}$INPUTFILE${NORM}:"
+  echo "${CYAF}1)${NORM} List of old names of FASTA sequences in ${REDF}$INPUTFILE0${NORM} and"
+  echo "   renamed FASTA sequences in ${REDF}$INPUTFILE${NORM}:"
   echo "${REDF}$TRANSCRIPTOMEFASTANAMES${NORM}"
-  echo "${CYAF}2)${NORM}  Output of BLAT (removal of transcripts sharing ≥90% sequence similarity):"
+  echo "${CYAF}2)${NORM} Output of BLAT (removal of transcripts sharing ≥90% sequence similarity):"
   echo "${REDF}$BLATOUT${NORM}"
-  echo "${CYAF}3)${NORM}  Unique transcripts in FASTA format:"
+  echo "${CYAF}3)${NORM} Unique transcripts in FASTA format:"
   echo "${REDF}$JOINEDFA${NORM}"
-  echo "${CYAF}4)${NORM}  SAM converted to BAM (removal of reads of plastid origin):"
-  echo "${REDF}$CPBAM${NORM}"
-  echo "${CYAF}5)${NORM}  Genome skim data without cpDNA reads:"
+  echo "${CYAF}4)${NORM} Genome skim data without cpDNA reads:"
   ls $FASTQNOCP*
-  echo "${CYAF}6)${NORM}  SAM converted to BAM (removal of reads of mitochondrial origin):"
-  echo "${REDF}$MTBAM${NORM}"
-  echo "${CYAF}7)${NORM}  Genome skim data without mtDNA reads:"
+  echo "${CYAF}5)${NORM} Genome skim data without mtDNA reads:"
   ls $FASTQNOMT*
-  echo "${CYAF}8)${NORM}  Combined paired-end genome skim reads:"
+  echo "${CYAF}6)${NORM} Combined paired-end genome skim reads:"
   echo "${REDF}$FLASHOUT.extendedFrags.fa${NORM}"
-  echo "${CYAF}9)${NORM}  Output of BLAT (matching of the unique transcripts and the filtered,"
-  echo "    combined genome skim reads sharing ≥85% sequence similarity):"
+  echo "${CYAF}7)${NORM} Output of BLAT (matching of the unique transcripts and the filtered,"
+  echo "   combined genome skim reads sharing ≥85% sequence similarity):"
   echo "${REDF}$BLATOUTFIN${NORM}"
-  echo "${CYAF}10)${NORM} Matching sequences in FASTA:"
+  echo "${CYAF}8)${NORM} Matching sequences in FASTA:"
   echo "${REDF}$BLATOUTFIN2${NORM}"
-  echo "${CYAF}11)${NORM} Final FASTA sequences for usage in Geneious:"
+  echo "${CYAF}9)${NORM} Final FASTA sequences for usage in Geneious:"
   echo "${REDF}$FINALA${NORM}"
   else
     echo "${CYAF}1)${NORM}  List of old names of FASTA sequences in ${REDF}$INPUTFILE0${NORM} and"
@@ -1614,18 +1608,16 @@ if [ -n "$REFERENCEMT" ]; then
     echo "${REDF}$BLATOUT${NORM}"
     echo "${CYAF}3)${NORM} Unique transcripts in FASTA format:"
     echo "${REDF}$JOINEDFA${NORM}"
-    echo "${CYAF}4)${NORM} SAM converted to BAM (removal of reads of plastid origin):"
-    echo "${REDF}$CPBAM${NORM}"
-    echo "${CYAF}5)${NORM} Genome skim data without cpDNA reads:"
+    echo "${CYAF}4)${NORM} Genome skim data without cpDNA reads:"
     ls $FASTQNOCP*
-    echo "${CYAF}6)${NORM} Combined paired-end genome skim reads:"
+    echo "${CYAF}5)${NORM} Combined paired-end genome skim reads:"
     echo "${REDF}$FLASHOUT.extendedFrags.fa${NORM}"
-    echo "${CYAF}7)${NORM} Output of BLAT (matching of the unique transcripts and the filtered,"
+    echo "${CYAF}6)${NORM} Output of BLAT (matching of the unique transcripts and the filtered,"
     echo "   combined genome skim reads sharing ≥85% sequence similarity):"
     echo "${REDF}$BLATOUTFIN${NORM}"
-    echo "${CYAF}8)${NORM} Matching sequences in FASTA:"
+    echo "${CYAF}7)${NORM} Matching sequences in FASTA:"
     echo "${REDF}$BLATOUTFIN2${NORM}"
-    echo "${CYAF}9)${NORM} Final FASTA sequences for usage in Geneious:"
+    echo "${CYAF}8)${NORM} Final FASTA sequences for usage in Geneious:"
     echo "${REDF}$FINALA${NORM}"
   fi
 echo "${BLUF}================================================================================${NORM}"
