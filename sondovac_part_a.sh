@@ -95,7 +95,7 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
       echo "${REDF}$0${NORM} ${CYAF}-i${NORM}"
       echo "Specify some of required input files, otherwise run interactively:"
       echo "${REDF}$0${NORM} ${CYAF}-i -f${NORM} input.fa ${CYAF}-t${NORM} reads1.fastq ${CYAF}-q${NORM} reads2.fastq"
-      echo "Running in non-interactive, automated way:"
+      echo "Running in non-interactive, automated mode:"
       echo "${REDF}$0${NORM} ${CYAF}-n -f${NORM} input.fa ${CYAF}-c${NORM} referencecp.fa ${CYAF}-m${NORM} referencemt.fa ${CYAF}-t${NORM} reads1.fastq ${CYAF}-q${NORM} reads2.fastq"
       echo "Modify parameter ${BOLD}-a${NORM}, otherwise run interactively:"
       echo "${REDF}$0${NORM} ${CYAF}-i -a${NORM} 300"

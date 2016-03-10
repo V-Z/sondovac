@@ -7,12 +7,14 @@ transcriptome and genome skim data for target enrichment.
 Version 1.1 regular release released 2016-03-
 ================================================================================
 
-* Checking if input FASTA files are interleaved or not (required) and if 
+* Checking if input FASTA files are interleaved or not (required) and, if 
   needed, FASTA files are converted not to be interleaved.
 * Added requirement of Python.
 * Removed BAM files (part A) - they are not kept anymore.
-* Language checking of documentation.
-* 
+* Language checking and enhancements of documentation.
+* Modified CD-HIT-EST.
+* Improved summary of the probe design in part B.
+* Various smaller fixes.
 
 
 Version 1.0 regular release released 2016-01-12
@@ -62,7 +64,7 @@ Version 0.9 beta released 2015-10-23
 * Support for RedHat based Linux distributions - Fedora, Centos and Scientific
   Linux and derivatives.
 * Better compilation and installation of required software.
-* For downloading automatically select if to use wget (preferred) or curl.
+* For downloading automatically select whether to use wget (preferred) or curl.
 * Various fixes.
 
 

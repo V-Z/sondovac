@@ -1,4 +1,4 @@
-Sondovač 1.0 Install instructions
+Sondovač 1.1 Install instructions
 
 Sondovač is a script to create orthologous low-copy nuclear probes from 
 transcriptome and genome skim data for target enrichment.
@@ -16,7 +16,7 @@ Linux, alternatively Mac OS X) equipped with BASH or compatible shell
 interpreter (this should by default be available for any Linux distribution, 
 Mac OS X and any other UNIX-based operating system like Solaris, BSD and its 
 variants etc). You should use the current operating system version supported by 
-upstream. Otherwise we will not be able to help you in case of problems. Older 
+upstream, otherwise we will not be able to help you in case of problems. Older 
 operating systems can have different versions of shell and system libraries, 
 which can cause various problems and incompatibilities.
 
@@ -29,14 +29,14 @@ you have those packages installed (in current versions), ensure their binaries
 are in PATH. This should not be a problem for basic tools available in any 
 UNIX-based operating system, as basic installation usually contains all needed 
 tools. If you lack some of the required tools, the script will notify you, and 
-you will have to install them manually. If this will be needed, check the 
+you will have to install them manually. If this is needed, check the 
 documentation for your operating system.
 
-If required scientific programs are not installed, Sondovač will offer you 
+If required programs are not installed, Sondovač will offer you 
 installation. You can use precompiled binaries available together with the 
-script (this is the recommended option) or (sometimes) from the web. This 
-is the recommended way. In case you would like to compile required software 
-yourself, the script will guide you through this process. Anyway, this is 
+script (this is the recommended option) or (sometimes) from the web.
+In case you wish to compile the required software 
+yourself, the script will guide you through this process. This is 
 recommended only for advanced users, as compilation might sometimes be very 
 tricky. Users of Mac OS X can install those applications also using Homebrew 
 (see http://brew.sh/). For compilation you need Apache Ant, GNU G++, GNU GCC, 
@@ -70,9 +70,9 @@ For Mac OS X users, Homebrew (http://brew.sh/) will be installed by the script,
 and it will install (new software or newer versions) Apache Ant, BASH (the 
 shell interpreter), GNU AWK, GNU coreutils, GNU GCC, git, GNU grep, GNU make, 
 pkg-config, GNU sed, and wget. Mac OS X is missing some tools and for others 
-(typically sed, grep or awk) contains too old BSD versions. The script will 
-guide the user through the process, and if the  user would wish, it is possible 
-safely and easily remove these tools afterwards.
+(typically sed, grep or awk) contains outdated BSD versions. The script will 
+guide the user through the process, and it is possible to safely and easily 
+remove these tools afterwards if the user wishes to do so.
 
 See the PDF manual for details about tools required by Sondovač and their 
 manual installation. For most users it should be sufficient to be guided 
@@ -109,7 +109,7 @@ Specify some of the required input files, otherwise run interactively:
 
   ./sondovac_part_a.sh -i -f input.fa -t reads1.fastq -q reads2.fastq
 
-Running in non-interactive, automated way (parameter "-n", see README) with 
+Running in non-interactive, automated mode (parameter "-n", see README) with 
 example data downloaded from https://github.com/V-Z/sondovac/wiki/Sample-data:
 
   ./sondovac_part_a.sh -f input1_JHCN_Oxalis_corniculata_transcriptome_data.fa \
@@ -134,16 +134,16 @@ need to be specified explicitly:
 
   ./sondovac_part_a.sh -s 950
 
-We recommend to launch Sondovač at least for the first time in an interactive 
+We recommend launching Sondovač at least for the first time in interactive 
 mode, so that the script will verify all requirements and install missing tools 
-when needed. We then recommend to use non-interactive mode for routine usage.
+when needed. Non-interactive mode is recommended for routine usage.
 
 
 Help for usage of terminal
 ================================================================================
 
-If you are not familiar with the usage of command line, see some basic tutorial 
-first. You can try some of those:
+If you are not familiar with the usage of command line, familiarise yourself 
+with some basic tutorials first. You can try some of these:
 
 * https://activedoc.opensuse.org/book/opensuse-start-up/chapter-17-shell-basics
 * https://help.ubuntu.com/community/UsingTheTerminal
@@ -167,7 +167,7 @@ details):
 3) Final probes are produced by sondovac_part_b.sh.
 
 For part (2) of the script the user must have Geneious. We plan to replace it 
-by some free open-source command line tool in some future release of Sondovač. 
+with a free open-source command line tool in a future release of Sondovač. 
 Visit http://www.geneious.com/ for download, purchase, installation and usage 
 of Geneious.
 

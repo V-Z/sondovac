@@ -1,8 +1,8 @@
 # Functions required by probe design script
 
 # Version of the script
-SCRIPTVERSION=1.0
-RELEASEDATE=2016-01-12
+SCRIPTVERSION=1.1
+RELEASEDATE=2016-03-
 # Web page of the script
 WEB="https://github.com/V-Z/sondovac/"
 
@@ -940,7 +940,7 @@ function noninterleavedfasta {
   echo "Converting possibly interleaved FASTA file ${REDF}$1${NORM}"
   echo "  into non-interleaved FASTA file ${REDF}$2${NORM}"
   { awk 'BEGIN{RS=">"}NR>1{sub("\n","\t");gsub("\n",""); print RS$0}' $1 | sed 's/\t/\n/g' > $2; } || {
-    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of ${REDF}$1${NORM}. Aborting"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA failed. Aborting"
     echo " Check if ${REDF}$1${NORM} is correct FASTA file."
     echo
     exit 1
@@ -1189,5 +1189,11 @@ function readinputfile {
 # $1 is input file in FASTA, $2 output file in TAB
 function fasta2tab {
   #awk '/>/{if (x)print x;x="";}{x=(!x)?$0:x"\t"$0;}END{print x;}' $1 | sed 's/>[[:blank:]]*/>/g' | sed 's/[[:blank:]]+/ /g' | tr "\n" "\t" | sed 's/\t>/\n>/g' | sed 's/^>//g' | sed 's/[[:blank:]]*$//g' > $2
-  sed 's/[[:blank:]]\{1,\}/_/g' $1 | awk '/>/{if (x)print x;x="";}{x=(!x)?$0:x"\t"$0;}END{print x;}' | sed 's/^>//g' > $2
+  sed 's/[[:blank:]]\{1,\}/_/g' $1 | awk '/>/{if (x)print x;x="";}{x=(!x)?$0:x"\t"$0;}END{print x;}' | sed 's/^>//g' > $2 || {
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA to TAB (TSV) failed.${NORM} Aborting"
+    echo " Check if ${REDF}$1${NORM} is correct FASTA file."
+    echo
+    exit 1
+    }
+  echo
   }
