@@ -192,9 +192,14 @@ The success of the probe design in terms of a high number of LCN genes of a suff
 
 These aspects influence the number of probe sequences and the proportion of paralogous loci among the probe sequences. The usage of a transcriptome and genome skim data of \textbf{diploid} accessions is strongly recommended in order to account for orthology of the probe sequences. An example of how one aspect, the number of nuclear genome skim reads, can affect the probe design, is shown in Table~\ref{summary-lcn-examples} and Figure~\ref{seq-div-examples}.
 
-\begin{longtable}{ >{\centering\arraybackslash}m{1.8cm} >{\centering\arraybackslash}m{6.6cm} >{\centering\arraybackslash}m{2.5cm} >{\centering\arraybackslash}m{3.3cm}}
+\begin{longtable}{ | >{\centering\arraybackslash}m{1.8cm} >{\centering\arraybackslash}m{6.6cm} >{\centering\arraybackslash}m{2.5cm} >{\centering\arraybackslash}m{3.3cm} |}
 \caption[Summary of two examples of a LCN probe design with Sondovač.]{Summary of two examples of a LCN probe design with Sondovač. The \textit{Oxalis} example is from \citet{Schmickl2016}, the \textit{Curcuma} example is unpublished data from Tomáš Fér and Roswitha Schmickl. The respective Sondovač steps are listed; see Figure~\ref{pipeline-workflow} for details regarding these steps. For both probe designs 250~bp paired-end reads were utilized. Input files are given in \texttt{typewriter} font. Quality control of the genome skim data, which is not part of Sondovač, is colored in \textgr{grey}.}\\
+\hline
 \textbf{Step of Sondovač} & \textbf{Substep of Sondovač} & \textbf{\textit{Oxalis} species} & \textbf{\textit{Curcuma} species}\\
+\endfirsthead % all the lines above this will be only on first page
+\multicolumn{3}{@{}l}{\underline{\ldots~continued Table~\ref{summary-lcn-examples}.}}\\
+\textbf{Step of Sondovač} & \textbf{Substep of Sondovač} & \textbf{\textit{Oxalis} species} & \textbf{\textit{Curcuma} species}\\
+\endhead % all the lines above this will be repeated on every page
 \texttt{Input file} & \texttt{Transcriptome taxon} & \textit{Oxalis corniculata} L. & \textit{Curcuma longa} L.\\
 \texttt{Input file} & \texttt{Genome skim taxon} & \textit{Oxalis obtusa} Jacq. & \textit{Curcuma ecomata} Craib\\
 \texttt{Input file} & \texttt{Plastome taxon} & \textit{Ricinus communis} L. & \textit{Curcuma roscoeana} Wall., \textit{Zingiber spectabile} Griff.\\
@@ -221,7 +226,8 @@ These aspects influence the number of probe sequences and the proportion of para
 7 & Minimum pairwise identity between the assembled reads of the contigs (exons) after the de novo assembly of the matching sequences & 84\% & 94\%\\
 11 & Number of exons $\geq$120~bp & 4,926 & 4,618\\
 11 & Number of genes & 1,164 ($\geq$600~bp) & 1,180 ($\geq$960~bp)\\
-11 & Total length of probe sequences & 1,127,2049~bp & 1,571,800~bp
+11 & Total length of probe sequences & 1,127,2049~bp & 1,571,800~bp\\
+\hline
 \label{summary-lcn-examples}
 \end{longtable}
 

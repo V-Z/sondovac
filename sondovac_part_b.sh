@@ -117,7 +117,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       CHECKMODE=$((CHECKMODE+1))
       ;;
     c)
-      REFERENCECP=$OPTARG
+      REFERENCECP0=$OPTARG
       echo "Plastome reference: ${REDF}$REFERENCECP${NORM}"
       ;;
     x)
@@ -125,7 +125,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
       echo "Input file: ${REDF}$TSVLIST${NORM}"
       ;;
     z)
-      SEQUENCES=$OPTARG
+      SEQUENCES0=$OPTARG
       echo "Input file: ${REDF}$SEQUENCES${NORM}"
       ;;
     b)
@@ -782,7 +782,7 @@ echo "${REDF}$UNIQUEPROBEPRELIMCLUSTER90${NORM} for possible later usage."
 confirmgo
 
 echo "Postprocessing extracted sequences"
-grep -v '>Cluster' $UNIQUEPROBEPRELIMCLUSTER90 | cut -d ' ' -f 2 | sed -e 's/\.\.\./\\\>' -e 's/^/^/' > $UNIQUEPROBEPRELIM
+grep -v '>Cluster' $UNIQUEPROBEPRELIMCLUSTER90 | cut -d ' ' -f 2 | sed -e 's/\.\.\./\\\>/' -e 's/^/^/' > $UNIQUEPROBEPRELIM
 grep -A 1 -f $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 | sed '/^--$/d' > $UNIQUEPROBEPRELIMF
 echo
 echo "Postprocessed extracted sequences were saved as"
@@ -797,7 +797,7 @@ echo
 
 # One of the three outfiles of last steps of part 9 is a FASTA file, it has to be converted to TAB
 echo "Converting FASTA from step 9 to TAB"
-fasta2tab $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT.txt || {
+fasta2tab $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT || {
   echo
   echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA to TAB failed. Aborting."
   echo "Check if file ${REDF}$UNIQUEPROBEPRELIMF${NORM} is correct FASTA file."
@@ -808,16 +808,16 @@ echo
 
 # Count the exons of a certain minimum length (default ≥120 bp)
 echo "${CYAF}Number of exons of a minimum length ≥$BAITL bp:${NORM}"
-awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | awk '{s+=$2;c++}END{print s}'
+awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | awk '{s+=$2;c++}END{print s}'
 confirmgo
 
 # Count the exons of a certain minimum length making up genes of a certain minimum length
-echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}of the assemblies making up genes of ≥$MINLOCUSLENGTH bp,"
-echo "  comprised of ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}putative exons ≥${REDF}$BAITL${NORM} ${CYAF}bp${NORM}."
+echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}of the assemblies making up genes of ≥$MINLOCUSLENGTH bp,"
+echo "  comprised of ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}putative exons ≥${REDF}$BAITL${NORM} ${CYAF}bp${NORM}."
 confirmgo
 
 echo "Writing the exons into temporal file"
-awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT.txt | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' > $PROBEPRELIMCDHIT2
+awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' > $PROBEPRELIMCDHIT2
 echo
 
 # Extract and sort the exons making up genes of a minimum total length
@@ -827,7 +827,7 @@ echo
 
 # Modify the exon number and sort
 echo "Modifying the exon number and sorting"
-sed 's/_C/\tC/' $PROBEPRELIMCDHIT.txt | sort -k 1,1 > $PROBEPRELIMSORT
+sed 's/_C/\tC/' $PROBEPRELIMCDHIT | sort -k 1,1 > $PROBEPRELIMSORT
 echo
 
 # Make a file with all exons of a certain minimum length making up genes of a certain minimum total length
@@ -897,10 +897,10 @@ confirmgo
 
 # Remove temporal files
 echo "Removing unneeded temporal files"
-rm $REFERENCECP0 $SEQUENCES0 $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM || {
+rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM || {
   echo
   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
-  echo "  \"$REFERENCECP0\", \"$SEQUENCES0\", \"$SEQUENCESTAB\","
+  echo "  \"$REFERENCECP\", \"$SEQUENCES\", \"$SEQUENCESTAB\","
   echo "  \"$SEQUENCESTABASSE\", \"$SEQUENCESPROBESLOCUSLENGTH\",\"$SEQUENCESPROBESLOCUSLENGTHFORJOIN\","
   echo "  \"$SEQUENCESTABASSEBAITL\", \"$SEQUENCESTABASSEBAITLSORT\",\"$SEQUENCESPROBES120600FIN\","
   echo "  \"$SEQUENCESPROBES120600MODIF\", \"$SEQUENCESPROBES120600ASSEM\", \"$SEQUENCESPROBES120600CONTIG\","

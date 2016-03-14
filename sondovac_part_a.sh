@@ -139,16 +139,16 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
       CHECKMODE=$((CHECKMODE+1))
       ;;
     f)
-      INPUTFILE0=$OPTARG
-      echo "Transcriptome file: ${REDF}$INPUTFILE0${NORM}"
+      INPUTFILE1=$OPTARG
+      echo "Transcriptome file: ${REDF}$INPUTFILE1${NORM}"
       ;;
     c)
-      REFERENCECP=$OPTARG
-      echo "Plastome reference: ${REDF}$REFERENCECP${NORM}"
+      REFERENCECP0=$OPTARG
+      echo "Plastome reference: ${REDF}$REFERENCECP0${NORM}"
       ;;
     m)
-      REFERENCEMT=$OPTARG
-      echo "Mitochondriome reference: ${REDF}$REFERENCEMT${NORM}"
+      REFERENCEMT0=$OPTARG
+      echo "Mitochondriome reference: ${REDF}$REFERENCEMT0${NORM}"
       ;;
     t)
       INPUTFQ1=$OPTARG
@@ -1073,11 +1073,22 @@ if [ "$STARTINI" == "I" ]; then
   fi
 
 # Notify user if mitochondriome is missing
-if [ -z "$REFERENCEMT" ]; then
+if [ -z "$REFERENCEMT0" ]; then
   echo
   echo "${CYAF}${BOLD}Warning!${NORM} There is no mitochondriome reference sequence."
   echo
+  REFERENCEMT=""
+  REFERENCEMT0=""
   else
+    # Test if input file is readable
+    if [[ -f $REFERENCEMT0 && -r $REFERENCEMT0 && -s $REFERENCEMT0 ]]; then
+        echo
+        echo "Input file \"${REDF}$REFERENCEMT0${NORM}\" exists and is readable. ${CYAF}Proceeding...${NORM}"
+        else
+            echo "${REDF}${BOLD}Error!${NORM} ${CYAF}File \"${REDF}$REFERENCEMT0${CYAF}\" does not exist, is empty or is not readable!${NORM}"
+            echo
+            exit 1
+        fi
     echo
   fi
 
@@ -1119,20 +1130,20 @@ CPBAM="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_reads.bam"
 # Genome skim data without cpDNA reads
 FASTQNOCP="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_reads"
 # Input - reference genome - mtDNA
-if [ -n "$REFERENCEMT" ]; then
-  echo "Input file: ${REDF}$REFERENCEMT0${NORM}"
+if [ -n "$REFERENCEMT0" ]; then
+    echo "Input file: ${REDF}$REFERENCEMT0${NORM}"
+    # Input - reference genome - mtDNA - temporary file - will be deleted
+    REFERENCEMT="${REFERENCEMT0%.*}_non-interleaved.fasta"
+    # Reference genome - mitochondriome index - temporary file - will be deleted
+    REFERENCEMT2="${OUTPUTFILENAME%.*}.mt"
+    # mtDNA reads mapped to reference - temporary file - will be deleted
+    BOWTIE2MT="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads.sam"
+    # SAM converted into BAM (removal of reads of mitochondrial origin) - temporary file - will be deleted
+    MTBAM="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads.bam"
+    # Genome skim data without mtDNA reads
+    FASTQNOMT="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads"
+    # Combined paired-end genome skim reads
   fi
-# Input - reference genome - mtDNA - temporary file - will be deleted
-REFERENCEMT="${REFERENCEMT0%.*}_non-interleaved.fasta"
-# Reference genome - mitochondriome index - temporary file - will be deleted
-REFERENCEMT2="${OUTPUTFILENAME%.*}.mt"
-# mtDNA reads mapped to reference - temporary file - will be deleted
-BOWTIE2MT="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads.sam"
-# SAM converted into BAM (removal of reads of mitochondrial origin) - temporary file - will be deleted
-MTBAM="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads.bam"
-# Genome skim data without mtDNA reads
-FASTQNOMT="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads"
-# Combined paired-end genome skim reads
 FLASHOUT="${OUTPUTFILENAME%.*}_combined_reads_no_cp_no_mt_reads"
 # Output of BLAT (matching of the unique transcripts and the filtered, combined genome skim reads sharing ≥85% sequence similarity)
 BLATOUTFIN="${OUTPUTFILENAME%.*}_blat_unique_transcripts_versus_genome_skim_data.pslx"
@@ -1173,7 +1184,7 @@ if [ -n "$REFERENCEMT0" ]; then
 # Transcriptome input file has required labeling scheme - only unique numbers
 
 echo "FASTA sequence names in input file ${REDF}$INPUTFILE0${NORM}"
-echo "  ${CYAF}must be renamed to be correctly handled in part B.${NORM} New file with correct labels"
+echo "  ${CYAF}must be renamed to be correctly handled in part A.${NORM} New file with correct labels"
 echo "  (only increasing unique numbers) will be created."
 echo "Depending on size of your transcriptome file ${CYAF}it can take longer time.${NORM}"
 while read LINE; do
@@ -1356,7 +1367,7 @@ confirmgo
 
 # Mitochondrial reads - optional step
 
-if [ -n "$REFERENCEMT" ]; then
+if [[ -n "$REFERENCEMT" && -n "$REFERENCEMT0" ]]; then
 
   echo "${REDF}Step 3 of the pipeline${NORM} - removal of reads of mitochondrial origin (optional)."
 
@@ -1438,6 +1449,7 @@ if [ -n "$REFERENCEMT" ]; then
 
 # Step 5 - matching of the unique transcripts and the filtered, combined genome skim reads sharing ≥85% sequence similarity
 
+echo
 echo "${REDF}Step 5 of the pipeline${NORM} - matching of the unique transcripts and the filtered,"
 echo "  combined genome skim reads sharing ≥85% sequence similarity."
 
@@ -1572,13 +1584,13 @@ grep -v n $TABREMOVED | awk '{print $1"\t"length($2)}' | awk '{s+=$2;a++}END{pri
 # Remove unneeded temporal files - keep only *.pslx, *.fasta and *.bam
 echo
 echo "Removing unneeded temporal files"
-if [ -n "$REFERENCEMT" ]; then
-  rm $INPUTFILE1 $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $REFERENCECP0 $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $CPBAM $REFERENCEMT2* $REFERENCEMT0 $BOWTIE2MT $MTBAM $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
+if [ -n "$REFERENCEMT0" ]; then
+  rm $INPUTFILE0 $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $REFERENCECP $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $CPBAM $REFERENCEMT2* $REFERENCEMT $BOWTIE2MT $MTBAM $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
     echo
     echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
-    echo "  \"$INPUTFILE1\", \"$UNIQUELIST\", \"$INPUTTAB\","
-    echo "  \"$SORTEDINPUT\", \"$REFERENCECP0\", \"$JOINEDTS\","
-    echo "  \"$JOINEDTABS\", \"$REFERENCECP2*\", \"$REFERENCEMT0\","
+    echo "  \"$INPUTFILE0\", \"$UNIQUELIST\", \"$INPUTTAB\","
+    echo "  \"$SORTEDINPUT\", \"$REFERENCECP\", \"$JOINEDTS\","
+    echo "  \"$JOINEDTABS\", \"$REFERENCECP2*\", \"$REFERENCEMT\","
     echo "  \"$BOWTIE2CP\", \"$CPBAM\", \"$REFERENCEMT2*\","
     echo "  \"$BOWTIE2MT\", \"$CPBAM\", \"$FLASHOUT.extendedFrags.fastq\","
     echo "  \"$TAB\", \"$TABLIST\",, \"$TABBLAT\" and"
@@ -1589,9 +1601,9 @@ if [ -n "$REFERENCEMT" ]; then
     rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $CPBAM $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
       echo
       echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
-      echo "  \"$INPUTFILE1\", \"$UNIQUELIST\", \"$INPUTTAB\","
+      echo "  \"$INPUTFILE0\", \"$UNIQUELIST\", \"$INPUTTAB\","
       echo "  \"$SORTEDINPUT\", \"$JOINEDTS\", \"$JOINEDTABS\","
-      echo "  \"$REFERENCECP0\", \"$REFERENCECP2*\",\"$BOWTIE2CP\","
+      echo "  \"$REFERENCECP\", \"$REFERENCECP2*\",\"$BOWTIE2CP\","
       echo "  \"$CPBAM\", \"$FLASHOUT.extendedFrags.fastq\", \"$TAB\","
       echo "  \"$TABLIST\", \"$TABBLAT\" and \"$TABREMOVED\"."
       confirmgo
