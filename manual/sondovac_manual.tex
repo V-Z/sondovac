@@ -131,7 +131,7 @@ A~transcriptome assembly and paired-end genome skim raw data are combined to get
 
 \begin{figure}[p]
 \begin{center}
-\includegraphics[width=14cm]{pipeline_workflow.png}
+\includegraphics[width=15.5cm]{pipeline_workflow.png}
 \end{center}
 \caption[Workflow of the probe design script Sondovač]{Workflow of the probe design script Sondovač. An overview of the main steps of Hyb-Seq are given in the top part of the figure; probe design is the first one. Each step of Sondovač is numbered and illustrated by three boxes: Software is highlighted in yellow, a~summary of each step is given in light blue, and input/output of each step is depicted in light green. An optional removal of reads of mitochondrial origin from the genome skim data is marked by greyed text. The required input files of Sondovač are highlighted in bold. The direction of the workflow is indicated by arrows.}
 \label{pipeline-workflow}
@@ -192,7 +192,7 @@ The success of the probe design in terms of a high number of LCN genes of a suff
 
 These aspects influence the number of probe sequences and the proportion of paralogous loci among the probe sequences. The usage of a transcriptome and genome skim data of \textbf{diploid} accessions is strongly recommended in order to account for orthology of the probe sequences. An example of how one aspect, the number of nuclear genome skim reads, can affect the probe design, is shown in Table~\ref{summary-lcn-examples} and Figure~\ref{seq-div-examples}.
 
-\begin{longtable}{ | >{\centering\arraybackslash}m{1.8cm} >{\centering\arraybackslash}m{6.6cm} >{\centering\arraybackslash}m{2.5cm} >{\centering\arraybackslash}m{3.3cm} |}
+\begin{longtable}{ | >{\centering\arraybackslash}m{1.8cm} >{\centering\arraybackslash}m{6.5cm} >{\centering\arraybackslash}m{2.5cm} >{\centering\arraybackslash}m{3.4cm} |}
 \caption[Summary of two examples of a LCN probe design with Sondovač.]{Summary of two examples of a LCN probe design with Sondovač. The \textit{Oxalis} example is from \citet{Schmickl2016}, the \textit{Curcuma} example is unpublished data from Tomáš Fér and Roswitha Schmickl. The respective Sondovač steps are listed; see Figure~\ref{pipeline-workflow} for details regarding these steps. For both probe designs 250~bp paired-end reads were utilized. Input files are given in \texttt{typewriter} font. Quality control of the genome skim data, which is not part of Sondovač, is colored in \textgr{grey}.}\\
 \hline
 \textbf{Step of Sondovač} & \textbf{Substep of Sondovač} & \textbf{\textit{Oxalis} species} & \textbf{\textit{Curcuma} species}\\
@@ -200,6 +200,8 @@ These aspects influence the number of probe sequences and the proportion of para
 \multicolumn{3}{@{}l}{\underline{\ldots~continued Table~\ref{summary-lcn-examples}.}}\\
 \textbf{Step of Sondovač} & \textbf{Substep of Sondovač} & \textbf{\textit{Oxalis} species} & \textbf{\textit{Curcuma} species}\\
 \endhead % all the lines above this will be repeated on every page
+\hline
+\endlastfoot
 \texttt{Input file} & \texttt{Transcriptome taxon} & \textit{Oxalis corniculata} L. & \textit{Curcuma longa} L.\\
 \texttt{Input file} & \texttt{Genome skim taxon} & \textit{Oxalis obtusa} Jacq. & \textit{Curcuma ecomata} Craib\\
 \texttt{Input file} & \texttt{Plastome taxon} & \textit{Ricinus communis} L. & \textit{Curcuma roscoeana} Wall., \textit{Zingiber spectabile} Griff.\\
@@ -226,8 +228,7 @@ These aspects influence the number of probe sequences and the proportion of para
 7 & Minimum pairwise identity between the assembled reads of the contigs (exons) after the de novo assembly of the matching sequences & 84\% & 94\%\\
 11 & Number of exons $\geq$120~bp & 4,926 & 4,618\\
 11 & Number of genes & 1,164 ($\geq$600~bp) & 1,180 ($\geq$960~bp)\\
-11 & Total length of probe sequences & 1,127,2049~bp & 1,571,800~bp\\
-\hline
+11 & Total length of probe sequences & 1,127,2049~bp & 1,571,800~bp
 \label{summary-lcn-examples}
 \end{longtable}
 
@@ -269,7 +270,8 @@ SUSE Linux Enterprise (\url{https://www.suse.com/}) and openSUSE (\url{https://w
 
 \begin{bashcode}
   # Verify installation of basic tools (they are installed in 99.9%):
-  sudo zypper in bash gawk bc coreutils grep less lsb-release perl-base sed wget
+  sudo zypper in bash gawk bc coreutils grep less lsb-release perl-base python \
+    sed wget
   # Install packages needed for compilation:
   sudo zypper in gcc-c++ gcc make pkg-config bzip2 gzip tar unzip \
     patterns-openSUSE-devel_basis libpng12-devel zlib-devel gcc-java \
@@ -295,7 +297,7 @@ Debian (\url{https://www.debian.org/}), Linux Mint (\url{http://linuxmint.com/})
 \begin{bashcode}
   # Verify installation of basic tools (they are installed in 99.9%):
   sudo apt-get install bash gawk bc coreutils grep less lsb-release perl-base \
-    sed wget
+    python sed wget
   # Install packages needed for compilation:
   sudo apt-get install build-essential bzip2 gzip tar unzip gcc g++ cpp make \
     libpng12-dev zlib1g-dev openjdk-7-jre openjdk-7-jdk openjdk-7-source \
@@ -329,7 +331,7 @@ RedHat (\url{https://www.redhat.com/}), Fedora (\url{https://getfedora.org/}; un
 
 \begin{bashcode}
   # Verify installation of basic tools (they are installed in 99.9%):
-  sudo yum install bash coreutils gawk bc grep less lsb perl sed wget
+  sudo yum install bash coreutils gawk bc grep less lsb perl python sed wget
   # Install packages needed for compilation:
   sudo yum install bzip2 gzip pkgconfig unzip gcc gcc-c++ cpp libpng12-devel \
     make zlib-devel java-1.8.0-openjdk java-1.8.0-openjdk-devel git ant tar
@@ -515,10 +517,16 @@ For part \textbf{B} of the script the user must have Geneious \citep{Kearse2012}
 
 Table~\ref{software-links} lists all software used by Sondovač, including minimal required versions and homepages. As long as you have a~recently-updated version of your operating system and you use the automated installation of additional software offered by Sondovač, you do not need to worry about this. In case you installed some of the required scientific packages manually, ensure that you have the required minimal version. The following list refers to papers and web resources describing methods used by software utilized by Sondovač:
 
-\begin{table}[htb]
-\caption[Required software, its versions and homepages.]{Required software, its versions and homepages. "X" denotes any subversion of particular lineage and "v. $>$" denotes any version higher then noted. Generally, any current version should usually be fine.}
-\begin{tabular}{lll}
+\begin{longtable}{| >{\centering\arraybackslash}m{2.8cm} >{\centering\arraybackslash}m{1.5cm} >{\centering\arraybackslash}m{10cm} |}
+\caption[Required software, its versions and homepages.]{Required software, its versions and homepages. "X" denotes any subversion of particular lineage and "v. $>$" denotes any version higher then noted. Generally, any current version should usually be fine.}\\
+\hline
 \textbf{Software} & \textbf{Version} & \textbf{Homepage}\\
+\endfirsthead % all the lines above this will be only on first page
+\multicolumn{3}{@{}l}{\underline{\ldots~continued Table~\ref{software-links}.}}\\
+\textbf{Software} & \textbf{Version} & \textbf{Homepage}\\
+\endhead % all the lines above this will be repeated on every page
+\hline
+\endlastfoot
 Apache Ant & 1.9.X & \url{https://ant.apache.org/}\\
 bam2fastq & 1.1.0 & \url{http://gsl.hudsonalpha.org/information/software/bam2fastq}\\ % NOTE
 BASH & v. > 4 & \url{https://gnu.org/software/bash/bash.html}\\
@@ -531,15 +539,15 @@ G++, GCC & v. > 4.2 & \url{http://gcc.gnu.org/}\\
 Geneious & v. > 6.1 & \url{http://www.geneious.com/}\\
 GIT & v. > 2.0 & \url{http://git-scm.com/}\\
 GNU core utils & 8.X & \url{https://gnu.org/software/coreutils/coreutils.html}\\
+grab$\_$synglet\-on$\_$clusters.py & 1.00 & \url{https://github.com/listonlab/Hyb-Seq_protocol}\\
 Java/OpenJDK & v. > 7 & \url{https://www.java.com/}/\url{http://openjdk.java.net/}\\
 libpng & 1.6.X & \url{http://www.libpng.org/}\\
 % Picard & v. > 1.137 & \url{https://broadinstitute.github.io/picard/}\\ % NOTE
 SAMtools, htsjdk & 1.2 & \url{http://www.htslib.org/}\\
 Sondovač & 0.9 & \url{https://github.com/V-Z/sondovac/wiki}\\
 zlib & 1.2.8 & \url{http://zlib.net/}
-\end{tabular}
 \label{software-links}
-\end{table}
+\end{longtable}
 
 \texttt{sondovac$\_$part$\_$a.sh} requires (and will install) the following software packages:
 
@@ -557,6 +565,7 @@ zlib & 1.2.8 & \url{http://zlib.net/}
 \begin{itemize}
   \item CD-HIT
   \item BLAT
+  \item grab$\_$syngleton$\_$clusters.py (included with Sondovač)
 \end{itemize}
 
 Papers describing the software used by Sondovač:
@@ -577,6 +586,7 @@ Papers describing the software used by Sondovač:
  \item[FASTX toolkit] \citet{Gordon2010}: FASTX-Toolkit. FASTQ/A short-reads pre-processing tools.
  \item[FLASH] \citet{Magoc2011}: FLASH: fast length adjustment of short reads to improve genome assemblies.
  \item[Geneious] \citet{Kearse2012}: Geneious Basic: An integrated and extendable desktop software platform for the organization and analysis of sequence data.
+ \item[grab$\_$syngleton$\_$clusters.py] \citet{Weitemier2014}: Hyb-Seq: Combining target enrichment and genome skimming for plant phylogenomics.
  \item[SAMtools] There are several papers describing SAMtools:
   \begin{itemize}
    \item \citet{Li2009}: The Sequence alignment/map (SAM) format and SAMtools.
@@ -867,9 +877,9 @@ Import the output file of part A~of the script (\texttt{sondovac$\_$part$\_$a.sh
   \label{geneious-import}
 \end{figure}
 
-Select the file and go to menu \textbf{Tools | Align / Assemble | De Novo Assemble}. In \textbf{Data} frame select \textbf{Assemble by 1st (\ldots) Underscore}. In \textbf{Method} frame select \textbf{Geneious Assembler} (if you don't have other assemblers, this option might be missing) and \textbf{Medium Sensitivity / Fast Sensitivity} (see Figure~\ref{geneious-assembly}).
+Select the file and go to menu \textbf{Tools | Align / Assemble | De Novo Assemble}. In \textbf{Data} frame select \textbf{Assemble by 1st (\ldots) Underscore}. In \textbf{Method} frame select \textbf{Geneious Assembler} (if you don't have other assemblers, this option might be missing) and \textbf{Medium Sensitivity / Fast} sensitivity (see Figure~\ref{geneious-assembly}).
 
-In \textbf{Results} frame check \textbf{Save assembly report}, \textbf{Save list of unused reads}, \textbf{Save in sub-folder}, \textbf{Save contigs} (do not check \textbf{Maximum}) and \textbf{Save consensus sequences} (Click to \textit{Options} button next to this checkbox and click to \textit{Reset to defaults} -- \textbf{Save consensus used by assembler} must be selected.). Do not trim. Otherwise keep defaults. Run it. Geneious may warn about possible hanging because of big file size. Do not use Geneious for other tasks during the assembly. Running Geneious may take a~long time (see Figure~\ref{geneious-assembly}).
+In \textbf{Results} frame check \textbf{Save assembly report}, \textbf{Save list of unused reads}, \textbf{Save in sub-folder}, \textbf{Save contigs} (do not check \textbf{Maximum}) and \textbf{Save consensus sequences} (Click to \textit{Options} -- \textbf{Save consensus used by assembler} must be selected.). \textbf{Do not trim}. Otherwise keep defaults. Run it. Geneious may warn about possible hanging because of big file size. Do not use Geneious for other tasks during the assembly. Running Geneious may take a~long time (see Figure~\ref{geneious-assembly}).
 
 \begin{figure}[htb]
   \begin{center}
@@ -959,7 +969,7 @@ If you have a question or encounter a problem, please see \url{https://github.co
 
 List of changes in released versions of Sondovač.
 
-\subsection{Version 1.1 regular release released 2016-03-}
+\subsection{Version 1.1 regular release released 2016-03-15}
 
 \begin{itemize}
   \item Checking if input FASTA files are interleaved or not (required) and, if needed, FASTA files are converted not to be interleaved.
@@ -968,6 +978,7 @@ List of changes in released versions of Sondovač.
   \item Language checking and enhancements of documentation.
   \item Modified CD-HIT-EST.
   \item Improved summary of the probe design in part B.
+  \item More possibilities for minimum total locus length.
   \item Various smaller fixes.
 \end{itemize}
 
@@ -1051,21 +1062,24 @@ List of changes in released versions of Sondovač.
 
 The set of BASH scripts Sondovač is licensed under GNU General Public License version 3. List of licenses of included software is in Table~\ref{software-lic} (see full texts below). License of BLAT does not allow redistribution, so that this software is not included and the software is downloaded on the fly. Script is also using software included in GNU core utilities (basic tools available in any UNIX-based system), see \url{https://www.gnu.org/software/coreutils/} for details.
 
-\begin{table}[htb]
-\caption[List of software and licenses]{List of software, licenses and links to license details}
-\begin{tabular}{lll}
+\begin{longtable}{| >{\centering\arraybackslash}m{2.5cm} >{\centering\arraybackslash}m{3.4cm} >{\centering\arraybackslash}m{8.8cm} |}
+\caption[List of software and licenses]{List of software, licenses and links to license details}\\
+\hline
+\endhead
+\hline
+\endfoot
 \textbf{Software} & \textbf{License} & \textbf{License details}\\
 Sondovač & GNU GPL v. 3 & \url{https://gnu.org/licenses/gpl.html}\\
 Bowtie2 & GNU GPL v. 3 & \url{https://gnu.org/licenses/gpl.html}\\
-SAMtools & MIT/Expat Lic. & \url{https://en.wikipedia.org/wiki/MIT_License}\\
-bam2fastq & Apache Lic. 2.0 & \url{https://apache.org/licenses/LICENSE-2.0.html}\\ % NOTE
+SAMtools & MIT/Expat License & \url{https://en.wikipedia.org/wiki/MIT_License}\\
+bam2fastq & Apache License 2.0 & \url{https://apache.org/licenses/LICENSE-2.0.html}\\ % NOTE
 %Picard & MIT License & \url{https://en.wikipedia.org/wiki/MIT_License}\\ % NOTE
 FLASh & GNU GPL v. 3 & \url{https://gnu.org/licenses/gpl.html}\\
 CD-HIT & GNU GPL v. 2 & \url{https://gnu.org/licenses/old-licenses/gpl-2.0.html}\\
+grap$\_$synglet\-on$\_$clusters.py & GNU GPL v. 3 & \url{https://gnu.org/licenses/gpl.html}\\
 FASTX & GNU Affero GPL & \url{https://gnu.org/licenses/agpl.html}
-\end{tabular}
 \label{software-lic}
-\end{table}
+\end{longtable}
 
 \begingroup
 \fontsize{7pt}{8pt}

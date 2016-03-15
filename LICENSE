@@ -19,6 +19,9 @@ bam2fastq  Apache License 2.0 https://apache.org/licenses/LICENSE-2.0.html
 Picard     MIT License        https://en.wikipedia.org/wiki/MIT_License
 FLASh      GNU GPL v3         https://gnu.org/licenses/gpl.html
 CD-HIT     GNU GPL v2         https://gnu.org/licenses/old-licenses/gpl-2.0.html
+grab_
+ syngleton
+ _clusters GNU GPL v3         https://gnu.org/licenses/gpl.html
 FASTX      GNU Affero GPL     https://gnu.org/licenses/agpl.html
 
 ================================================================================

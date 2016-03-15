@@ -610,6 +610,13 @@ Geneious
     the organization and analysis of sequence data
   Bioinformatics (2012) 28(12):1647-1649
   http://bioinformatics.oxfordjournals.org/content/28/12/1647
+grab_syngleton_clusters.py
+* Kevin Weitemier, Shannon C K Straub, Richard C Cronn, Mark Fishbein, Roswitha 
+    E. Schmickl, Angela McDonnell, Aaron Liston
+  Hyb-Seq: Combining target enrichment and genome skimming for plant 
+    phylogenomics
+  Applications in Plant Sciences (2014) 2(9):1-7
+  http://www.bioone.org/doi/abs/10.3732/apps.1400042
 Picard:
 * http://broadinstitute.github.io/picard
 SAMtools:
