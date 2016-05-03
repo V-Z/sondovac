@@ -39,6 +39,8 @@ BLATIDENT=90
 MINLOCUSLENGTH=600
 # Default name of output files
 OUTPUTFILENAME="output"
+# Add also unassembled sequences longer than minimal length
+REMAINING="YES"
 
 # Create empty variables for file names
 REFERENCECP=""
@@ -475,58 +477,59 @@ echo "Checking if ${REDF}$TSVLIST${NORM} has all required columns"
 REQUIREDCOLS="Required columns in `echo $TSVLIST` are \"`echo ${CYAF}`# Sequences`echo ${NORM}`\",\n  \"`echo ${CYAF}`% Pairwise Identity`echo ${NORM}`\", \"`echo ${CYAF}`Description`echo ${NORM}`\", \"`echo ${CYAF}`Mean Coverage`echo ${NORM}`\", \"`echo ${CYAF}`Name`echo ${NORM}`\"\n  and \"`echo ${CYAF}`Sequence Length`echo ${NORM}`\". Please, export the TSV file again."
 echo
 if grep -q "# Sequences" $TSVLIST; then
-    echo "Column \"${CYAF}# Sequences${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
-    if grep -q "Pairwise Identity" $TSVLIST; then
-      echo "Column \"${CYAF}Pairwise Identity${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
-      if grep -q "Description" $TSVLIST; then
-	echo "Column \"${CYAF}Description${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
-	if grep -q "Mean Coverage" $TSVLIST; then
-	  echo "Column \"${CYAF}Mean Coverage${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
-	  if grep -q "Name" $TSVLIST; then
-	    echo "Column \"${CYAF}Name${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
-	    if grep -q "Sequence Length" $TSVLIST; then
-	      echo "Column \"${CYAF}Sequence Length${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
-	    else
-	      echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Sequence Length${NORM}\" is missing!"
-	      echo -e "$REQUIREDCOLS"
-	      exit 1
-	    fi
-	  else
-	    echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Name${NORM}\" is missing!"
-	    echo -e "$REQUIREDCOLS"
-	    exit 1
-	  fi
-	else
-	  echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Mean Coverage${NORM}\" is missing!"
-	  echo -e "$REQUIREDCOLS"
-	  exit 1
+	echo "Column \"${CYAF}# Sequences${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+	if grep -q "Pairwise Identity" $TSVLIST; then
+		echo "Column \"${CYAF}Pairwise Identity${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+		if grep -q "Description" $TSVLIST; then
+		echo "Column \"${CYAF}Description${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+			if grep -q "Mean Coverage" $TSVLIST; then
+			echo "Column \"${CYAF}Mean Coverage${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+				if grep -q "Name" $TSVLIST; then
+				echo "Column \"${CYAF}Name${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+					if grep -q "Sequence Length" $TSVLIST; then
+					echo "Column \"${CYAF}Sequence Length${NORM}\" is present in ${REDF}$TSVLIST${NORM}. ${GREF}OK.${NORM}"
+						else
+						echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Sequence Length${NORM}\" is missing!"
+						echo -e "$REQUIREDCOLS"
+						exit 1
+						fi
+						else
+						echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Name${NORM}\" is missing!"
+						echo -e "$REQUIREDCOLS"
+						exit 1
+						fi
+					else
+					echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Mean Coverage${NORM}\" is missing!"
+					echo -e "$REQUIREDCOLS"
+					exit 1
+					fi
+				else
+				echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Description${NORM}\" is missing!"
+				echo -e "$REQUIREDCOLS"
+				exit 1
+				fi
+			else
+			echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Pairwise Identity${NORM}\" is missing!"
+			echo -e "$REQUIREDCOLS"
+			exit 1
+			fi
+		else
+		echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}# Sequences${NORM}\" is missing!"
+		echo -e "$REQUIREDCOLS"
+		exit 1
 	fi
-      else
-	echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Description${NORM}\" is missing!"
-	echo -e "$REQUIREDCOLS"
-	exit 1
-      fi
-    else
-      echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}Pairwise Identity${NORM}\" is missing!"
-      echo -e "$REQUIREDCOLS"
-      exit 1
-    fi
-  else
-    echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}# Sequences${NORM}\" is missing!"
-    echo -e "$REQUIREDCOLS"
-    exit 1
-  fi
 echo
 
 # Check if TSV output of Geneious contains only required columns or more
-if egrep -q "# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[[:blank:]]+Mean Coverage[[:blank:]]+Name[[:blank:]]+Sequence Length" $TSVLIST
+if egrep -q "^# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[[:blank:]]+Mean Coverage[[:blank:]]+Name[[:blank:]]+Sequence Length$" $TSVLIST
   then
     echo "${REDF}$TSVLIST${NORM} is correct input file. ${GREF}OK.${NORM}"
     TSVLIST2=$TSVLIST
     echo
   else
-    echo "Input file ${REDF}$TSVLIST${NORM} seems to contain more columns than required."
-    echo "Needed columns will be extracted."
+    echo "Input file ${REDF}$TSVLIST${NORM} seems to contain more columns or columns in"
+    echo "  another order than required."
+    echo "Needed columns will be extracted in required order."
     $SCRIPTDIR/geneious_column_separator.pl $TSVLIST || {
       echo
       echo "${REDF}${BOLD}Error!${NORM} Extraction failed. Aborting."
@@ -542,6 +545,35 @@ if egrep -q "# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[[
     echo "${REDF}$TSVLIST2${NORM} for possible later usage."
     confirmgo
   fi
+
+# # Check the statistics
+#
+# echo "${REDF}Assembly statistics${NORM}"
+# echo
+#
+# # Check total number of bp
+# echo "${CYAF}Total number of base pairs:${NORM}"
+# { cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | awk '{s+=$1}END{print s}'; } || {
+#   echo
+#   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking statistics failed.${NORM} Aborting. Check if file"
+#   echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns:"
+#   echo -e "$REQUIREDCOLS"
+#   echo
+#   exit 1
+#   }
+# confirmgo
+#
+# # Check number of contigs
+# echo "${CYAF}Number of contigs:${NORM}"
+# { cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | wc -l; } || {
+#   echo
+#   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking number of contigs failed.${NORM} Aborting. Check if file"
+#   echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns"
+#   echo -e "$REQUIREDCOLS"
+#   echo
+#   exit 1
+#   }
+# confirmgo
 
 # Convert FASTA to TAB
 echo "Converting FASTA to TAB"
@@ -691,7 +723,12 @@ echo
 
 # Make the assembly number the first field and sort
 echo "Sorting exons ≥${CYAF}$BAITL${NORM} bp"
-grep '[Cc]ontig' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*\([Cc]ontig_[[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT
+grep '[Cc]ontig' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*\([Cc]ontig_[[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT && REMAINING="YES"
+# Geneious 9 has different naming scheme of contigs 000000025417_Assembly_67_reads_from_25417	234	ACAGAAGAA
+if [ ! -s "$SEQUENCESTABASSEBAITLSORT" ]; then
+	grep '[Aa]ssembly' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*[Aa]ssembly_\([[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT
+	REMAINING="NO"
+	fi # Assembly_000000000005	Contig_1	126	GGTGA...
 echo
 
 # Make a file with all exons of a certain minimum length and making up genes of a certain minimum length
@@ -704,8 +741,11 @@ echo "Converting TAB to FASTA"
 sed 's/ /_/' $SEQUENCESPROBES120600FIN | sed 's/ /_/' > $SEQUENCESPROBES120600MODIF
 sed 's/^/>/' $SEQUENCESPROBES120600MODIF | sed 's/ /\n/' > $SEQUENCESPROBES120600ASSEM
 
-# Remaining assemblies have to be selected and added to the .fasta file of the probes:
-grep -v '[Cc]ontig' $SEQUENCESTABASSEBAITL | awk '$2>'"$MINLOCUSLENGTHN"'' | sed 's/^/>/' | sed 's/\t/_/' | sed 's/\t/\n/' > $SEQUENCESPROBES120600CONTIG
+# Remaining assemblies have to be selected and added to the FASTA file of the probes
+# NOTE: Geneious 9 does not use keyword "Contig"
+if [ "$REMAINING"=="YES" ]; then
+	grep -v '[Cc]ontig' $SEQUENCESTABASSEBAITL | awk '$2>'"$MINLOCUSLENGTHN"'' | sed 's/^/>/' | sed 's/\t/_/' | sed 's/\t/\n/' > $SEQUENCESPROBES120600CONTIG
+	fi
 echo
 
 # Combine the two FASTA files
@@ -777,6 +817,16 @@ fasta2tab $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT || {
   }
 echo
 
+# # Count the exons of a certain minimum length (default ≥120 bp)
+# echo "${CYAF}Number of exons of a minimum length ≥$BAITL bp:${NORM}"
+# awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | awk '{s+=$2;c++}END{print s}'
+# confirmgo
+#
+# # Count the exons of a certain minimum length making up genes of a certain minimum length
+# echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}of the assemblies making up genes of ≥$MINLOCUSLENGTH bp,"
+# echo "  comprised of ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}putative exons ≥${REDF}$BAITL${NORM} ${CYAF}bp${NORM}."
+# confirmgo
+
 echo "Writing the exons into temporal file"
 awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' > $PROBEPRELIMCDHIT2
 echo
@@ -796,12 +846,28 @@ echo "Joining all exons ≥${CYAF}$BAITL${NORM} bp and making up genes of ≥$MI
 join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT > $PROBEPRELIMFIN
 echo
 
+# # Convert TAB to FASTA
+# echo "Converting TAB to FASTA"
+# sed 's/^\(.\+\) \(Contig\)/>\1_\2/' $PROBEPRELIMFIN | sed 's/ /\n/' > $PROBESEQUENCES
+# echo
+
 # Probe design summary
 
 # Calculation of the total number of base pairs
 
 echo "Calculating the total number of base pairs"
+# echo "Converting FASTA to TAB"
+# fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM || {
+#   echo
+#   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA into TAB failed.${NORM} Aborting."
+#   echo
+#   exit 1
+#   }
 echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}bp make up genes of ≥$MINLOCUSLENGTH bp,"
+
+# echo
+# echo "${CYAF}Total number of base pairs:${NORM} $(awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}')"
+# echo
 
 # Calculation of the total number of genes
 
@@ -819,6 +885,14 @@ confirmgo
 echo "Converting TAB to FASTA"
 sed 's/^\(.\+\) \(Contig\)/>\1_\2/' $PROBEPRELIMFIN | sed 's/ /\n/' > $PROBESEQUENCES
 echo
+
+# # Calculation of the total number of genes
+# echo "Calculating the total number of genes"
+# echo
+# echo -e "${REDF}G${CYAF}enes of length${NORM}:\t≥$LOCUSLENGTH bp"
+# echo -e "${REDF}T${CYAF}otal bp${NORM}:\t\t$(awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')"
+# echo -e "${REDF}N${CYAF}umber of genes${NORM}:\t$(awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l)"
+# confirmgo
 
 echo "${REDF}${BOLD}Success!${NORM}"
 echo
@@ -848,20 +922,20 @@ echo "${REDF}${BOLD}$PROBESEQUENCES${NORM}."
 echo "${BLUF}================================================================================${NORM}"
 confirmgo
 
-# Remove temporal files
-echo "Removing unneeded temporal files"
-rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESNUM || {
-  echo
-  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
-  echo "  \"$REFERENCECP\", \"$SEQUENCES\", \"$SEQUENCESTAB\","
-  echo "  \"$SEQUENCESTABASSE\", \"$SEQUENCESPROBESLOCUSLENGTH\",\"$SEQUENCESPROBESLOCUSLENGTHFORJOIN\","
-  echo "  \"$SEQUENCESTABASSEBAITL\", \"$SEQUENCESTABASSEBAITLSORT\",\"$SEQUENCESPROBES120600FIN\","
-  echo "  \"$SEQUENCESPROBES120600MODIF\", \"$SEQUENCESPROBES120600ASSEM\", \"$SEQUENCESPROBES120600CONTIG\","
-  echo "  \"$PROBEPRELIM0\", \"$PROBEPRELIMCLUSTER90\", \"$UNIQUEPROBEPRELIM\","
-  echo "  \"$PROBEPRELIMCDHIT\", \"$PROBEPRELIMFORJOIN\", \"$PROBEPRELIMSORT\","
-  echo "  \"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESNUM\"."
-  confirmgo
-  }
+# # Remove temporal files
+# echo "Removing unneeded temporal files"
+# rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN  || { # $PROBESEQUENCESNUM currently not in use
+#   echo
+#   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
+#   echo "  \"$REFERENCECP\", \"$SEQUENCES\", \"$SEQUENCESTAB\","
+#   echo "  \"$SEQUENCESTABASSE\", \"$SEQUENCESPROBESLOCUSLENGTH\",\"$SEQUENCESPROBESLOCUSLENGTHFORJOIN\","
+#   echo "  \"$SEQUENCESTABASSEBAITL\", \"$SEQUENCESTABASSEBAITLSORT\",\"$SEQUENCESPROBES120600FIN\","
+#   echo "  \"$SEQUENCESPROBES120600MODIF\", \"$SEQUENCESPROBES120600ASSEM\", \"$SEQUENCESPROBES120600CONTIG\","
+#   echo "  \"$PROBEPRELIM0\", \"$PROBEPRELIMCLUSTER90\", \"$UNIQUEPROBEPRELIM\","
+#   echo "  \"$PROBEPRELIMCDHIT\", \"$PROBEPRELIMFORJOIN\", \"$PROBEPRELIMSORT\","
+#   echo "  \"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESNUM\"."
+#   confirmgo
+#   }
 
 # List kept files which user can use for another analysis
 echo
