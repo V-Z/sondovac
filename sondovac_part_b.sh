@@ -546,23 +546,23 @@ if egrep -q "^# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[
     confirmgo
   fi
 
-# # Check the statistics
-#
-# echo "${REDF}Assembly statistics${NORM}"
-# echo
-#
-# # Check total number of bp
-# echo "${CYAF}Total number of base pairs:${NORM}"
-# { cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | awk '{s+=$1}END{print s}'; } || {
-#   echo
-#   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking statistics failed.${NORM} Aborting. Check if file"
-#   echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns:"
-#   echo -e "$REQUIREDCOLS"
-#   echo
-#   exit 1
-#   }
-# confirmgo
-#
+# Check the statistics
+
+echo "${REDF}Assembly statistics${NORM}"
+echo
+
+# Calculation of the total number of base pairs, based on exons ≥ bait length
+echo "${CYAF}Total number of base pairs:${NORM}"
+{ cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | awk '{s+=$1}END{print s}'; } || {
+echo
+echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking statistics failed.${NORM} Aborting. Check if file"
+echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns:"
+echo -e "$REQUIREDCOLS"
+echo
+exit 1
+}
+confirmgo
+
 # # Check number of contigs
 # echo "${CYAF}Number of contigs:${NORM}"
 # { cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | wc -l; } || {
@@ -871,7 +871,7 @@ echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f
 
 # Calculation of the total number of genes
 
-echo "Calculating the total number of base genes"
+echo "Calculating the total number of genes"
 echo " There are ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}genes in total."
 confirmgo
 
@@ -910,7 +910,7 @@ echo "similarity with the plastome reference"
 echo
 
 # Remove remaining cp genes from probe set
-echo "${CYAF}Detecting remaining plastid genes from probe set${NORM}"
+echo "${CYAF}Detecting remaining plastid genes in probe set${NORM}"
 blat -t=dna -q=dna -minIdentity=$BLATIDENT -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCESCP
 echo
 
