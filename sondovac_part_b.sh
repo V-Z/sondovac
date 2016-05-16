@@ -712,7 +712,7 @@ echo
 # Create the final FASTA file for the Hyb-Seq probes
 
 # Extract and sort the exons making up genes of a certain minimum total length
-echo "Extracting and sorting the exons making up genes of ≥$MINLOCUSLENGTH bp"
+echo "Extracting and sorting the exons making up genes of ≥${CYAF}$MINLOCUSLENGTH${NORM} bp"
 sed 's/^/Assembly_/' $SEQUENCESPROBESLOCUSLENGTH | cut -f 1 -d " " | sort -k 1,1 > $SEQUENCESPROBESLOCUSLENGTHFORJOIN
 echo
 
@@ -724,15 +724,15 @@ echo
 # Make the assembly number the first field and sort
 echo "Sorting exons ≥${CYAF}$BAITL${NORM} bp"
 grep '[Cc]ontig' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*\([Cc]ontig_[[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT && REMAINING="YES"
-# Geneious 9 has different naming scheme of contigs 000000025417_Assembly_67_reads_from_25417	234	ACAGAAGAA
+# Geneious 9 has different naming scheme of contigs (it does not use keyword "Contig")
 if [ ! -s "$SEQUENCESTABASSEBAITLSORT" ]; then
 	grep '[Aa]ssembly' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*[Aa]ssembly_\([[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT
 	REMAINING="NO"
-	fi # Assembly_000000000005	Contig_1	126	GGTGA...
+	fi
 echo
 
 # Make a file with all exons of a certain minimum length and making up genes of a certain minimum length
-echo "Selecting all exons ≥${CYAF}$BAITL${NORM} bp and all exons making up genes of ≥$MINLOCUSLENGTH bp"
+echo "Selecting all exons ≥${CYAF}$BAITL${NORM} bp and all exons making up genes of ≥${CYAF}$MINLOCUSLENGTH${NORM} bp"
 join $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITLSORT > $SEQUENCESPROBES120600FIN
 echo
 
