@@ -958,7 +958,7 @@ The transcriptome input file is unpublished data from G. K.-S. Wong et al.. As s
   \item \url{http://www.onekp.com/samples/single.php?id=JHCN}
 \end{itemize}
 
-The transcriptome FASTA file used for the probe design is named JHCN-SOAPdenovo-Trans-assembly.dnas.out and can be found under JHCN/Assembly/JHCN-SOAPdenovo-Trans-translated/. Information about how to get access to data download is given in \citet{Matasci2014}.
+The transcriptome FASTA file used for the probe design is named \texttt{JHCN-SOAPdenovo-Trans-assembly.dnas.out} and can be found under \texttt{JHCN/Assembly/JHCN-SOAPdenovo-Trans-translated/}. Information about how to get access to data download is given in \citet{Matasci2014}.
 
 Explanation of command line parameters is on page~\pageref{script-usage}.
 
@@ -970,16 +970,12 @@ If you have a question or encounter a problem, please see \url{https://github.co
 
 List of changes in released versions of Sondovač.
 
-\subsection{Version 1.1 regular release released 2016-03-15}
+\subsection{Version 1.2 regular release released 2016-05-}
 
 \begin{itemize}
-  \item Checking if input FASTA files are interleaved or not (required) and, if needed, FASTA files are converted not to be interleaved.
-  \item Added requirement of Python.
-  \item Removed BAM files (part A) - they are not kept anymore.
-  \item Language checking and enhancements of documentation.
-  \item Modified CD-HIT-EST.
-  \item Improved summary of the probe design in part B.
-  \item More possibilities for minimum total locus length.
+  \item More clear display of numbers of exons and genes.
+  \item Added support for Geneious 9.
+  \item More detaild error reporting (especially in part B).
   \item Various smaller fixes.
 \end{itemize}
 

@@ -9,6 +9,8 @@ Version 1.2 regular release released 2016-05-
 
 * More clear display of numbers of exons and genes.
 * Added support for Geneious 9.
+* More detaild error reporting (especially in part B).
+* Various smaller fixes.
 
 
 Version 1.1 regular release released 2016-03-15

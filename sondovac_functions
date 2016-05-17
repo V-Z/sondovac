@@ -1,4 +1,4 @@
-# Functions required by probe design script
+# Functions required by probe design script Sondovač
 
 # Version of the script
 SCRIPTVERSION=1.1
@@ -940,7 +940,7 @@ function noninterleavedfasta {
   echo "Converting possibly interleaved FASTA file ${REDF}$1${NORM}"
   echo "  into non-interleaved FASTA file ${REDF}$2${NORM}"
   { awk 'BEGIN{RS=">"}NR>1{sub("\n","\t");gsub("\n",""); print RS$0}' $1 | sed 's/\t/\n/g' > $2; } || {
-    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA failed. Aborting"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA failed.${NORM} Aborting"
     echo " Check if ${REDF}$1${NORM} is correct FASTA file."
     echo
     exit 1

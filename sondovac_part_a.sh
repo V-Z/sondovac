@@ -5,6 +5,7 @@ SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 # Load aliases to replace Mac OS X outdated tools by those installed by Homebrew
 shopt -s expand_aliases
+unalias -a
 source $SCRIPTDIR/mac_aliases
 
 # Load functions shared by both parts, introductory message

@@ -5,19 +5,20 @@ SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 # Load aliases to replace Mac OS X outdated tools by those installed by Homebrew
 shopt -s expand_aliases
+unalias -a
 source $SCRIPTDIR/mac_aliases
 
 # Load functions shared by both parts, introductory message
 source $SCRIPTDIR/sondovac_functions || {
-  echo
-  echo "Fatal error!"
-  echo "Unable to load file \"sondovac_functions\" with required functions!"
-  echo "It must be in same directory as \"$0\""
-  echo "Check it and, if needed, download again whole script from"
-  echo "https://github.com/V-Z/sondovac/"
-  echo
-  exit 1
-  }
+	echo
+	echo "Fatal error!"
+	echo "Unable to load file \"sondovac_functions\" with required functions!"
+	echo "It must be in same directory as \"$0\""
+	echo "Check it and, if needed, download again whole script from"
+	echo "https://github.com/V-Z/sondovac/"
+	echo
+	exit 1
+	}
 
 echo "${REDF}This is part B of the pipeline.${NORM}"
 echo
@@ -260,117 +261,117 @@ checktools python
 
 # Function to compile CD-HIT
 function compilecdhit {
-  {
-  checktools make &&
-  checktools g++ &&
-  echo &&
-  echo "Compiling \"${REDF}CD-HIT${NORM}\" from source code..." &&
-  echo &&
-  cd $1 &&
-  make -s openmp=yes || { echo "${CYAF}There is no MPI available${NORM} - no multi-thread support." && make -s openmp=no; } &&
-  cp -a *.pl $BIN/ || echo "No Perl scripts in this build..." &&
-  cp -a cd-hit* $BIN/ &&
-  cd $WORKDIR &&
-  echo &&
-  echo "\"CD-HIT\" is available. ${GREF}OK.${NORM}"
-  } || {
-    echo
-    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please go to ${REDF}https://github.com/weizhongli/cdhit/releases${NORM}"
-    echo "download cd-hit-*.tgz, compile it and ensure it is in ${BOLD}PATH${NORM}."
-    echo "Check last error messages to find out why compilation failed."
-    echo
-    exit 1
-    }
-  }
+	{
+	checktools make &&
+	checktools g++ &&
+	echo &&
+	echo "Compiling \"${REDF}CD-HIT${NORM}\" from source code..." &&
+	echo &&
+	cd $1 &&
+	make -s openmp=yes || { echo "${CYAF}There is no MPI available${NORM} - no multi-thread support." && make -s openmp=no; } &&
+	cp -a *.pl $BIN/ || echo "No Perl scripts in this build..." &&
+	cp -a cd-hit* $BIN/ &&
+	cd $WORKDIR &&
+	echo &&
+	echo "\"CD-HIT\" is available. ${GREF}OK.${NORM}"
+		} || {
+		echo
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please go to ${REDF}https://github.com/weizhongli/cdhit/releases${NORM}"
+		echo "download cd-hit-*.tgz, compile it and ensure it is in ${BOLD}PATH${NORM}."
+		echo "Check last error messages to find out why compilation failed."
+		echo
+		exit 1
+		}
+	}
 
 # Check if cd-hit-est is available
 { command -v cd-hit-est >/dev/null 2>&1 && echo "\"${REDF}cd-hit-est${NORM}\" is available. ${GREF}OK.${NORM}"; } || {
-  echo "${CYAF}CD-HIT is required but not installed or available in ${BOLD}PATH${NORM}.${NORM}"
-  if [ "$STARTINI" == "I" ]; then
-  echo
-  echo "Type \"${REDF}C${NORM}\" ${CYAF}to compile \"CD-HIT\" 4.6.4 from source available together with this script.${NORM}"
-  echo "Type \"${REDF}S${NORM}\" ${CYAF}to download latest \"CD-HIT\" source${NORM} from"
-  echo "  ${REDF}https://github.com/weizhongli/cdhit${NORM} and compile it"
-  echo "Type \"${REDF}B${NORM}${NORM}\" ${CYAF}to copy \"CD-HIT\" 4.6.4 binary${NORM} available together with the script"
-  echo "  (recommended, available for Linux and Mac OS X)."
-  echo "Type \"${REDF}H${NORM}\" ${CYAF}for installation using Homebrew${NORM} (only for Mac OS X, recommended)."
-  echo "  See \"${REDF}brew info homebrew/science/cd-hit${NORM}\" for more details."
-  echo "Type \"${REDF}M${NORM}\" ${CYAF}for manual installation${NORM} - script will exit, and you will have to install"
-  echo "  \"CD-HIT\" yourself."
-  read CDHIT
-  while :
-  do
-    case "$CDHIT" in
-      C|c)
-	compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
-	break
-	;;
-      S|s)
-	downloaderselector
-	checktools unzip
-	$DOWNLOADER cd-hit-master.zip https://github.com/weizhongli/cdhit/archive/master.zip || {
-	  echo
-	  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download failed.${NORM} Please, go to"
-	  echo "  ${REDF}https://github.com/weizhongli/cdhit/releases/${NORM},"
-	  echo "  download latest cd-hit-*.tar.gz and compile it manually."
-	  echo
-	  exit 1
-	  }
-	unzip -nq cd-hit-master.zip
-	compilecdhit cdhit-master
-	break
-	;;
-      B|b)
-	echo "Copying \"${REDF}CD-HIT${NORM}\" binaries"
-	case "$OS" in
-	  Mac)
-	    cp -pr $SCRIPTDIR/pkgs/macosx/bin/cd-hit* $BIN/
-	    cp -p $SCRIPTDIR/pkgs/macosx/bin/*.pl $BIN/ || echo
-	    ;;
-	  Linux)
-	    cp -p $SCRIPTDIR/pkgs/linux64b/bin/cd-hit* $BIN/
-	    cp -p $SCRIPTDIR/pkgs/linux64b/bin/*.pl $BIN/
-	    ;;
-	  *) echo
-	    echo "Binary is not available for ${REDF}$OS $OSB${NORM}."
-	    echo
-	    compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
-	    ;;
-	esac
-	break
-	;;
-	H|h)
-	  if [ "$OS" == "Mac" ]; then
-	    { echo "Installing \"${REDF}CD-HIT${NORM}\" using Homebrew" &&
-	    brew install homebrew/science/cd-hit &&
-	    echo "\"${REDF}CD-HIT${NORM}\" is available. ${GREF}OK.${NORM}"
-	    } || {
-	      echo
-	      echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Installation of${NORM} \"${REDF}CD-HIT${NORM}\" ${CYAF}failed.${NORM} Please, do it manually. For details see"
-	      echo "\"${REDF}brew info homebrew/science/cd-hit${NORM}\" and \"${REDF}brew help${NORM}\"."
-	      echo
-	      exit 1
-	      }
-	    else
-	      echo "This is not Mac OS X. Going to compile..."
-	      compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
-	    fi
-	  break
-	  ;;
-      M|m)
-	echo
-	echo "Please, go to ${REDF}http://weizhongli-lab.org/cd-hit/${NORM}, install \"${REDF}CD-HIT${NORM}\" and ensure"
-	echo "  it is in ${BOLD}PATH${NORM}."
-	echo
-	exit
-	;;
-      *) echo "${CYAF}Wrong option.${NORM} Use ${REDF}C${NORM}, ${REDF}S${NORM}, ${REDF}B${NORM}, ${REDF}H${NORM} or ${REDF}M${NORM}." && read CDHIT;;
-    esac
-  done
-else
-	exit 1
-fi
-  }
+	echo "${CYAF}CD-HIT is required but not installed or available in ${BOLD}PATH${NORM}.${NORM}"
+	if [ "$STARTINI" == "I" ]; then
+		echo
+		echo "Type \"${REDF}C${NORM}\" ${CYAF}to compile \"CD-HIT\" 4.6.4 from source available together with this script.${NORM}"
+		echo "Type \"${REDF}S${NORM}\" ${CYAF}to download latest \"CD-HIT\" source${NORM} from"
+		echo "  ${REDF}https://github.com/weizhongli/cdhit${NORM} and compile it"
+		echo "Type \"${REDF}B${NORM}${NORM}\" ${CYAF}to copy \"CD-HIT\" 4.6.4 binary${NORM} available together with the script"
+		echo "  (recommended, available for Linux and Mac OS X)."
+		echo "Type \"${REDF}H${NORM}\" ${CYAF}for installation using Homebrew${NORM} (only for Mac OS X, recommended)."
+		echo "  See \"${REDF}brew info homebrew/science/cd-hit${NORM}\" for more details."
+		echo "Type \"${REDF}M${NORM}\" ${CYAF}for manual installation${NORM} - script will exit, and you will have to install"
+		echo "  \"CD-HIT\" yourself."
+		read CDHIT
+		while :
+			do
+				case "$CDHIT" in
+					C|c)
+						compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
+						break
+						;;
+					S|s)
+						downloaderselector
+						checktools unzip
+						$DOWNLOADER cd-hit-master.zip https://github.com/weizhongli/cdhit/archive/master.zip || {
+							echo
+							echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download failed.${NORM} Please, go to"
+							echo "  ${REDF}https://github.com/weizhongli/cdhit/releases/${NORM},"
+							echo "  download latest cd-hit-*.tar.gz and compile it manually."
+							echo
+							exit 1
+							}
+						unzip -nq cd-hit-master.zip
+						compilecdhit cdhit-master
+						break
+						;;
+					B|b)
+						echo "Copying \"${REDF}CD-HIT${NORM}\" binaries"
+						case "$OS" in
+							Mac)
+								cp -pr $SCRIPTDIR/pkgs/macosx/bin/cd-hit* $BIN/
+								cp -p $SCRIPTDIR/pkgs/macosx/bin/*.pl $BIN/ || echo
+								;;
+							Linux)
+								cp -p $SCRIPTDIR/pkgs/linux64b/bin/cd-hit* $BIN/
+								cp -p $SCRIPTDIR/pkgs/linux64b/bin/*.pl $BIN/
+								;;
+							*) echo
+								echo "Binary is not available for ${REDF}$OS $OSB${NORM}."
+								echo
+								compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
+								;;
+							esac
+						break
+						;;
+					H|h)
+						if [ "$OS" == "Mac" ]; then
+							{ echo "Installing \"${REDF}CD-HIT${NORM}\" using Homebrew" &&
+							brew install homebrew/science/cd-hit &&
+							echo "\"${REDF}CD-HIT${NORM}\" is available. ${GREF}OK.${NORM}"
+								} || {
+								echo
+								echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Installation of${NORM} \"${REDF}CD-HIT${NORM}\" ${CYAF}failed.${NORM} Please, do it manually. For details see"
+								echo "\"${REDF}brew info homebrew/science/cd-hit${NORM}\" and \"${REDF}brew help${NORM}\"."
+								echo
+								exit 1
+								}
+							else
+								echo "This is not Mac OS X. Going to compile..."
+								compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
+							fi
+						break
+						;;
+					M|m)
+						echo
+						echo "Please, go to ${REDF}http://weizhongli-lab.org/cd-hit/${NORM}, install \"${REDF}CD-HIT${NORM}\" and ensure"
+						echo "  it is in ${BOLD}PATH${NORM}."
+						echo
+						exit
+						;;
+					*) echo "${CYAF}Wrong option.${NORM} Use ${REDF}C${NORM}, ${REDF}S${NORM}, ${REDF}B${NORM}, ${REDF}H${NORM} or ${REDF}M${NORM}." && read CDHIT;;
+					esac
+				done
+		else
+			exit 1
+		fi
+	}
 
 # Input files
 CHECKFILEREADOUT=""
@@ -517,34 +518,47 @@ if grep -q "# Sequences" $TSVLIST; then
 		echo "${REDF}${BOLD}Error!${NORM} Column \"${CYAF}# Sequences${NORM}\" is missing!"
 		echo -e "$REQUIREDCOLS"
 		exit 1
-	fi
+	fi || {
+		echo
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking of required columns failed.${NORM} Aborting."
+		echo "Check if file ${REDF}$TSVLIST${NORM} is correct TSV file correctly exported from Geneious."
+		echo
+		exit 1
+		}
 echo
 
 # Check if TSV output of Geneious contains only required columns or more
 if egrep -q "^# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[[:blank:]]+Mean Coverage[[:blank:]]+Name[[:blank:]]+Sequence Length$" $TSVLIST
-  then
-    echo "${REDF}$TSVLIST${NORM} is correct input file. ${GREF}OK.${NORM}"
-    TSVLIST2=$TSVLIST
-    echo
-  else
-    echo "Input file ${REDF}$TSVLIST${NORM} seems to contain more columns or columns in"
-    echo "  another order than required."
-    echo "Needed columns will be extracted in required order."
-    $SCRIPTDIR/geneious_column_separator.pl $TSVLIST || {
-      echo
-      echo "${REDF}${BOLD}Error!${NORM} Extraction failed. Aborting."
-      echo "Either script ${REDF}$SCRIPTDIR/geneious_column_separator.pl${NORM}"
-      echo "  is missing or there is something wrong with ${REDF}$TSVLIST${NORM}"
-      echo "Please, prepare required file manually."
-      echo -e "$REQUIREDCOLS"
-      echo
-      exit 1
-      }
-    TSVLIST2="${TSVLIST%.*}.columns.tsv"
-    echo "File with extracted columns was saved as"
-    echo "${REDF}$TSVLIST2${NORM} for possible later usage."
-    confirmgo
-  fi
+	then
+		echo "${REDF}$TSVLIST${NORM} is correct input file. ${GREF}OK.${NORM}"
+		TSVLIST2=$TSVLIST
+		echo
+	else
+		echo "Input file ${REDF}$TSVLIST${NORM} seems to contain more columns or columns in"
+		echo "  another order than required."
+		echo "Needed columns will be extracted in required order."
+		$SCRIPTDIR/geneious_column_separator.pl $TSVLIST || {
+			echo
+			echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Extraction failed.${NORM} Aborting."
+			echo "Either script ${REDF}$SCRIPTDIR/geneious_column_separator.pl${NORM}"
+			echo "  is missing or there is something wrong with ${REDF}$TSVLIST${NORM}"
+			echo "Please, prepare required file manually."
+			echo -e "$REQUIREDCOLS"
+			echo
+			exit 1
+			}
+		TSVLIST2="${TSVLIST%.*}.columns.tsv"
+		echo "File with extracted columns was saved as"
+		echo "${REDF}$TSVLIST2${NORM} for possible later usage."
+		confirmgo
+	fi || {
+		echo
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking of required columns failed.${NORM} Aborting."
+		echo "Check if file ${REDF}$TSVLIST${NORM} is correct TSV file correctly exported from Geneious."
+		echo
+		exit 1
+		}
+echo
 
 # Check the statistics
 
@@ -554,59 +568,53 @@ echo
 # Calculation of the total number of base pairs, based on exons ≥ bait length
 echo "${CYAF}Total number of base pairs:${NORM}"
 { cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | awk '{s+=$1}END{print s}'; } || {
-echo
-echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking statistics failed.${NORM} Aborting. Check if file"
-echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns:"
-echo -e "$REQUIREDCOLS"
-echo
-exit 1
-}
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking statistics failed.${NORM} Aborting. Check if file"
+	echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns:"
+	echo -e "$REQUIREDCOLS"
+	echo
+	exit 1
+	}
 confirmgo
 
-# # Check number of contigs
-# echo "${CYAF}Number of contigs:${NORM}"
-# { cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | wc -l; } || {
-#   echo
-#   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking number of contigs failed.${NORM} Aborting. Check if file"
-#   echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns"
-#   echo -e "$REQUIREDCOLS"
-#   echo
-#   exit 1
-#   }
-# confirmgo
+# Check number of contigs
+echo "${CYAF}Number of contigs longer than ${REDF}$BAITLN${CYAF}:${NORM}"
+{ cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | wc -l; } || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking number of contigs failed.${NORM} Aborting. Check if file"
+	echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns"
+	echo -e "$REQUIREDCOLS"
+	echo
+	exit 1
+	}
+confirmgo
 
 # Convert FASTA to TAB
 echo "Converting FASTA to TAB"
-fasta2tab $SEQUENCES $SEQUENCESTAB || {
-  echo
-  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA to TAB failed.${NORM} Aborting."
-  echo "Check if file ${REDF}$SEQUENCES${NORM} is correct FASTA file."
-  echo
-  exit 1
-  }
+fasta2tab $SEQUENCES $SEQUENCESTAB
 echo
 
 # Modify labels of FASTA sequences to ensure them to work correctly
 { echo "Checking and modifying FASTA sequence labels" &&
-sed -i 's/:.*\t/\t/' $SEQUENCESTAB &&
-awk -F '[_\t]' '{ printf "%012d_", $1; print; }' $SEQUENCESTAB > $SEQUENCESTAB.temp &&
-mv $SEQUENCESTAB.temp $SEQUENCESTAB &&
-sed -i 's/_[[:digit:]]\+//' $SEQUENCESTAB; } || {
-    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Modifications of FASTA labels failed.${NORM} Aborting."
-    echo "Check if ${REDF}$SEQUENCESTAB${NORM} is correct file."
-    echo
-    exit 1
-    }
+	sed -i 's/:.*\t/\t/' $SEQUENCESTAB &&
+	awk -F '[_\t]' '{ printf "%012d_", $1; print; }' $SEQUENCESTAB > $SEQUENCESTAB.temp &&
+	mv $SEQUENCESTAB.temp $SEQUENCESTAB &&
+	sed -i 's/_[[:digit:]]\+//' $SEQUENCESTAB; } || {
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Modifications of FASTA labels failed.${NORM} Aborting."
+		echo "Check if ${REDF}$SEQUENCESTAB${NORM} is correct file."
+		echo
+		exit 1
+		}
 echo
 
 # Separate the assembled sequences
 echo "Separating assembled sequences"
 grep 'Assembly\|Contig' $SEQUENCESTAB > $SEQUENCESTABASSE || {
-    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Separation of assembled sequences failed.${NORM} Aborting."
-    echo "Check if ${REDF}$SEQUENCESTAB${NORM} is correct file."
-    echo
-    exit 1
-    }
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Separation of assembled sequences failed.${NORM} Aborting."
+	echo "Check if ${REDF}$SEQUENCESTAB${NORM} is correct file (FASTA converted into TAB)."
+	echo
+	exit 1
+	}
 echo
 
 # Retention of those contigs that comprise exons ≥ bait length and have a certain minimum total locus length
@@ -616,86 +624,93 @@ echo "${CYAF}Number of assembled sequences:${NORM}"
 echo "Length of exons ≥${CYAF}$BAITL${NORM} bp."
 echo -e "${REDF}G${CYAF}enes of length${NORM}\t\t${REDF}T${CYAF}otal bp${NORM}\t${REDF}N${CYAF}umber of genes${NORM}"
 for LOCUSLENGTH in 0360 0480 0600 0720 0840 0960 1080 1200 1320 1440 1560 1680 1800 1920 2040; do
-  LOCUSLENGTHN=$(expr $LOCUSLENGTH - 1)
-  echo -e "≥$LOCUSLENGTH bp\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l)"
-  done
+	LOCUSLENGTHN=$(expr $LOCUSLENGTH - 1)
+	echo -e "≥$LOCUSLENGTH bp\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l)"
+	done || {
+		echo
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking number of assembled sequences failed.${NORM} Aborting."
+		echo "Check if file ${REDF}$SEQUENCESTABASSE${NORM} is correct (FASTA converted into TAB)."
+		echo
+		exit 1
+		}
+echo
 
 # Select the optimal minimum total locus length
 if [ "$STARTINI" == "I" ]; then
-  echo "${CYAF}Select minimum total locus length.${NORM} Possible values are ${REDF}360${NORM}, ${REDF}480${NORM}, ${REDF}600${NORM},"
-  echo "  ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM}, ${REDF}1200${NORM}, ${REDF}1320${NORM}, ${REDF}1440${NORM}, ${REDF}1560${NORM}, ${REDF}1680${NORM}, ${REDF}1800${NORM}, ${REDF}1920${NORM} or ${REDF}2040${NORM}."
-  read MINLOCUSLENGTHTEST
-  while :
-  do
-    case "$MINLOCUSLENGTHTEST" in
-      360)
-	MINLOCUSLENGTH=360
-	break
-	;;
-      480)
-	MINLOCUSLENGTH=480
-	break
-	;;
-      600)
-	MINLOCUSLENGTH=600
-	break
-	;;
-      720)
-	MINLOCUSLENGTH=720
-	break
-	;;
-      840)
-	MINLOCUSLENGTH=840
-	break
-	;;
-      960)
-	MINLOCUSLENGTH=960
-	break
-	;;
-      1080)
-	MINLOCUSLENGTH=1080
-	break
-	;;
-      1200)
-	MINLOCUSLENGTH=1200
-	break
-	;;
-      1320)
-	MINLOCUSLENGTH=1320
-	break
-	;;
-      1440)
-	MINLOCUSLENGTH=1440
-	break
-	;;
-      1560)
-	MINLOCUSLENGTH=1560
-	break
-	;;
-      1680)
-	MINLOCUSLENGTH=1680
-	break
-	;;
-      1800)
-	MINLOCUSLENGTH=1800
-	break
-	;;
-      1920)
-	MINLOCUSLENGTH=1920
-	break
-	;;
-      2040)
-	MINLOCUSLENGTH=2040
-	break
-	;;
-      *)
-	echo "${CYAF}Wrong option.${NORM} Use ${REDF}360${NORM}, ${REDF}480${NORM}, ${REDF}600${NORM}, ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM}, ${REDF}1200${NORM}, ${REDF}1320${NORM}, ${REDF}1440${NORM},"
-	echo "  ${REDF}1560${NORM}, ${REDF}1680${NORM}, ${REDF}1800${NORM}, ${REDF}1920${NORM} or ${REDF}2040${NORM}."
+	echo "${CYAF}Select minimum total locus length.${NORM} Possible values are ${REDF}360${NORM}, ${REDF}480${NORM}, ${REDF}600${NORM},"
+	echo "  ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM}, ${REDF}1200${NORM}, ${REDF}1320${NORM}, ${REDF}1440${NORM}, ${REDF}1560${NORM}, ${REDF}1680${NORM}, ${REDF}1800${NORM}, ${REDF}1920${NORM} or ${REDF}2040${NORM}."
 	read MINLOCUSLENGTHTEST
-	;;
-      esac
-    done
-  fi
+	while :
+		do
+		case "$MINLOCUSLENGTHTEST" in
+			360)
+				MINLOCUSLENGTH=360
+				break
+				;;
+			480)
+				MINLOCUSLENGTH=480
+				break
+				;;
+			600)
+				MINLOCUSLENGTH=600
+				break
+				;;
+			720)
+				MINLOCUSLENGTH=720
+				break
+				;;
+			840)
+				MINLOCUSLENGTH=840
+				break
+				;;
+			960)
+				MINLOCUSLENGTH=960
+				break
+				;;
+			1080)
+				MINLOCUSLENGTH=1080
+				break
+				;;
+			1200)
+				MINLOCUSLENGTH=1200
+				break
+				;;
+			1320)
+				MINLOCUSLENGTH=1320
+				break
+				;;
+			1440)
+				MINLOCUSLENGTH=1440
+				break
+				;;
+			1560)
+				MINLOCUSLENGTH=1560
+				break
+				;;
+			1680)
+				MINLOCUSLENGTH=1680
+				break
+				;;
+			1800)
+				MINLOCUSLENGTH=1800
+				break
+				;;
+			1920)
+				MINLOCUSLENGTH=1920
+				break
+				;;
+			2040)
+				MINLOCUSLENGTH=2040
+				break
+				;;
+			*)
+				echo "${CYAF}Wrong option.${NORM} Use ${REDF}360${NORM}, ${REDF}480${NORM}, ${REDF}600${NORM}, ${REDF}720${NORM}, ${REDF}840${NORM}, ${REDF}960${NORM}, ${REDF}1080${NORM}, ${REDF}1200${NORM}, ${REDF}1320${NORM}, ${REDF}1440${NORM},"
+				echo "  ${REDF}1560${NORM}, ${REDF}1680${NORM}, ${REDF}1800${NORM}, ${REDF}1920${NORM} or ${REDF}2040${NORM}."
+				read MINLOCUSLENGTHTEST
+				;;
+			esac
+		done
+	fi
 
 echo
 echo "${CYAF}Total locus length${NORM} is set to ${REDF}$MINLOCUSLENGTH bp${NORM}."
@@ -706,19 +721,37 @@ MINLOCUSLENGTHN=$(expr $MINLOCUSLENGTH - 1)
 
 # Saving sequences with selected minimum total locus length
 echo "Saving sequences of selected length (≥$MINLOCUSLENGTH bp)"
-awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' > $SEQUENCESPROBESLOCUSLENGTH
+{ awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' > $SEQUENCESPROBESLOCUSLENGTH; } || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Saving sequences of selected length failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$SEQUENCESTABASSE${NORM} is correct (FASTA converted into TAB)."
+	echo
+	exit 1
+	}
 echo
 
 # Create the final FASTA file for the Hyb-Seq probes
 
 # Extract and sort the exons making up genes of a certain minimum total length
 echo "Extracting and sorting the exons making up genes of ≥${CYAF}$MINLOCUSLENGTH${NORM} bp"
-sed 's/^/Assembly_/' $SEQUENCESPROBESLOCUSLENGTH | cut -f 1 -d " " | sort -k 1,1 > $SEQUENCESPROBESLOCUSLENGTHFORJOIN
+{ sed 's/^/Assembly_/' $SEQUENCESPROBESLOCUSLENGTH | cut -f 1 -d " " | sort -k 1,1 > $SEQUENCESPROBESLOCUSLENGTHFORJOIN; } || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Extraction and sort of the exons failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$SEQUENCESPROBESLOCUSLENGTH${NORM} is correct (FASTA converted into TAB)."
+	echo
+	exit 1
+	}
 echo
 
 # Make a file with all exons of a certain minimum length
 echo "Selecting ≥${CYAF}$BAITL${NORM} bp exons"
-awk '{print $1"\t"length($2)"\t"$2}' $SEQUENCESTABASSE | awk '$2>'"$BAITLN"'' > $SEQUENCESTABASSEBAITL
+{ awk '{print $1"\t"length($2)"\t"$2}' $SEQUENCESTABASSE | awk '$2>'"$BAITLN"'' > $SEQUENCESTABASSEBAITL; } || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Selection of the exons failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$SEQUENCESTABASSE${NORM} is correct (FASTA converted into TAB)."
+	echo
+	exit 1
+	}
 echo
 
 # Make the assembly number the first field and sort
@@ -733,13 +766,27 @@ echo
 
 # Make a file with all exons of a certain minimum length and making up genes of a certain minimum length
 echo "Selecting all exons ≥${CYAF}$BAITL${NORM} bp and all exons making up genes of ≥${CYAF}$MINLOCUSLENGTH${NORM} bp"
-join $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITLSORT > $SEQUENCESPROBES120600FIN
+join $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITLSORT > $SEQUENCESPROBES120600FIN || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Selection of the exons failed.${NORM} Aborting."
+	echo "Check if files ${REDF}$SEQUENCESPROBESLOCUSLENGTHFORJOIN${NORM} and ${REDF}$SEQUENCESTABASSEBAITLSORT${NORM}"
+	echo "  are correct (tabular files listing respective exons and their sequences)."
+	echo
+	exit 1
+	}
 echo
 
 # Convert TAB to FASTA
 echo "Converting TAB to FASTA"
-sed 's/ /_/' $SEQUENCESPROBES120600FIN | sed 's/ /_/' > $SEQUENCESPROBES120600MODIF
-sed 's/^/>/' $SEQUENCESPROBES120600MODIF | sed 's/ /\n/' > $SEQUENCESPROBES120600ASSEM
+{ sed 's/ /_/' $SEQUENCESPROBES120600FIN | sed 's/ /_/' > $SEQUENCESPROBES120600MODIF &&
+	sed 's/^/>/' $SEQUENCESPROBES120600MODIF | sed 's/ /\n/' > $SEQUENCESPROBES120600ASSEM; } || {
+		echo
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA to TAB failed.${NORM} Aborting."
+		echo "Check if file ${REDF}$SEQUENCESPROBES120600FIN${NORM} is correct FASTA file."
+		echo
+		exit 1
+		}
+echo
 
 # Remaining assemblies have to be selected and added to the FASTA file of the probes
 # NOTE: Geneious 9 does not use keyword "Contig"
@@ -750,11 +797,24 @@ echo
 
 # Combine the two FASTA files
 echo "Writing FASTA file with preliminary probe sequences"
-cat $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG > $PROBEPRELIM0
+cat $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG > $PROBEPRELIM0 || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Writing of preliminary probe sequences failed.${NORM} Aborting."
+	echo "Check if files ${REDF}$SEQUENCESPROBES120600ASSEM${NORM} and ${REDF}$SEQUENCESPROBES120600CONTIG${NORM} are correct FASTA files."
+	echo
+	exit 1
+	}
+echo
 
 # Ensure all sequences have correct labels
 echo "Ensuring all sequences have correct labels"
-sed 's/^>[^0123456789]*\([[:digit:]]\{12\}\)[^0123456789]*\([[:digit:]]\{1,\}\)[^0123456789]*\([[:digit:]]\{1,\}\)$/>Assembly_\1_Contig_\2_\3/' $PROBEPRELIM0 > $PROBEPRELIM
+sed 's/^>[^0123456789]*\([[:digit:]]\{12\}\)[^0123456789]*\([[:digit:]]\{1,\}\)[^0123456789]*\([[:digit:]]\{1,\}\)$/>Assembly_\1_Contig_\2_\3/' $PROBEPRELIM0 > $PROBEPRELIM || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking of FASTA sequence labels failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$PROBEPRELIM0${NORM} is correct FASTA file."
+	echo
+	exit 1
+	}
 echo
 echo "${CYAF}Preliminary probe sequences${NORM} saved as"
 echo "  ${REDF}$PROBEPRELIM${NORM} for possible later usage."
@@ -773,7 +833,13 @@ echo "${CYAF}Checking sequence similarity between the probe sequences (exons)${N
 echo "  Detecting identical probe sequences and retaining the longest one in such a"
 echo "  case. Retaining also the unclustered probe sequences."
 echo
-cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCLUSTER100 -d 0 -c 1.0 -p 1
+cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCLUSTER100 -d 0 -c 1.0 -p 1 || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking of the sequence similarity failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$PROBEPRELIM${NORM} is correct FASTA file."
+	echo
+	exit 1
+	}
 echo
 echo "Clustered exons with 100% sequence identity were saved as"
 echo "${REDF}$PROBEPRELIMCLUSTER100${NORM} for possible later usage."
@@ -783,21 +849,39 @@ confirmgo
 echo "${CYAF}Detecting and removing probe sequences (exons)${NORM} that are similar to each other"
 echo "  above a certain threshold"
 echo
-cd-hit-est -i $PROBEPRELIMCLUSTER100 -o $PROBEPRELIMCLUSTER90 -d 0 -c $CDHITSIM -p 1 -g 1
+cd-hit-est -i $PROBEPRELIMCLUSTER100 -o $PROBEPRELIMCLUSTER90 -d 0 -c $CDHITSIM -p 1 -g 1 || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking of the probe sequence failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$PROBEPRELIMCLUSTER100${NORM} is correct FASTA file."
+	echo
+	exit 1
+	}
 echo
-# Finding those clusters from a CD-HIT .clstr file that include only one sequence or multiple sequences with 100% identity (in which case the longest sequence is choosen)
-python $SCRIPTDIR/grab_singleton_clusters.py -i $PROBEPRELIMCLUSTER90.clstr -o $UNIQUEPROBEPRELIMCLUSTER90
+# Finding those clusters from a CD-HIT CLSTR file that include only one sequence or multiple sequences with 100% identity (in which case the longest sequence is choosen)
+python $SCRIPTDIR/grab_singleton_clusters.py -i $PROBEPRELIMCLUSTER90.clstr -o $UNIQUEPROBEPRELIMCLUSTER90 || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking of the probe sequence failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$PROBEPRELIMCLUSTER90.clstr${NORM} is correct output of ${CYAF}cd-hit-est${NORM}."
+	echo
+	exit 1
+	}
 echo
 echo "Unclustered exons and clustered exons with 100% identity were saved as"
-echo "${REDF}$UNIQUEPROBEPRELIMCLUSTER90${NORM} for possible later usage."
+echo "  ${REDF}$UNIQUEPROBEPRELIMCLUSTER90${NORM} for possible later usage."
 confirmgo
 
 echo "Postprocessing extracted sequences"
-grep -v '>Cluster' $UNIQUEPROBEPRELIMCLUSTER90 | cut -d ' ' -f 2 | sed -e 's/\.\.\./\\\>/' -e 's/^/^/' > $UNIQUEPROBEPRELIM
-grep -A 1 -f $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 | sed '/^--$/d' > $UNIQUEPROBEPRELIMF
+{ grep -v '>Cluster' $UNIQUEPROBEPRELIMCLUSTER90 | cut -d ' ' -f 2 | sed -e 's/\.\.\./\\\>/' -e 's/^/^/' > $UNIQUEPROBEPRELIM &&
+grep -A 1 -f $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 | sed '/^--$/d' > $UNIQUEPROBEPRELIMF; } || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Postprocessing of extracted sequences failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$UNIQUEPROBEPRELIMCLUSTER90${NORM} is correct output of ${CYAF}cd-hit-est${NORM}."
+	echo
+	exit 1
+	}
 echo
 echo "Postprocessed extracted sequences were saved as"
-echo "${REDF}$UNIQUEPROBEPRELIMF${NORM} for possible later usage."
+echo "  ${REDF}$UNIQUEPROBEPRELIMF${NORM} for possible later usage."
 confirmgo
 
 # Step 10: Retention of those probe sequences that comprise exons of a certain minimum length (default is 120 bp) and have a certain minimum total locus length
@@ -808,13 +892,7 @@ echo
 
 # One of the three outfiles of last steps of part 9 is a FASTA file, it has to be converted to TAB
 echo "Converting FASTA from step 9 to TAB"
-fasta2tab $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT || {
-  echo
-  echo "${REDF}${BOLD}Error!${NORM} Conversion of FASTA to TAB failed. Aborting."
-  echo "Check if file ${REDF}$UNIQUEPROBEPRELIMF${NORM} is correct FASTA file."
-  echo
-  exit 1
-  }
+fasta2tab $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT
 echo
 
 # # Count the exons of a certain minimum length (default ≥120 bp)
@@ -857,12 +935,8 @@ echo
 
 echo "Calculating the total number of base pairs"
 # echo "Converting FASTA to TAB"
-# fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM || {
-#   echo
-#   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA into TAB failed.${NORM} Aborting."
-#   echo
-#   exit 1
-#   }
+# fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM
+
 echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}bp make up genes of ≥$MINLOCUSLENGTH bp,"
 
 # echo
@@ -922,20 +996,20 @@ echo "${REDF}${BOLD}$PROBESEQUENCES${NORM}."
 echo "${BLUF}================================================================================${NORM}"
 confirmgo
 
-# # Remove temporal files
-# echo "Removing unneeded temporal files"
-# rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN  || { # $PROBESEQUENCESNUM currently not in use
-#   echo
-#   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
-#   echo "  \"$REFERENCECP\", \"$SEQUENCES\", \"$SEQUENCESTAB\","
-#   echo "  \"$SEQUENCESTABASSE\", \"$SEQUENCESPROBESLOCUSLENGTH\",\"$SEQUENCESPROBESLOCUSLENGTHFORJOIN\","
-#   echo "  \"$SEQUENCESTABASSEBAITL\", \"$SEQUENCESTABASSEBAITLSORT\",\"$SEQUENCESPROBES120600FIN\","
-#   echo "  \"$SEQUENCESPROBES120600MODIF\", \"$SEQUENCESPROBES120600ASSEM\", \"$SEQUENCESPROBES120600CONTIG\","
-#   echo "  \"$PROBEPRELIM0\", \"$PROBEPRELIMCLUSTER90\", \"$UNIQUEPROBEPRELIM\","
-#   echo "  \"$PROBEPRELIMCDHIT\", \"$PROBEPRELIMFORJOIN\", \"$PROBEPRELIMSORT\","
-#   echo "  \"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESNUM\"."
-#   confirmgo
-#   }
+# Remove temporal files
+echo "Removing unneeded temporal files"
+rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN  || { # $PROBESEQUENCESNUM currently not in use
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
+	echo "  \"$REFERENCECP\", \"$SEQUENCES\", \"$SEQUENCESTAB\","
+	echo "  \"$SEQUENCESTABASSE\", \"$SEQUENCESPROBESLOCUSLENGTH\",\"$SEQUENCESPROBESLOCUSLENGTHFORJOIN\","
+	echo "  \"$SEQUENCESTABASSEBAITL\", \"$SEQUENCESTABASSEBAITLSORT\",\"$SEQUENCESPROBES120600FIN\","
+	echo "  \"$SEQUENCESPROBES120600MODIF\", \"$SEQUENCESPROBES120600ASSEM\", \"$SEQUENCESPROBES120600CONTIG\","
+	echo "  \"$PROBEPRELIM0\", \"$PROBEPRELIMCLUSTER90\", \"$UNIQUEPROBEPRELIM\","
+	echo "  \"$PROBEPRELIMCDHIT\", \"$PROBEPRELIMFORJOIN\", \"$PROBEPRELIMSORT\","
+	echo "  \"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESNUM\"."
+	confirmgo
+	}
 
 # List kept files which user can use for another analysis
 echo
@@ -962,3 +1036,11 @@ echo "Script exited successfully..."
 echo
 
 exit
+
+ || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}XXX failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$XXX${NORM} is correct XXX file."
+	echo
+	exit 1
+	}

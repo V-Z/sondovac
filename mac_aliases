@@ -1,9 +1,8 @@
 # Aliases to replace Mac OS X outdated tools by those installed by Homebrew
 if [ "$(uname -s)" == "Darwin" -o "$(uname -s)" == "darwin" ]; then
-  unalias -a
-  alias awk="gawk"
-  alias egrep="gegrep"
-  alias grep="ggrep"
-  alias make="gmake"
-  alias sed="gsed"
-  fi
+	alias awk="gawk"
+	alias egrep="gegrep"
+	alias grep="ggrep"
+	alias make="gmake"
+	alias sed="gsed"
+	fi
