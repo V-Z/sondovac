@@ -52,160 +52,160 @@ SEQUENCES0=""
 
 # Parse initial arguments
 while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
-  case "$START" in
-    h|v)
-      generaloptions
-      echo
-      echo -e "\tIf options ${BOLD}-c${NORM}, ${BOLD}-x${NORM} and/or ${BOLD}-z${NORM} are used and script is running in"
-      echo -e "\t  interactive mode, those values will be used as defaults, but may be"
-      echo -e "\t  later overwritten."
-      echo
-      echo -e "\tOptions required for running in non-interactive mode:"
-      echo -e "\t${REDF}-c${NORM}\t${CYAF}Plastome reference sequence${NORM} input file in FASTA format."
-      echo -e "\t${REDF}-x${NORM}\t${CYAF}Input file in TSV${NORM} format (output of Geneious assembly)."
-      echo -e "\t${REDF}-z${NORM}\t${CYAF}Input file in FASTA${NORM} format (output of Geneious assembly)."
-      echo
-      echo -e "\tOther optional arguments (if not provided, default values are used):"
-      echo -e "\t${REDF}-b${NORM}\t${CYAF}Bait length${NORM}"
-      echo -e "\t\tDefault value: 120 (preferred length for phylogeny, use any of"
-      echo -e "\t\t  values 80, 100 or 120)."
-      echo -e "\t${REDF}-d${NORM}\t${CYAF}Sequence similarity between the developed probe sequences${NORM}"
-      echo -e "\t\t  (parameter \"-c\" of cd-hit-est, see its manual for details)."
-      echo -e "\t\tDefault value: 0.9 (use decimal number ranging from 0.85 to"
-      echo -e "\t\t  0.95)."
-      echo -e "\t${REDF}-y${NORM}\t${CYAF}Sequence similarity between the probes and plastome reference${NORM}"
-      echo -e "\t\t  searching for possible plastid genes in probe set (parameter"
-      echo -e "\t\t  \"-minIdentity\" of BLAT, see its manual for details)."
-      echo -e "\t\tDefault value: 90 (integer ranging from 85 to 95)."
-      echo -e "\t${REDF}-k${NORM}\t${CYAF}Minimum total locus length.${NORM}"
-      echo -e "\t\tDefault value: 600. Allowed values are 360, 480, 600, 720, 840,"
-      echo -e "\t\t  960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 and 2040."
-      echo -e "\t\t  When running in interactive mode, the user will be asked"
-      echo -e "\t\t  which value to use. A table summarizing the total number"
-      echo -e "\t\t  of LCN loci and the total number of base pairs for these"
-      echo -e "\t\t  values will be displayed to facilitate this choice."
-      echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-b${NORM}, ${BOLD}-d${NORM} or ${BOLD}-y${NORM} are not provided, default values"
-      echo -e "\t  are taken, and it is not possible to change them later (not even in"
-      echo -e "\t  interactive mode)."
-      echo
-      exit 2
-      ;;
-    u)
-      scriptupdater
-      ;;
-    l)
-      licenser
-      ;;
-    r)
-      readmeview
-      ;;
-    p)
-      installview
-      ;;
-    e)
-      citationreference
-      ;;
-    o)
-      OUTPUTFILENAME=$OPTARG
-      echo "Output files will start name with ${REDF}$OUTPUTFILENAME${NORM}"
-      ;;
-    i)
-      echo "${CYAF}Running in interactive mode...${NORM}"
-      STARTINI="I"
-      CHECKMODE=$((CHECKMODE+1))
-      ;;
-    n)
-      echo "${CYAF}Running in non-interactive mode...${NORM}"
-      STARTINI="N"
-      CHECKMODE=$((CHECKMODE+1))
-      ;;
-    c)
-      REFERENCECP0=$OPTARG
-      echo "Plastome reference: ${REDF}$REFERENCECP${NORM}"
-      ;;
-    x)
-      TSVLIST=$OPTARG
-      echo "Input file: ${REDF}$TSVLIST${NORM}"
-      ;;
-    z)
-      SEQUENCES0=$OPTARG
-      echo "Input file: ${REDF}$SEQUENCES${NORM}"
-      ;;
-    b)
-      BAITL=$OPTARG
-      # Check if provided value makes sense
-      case "$BAITL" in
-        80) BAITL=80;;
-        100) BAITL=100;;
-        120) BAITL=120;;
-        *) echo
-        echo "${REDF}${BOLD}Error!${NORM} For parameter \"-b\" you did not provide any of values 80, 100 or 120!"
-        echo
-        exit 1
-        esac
-      echo "Bait length: ${REDF}$BAITL${NORM}"
-      ;;
-    d)
-      CDHITSIM=$OPTARG
-      # Check if provided value makes sense
-      if [ "$(echo 0.85 '<=' $CDHITSIM | bc -l)" = 1 ] && [ "$(echo $CDHITSIM '<=' 0.95 | bc -l)" = 1 ]; then
-        echo "Sequence similarity: $CDHITSIM"
-        else
-        echo
-        echo "${REDF}${BOLD}Error!${NORM} For parameter \"-d\" you did not provide decimal number ranging from 0.85"
-        echo "  to 0.95!"
-        echo
-        exit 1
-        fi
-      ;;
-    y)
-      BLATIDENT=$OPTARG
-      # Check if provided value makes sense
-      if [[ "$BLATIDENT" =~ ^[0-9]+$ ]] && [ "$BLATIDENT" -ge 85 -a "$BLATIDENT" -le 95 ]; then
-        echo "BLAT score for similarity between unique transcripts and genome skim data: $BLATIDENT"
-        else
-        echo
-        echo "${REDF}${BOLD}Error!${NORM} For parameter \"-y\" you did not provide an integer of range from 85 to 95!"
-        echo
-        exit 1
-        fi
-      ;;
-    k)
-      MINLOCUSLENGTH=$OPTARG
-      # Check if provided value makes sense
-      case "$MINLOCUSLENGTH" in
-        360) MINLOCUSLENGTH=360;;
-        480) MINLOCUSLENGTH=480;;
-        600) MINLOCUSLENGTH=600;;
-        720) MINLOCUSLENGTH=720;;
-        840) MINLOCUSLENGTH=840;;
-        960) MINLOCUSLENGTH=960;;
-        1080) MINLOCUSLENGTH=1080;;
-        1200) MINLOCUSLENGTH=1200;;
-        1320) MINLOCUSLENGTH=1320;;
-        1440) MINLOCUSLENGTH=1440;;
-        1560) MINLOCUSLENGTH=1560;;
-        1680) MINLOCUSLENGTH=1680;;
-        1800) MINLOCUSLENGTH=1800;;
-        1920) MINLOCUSLENGTH=1920;;
-        2040) MINLOCUSLENGTH=2040;;
-        *) echo
-        echo "${REDF}${BOLD}Error!${NORM} For parameter \"-k\" you did not provide any of values 360, 480, 600, 720,"
-        echo "  840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040!"
-        echo
-        exit 1
-        esac
-      echo "Minimum exon length: ${REDF}$MINLOCUSLENGTH${NORM}"
-      ;;
-    ?)
-      echo
-      echo "Invalid option(s)!"
-      echo "See \"$0 -h\" for usage options."
-      echo
-      exit 1
-      ;;
-    esac
-  done
+	case "$START" in
+		h|v)
+			generaloptions
+			echo
+			echo -e "\tIf options ${BOLD}-c${NORM}, ${BOLD}-x${NORM} and/or ${BOLD}-z${NORM} are used and script is running in"
+			echo -e "\t  interactive mode, those values will be used as defaults, but may be"
+			echo -e "\t  later overwritten."
+			echo
+			echo -e "\tOptions required for running in non-interactive mode:"
+			echo -e "\t${REDF}-c${NORM}\t${CYAF}Plastome reference sequence${NORM} input file in FASTA format."
+			echo -e "\t${REDF}-x${NORM}\t${CYAF}Input file in TSV${NORM} format (output of Geneious assembly)."
+			echo -e "\t${REDF}-z${NORM}\t${CYAF}Input file in FASTA${NORM} format (output of Geneious assembly)."
+			echo
+			echo -e "\tOther optional arguments (if not provided, default values are used):"
+			echo -e "\t${REDF}-b${NORM}\t${CYAF}Bait length${NORM}"
+			echo -e "\t\tDefault value: 120 (preferred length for phylogeny, use any of"
+			echo -e "\t\t  values 80, 100 or 120)."
+			echo -e "\t${REDF}-d${NORM}\t${CYAF}Sequence similarity between the developed probe sequences${NORM}"
+			echo -e "\t\t  (parameter \"-c\" of cd-hit-est, see its manual for details)."
+			echo -e "\t\tDefault value: 0.9 (use decimal number ranging from 0.85 to"
+			echo -e "\t\t  0.95)."
+			echo -e "\t${REDF}-y${NORM}\t${CYAF}Sequence similarity between the probes and plastome reference${NORM}"
+			echo -e "\t\t  searching for possible plastid genes in probe set (parameter"
+			echo -e "\t\t  \"-minIdentity\" of BLAT, see its manual for details)."
+			echo -e "\t\tDefault value: 90 (integer ranging from 85 to 95)."
+			echo -e "\t${REDF}-k${NORM}\t${CYAF}Minimum total locus length.${NORM}"
+			echo -e "\t\tDefault value: 600. Allowed values are 360, 480, 600, 720, 840,"
+			echo -e "\t\t  960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 and 2040."
+			echo -e "\t\t  When running in interactive mode, the user will be asked"
+			echo -e "\t\t  which value to use. A table summarizing the total number"
+			echo -e "\t\t  of LCN loci and the total number of base pairs for these"
+			echo -e "\t\t  values will be displayed to facilitate this choice."
+			echo -e "\t${BOLD}WARNING!${NORM} If parameters ${BOLD}-b${NORM}, ${BOLD}-d${NORM} or ${BOLD}-y${NORM} are not provided, default values"
+			echo -e "\t  are taken, and it is not possible to change them later (not even in"
+			echo -e "\t  interactive mode)."
+			echo
+			exit 2
+			;;
+		u)
+			scriptupdater
+			;;
+		l)
+			licenser
+			;;
+		r)
+			readmeview
+			;;
+		p)
+			installview
+			;;
+		e)
+			citationreference
+			;;
+		o)
+			OUTPUTFILENAME=$OPTARG
+			echo "Output files will start name with ${REDF}$OUTPUTFILENAME${NORM}"
+			;;
+		i)
+			echo "${CYAF}Running in interactive mode...${NORM}"
+			STARTINI="I"
+			CHECKMODE=$((CHECKMODE+1))
+			;;
+		n)
+			echo "${CYAF}Running in non-interactive mode...${NORM}"
+			STARTINI="N"
+			CHECKMODE=$((CHECKMODE+1))
+			;;
+		c)
+			REFERENCECP0=$OPTARG
+			echo "Plastome reference: ${REDF}$REFERENCECP${NORM}"
+			;;
+		x)
+			TSVLIST=$OPTARG
+			echo "Input file: ${REDF}$TSVLIST${NORM}"
+			;;
+		z)
+			SEQUENCES0=$OPTARG
+			echo "Input file: ${REDF}$SEQUENCES${NORM}"
+			;;
+		b)
+			BAITL=$OPTARG
+			# Check if provided value makes sense
+			case "$BAITL" in
+				80) BAITL=80;;
+				100) BAITL=100;;
+				120) BAITL=120;;
+				*) echo
+					echo "${REDF}${BOLD}Error!${NORM} For parameter \"-b\" you did not provide any of values 80, 100 or 120!"
+					echo
+					exit 1
+				esac
+			echo "Bait length: ${REDF}$BAITL${NORM}"
+			;;
+		d)
+			CDHITSIM=$OPTARG
+			# Check if provided value makes sense
+			if [ "$(echo 0.85 '<=' $CDHITSIM | bc -l)" = 1 ] && [ "$(echo $CDHITSIM '<=' 0.95 | bc -l)" = 1 ]; then
+				echo "Sequence similarity: $CDHITSIM"
+				else
+					echo
+					echo "${REDF}${BOLD}Error!${NORM} For parameter \"-d\" you did not provide decimal number ranging from 0.85"
+					echo "  to 0.95!"
+					echo
+					exit 1
+				fi
+			;;
+		y)
+			BLATIDENT=$OPTARG
+			# Check if provided value makes sense
+			if [[ "$BLATIDENT" =~ ^[0-9]+$ ]] && [ "$BLATIDENT" -ge 85 -a "$BLATIDENT" -le 95 ]; then
+				echo "BLAT score for similarity between unique transcripts and genome skim data: $BLATIDENT"
+				else
+					echo
+					echo "${REDF}${BOLD}Error!${NORM} For parameter \"-y\" you did not provide an integer of range from 85 to 95!"
+					echo
+					exit 1
+				fi
+			;;
+		k)
+			MINLOCUSLENGTH=$OPTARG
+			# Check if provided value makes sense
+			case "$MINLOCUSLENGTH" in
+				360) MINLOCUSLENGTH=360;;
+				480) MINLOCUSLENGTH=480;;
+				600) MINLOCUSLENGTH=600;;
+				720) MINLOCUSLENGTH=720;;
+				840) MINLOCUSLENGTH=840;;
+				960) MINLOCUSLENGTH=960;;
+				1080) MINLOCUSLENGTH=1080;;
+				1200) MINLOCUSLENGTH=1200;;
+				1320) MINLOCUSLENGTH=1320;;
+				1440) MINLOCUSLENGTH=1440;;
+				1560) MINLOCUSLENGTH=1560;;
+				1680) MINLOCUSLENGTH=1680;;
+				1800) MINLOCUSLENGTH=1800;;
+				1920) MINLOCUSLENGTH=1920;;
+				2040) MINLOCUSLENGTH=2040;;
+				*) echo
+					echo "${REDF}${BOLD}Error!${NORM} For parameter \"-k\" you did not provide any of values 360, 480, 600, 720,"
+					echo "  840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040!"
+					echo
+					exit 1
+				esac
+			echo "Minimum exon length: ${REDF}$MINLOCUSLENGTH${NORM}"
+			;;
+		?)
+			echo
+			echo "Invalid option(s)!"
+			echo "See \"$0 -h\" for usage options."
+			echo
+			exit 1
+			;;
+		esac
+	done
 
 # Set bait length
 BAITLN=$(expr $BAITL - 1)
@@ -754,12 +754,24 @@ echo "Selecting ≥${CYAF}$BAITL${NORM} bp exons"
 	}
 echo
 
-# Make the assembly number the first field and sort
+# NOTE Make the assembly number the first field and sort
 echo "Sorting exons ≥${CYAF}$BAITL${NORM} bp"
-grep '[Cc]ontig' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*\([Cc]ontig_[[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT && REMAINING="YES"
-# Geneious 9 has different naming scheme of contigs (it does not use keyword "Contig")
+{ grep '[Cc]ontig' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*\([Cc]ontig_[[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT && REMAINING="YES"; } || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}XXX failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$XXX${NORM} is correct XXX file."
+	echo
+	exit 1
+	}
+# NOTE Geneious 9 has different naming scheme of contigs (it does not use keyword "Contig")
 if [ ! -s "$SEQUENCESTABASSEBAITLSORT" ]; then
-	grep '[Aa]ssembly' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*[Aa]ssembly_\([[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT
+	{ grep '[Aa]ssembly' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*[Aa]ssembly_\([[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT; } || {
+		echo
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}XXX failed.${NORM} Aborting."
+		echo "Check if file ${REDF}$XXX${NORM} is correct XXX file."
+		echo
+		exit 1
+		}
 	REMAINING="NO"
 	fi
 echo
@@ -789,9 +801,15 @@ echo "Converting TAB to FASTA"
 echo
 
 # Remaining assemblies have to be selected and added to the FASTA file of the probes
-# NOTE: Geneious 9 does not use keyword "Contig"
+# NOTE Geneious 9 does not use keyword "Contig"
 if [ "$REMAINING"=="YES" ]; then
-	grep -v '[Cc]ontig' $SEQUENCESTABASSEBAITL | awk '$2>'"$MINLOCUSLENGTHN"'' | sed 's/^/>/' | sed 's/\t/_/' | sed 's/\t/\n/' > $SEQUENCESPROBES120600CONTIG
+	{ grep -v '[Cc]ontig' $SEQUENCESTABASSEBAITL | awk '$2>'"$MINLOCUSLENGTHN"'' | sed 's/^/>/' | sed 's/\t/_/' | sed 's/\t/\n/' > $SEQUENCESPROBES120600CONTIG; } || {
+		echo
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}XXX failed.${NORM} Aborting."
+		echo "Check if file ${REDF}$XXX${NORM} is correct XXX file."
+		echo
+		exit 1
+		}
 	fi
 echo
 
@@ -906,22 +924,47 @@ echo
 # confirmgo
 
 echo "Writing the exons into temporal file"
-awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' > $PROBEPRELIMCDHIT2
+{ awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' > $PROBEPRELIMCDHIT2; } || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Writing of the exons failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$PROBEPRELIMCDHIT${NORM} is correct file (sequences in TAB)."
+	echo
+	exit 1
+	}
 echo
 
 # Extract and sort the exons making up genes of a minimum total length
 echo "Extracting and sorting the exons making up genes of ≥$MINLOCUSLENGTH bp"
-sed 's/^/Assembly_/' $PROBEPRELIMCDHIT2 | cut -f 1 -d " " | sort -k 1,1 > $PROBEPRELIMFORJOIN
+{ sed 's/^/Assembly_/' $PROBEPRELIMCDHIT2 | cut -f 1 -d " " | sort -k 1,1 > $PROBEPRELIMFORJOIN; } || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Extraction and sorting of exons failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$PROBEPRELIMCDHIT2${NORM} is correct file (sequences in TAB)."
+	echo
+	exit 1
+	}
 echo
 
 # Modify the exon number and sort
 echo "Modifying the exon number and sorting"
-sed 's/_C/\tC/' $PROBEPRELIMCDHIT | sort -k 1,1 > $PROBEPRELIMSORT
+{ sed 's/_C/\tC/' $PROBEPRELIMCDHIT | sort -k 1,1 > $PROBEPRELIMSORT; } || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Modification of the exons failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$PROBEPRELIMCDHIT${NORM} is correct file (sequences in TAB)."
+	echo
+	exit 1
+	}
 echo
 
 # Make a file with all exons of a certain minimum length making up genes of a certain minimum total length
 echo "Joining all exons ≥${CYAF}$BAITL${NORM} bp and making up genes of ≥$MINLOCUSLENGTH bp"
-join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT > $PROBEPRELIMFIN
+join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT > $PROBEPRELIMFIN || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Joining of exons failed.${NORM} Aborting."
+	echo "Check if files ${REDF}$PROBEPRELIMFORJOIN${NORM} and ${REDF}$PROBEPRELIMSORT${NORM}"
+	echo "  are correct files (sequences in TAB)."
+	echo
+	exit 1
+	}
 echo
 
 # # Convert TAB to FASTA
@@ -931,25 +974,26 @@ echo
 
 # Probe design summary
 
-# Calculation of the total number of base pairs
+# NOTE Calculation of the total number of base pairs
 
 echo "Calculating the total number of base pairs"
 # echo "Converting FASTA to TAB"
 # fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM
 
 echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}bp make up genes of ≥$MINLOCUSLENGTH bp,"
+confirmgo
 
 # echo
 # echo "${CYAF}Total number of base pairs:${NORM} $(awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}')"
 # echo
 
-# Calculation of the total number of genes
+# NOTE Calculation of the total number of genes
 
 echo "Calculating the total number of genes"
 echo " There are ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}genes in total."
 confirmgo
 
-# Calculation of the total number of exons
+# NOTE Calculation of the total number of exons
 
 echo "Calculating the total number of exons"
 echo "${CYAF}Total number of exons:${NORM} $(wc -l $PROBEPRELIMFIN) ≥${REDF}$BAITL${NORM} ${CYAF}bp${NORM}."
@@ -957,7 +1001,13 @@ confirmgo
 
 # Convert TAB to FASTA
 echo "Converting TAB to FASTA"
-sed 's/^\(.\+\) \(Contig\)/>\1_\2/' $PROBEPRELIMFIN | sed 's/ /\n/' > $PROBESEQUENCES
+{ sed 's/^\(.\+\) \(Contig\)/>\1_\2/' $PROBEPRELIMFIN | sed 's/ /\n/' > $PROBESEQUENCES; } || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of TAB to FASTA failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$PROBEPRELIMFIN${NORM} is correct file (sequences in TAB)."
+	echo
+	exit 1
+	}
 echo
 
 # # Calculation of the total number of genes
@@ -985,7 +1035,13 @@ echo
 
 # Remove remaining cp genes from probe set
 echo "${CYAF}Detecting remaining plastid genes in probe set${NORM}"
-blat -t=dna -q=dna -minIdentity=$BLATIDENT -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCESCP
+blat -t=dna -q=dna -minIdentity=$BLATIDENT -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCESCP || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Detection of remaining plastid genes failed.${NORM} Aborting."
+	echo "Check if files ${REDF}$REFERENCECP${NORM} and ${REDF}$PROBESEQUENCES${NORM} are correct FASTA file."
+	echo
+	exit 1
+	}
 echo
 
 echo "${BLUF}================================================================================${NORM}"
@@ -998,7 +1054,7 @@ confirmgo
 
 # Remove temporal files
 echo "Removing unneeded temporal files"
-rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN  || { # $PROBESEQUENCESNUM currently not in use
+rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN  || { # NOTE $PROBESEQUENCESNUM currently not in use
 	echo
 	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
 	echo "  \"$REFERENCECP\", \"$SEQUENCES\", \"$SEQUENCESTAB\","
@@ -1036,11 +1092,3 @@ echo "Script exited successfully..."
 echo
 
 exit
-
- || {
-	echo
-	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}XXX failed.${NORM} Aborting."
-	echo "Check if file ${REDF}$XXX${NORM} is correct XXX file."
-	echo
-	exit 1
-	}
