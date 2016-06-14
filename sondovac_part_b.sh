@@ -911,7 +911,6 @@ echo
 # One of the three outfiles of last steps of part 9 is a FASTA file, it has to be converted to TAB
 echo "Converting FASTA from step 9 to TAB"
 fasta2tab $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT
-echo
 
 # # Count the exons of a certain minimum length (default ≥120 bp)
 # echo "${CYAF}Number of exons of a minimum length ≥$BAITL bp:${NORM}"
@@ -934,7 +933,7 @@ echo "Writing the exons into temporal file"
 echo
 
 # Extract and sort the exons making up genes of a minimum total length
-echo "Extracting and sorting the exons making up genes of ≥$MINLOCUSLENGTH bp"
+echo "Extracting and sorting the exons making up genes of ≥${CYAF}$MINLOCUSLENGTH${NORM} bp"
 { sed 's/^/Assembly_/' $PROBEPRELIMCDHIT2 | cut -f 1 -d " " | sort -k 1,1 > $PROBEPRELIMFORJOIN; } || {
 	echo
 	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Extraction and sorting of exons failed.${NORM} Aborting."
@@ -956,7 +955,7 @@ echo "Modifying the exon number and sorting"
 echo
 
 # Make a file with all exons of a certain minimum length making up genes of a certain minimum total length
-echo "Joining all exons ≥${CYAF}$BAITL${NORM} bp and making up genes of ≥$MINLOCUSLENGTH bp"
+echo "Joining all exons ≥${CYAF}$BAITL${NORM} bp and making up genes of ≥${CYAF}$MINLOCUSLENGTH${NORM} bp"
 join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT > $PROBEPRELIMFIN || {
 	echo
 	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Joining of exons failed.${NORM} Aborting."
@@ -967,18 +966,10 @@ join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT > $PROBEPRELIMFIN || {
 	}
 echo
 
-# # Convert TAB to FASTA
-# echo "Converting TAB to FASTA"
-# sed 's/^\(.\+\) \(Contig\)/>\1_\2/' $PROBEPRELIMFIN | sed 's/ /\n/' > $PROBESEQUENCES
-# echo
-
 # Probe design summary
 
-# NOTE Calculation of the total number of base pairs
-
+# FIXME Calculation of the total number of base pairs
 echo "Calculating the total number of base pairs"
-# echo "Converting FASTA to TAB"
-# fasta2tab $PROBESEQUENCES $PROBESEQUENCESNUM
 
 echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}bp make up genes of ≥$MINLOCUSLENGTH bp,"
 confirmgo
@@ -987,16 +978,14 @@ confirmgo
 # echo "${CYAF}Total number of base pairs:${NORM} $(awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}')"
 # echo
 
-# NOTE Calculation of the total number of genes
-
+# FIXME Calculation of the total number of genes
 echo "Calculating the total number of genes"
-echo " There are ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}genes in total."
+echo " There are ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}genes in total.${NORM}"
 confirmgo
 
-# NOTE Calculation of the total number of exons
-
+# Calculation of the total number of exons
 echo "Calculating the total number of exons"
-echo "${CYAF}Total number of exons:${NORM} $(wc -l $PROBEPRELIMFIN) ≥${REDF}$BAITL${NORM} ${CYAF}bp${NORM}."
+echo "${CYAF}Total number of exons:${NORM} ${REDF}$(wc -l $PROBEPRELIMFIN | cut -f 1 -d " ")${NORM} ≥ ${REDF}$BAITL${NORM} ${CYAF}bp${NORM}."
 confirmgo
 
 # Convert TAB to FASTA
