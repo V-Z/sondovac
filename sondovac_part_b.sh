@@ -129,7 +129,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
 			;;
 		z)
 			SEQUENCES0=$OPTARG
-			echo "Input file: ${REDF}$SEQUENCES${NORM}"
+			echo "Input file: ${REDF}$SEQUENCES0${NORM}"
 			;;
 		b)
 			BAITL=$OPTARG
@@ -375,7 +375,6 @@ function compilecdhit {
 
 # Input files
 CHECKFILEREADOUT=""
-echo
 
 # Plastome reference in FASTA
 readinputfile -c "plastome reference sequence input file in FASTA format" $REFERENCECP0
@@ -391,6 +390,7 @@ CHECKFILEREADOUT=""
 readinputfile -z "input file in FASTA format (output of Geneious assembly)" $SEQUENCES0
 SEQUENCES0=$CHECKFILEREADOUT
 CHECKFILEREADOUT=""
+echo
 
 # Input - reference genome - cpDNA
 echo "Input file: ${REDF}$REFERENCECP0${NORM}"
@@ -446,8 +446,6 @@ PROBEPRELIMSORT="${OUTPUTFILENAME%.*}_similarity_test_assemblies_sort.tab"
 PROBEPRELIMFIN="${OUTPUTFILENAME%.*}_similarity_test_assemblies_fin.tab"
 # Probes in FASTA
 PROBESEQUENCES="${OUTPUTFILENAME%.*}_target_enrichment_probe_sequences.fasta"
-# Probes in tab - temporary file - will be deleted
-PROBESEQUENCESNUM="${OUTPUTFILENAME%.*}_target_enrichment_probe_sequences.tab"
 # Putative cpDNA genes in probe set
 PROBESEQUENCESCP="${OUTPUTFILENAME%.*}_possible_cp_dna_genes_in_probe_set.pslx"
 
@@ -460,7 +458,6 @@ eolcheck $TSVLIST
 eolcheck $SEQUENCES0
 
 # Check if FASTA input files are non-interleaved (required) - if not, FASTA input file converted
-echo
 echo "Checking if input FASTA files are non-interleaved (required) - interleaved"
 echo "  FASTA files are converted not to be interleaved"
 echo
@@ -558,7 +555,6 @@ if egrep -q "^# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[
 		echo
 		exit 1
 		}
-echo
 
 # Check the statistics
 
@@ -566,8 +562,7 @@ echo "${REDF}Assembly statistics${NORM}"
 echo
 
 # Calculation of the total number of base pairs, based on exons ≥ bait length
-echo "${CYAF}Total number of base pairs:${NORM}"
-{ cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | awk '{s+=$1}END{print s}'; } || {
+{ echo "${CYAF}Total number of base pairs:${NORM} ${REDF}`cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | awk '{s+=$1}END{print s}'`${CYAF}.${NORM}"; } || {
 	echo
 	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking statistics failed.${NORM} Aborting. Check if file"
 	echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns:"
@@ -578,8 +573,7 @@ echo "${CYAF}Total number of base pairs:${NORM}"
 confirmgo
 
 # Check number of contigs
-echo "${CYAF}Number of contigs longer than ${REDF}$BAITLN${CYAF}:${NORM}"
-{ cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | wc -l; } || {
+{ echo "${CYAF}Number of contigs longer than ${REDF}$BAITL${NORM} ${CYAF}bp:${NORM} ${REDF}`cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | wc -l`${CYAF}.${NORM}"; } || {
 	echo
 	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Checking number of contigs failed.${NORM} Aborting. Check if file"
 	echo "${REDF}$TSVLIST2${NORM} is correct TSV file containing all required columns"
@@ -592,7 +586,6 @@ confirmgo
 # Convert FASTA to TAB
 echo "Converting FASTA to TAB"
 fasta2tab $SEQUENCES $SEQUENCESTAB
-echo
 
 # Modify labels of FASTA sequences to ensure them to work correctly
 { echo "Checking and modifying FASTA sequence labels" &&
@@ -620,7 +613,7 @@ echo
 # Retention of those contigs that comprise exons ≥ bait length and have a certain minimum total locus length
 # Allowing the values 80, 100, 120 for bait / minimum exon length and 360, 480, 600, 720, 840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920, 2040 for minimum total locus length
 
-echo "${CYAF}Number of assembled sequences:${NORM}"
+echo "${REDF}Number of assembled sequences:${NORM}"
 echo "Length of exons ≥${CYAF}$BAITL${NORM} bp."
 echo -e "${REDF}G${CYAF}enes of length${NORM}\t\t${REDF}T${CYAF}otal bp${NORM}\t${REDF}N${CYAF}umber of genes${NORM}"
 for LOCUSLENGTH in 0360 0480 0600 0720 0840 0960 1080 1200 1320 1440 1560 1680 1800 1920 2040; do
@@ -712,7 +705,6 @@ if [ "$STARTINI" == "I" ]; then
 		done
 	fi
 
-echo
 echo "${CYAF}Total locus length${NORM} is set to ${REDF}$MINLOCUSLENGTH bp${NORM}."
 echo
 
@@ -720,7 +712,7 @@ echo
 MINLOCUSLENGTHN=$(expr $MINLOCUSLENGTH - 1)
 
 # Saving sequences with selected minimum total locus length
-echo "Saving sequences of selected length (≥$MINLOCUSLENGTH bp)"
+echo "Saving sequences of selected length (≥${CYAF}$MINLOCUSLENGTH${NORM} bp)"
 { awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' > $SEQUENCESPROBESLOCUSLENGTH; } || {
 	echo
 	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Saving sequences of selected length failed.${NORM} Aborting."
@@ -754,25 +746,24 @@ echo "Selecting ≥${CYAF}$BAITL${NORM} bp exons"
 	}
 echo
 
-# NOTE Make the assembly number the first field and sort
+# Make the assembly number the first field and sort
 echo "Sorting exons ≥${CYAF}$BAITL${NORM} bp"
 { grep '[Cc]ontig' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*\([Cc]ontig_[[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT && REMAINING="YES"; } || {
 	echo
-	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}XXX failed.${NORM} Aborting."
-	echo "Check if file ${REDF}$XXX${NORM} is correct XXX file."
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Sorting of exons failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$SEQUENCESTABASSEBAITL${NORM} is correct (FASTA converted into TAB)."
 	echo
 	exit 1
 	}
-# NOTE Geneious 9 has different naming scheme of contigs (it does not use keyword "Contig")
+# Geneious 9 has different naming scheme of contigs (it does not use keyword "Contig")
 if [ ! -s "$SEQUENCESTABASSEBAITLSORT" ]; then
-	{ grep '[Aa]ssembly' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*[Aa]ssembly_\([[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT; } || {
+	{ grep '[Aa]ssembly' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*[Aa]ssembly_\([[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT && REMAINING="NO"; } || {
 		echo
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}XXX failed.${NORM} Aborting."
-		echo "Check if file ${REDF}$XXX${NORM} is correct XXX file."
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Sorting of exons failed.${NORM} Aborting."
+		echo "Check if file ${REDF}$SEQUENCESTABASSEBAITL${NORM} is correct (FASTA converted into TAB)."
 		echo
 		exit 1
 		}
-	REMAINING="NO"
 	fi
 echo
 
@@ -801,17 +792,16 @@ echo "Converting TAB to FASTA"
 echo
 
 # Remaining assemblies have to be selected and added to the FASTA file of the probes
-# NOTE Geneious 9 does not use keyword "Contig"
+# Geneious 9 does not use keyword "Contig"
 if [ "$REMAINING"=="YES" ]; then
 	{ grep -v '[Cc]ontig' $SEQUENCESTABASSEBAITL | awk '$2>'"$MINLOCUSLENGTHN"'' | sed 's/^/>/' | sed 's/\t/_/' | sed 's/\t/\n/' > $SEQUENCESPROBES120600CONTIG; } || {
 		echo
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}XXX failed.${NORM} Aborting."
-		echo "Check if file ${REDF}$XXX${NORM} is correct XXX file."
+		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Extraction of remaining exons failed.${NORM} Aborting."
+		echo "Check if file ${REDF}$SEQUENCESTABASSEBAITL${NORM} is correct (FASTA converted into TAB)."
 		echo
 		exit 1
 		}
 	fi
-echo
 
 # Combine the two FASTA files
 echo "Writing FASTA file with preliminary probe sequences"
@@ -840,16 +830,16 @@ confirmgo
 
 # Step 9: Make the final quality control of the probe sequences
 
-echo "${REDF}Step 9 of the pipeline${NORM} - removal of probe sequences sharing ≥90% sequence"
-echo "  similarity"
+echo "${REDF}Step 9 of the pipeline${NORM} - removal of probe sequences sharing ≥90%"
+echo "  sequence similarity"
 echo
 
 # Check for sequence similarity between the developed probe sequences with CD-HIT-EST
 
 # Clustering exons with 100% sequence identity: retaining unclustered exons and, in case of 100% sequence identity, retaining the longest exon
 echo "${CYAF}Checking sequence similarity between the probe sequences (exons)${NORM}"
-echo "  Detecting identical probe sequences and retaining the longest one in such a"
-echo "  case. Retaining also the unclustered probe sequences."
+echo "  Detecting identical probe sequences and retaining the longest one"
+echo "  in such a case. Retaining also the unclustered probe sequences."
 echo
 cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCLUSTER100 -d 0 -c 1.0 -p 1 || {
 	echo
@@ -864,8 +854,8 @@ echo "${REDF}$PROBEPRELIMCLUSTER100${NORM} for possible later usage."
 confirmgo
 
 # Clustering and removing exons with more than a certain sequence similarity
-echo "${CYAF}Detecting and removing probe sequences (exons)${NORM} that are similar to each other"
-echo "  above a certain threshold"
+echo "${CYAF}Detecting and removing probe sequences (exons)${NORM} that are similar"
+echo "  to each other above a certain threshold"
 echo
 cd-hit-est -i $PROBEPRELIMCLUSTER100 -o $PROBEPRELIMCLUSTER90 -d 0 -c $CDHITSIM -p 1 -g 1 || {
 	echo
@@ -883,7 +873,7 @@ python $SCRIPTDIR/grab_singleton_clusters.py -i $PROBEPRELIMCLUSTER90.clstr -o $
 	echo
 	exit 1
 	}
-echo
+
 echo "Unclustered exons and clustered exons with 100% identity were saved as"
 echo "  ${REDF}$UNIQUEPROBEPRELIMCLUSTER90${NORM} for possible later usage."
 confirmgo
@@ -911,16 +901,6 @@ echo
 # One of the three outfiles of last steps of part 9 is a FASTA file, it has to be converted to TAB
 echo "Converting FASTA from step 9 to TAB"
 fasta2tab $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT
-
-# # Count the exons of a certain minimum length (default ≥120 bp)
-# echo "${CYAF}Number of exons of a minimum length ≥$BAITL bp:${NORM}"
-# awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | awk '{s+=$2;c++}END{print s}'
-# confirmgo
-#
-# # Count the exons of a certain minimum length making up genes of a certain minimum length
-# echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}of the assemblies making up genes of ≥$MINLOCUSLENGTH bp,"
-# echo "  comprised of ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}putative exons ≥${REDF}$BAITL${NORM} ${CYAF}bp${NORM}."
-# confirmgo
 
 echo "Writing the exons into temporal file"
 { awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' > $PROBEPRELIMCDHIT2; } || {
@@ -968,24 +948,20 @@ echo
 
 # Probe design summary
 
-# FIXME Calculation of the total number of base pairs
+# TODO Calculation of the total number of base pairs
 echo "Calculating the total number of base pairs"
 
-echo "$(awk '{print $1"\t"length($2)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}bp make up genes of ≥$MINLOCUSLENGTH bp,"
+echo "$(awk '{print $1"\t"length($3)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,3 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}bp make up genes of ≥$MINLOCUSLENGTH bp,"
 confirmgo
 
-# echo
-# echo "${CYAF}Total number of base pairs:${NORM} $(awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | awk '{s+=$2;c++}END{print s}')"
-# echo
-
-# FIXME Calculation of the total number of genes
+# TODO Calculation of the total number of genes
 echo "Calculating the total number of genes"
-echo " There are ${REDF}$(awk '{print $1"\t"length($2)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}genes in total.${NORM}"
+echo " There are ${REDF}$(awk '{print $1"\t"length($3)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,3 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}genes in total.${NORM}"
 confirmgo
 
 # Calculation of the total number of exons
 echo "Calculating the total number of exons"
-echo "${CYAF}Total number of exons:${NORM} ${REDF}$(wc -l $PROBEPRELIMFIN | cut -f 1 -d " ")${NORM} ≥ ${REDF}$BAITL${NORM} ${CYAF}bp${NORM}."
+echo "${CYAF}Total number of exons ≥ ${REDF}$BAITL${NORM} ${CYAF}bp${NORM}:${NORM} ${REDF}$(wc -l $PROBEPRELIMFIN | cut -f 1 -d " ")${NORM}."
 confirmgo
 
 # Convert TAB to FASTA
@@ -998,14 +974,6 @@ echo "Converting TAB to FASTA"
 	exit 1
 	}
 echo
-
-# # Calculation of the total number of genes
-# echo "Calculating the total number of genes"
-# echo
-# echo -e "${REDF}G${CYAF}enes of length${NORM}:\t≥$LOCUSLENGTH bp"
-# echo -e "${REDF}T${CYAF}otal bp${NORM}:\t\t$(awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')"
-# echo -e "${REDF}N${CYAF}umber of genes${NORM}:\t$(awk '{print $1"\t"length($2)}' $PROBESEQUENCESNUM | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l)"
-# confirmgo
 
 echo "${REDF}${BOLD}Success!${NORM}"
 echo
@@ -1043,7 +1011,7 @@ confirmgo
 
 # Remove temporal files
 echo "Removing unneeded temporal files"
-rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN  || { # NOTE $PROBESEQUENCESNUM currently not in use
+rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN  || {
 	echo
 	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
 	echo "  \"$REFERENCECP\", \"$SEQUENCES\", \"$SEQUENCESTAB\","
@@ -1052,12 +1020,11 @@ rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUS
 	echo "  \"$SEQUENCESPROBES120600MODIF\", \"$SEQUENCESPROBES120600ASSEM\", \"$SEQUENCESPROBES120600CONTIG\","
 	echo "  \"$PROBEPRELIM0\", \"$PROBEPRELIMCLUSTER90\", \"$UNIQUEPROBEPRELIM\","
 	echo "  \"$PROBEPRELIMCDHIT\", \"$PROBEPRELIMFORJOIN\", \"$PROBEPRELIMSORT\","
-	echo "  \"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESNUM\"."
+	echo "  and \"$PROBEPRELIMFIN\"."
 	confirmgo
 	}
 
 # List kept files which user can use for another analysis
-echo
 echo "${CYAF}Following files are kept for possible later usage (see manual for details):${NORM}"
 echo "${BLUF}================================================================================${NORM}"
 echo "${CYAF}1)${NORM} Preliminary probe sequences:"

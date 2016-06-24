@@ -41,7 +41,7 @@ echo " #${NORM}        ${REDF}from transcriptome and genome skim data for target
 echo " #${NORM}                                                                            ${BLUF}#"
 echo " #${NORM}       Copyright (C) 2015 R. Schmickl, A. Liston, V. Zeisek and others      ${BLUF}#"
 echo " #${NORM}                                                                            ${BLUF}#"
-echo " #${NORM}          When using this script, please cite Schmickl et al. 2016         ${BLUF}#"
+echo " #${NORM}          When using this script, please cite Schmickl et al. 2016          ${BLUF}#"
 echo " #${NORM}                                                                            ${BLUF}#"
 echo " ##############################################################################${NORM}"
 echo
