@@ -289,10 +289,10 @@ function compilecdhit {
 	echo "${CYAF}CD-HIT is required but not installed or available in ${BOLD}PATH${NORM}.${NORM}"
 	if [ "$STARTINI" == "I" ]; then
 		echo
-		echo "Type \"${REDF}C${NORM}\" ${CYAF}to compile \"CD-HIT\" 4.6.4 from source available together with this script.${NORM}"
+		echo "Type \"${REDF}C${NORM}\" ${CYAF}to compile \"CD-HIT\" 4.6.5 from source available together with this script.${NORM}"
 		echo "Type \"${REDF}S${NORM}\" ${CYAF}to download latest \"CD-HIT\" source${NORM} from"
 		echo "  ${REDF}https://github.com/weizhongli/cdhit${NORM} and compile it"
-		echo "Type \"${REDF}B${NORM}${NORM}\" ${CYAF}to copy \"CD-HIT\" 4.6.4 binary${NORM} available together with the script"
+		echo "Type \"${REDF}B${NORM}${NORM}\" ${CYAF}to copy \"CD-HIT\" 4.6.5 binary${NORM} available together with the script"
 		echo "  (recommended, available for Linux and Mac OS X)."
 		echo "Type \"${REDF}H${NORM}\" ${CYAF}for installation using Homebrew${NORM} (only for Mac OS X, recommended)."
 		echo "  See \"${REDF}brew info homebrew/science/cd-hit${NORM}\" for more details."
@@ -303,7 +303,7 @@ function compilecdhit {
 			do
 				case "$CDHIT" in
 					C|c)
-						compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
+						compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.5-2016-0304
 						break
 						;;
 					S|s)
@@ -335,7 +335,7 @@ function compilecdhit {
 							*) echo
 								echo "Binary is not available for ${REDF}$OS $OSB${NORM}."
 								echo
-								compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
+								compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.5-2016-0304
 								;;
 							esac
 						break
@@ -354,7 +354,7 @@ function compilecdhit {
 								}
 							else
 								echo "This is not Mac OS X. Going to compile..."
-								compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.4-2015-0603
+								compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.5-2016-0304
 							fi
 						break
 						;;
@@ -534,6 +534,7 @@ if egrep -q "^# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[
 		echo "Input file ${REDF}$TSVLIST${NORM} seems to contain more columns or columns in"
 		echo "  another order than required."
 		echo "Needed columns will be extracted in required order."
+		checktools perl
 		$SCRIPTDIR/geneious_column_separator.pl $TSVLIST || {
 			echo
 			echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Extraction failed.${NORM} Aborting."
@@ -948,20 +949,19 @@ echo
 
 # Probe design summary
 
-# TODO Calculation of the total number of base pairs
+# Calculation of the total number of base pairs
 echo "Calculating the total number of base pairs"
-
-echo "$(awk '{print $1"\t"length($3)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,3 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') ${CYAF}bp make up genes of ≥$MINLOCUSLENGTH bp,"
+echo "  ${REDF}$(awk '{print $1"\t"length($3)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,3 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')${NORM} ${CYAF}bp make up genes of ≥${REDF}$MINLOCUSLENGTH${NORM} ${CYAF}bp.${NORM}"
 confirmgo
 
-# TODO Calculation of the total number of genes
+# Calculation of the total number of genes
 echo "Calculating the total number of genes"
-echo " There are ${REDF}$(awk '{print $1"\t"length($3)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,3 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}genes in total.${NORM}"
+echo "  ${CYAF}There are${NORM} ${REDF}$(awk '{print $1"\t"length($3)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,3 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l)${NORM} ${CYAF}genes in total.${NORM}"
 confirmgo
 
 # Calculation of the total number of exons
 echo "Calculating the total number of exons"
-echo "${CYAF}Total number of exons ≥ ${REDF}$BAITL${NORM} ${CYAF}bp${NORM}:${NORM} ${REDF}$(wc -l $PROBEPRELIMFIN | cut -f 1 -d " ")${NORM}."
+echo "  ${CYAF}Total number of exons ≥${REDF}$BAITL${NORM} ${CYAF}bp${NORM}:${NORM} ${REDF}$(wc -l $PROBEPRELIMFIN | cut -f 1 -d " ")${NORM}."
 confirmgo
 
 # Convert TAB to FASTA

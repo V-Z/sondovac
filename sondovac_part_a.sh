@@ -268,7 +268,7 @@ checktools tr
 checkblat
 
 # Function to compile Bowtie2
-BOWTIE2V="2.2.6"
+BOWTIE2V="2.2.9"
 function compilebowtie {
   {
   echo &&
@@ -457,13 +457,14 @@ function compilebowtie {
   }
 
 function compilesamtools {
-  cd $SCRIPTDIR/src/samtools-1.2 &&
+  cd $SCRIPTDIR/src/samtools-1.3.1 &&
   echo &&
   checktools make &&
   echo &&
   echo "Compiling samtools..." &&
-  make -s &&
-  make -s prefix=$WORKDIR/bin install &&
+  ./configure --enable-plugins --enable-libcurl --with-plugin-path=$PWD/htslib-1.3.1 --prefix=$WORKDIR/bin --without-curses &&
+  make -s all plugins-htslib all-htslib &&
+  make -s install install-htslib &&
   cd $WORKDIR &&
   echo "\"${REDF}samtools${NORM}\" is available. ${GREF}OK.${NORM}"
   }
@@ -474,13 +475,13 @@ function compilesamtools {
   echo >&2 "\"${REDF}samtools${NORM}\" is required but not installed or available in ${BOLD}PATH${NORM}."
   if [ "$STARTINI" == "I" ]; then
     echo
-    echo "Type \"${REDF}C${NORM}\" ${CYAF}to compile \"SAMtools-1.2\" from source available together with this script.${NORM}"
+    echo "Type \"${REDF}C${NORM}\" ${CYAF}to compile \"SAMtools-1.3.1\" from source available together with this script.${NORM}"
     echo "  Makefile was modified not to require GNU ncurses library."
     echo "Type \"${REDF}S${NORM}\" ${CYAF}to download latest developmental \"SAMtools\" source${NORM} from"
     echo "  ${REDF}https://github.com/samtools/samtools/${NORM} and compile it. Compilation requires GNU"
     echo "  ncurses library and is recommended only for advanced users. If compilation"
     echo "  fails, check SAMtools' ${REDF}INSTALL${NORM} file for details and adjust its Makefile."
-    echo "Type \"${REDF}B${NORM}\" ${CYAF}to copy \"SAMtools-1.2\" binary${NORM} available together with the script"
+    echo "Type \"${REDF}B${NORM}\" ${CYAF}to copy \"SAMtools-1.3.1\" binary${NORM} available together with the script"
     echo "  (recommended, available for Linux and Mac OS X)."
     echo "Type \"${REDF}H${NORM}\" ${CYAF}for installation using Homebrew${NORM} (only for Mac OS X, recommended)."
     echo "  See \"${REDF}brew info homebrew/science/samtools${NORM}\" for more details."
@@ -494,7 +495,7 @@ function compilesamtools {
 	  compilesamtools || {
 	    echo
 	    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please, go to ${REDF}http://www.htslib.org/download/${NORM}"
-	    echo "  download samtools-1.2, compile it, and ensure it is in ${BOLD}PATH${NORM}."
+	    echo "  download samtools-1.3.1, compile it, and ensure it is in ${BOLD}PATH${NORM}."
 	    echo
 	    exit 1
 	    }
@@ -594,7 +595,7 @@ function compilesamtools {
 	  break
 	  ;;
 	H|h)
-	 if [ "$OS" == "Mac" ]; then			
+	 if [ "$OS" == "Mac" ]; then
 	  { echo "Installing ${REDF}SAMtools using Homebrew" &&
 	  brew install homebrew/science/samtools &&
 	  echo "\"${REDF}SAMtools${NORM}\" is available. ${GREF}OK.${NORM}"

@@ -62,7 +62,7 @@
 \setdefaultlanguage{english}
 
 % Opening
-\title{Manual for Sondovač 1.1}
+\title{Manual for Sondovač 1.2}
 \author{Roswitha Schmickl, Aaron Liston, Vojtěch Zeisek and others}
 
 % Allow line breaks within URLs
@@ -74,7 +74,7 @@
   unicode=true,
   colorlinks=true,
   pagebackref=true,
-  pdftitle={Sondovac manual 1.1 regular release},
+  pdftitle={Sondovac manual 1.2 regular release},
   plainpages=false,
   pdfauthor={Roswitha Schmickl, Aaron Liston, Vojtech Zeisek and others},
   pdfsubject={Software manual},
@@ -544,7 +544,7 @@ Java/OpenJDK & v. > 7 & \url{https://www.java.com/}/\url{http://openjdk.java.net
 libpng & 1.6.X & \url{http://www.libpng.org/}\\
 % Picard & v. > 1.137 & \url{https://broadinstitute.github.io/picard/}\\ % NOTE
 SAMtools, htsjdk & 1.2 & \url{http://www.htslib.org/}\\
-Sondovač & 1.1 & \url{https://github.com/V-Z/sondovac/wiki}\\
+Sondovač & 1.2 & \url{https://github.com/V-Z/sondovac/wiki}\\
 zlib & 1.2.8 & \url{http://zlib.net/}
 \label{software-links}
 \end{longtable}
@@ -870,7 +870,7 @@ An asterisk (*) denotes the beginning of the output files' names specified by th
 \subsection{Geneious usage}
 \label{geneious-usage}
 
-Import the output file of part A~of the script (\texttt{sondovac$\_$part$\_$a.sh}): go to menu \textbf{File | Import | From File\ldots} This file is named as: \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data\--no$\_$missing$\_$fin.fsa} (see Figure~\ref{geneious-import}).
+Import the output file of part~A~of the script (\texttt{sondovac$\_$part$\_$a.sh}): go to menu \textbf{File | Import | From File\ldots} This file is named as: \texttt{*$\_$blat$\_$unique$\_$transcripts$\_$versus$\_$genome$\_$skim$\_$data\--no$\_$missing$\_$fin.fsa} (see Figure~\ref{geneious-import}).
 
 \begin{figure}[hbt]
   \includegraphics[width=\textwidth]{geneious1.png}
@@ -906,7 +906,7 @@ Select items \textbf{Consensus Sequences} and \textbf{Unused Reads} and export t
   \label{geneious-export2}
 \end{figure}
 
-Use the exported files from Geneious as input for part B of the script (\texttt{sondovac$\_$part$\_$b.sh}).
+Use the exported files from Geneious as input for part~B of the script (\texttt{sondovac$\_$part$\_$b.sh}).
 
 \subsection{Record output of Sondovač}
 
@@ -970,29 +970,30 @@ If you have a question or encounter a problem, please see \url{https://github.co
 
 List of changes in released versions of Sondovač.
 
-\subsection{Version 1.2 regular release released 2016-05-}
+\subsection{Version 1.2 regular release released 2016-06-28}
 
 \begin{itemize}
-  \item More clear display of numbers of exons and genes.
+  \item Fixed wrong probe design summary statistics (at the end of part B).
   \item Added support for Geneious 9.
-  \item More detaild error reporting (especially in part B).
+  \item More detailed error reporting (especially in part~B).
   \item Various smaller fixes.
+  \item Updated accompanying software to recent versions.
 \end{itemize}
 
 \subsection{Version 1.0 regular release released 2016-01-12}
 
 \begin{itemize}
-  \item Renaming of input FASTA sequences names is required - it ensures correct working of part B.
+  \item Renaming of input FASTA sequences names is required - it ensures correct working of part~B.
   \item Added check if input files were created on Windows - if so, they are converted into UNIX style EOL.
   \item Various smaller fixes.
-  \item Better showing of the information in part B.
+  \item Better showing of the information in part~B.
   \item Enhanced documentation.
 \end{itemize}
 
 \subsection{Version 0.99 release candidate released 2015-12-08}
 
 \begin{itemize}
-  \item Fixed error with some input files for part B.
+  \item Fixed error with some input files for part~B.
   \item Finished coloration of command-line user interface.
   \item Added possibility to set minimal exon length of the loci.
   \item Various fixes and UI enhancements.
@@ -1002,9 +1003,9 @@ List of changes in released versions of Sondovač.
 \subsection{Version 0.95 beta released 2015-11-27}
 
 \begin{itemize}
-  \item Offer the possibility to choose between transcripts or genome skim sequences for further processing in step 6.1, part A.
+  \item Offer the possibility to choose between transcripts or genome skim sequences for further processing in step 6.1, part~A.
   \item Coloration of command-line user interface (incomplete).
-  \item Added possibility to change -minIdentity parameter of BLAT in step 11, part B.
+  \item Added possibility to change -minIdentity parameter of BLAT in step 11, part~B.
   \item Fixed problems with some transcriptome input files.
   \item Added possibility to set custom bait length.
   \item Added information about article in MER introducing Sondovač.
@@ -1013,7 +1014,7 @@ List of changes in released versions of Sondovač.
 \subsection{Version 0.9 beta released 2015-10-23}
 
 \begin{itemize}
-  \item Highly enhanced part B.
+  \item Highly enhanced part~B.
   \item Better handling of variable output from Geneious.
   \item Possibility to specify the name of the custom output file.
   \item Full support for Linux distributions using DEB -- Debian, Ubuntu, Linux Mint and derivatives.
