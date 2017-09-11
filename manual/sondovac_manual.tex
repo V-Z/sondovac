@@ -122,7 +122,7 @@ Sondovač workflow is divided into three parts (see details on page~\pageref{pip
 \begin{enumerate}
 \item Raw input data are analyzed by \texttt{sondovac$\_$part$\_$a.sh}.
 \item Sequences obtained in part a~are assembled by Geneious in a~separate step by the user.
-\item Final probes are produced by \texttt{sondovac$\_$part$\_$b.sh}.
+\item Final probes are produced by \texttt{sondovac$\_$part$\_$b.sh}. Eventually, not all plastid sequences will have been removed from the genome skim data by running \texttt{sondovac$\_$part$\_$a.sh}. In such case you will have to remove remaining plastid sequences manually (see detailed documentation of \texttt{sondovac$\_$part$\_$b.sh} on page~\pageref{partb}).
 \end{enumerate}
 
 \subsection{Pipeline -- how the data are processed}
@@ -131,9 +131,9 @@ A~transcriptome assembly and paired-end genome skim raw data are combined to get
 
 \begin{figure}[p]
 \begin{center}
-\includegraphics[width=15.5cm]{pipeline_workflow.png}
+\includegraphics[width=14.5cm]{pipeline_workflow.png}
 \end{center}
-\caption[Workflow of the probe design script Sondovač]{Workflow of the probe design script Sondovač. An overview of the main steps of Hyb-Seq are given in the top part of the figure; probe design is the first one. Each step of Sondovač is numbered and illustrated by three boxes: Software is highlighted in yellow, a~summary of each step is given in light blue, and input/output of each step is depicted in light green. An optional removal of reads of mitochondrial origin from the genome skim data is marked by greyed text. The required input files of Sondovač are highlighted in bold. The direction of the workflow is indicated by arrows.}
+\caption[Workflow of the probe design script Sondovač]{Workflow of the probe design script Sondovač. An overview of the main steps of Hyb-Seq are given in the top part of the figure; probe design is the first one. Each step of Sondovač is numbered and illustrated by three boxes: Software is highlighted in yellow, a~summary of each step is given in light blue, and input/output of each step is depicted in light green. An optional removal of reads of mitochondrial origin from the genome skim data is marked by greyed text. The required input files of Sondovač are highlighted in bold. The direction of the workflow is indicated by arrows. Eventually, not all plastid sequences will have been removed from the genome skim data in step 2 of the pipeline. In such case, you will have to remove remaining plastid sequences manually (see detailed documentation of \texttt{sondovac$\_$part$\_$b.sh} on page~\pageref{partb}).}
 \label{pipeline-workflow}
 \end{figure}
 
@@ -170,10 +170,10 @@ The steps of Sondovač are consecutively numbered to aid comprehension. Sondova�
       \item Retention of those contigs that comprise exons $\geq$ bait length and have a~certain total locus length.
       \item Removal of probe sequences sharing $\geq$90\% sequence similarity.
       \item Retention of those contigs that comprise exons $\geq$ bait length and have a~certain total locus length.
-      \item Removal of probe sequences sharing $\geq$90\% sequence similarity with the plastome reference.
+      \item Detection of probe sequences sharing $\geq$90\% sequence similarity with the plastome reference. Eventually, not all plastid sequences will have been removed from the genome skim data by running \texttt{sondovac$\_$part$\_$a.sh}. In such case, you will have to remove remaining plastid sequences manually (see detailed documentation of \texttt{sondovac$\_$part$\_$\-b.sh} on page~\pageref{partb}).
     \end{enumerate}
 
-  The output file of \texttt{sondovac$\_$part$\_$b.sh} is the final list of probes.
+  The output file of \texttt{sondovac$\_$part$\_$b.sh} is the final list of probes. In case of detection of remaining plastid sequences you will have to remove those plastid sequences manually from the output file of sondovac$\_$part$\_$b.sh (see detailed documentation of sondovac$\_$part$\_$b.sh on page~\pageref{partb}).
 
 \end{enumerate}
 
@@ -810,6 +810,7 @@ All names of input files and paths to them must be without spaces and without sp
 \end{enumerate}
 
 \textbf{Script \texttt{sondovac$\_$part$\_$a.sh} creates the following files:}
+\label{partb}
 
 \begin{enumerate}
   \item \texttt{*$\_$renamed.fasta} -- A~copy of the transcriptome input file with the changed labels of the FASTA sequences (unique numbers corresponding to the line numbers in the original file). File \texttt{*$\_$old$\_$and$\_$new$\_$names.tsv} then contains two columns: \textbf{1)} the original sequence labels as in the user-provided transcriptome input file and \textbf{2)} new sequence labels. This might be useful to trace back certain sequences/probes.
