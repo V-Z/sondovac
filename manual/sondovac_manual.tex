@@ -1,8 +1,7 @@
 \documentclass[a4paper, 11pt, twoside]{article}
 
 % Basic packages
-\usepackage{xltxtra} % Loads following 4 packages for processing with XeLaTeX
-% \usepackage{fixltx2e}
+\usepackage{xltxtra} % Loads following 3 packages for processing with XeLaTeX
 \usepackage{metalogo}
 \usepackage{xunicode}
 \usepackage{fontspec}
@@ -78,7 +77,7 @@
   plainpages=false,
   pdfauthor={Roswitha Schmickl, Aaron Liston, Vojtech Zeisek and others},
   pdfsubject={Software manual},
-  pdfcreator={XeLaTeX, http://www.xelatex.org/},
+  pdfcreator={XeTeX, http://xetex.sourceforge.net/},
   pdfkeywords={bioinformatics, genome skimming, manual, high-throughput sequencing},
   linkcolor={DarkRed},
   anchorcolor={DarkBlue},
@@ -108,6 +107,9 @@ Phylogenetics benefits from using a~large number of putatively independent nucle
 % Document main text starts
 
 \framebox{\parbox{15cm}{\textbf{Sondovač} is a~script to create orthologous low-copy nuclear probes from transcriptome and genome skim data for target enrichment \citep{Schmickl2016}. For information and download see \url{https://github.com/V-Z/sondovac/wiki}.}}
+\vskip 0.75cm
+
+\textbf{For newest version of this manual see \url{https://github.com/V-Z/sondovac/blob/master/manual/sondovac_manual.pdf}.}
 
 \section{Introduction}
 
@@ -196,10 +198,10 @@ These aspects influence the number of probe sequences and the proportion of para
 \caption[Summary of two examples of a LCN probe design with Sondovač.]{Summary of two examples of a LCN probe design with Sondovač. The \textit{Oxalis} example is from \citet{Schmickl2016}, the \textit{Curcuma} example is unpublished data from Tomáš Fér and Roswitha Schmickl. The respective Sondovač steps are listed; see Figure~\ref{pipeline-workflow} for details regarding these steps. For both probe designs 250~bp paired-end reads were utilized. Input files are given in \texttt{typewriter} font. Quality control of the genome skim data, which is not part of Sondovač, is colored in \textgr{grey}.}\\
 \hline
 \textbf{Step of Sondovač} & \textbf{Substep of Sondovač} & \textbf{\textit{Oxalis} species} & \textbf{\textit{Curcuma} species}\\
-\endfirsthead % all the lines above this will be only on first page
+\endfirsthead % All the lines above this will be only on first page
 \multicolumn{3}{@{}l}{\underline{\ldots~continued Table~\ref{summary-lcn-examples}.}}\\
 \textbf{Step of Sondovač} & \textbf{Substep of Sondovač} & \textbf{\textit{Oxalis} species} & \textbf{\textit{Curcuma} species}\\
-\endhead % all the lines above this will be repeated on every page
+\endhead % All the lines above this will be repeated on every page
 \hline
 \endlastfoot
 \texttt{Input file} & \texttt{Transcriptome taxon} & \textit{Oxalis corniculata} L. & \textit{Curcuma longa} L.\\
@@ -251,9 +253,9 @@ Sondovač is currently tested on major Linux distributions (in current versions)
 
 In order to run Sondovač you need a~UNIX-based operating system (preferably Linux, alternatively Mac OS~X) equipped with BASH or a~compatible shell interpreter (this should by default be available for any Linux distribution, Mac OS~X and any other UNIX-based operating system like Solaris, BSD and its variants etc.). You should use the current operating system version supported by upstream, otherwise we will not be able to help you in case of problems. Older operating systems can have different versions of shell and system libraries, which can cause various problems and incompatibilities.
 
-Sondovač uses several scientific software packages (namely bam2fastq, BLAT, Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, and SAMtools -- see required versions and links, Table~\ref{software-links}), and basic UNIX tools (see below). Sondovač will check if those programs are installed -- available in the PATH (i.e. if the shell application can locate and launch respective binaries, see also vocabulary at page~\pageref{vocabulary}). If you have those packages installed (in current versions, see Table~\ref{software-links}), ensure that their binaries are in PATH. This should not be a~problem for basic tools available in any UNIX-based operating system, as basic installation usually contains all needed tools. If you lack some of the required tools, the script will notify you, and you will have to install them manually. If this is needed, check the documentation for your operating system. % Picard % will be used instead of bam2fastq
+Sondovač uses several scientific software packages (namely bam2fastq, BLAT, Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, and SAMtools -- see required versions and links, Table~\ref{software-links}), and basic UNIX tools (see below). Sondovač will check if those programs are installed -- available in the PATH (i.e. if the shell application can locate and launch respective binaries, see also vocabulary at page~\pageref{vocabulary}). If you have those packages installed (in current versions, see Table~\ref{software-links}), ensure that their binaries are in PATH. This should not be a~problem for basic tools available in any UNIX-based operating system, as basic installation usually contains all needed tools. If you lack some of the required tools, the script will notify you, and you will have to install them manually. If this is needed, check the documentation for your operating system. % TODO Picard % will be used instead of bam2fastq
 
-If required programs are not installed, Sondovač will offer you installation. You can use precompiled binaries available together with the script (this is the recommended option) or (sometimes) from the web. In case you would like to compile required software yourself, the script will guide you through this process. This is recommended only for advanced users, as compilation might sometimes be very tricky. Users of Mac OS~X can install those applications also using Homebrew (see \url{http://brew.sh/}). For compilation you need Apache Ant, GNU G++, GNU GCC, GIT, Java/OpenJDK, libpng developmental files, and zlib developmental files. Ensure you have those tools available -- they should be readily available for any UNIX-based operating system. Chapters~\ref{required-linux} and~\ref{required-mac} give details about requirements and their manual fulfilling. This is mainly a~reference for more advanced users or users with special needs. For most users it should be fully sufficient to run the script and let it do this job (see chapter~\ref{script-start} on page~\pageref{script-usage}).
+If required programs are not installed, Sondovač will offer you installation. You can use precompiled binaries available together with the script (this is the recommended option) or (sometimes) from the web. In case you would like to compile required software yourself, the script will guide you through this process. This is recommended only for advanced users, as compilation might sometimes be very tricky. Users of Mac OS~X can install those applications also using Homebrew (see \url{https://brew.sh/}). For compilation you need Apache Ant, GNU G++, GNU GCC, GIT, Java/OpenJDK, libpng developmental files, and zlib developmental files. Ensure you have those tools available -- they should be readily available for any UNIX-based operating system. Chapters~\ref{required-linux} and~\ref{required-mac} give details about requirements and their manual fulfilling. This is mainly a~reference for more advanced users or users with special needs. For most users it should be fully sufficient to run the script and let it do this job (see chapter~\ref{script-start} on page~\pageref{script-usage}).
 
 The following UNIX tools are required to run Sondovač. They are usually readily available in UNIX systems (but see note for Mac OS~X below), so there is usually no need to install them manually. The tools are \texttt{awk}, \texttt{bc}, \texttt{bunzip2}, \texttt{cat}, \texttt{cp}, \texttt{curl} or \texttt{wget}, \texttt{cut}, \texttt{dirname}, \texttt{dos2unix}, \texttt{echo}, \texttt{egrep}, \texttt{cd}, \texttt{g++}, \texttt{gcc}, \texttt{grep}, \texttt{gunzip}, \texttt{join}, \texttt{less}, \texttt{lsb$\_$release}, \texttt{make}, \texttt{mkdir}, \texttt{paste}, \texttt{perl}, \texttt{pkg-config}, \texttt{pwd}, \texttt{python}, \texttt{sed}, \texttt{sort}, \texttt{tar}, \texttt{tr}, \texttt{uname}, \texttt{uniq}, \texttt{unzip}, \texttt{wc}. Not all tools are required every time -- some are used only during particular actions (e.g. when the user decides to compile the required software manually). And the user usually does not need to bother with them. See also details in the following subchapters for some common Linux distributions and Mac OS~X.
 
@@ -292,7 +294,7 @@ Originally, those distributions used only \texttt{rpm*} commands (see \texttt{rp
 
 \subsubsection{Debian, Ubuntu, Linux Mint and derivatives}
 
-Debian (\url{https://www.debian.org/}), Linux Mint (\url{http://linuxmint.com/}), Ubuntu (\url{http://www.ubuntu.com/}) and all derived distributions\footnote{For complete lists see \url{http://distrowatch.com/search.php?basedon=Debian} and \url{http://distrowatch.com/search.php?basedon=Ubuntu}.} like Kubuntu (\url{http://www.kubuntu.com/}) use for package management commands \texttt{apt-get} (basic) and \texttt{aptitude} (text-based front-end for \texttt{apt-get}, recommended, not available by default in every DEB based distribution). There are more tools available\footnote{See \url{https://wiki.debian.org/PackageManagement} for list of tools and \url{https://www.debian.org/doc/manuals/debian-reference/ch02.en.html} for exhaustive documentation. A~shorter introduction is available at \url{https://help.ubuntu.com/community/AptGet/Howto} and \url{http://ubuntuguide.org/wiki/Ubuntu_Trusty_Packages_and_Repositories}. Ubuntu-specific information at \url{https://help.ubuntu.com/stable/ubuntu-help/addremove.html}.}, we will describe only the basic usage needed for our purpose. The script will check if all required software packages are installed, and if not, will install them. You can also install manually:
+Debian (\url{https://www.debian.org/}), Linux Mint (\url{https://linuxmint.com/}), Ubuntu (\url{https://www.ubuntu.com/}) and all derived distributions\footnote{For complete lists see \url{https://distrowatch.com/search.php?basedon=Debian} and \url{https://distrowatch.com/search.php?basedon=Ubuntu}.} like Kubuntu (\url{https://www.kubuntu.com/}) use for package management commands \texttt{apt-get} (basic) and \texttt{aptitude} (text-based front-end for \texttt{apt-get}, recommended, not available by default in every DEB based distribution). There are more tools available\footnote{See \url{https://wiki.debian.org/PackageManagement} for list of tools and \url{https://www.debian.org/doc/manuals/debian-reference/ch02.en.html} for exhaustive documentation. A~shorter introduction is available at \url{https://help.ubuntu.com/community/AptGet/Howto} and \url{http://ubuntuguide.org/wiki/Ubuntu_Trusty_Packages_and_Repositories}. Ubuntu-specific information at \url{https://help.ubuntu.com/stable/ubuntu-help/addremove.html}.}, we will describe only the basic usage needed for our purpose. The script will check if all required software packages are installed, and if not, will install them. You can also install manually:
 
 \begin{bashcode}
   # Verify installation of basic tools (they are installed in 99.9%):
@@ -327,7 +329,7 @@ Note you can use \texttt{aptitude} in a~similar way as \texttt{apt-*} commands (
 
 \subsubsection{RedHat, Fedora, Centos, Scientific Linux and derivatives}
 
-RedHat (\url{https://www.redhat.com/}), Fedora (\url{https://getfedora.org/}; until version 21), Centos (\url{https://centos.org/}) and Scientific Linux (\url{https://www.scientificlinux.org/}) and other related distributions\footnote{See \url{http://distrowatch.com/search.php?basedon=Fedora} for complete list.} use for package management command \texttt{yum}\footnote{See \url{http://yum.baseurl.org/} for details.}. The script will check if all required software packages are installed, and if not, will install them. You can also install manually:
+RedHat (\url{https://www.redhat.com/}), Fedora (\url{https://getfedora.org/}; until version 21), Centos (\url{https://centos.org/}) and Scientific Linux (\url{https://www.scientificlinux.org/}) and other related distributions\footnote{See \url{https://distrowatch.com/search.php?basedon=Fedora} for complete list.} use for package management command \texttt{yum}\footnote{See \url{http://yum.baseurl.org/} for details.}. The script will check if all required software packages are installed, and if not, will install them. You can also install manually:
 
 \begin{bashcode}
   # Verify installation of basic tools (they are installed in 99.9%):
@@ -352,7 +354,7 @@ Since version 22, Fedora uses the command \texttt{dnf} for package management. I
 \subsection{Installation of required software in Mac OS~X}
 \label{required-mac}
 
-For Mac OS~X users, Homebrew (see \url{http://brew.sh/} and \url{https://github.com/Homebrew/}) will be installed by the script, and it will install (new software or newer versions) Apache Ant, BASH (the shell interpreter), GNU AWK, GNU coreutils, GNU GCC, git, GNU grep, GNU make, pkg-config, GNU sed, and wget. Mac OS~X is missing some tools and contains outdated BSD versions for others (typically sed, grep or awk). The script will guide the user through the process, and the user can safely and easily remove these tools afterwards if necessary. Unfortunately, Mac OS~X does not have usable build-in package management, and it has outdated versions of some required tools. Homebrew fills this gap. It is a~simple command-line installer (similar to package managers known from Linux, BSD or Solaris) of various applications.
+For Mac OS~X users, Homebrew (see \url{https://brew.sh/} and \url{https://github.com/Homebrew/}) will be installed by the script, and it will install (new software or newer versions) Apache Ant, BASH (the shell interpreter), GNU AWK, GNU coreutils, GNU GCC, git, GNU grep, GNU make, pkg-config, GNU sed, and wget. Mac OS~X is missing some tools and contains outdated BSD versions for others (typically sed, grep or awk). The script will guide the user through the process, and the user can safely and easily remove these tools afterwards if necessary. Unfortunately, Mac OS~X does not have usable build-in package management, and it has outdated versions of some required tools. Homebrew fills this gap. It is a~simple command-line installer (similar to package managers known from Linux, BSD or Solaris) of various applications.
 
 Homebrew requires Xcode\footnote{\url{https://developer.apple.com/xcode/}} (set of tools required to compile software) to be installed. Unfortunately, it is not possible to easily and universally check if Xcode is installed, so that the script will ask if the user wishes to install it. If the user is unsure if Xcode is installed, it is safe to answer \texttt{Yes} and install it. The manual command to install Xcode is the following:
 
@@ -408,7 +410,7 @@ The script will guide the user through all those steps and basic usage of Homebr
   # Note backslash ("\") means that the code continues on the next line
 \end{bashcode}
 
-Within the Homebrew project, there is also a~scientific section (Homebrew Science, see \url{http://brew.sh/homebrew-science/}) containing plenty of software\footnote{See \url{https://github.com/Homebrew/homebrew-science/wiki/List-of-homebrew-science-formulae} for co\-mplete list of available scientific packages.}. When the script checks for required scientific packages, it offers several ways to install missing software. Mac OS~X users can also use Homebrew. It is the recommended way. If the user wishes to install the software manually, it is possible to use the following commands:
+Within the Homebrew project, there is also a~scientific section (Homebrew Science, see \url{https://brew.sh/homebrew-science/}) containing plenty of software\footnote{See \url{https://github.com/Homebrew/homebrew-science/wiki/List-of-homebrew-science-formulae} for co\-mplete list of available scientific packages.}. When the script checks for required scientific packages, it offers several ways to install missing software. Mac OS~X users can also use Homebrew. It is the recommended way. If the user wishes to install the software manually, it is possible to use the following commands:
 
 \begin{bashcode}
   # Install required scientific packages using Homebrew Science
@@ -418,7 +420,7 @@ Within the Homebrew project, there is also a~scientific section (Homebrew Scienc
   # Note backslash ("\") means that the code continues on the next line
 \end{bashcode}
 
-Using Homebrew, software will be installed system-wide, and Homebrew easily allows checks for updates. The only software missing in Homebrew science is \href{http://gsl.hudsonalpha.org/information/software/bam2fastq}{bam2fastq}, but it is easily installed via another method offered by the script. % NOTE
+Using Homebrew, software will be installed system-wide, and Homebrew easily allows checks for updates. The only software missing in Homebrew science is \href{https://gsl.hudsonalpha.org/information/software/bam2fastq}{bam2fastq}, but it is easily installed via another method offered by the script. % TODO Replace bam2fastq by Picard
 
 \subsection{First launch of Sondovač}
 \label{script-start}
@@ -501,51 +503,52 @@ If you are not familiar with the use of command line, try some basic tutorials f
   \item \url{https://www.debian.org/doc/manuals/debian-reference/ch01.en.html}
   \item \url{https://en.wikibooks.org/wiki/Guide_to_Unix}
   \item \url{http://tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html}
-  \item \url{https://trapa.cz/en/course-linux-command-line-2015}
+  \item \url{https://trapa.cz/en/course-linux-command-line-2016}
   \item \url{http://linuxcourse.rutgers.edu/documents/Bash-Beginners-Guide/}
   \item \url{http://ryanstutorials.net/linuxtutorial/}
   \item \url{http://www.hypexr.org/bash_tutorial.php}
   \item \url{http://mywiki.wooledge.org/BashGuide}
+  \item \url{https://docs.fedoraproject.org/f26/system-administrators-guide/Book_Info.html}
 \end{itemize}
 
 \subsection{Geneious}
 \label{geneious}
 
-For part \textbf{B} of the script the user must have Geneious \citep{Kearse2012}. Geneious is a~DNA alignment, assembly, and analysis software and one of the most common software platforms used in genomics. It is utilized for de novo assembly in Sondovač. We plan to replace it with a free open-source command line tool in a future release of Sondovač. Visit \url{http://www.geneious.com/} for download, purchase, installation and usage of Geneious. After the input data are processed (interactively or not) by \texttt{sondovac$\_$part$\_$a.sh}, the user must process its output manually with Geneious according to the instructions given below. The output of Geneious is then processed by \texttt{sondovac$\_$part$\_$b.sh}, which produces the final probe set. Geneious versions 6, 7~and 8 have been tested and are compatible with this script.
+For part \textbf{B} of the script the user must have Geneious \citep{Kearse2012}. Geneious is a~DNA alignment, assembly, and analysis software and one of the most common software platforms used in genomics. It is utilized for de novo assembly in Sondovač. We plan to replace it with a free open-source command line tool in a future release of Sondovač. Visit \url{https://www.geneious.com/} for download, purchase, installation and usage of Geneious. After the input data are processed (interactively or not) by \texttt{sondovac$\_$part$\_$a.sh}, the user must process its output manually with Geneious according to the instructions given below. The output of Geneious is then processed by \texttt{sondovac$\_$part$\_$b.sh}, which produces the final probe set. Geneious versions 6, 7~and 8 have been tested and are compatible with this script.
 
 \subsection{Software used by Sondovač}
 
 Table~\ref{software-links} lists all software used by Sondovač, including minimal required versions and homepages. As long as you have a~recently-updated version of your operating system and you use the automated installation of additional software offered by Sondovač, you do not need to worry about this. In case you installed some of the required scientific packages manually, ensure that you have the required minimal version. The following list refers to papers and web resources describing methods used by software utilized by Sondovač:
 
 \begin{longtable}{| >{\centering\arraybackslash}m{2.8cm} >{\centering\arraybackslash}m{1.5cm} >{\centering\arraybackslash}m{10cm} |}
-\caption[Required software, its versions and homepages.]{Required software, its versions and homepages. "X" denotes any subversion of particular lineage and "v. $>$" denotes any version higher then noted. Generally, any current version should usually be fine.}\\
+\caption[Required software, its versions and homepages.]{Required software, its versions and homepages. "X" denotes any subversion of particular lineage and "v. $>$" denotes any version higher than noted. Generally, any current version should usually be fine.}\\
 \hline
 \textbf{Software} & \textbf{Version} & \textbf{Homepage}\\
-\endfirsthead % all the lines above this will be only on first page
+\endfirsthead % All the lines above this will be only on first page
 \multicolumn{3}{@{}l}{\underline{\ldots~continued Table~\ref{software-links}.}}\\
 \textbf{Software} & \textbf{Version} & \textbf{Homepage}\\
-\endhead % all the lines above this will be repeated on every page
+\endhead % All the lines above this will be repeated on every page
 \hline
 \endlastfoot
 Apache Ant & 1.9.X & \url{https://ant.apache.org/}\\
-bam2fastq & 1.1.0 & \url{http://gsl.hudsonalpha.org/information/software/bam2fastq}\\ % NOTE
+bam2fastq & 1.1.0 & \url{https://gsl.hudsonalpha.org/information/software/bam2fastq}\\ % TODO Replace bam2fastq by Picard
 BASH & v. > 4 & \url{https://gnu.org/software/bash/bash.html}\\
-BLAT & v.36 & \url{http://genome.ucsc.edu/FAQ/FAQblat.html}\\
+BLAT & v.36 & \url{https://genome.ucsc.edu/FAQ/FAQblat.html}\\
 Bowtie2 & 2.2.6 & \url{http://bowtie-bio.sourceforge.net/bowtie2/index.shtml}\\
 CD-HIT & 4.6 & \url{http://weizhongli-lab.org/cd-hit/}\\
 FASTX, libgtextutils & 0.0.14 & \url{http://hannonlab.cshl.edu/fastx_toolkit/}\\
-FLASH & 1.2.11 & \url{http://sourceforge.net/projects/flashpage/}\\
-G++, GCC & v. > 4.2 & \url{http://gcc.gnu.org/}\\
-Geneious & v. > 6.1 & \url{http://www.geneious.com/}\\
-GIT & v. > 2.0 & \url{http://git-scm.com/}\\
+FLASH & 1.2.11 & \url{https://sourceforge.net/projects/flashpage/}\\
+G++, GCC & v. > 4.2 & \url{https://gcc.gnu.org/}\\
+Geneious & v. > 6.1 & \url{https://www.geneious.com/}\\
+GIT & v. > 2.0 & \url{https://git-scm.com/}\\
 GNU core utils & 8.X & \url{https://gnu.org/software/coreutils/coreutils.html}\\
 grab$\_$synglet\-on$\_$clusters.py & 1.00 & \url{https://github.com/listonlab/Hyb-Seq_protocol/}\\
 Java/OpenJDK & v. > 7 & \url{https://www.java.com/}/\url{http://openjdk.java.net/}\\
 libpng & 1.6.X & \url{http://www.libpng.org/}\\
-% Picard & v. > 1.137 & \url{https://broadinstitute.github.io/picard/}\\ % NOTE
+% Picard & v. > 1.137 & \url{https://broadinstitute.github.io/picard/}\\ % TODO Replace bam2fastq by Picard
 SAMtools, htsjdk & 1.2 & \url{http://www.htslib.org/}\\
 Sondovač & 1.2 & \url{https://github.com/V-Z/sondovac/wiki}\\
-zlib & 1.2.8 & \url{http://zlib.net/}
+zlib & 1.2.8 & \url{https://zlib.net/}
 \label{software-links}
 \end{longtable}
 
@@ -616,7 +619,7 @@ PATH (\$PATH) is a~system variable used in every UNIX system. It lists directori
   # Note backslash ("\") means that the code continues on the next line
 \end{bashcode}
 
-Sondovač requires certain software to be installed (see Table~\ref{software-links} on page~\pageref{software-links}), and if some software is missing, the script offers installation. By default, Sondovač creates a~directory \texttt{bin} in the current working directory in which it installs the required software. It then temporarily modifies the content of the \$PATH variable to contain this new directory. Sondovač notifies the user about this, and the user can then -- if it is wished to keep the newly installed software for later usage -- (1) move the content of this directory to a preferred location or (2) add this directory to the \$PATH. This directory can also be safely removed. Permanent modification of the \$PATH variable is done by adding line \texttt{export PATH=\$PATH:/some/new/directory} (same as the above example) to file \texttt{$\sim$/.bashrc} or \texttt{$\sim$/.bash$\_$profile} (usage of those files varies slightly among UNIX systems, see manual for your operating system). On Mac OS~X, installation of \href{http://brew.sh/}{Homebrew} is required. For correct functioning of Sondovač, \$PATH is modified to contain directories \texttt{/usr/local/opt/coreutils/libexec/gnubin} and \texttt{/usr/local/bin} containing new and updated UNIX tools. The first directory must always be present, as it contains updated versions of basic command line utilities -- replacing outdated versions provided with Mac OS~X. All those modifications are temporary and used only within Sondovač scripts.
+Sondovač requires certain software to be installed (see Table~\ref{software-links} on page~\pageref{software-links}), and if some software is missing, the script offers installation. By default, Sondovač creates a~directory \texttt{bin} in the current working directory in which it installs the required software. It then temporarily modifies the content of the \$PATH variable to contain this new directory. Sondovač notifies the user about this, and the user can then -- if it is wished to keep the newly installed software for later usage -- (1) move the content of this directory to a preferred location or (2) add this directory to the \$PATH. This directory can also be safely removed. Permanent modification of the \$PATH variable is done by adding line \texttt{export PATH=\$PATH:/some/new/directory} (same as the above example) to file \texttt{$\sim$/.bashrc} or \texttt{$\sim$/.bash$\_$profile} (usage of those files varies slightly among UNIX systems, see manual for your operating system). On Mac OS~X, installation of \href{https://brew.sh/}{Homebrew} is required. For correct functioning of Sondovač, \$PATH is modified to contain directories \texttt{/usr/local/opt/coreutils/libexec/gnubin} and \texttt{/usr/local/bin} containing new and updated UNIX tools. The first directory must always be present, as it contains updated versions of basic command line utilities -- replacing outdated versions provided with Mac OS~X. All those modifications are temporary and used only within Sondovač scripts.
 
 \subsection{Vocabulary}
 \label{vocabulary}
@@ -633,12 +636,12 @@ Sondovač requires certain software to be installed (see Table~\ref{software-lin
   \item[Debian] One of the oldest and most popular Linux distributions. See \url{https://www.debian.org/}.
   \item[Fedora] Popular Linux distribution developed together with RedHat Linux as its free community testing platform. See \url{https://getfedora.org/}.
   \item[GNU] Major project providing free software widely used in many operating systems, see \url{https://gnu.org/}.
-  \item[Homebrew] Tool primarily for Mac OS~X (although there is also a~Linux version available) replacing the virtually missing package manager for this system. Can be used to install plenty of various applications as well as updating tools already available in Mac OS~X. See \url{http://brew.sh/}.
+  \item[Homebrew] Tool primarily for Mac OS~X (although there is also a~Linux version available) replacing the virtually missing package manager for this system. Can be used to install plenty of various applications as well as updating tools already available in Mac OS~X. See \url{https://brew.sh/}.
   \item[Java] Very popular programming language. It requires Java runtime environment to be installed, but the applications are very well transferable among operating systems. See \url{https://www.java.com/}.
   \item[Library] Pack of software tools and functions used by other applications.
   \item[License] Conditions under which software is distributed. Can be very restrictive (typically paid software) or permissive (typically free and open-source software).
   \item[Linux] One of the most common variants of UNIX-based operating systems. Linux kernel is used by many developers, so that there are plenty of Linux distributions ("flavors") from various sources (e.g. Ubuntu and derivatives, openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.). They share many features, although at first sight they can look different. See \url{https://en.wikipedia.org/wiki/Linux}.
-  \item[Linux Mint] Popular Linux distribution based on Debian and Ubuntu, see \url{http://linuxmint.com/}.
+  \item[Linux Mint] Popular Linux distribution based on Debian and Ubuntu, see \url{https://linuxmint.com/}.
   \item[Mac OS~X] Popular operating system produced by Apple. The system kernel is based on UNIX, see \url{https://www.apple.com/osx/}.
   \item[Open-source] Generally, the source code of an application is available together with the application and can, under certain conditions, be defined in license modified, redistributed etc. See \url{https://en.wikipedia.org/wiki/Free_and_open-source_software}.
   \item[openSUSE] Popular Linux distribution, see \url{https://www.opensuse.org/}.
@@ -653,11 +656,11 @@ Sondovač requires certain software to be installed (see Table~\ref{software-lin
   \item[Scientific Linux] Popular Linux distribution. Community remake of RedHat Enterprise Linux. See \url{https://www.scientificlinux.org/}.
   \item[Script] Software application. It requires an interpreter (application installed on the computer that is able to launch scripts written in a~particular language), but the application itself is portable among operating systems and hardware architectures, and it is written in plain text, so that developers can easily modify it. Common examples are Python, Perl or BASH.
   \item[Shell] "The command line" -- the interface to interact with software using commands typed into the terminal window (See Figure~\ref{terminal}).
-  \item[Solaris] Popular (mainly on servers) UNIX-based operating system, now developed by Oracle and including several independent clones. See \url{http://distrowatch.com/table.php?distribution=solaris}.
+  \item[Solaris] Popular (mainly on servers) UNIX-based operating system, now developed by Oracle and including several independent clones. See \url{https://distrowatch.com/table.php?distribution=solaris}.
   \item[Source code] Human-readable code written in any text editor used to develop any application. Applications written in interpreted languages (BASH, Perl, Python , \ldots) can be distributed just in form of a~source code (nothing else is required). Other programming languages (C, C++, \ldots) require compilation to get a~fully functional application.
   \item[SUSE Linux Enterprise (SLE)] Large Linux company providing mainly solutions for big companies. See \url{https://www.suse.com/}.
   \item[Terminal] see "Shell".
-  \item[Ubuntu] Popular Linux distribution, see \url{http://www.ubuntu.com/}. There are plenty of distributions based on Ubuntu. See \url{http://distrowatch.com/search.php?basedon=Ubuntu}.
+  \item[Ubuntu] Popular Linux distribution, see \url{https://www.ubuntu.com/}. There are plenty of distributions based on Ubuntu. See \url{https://distrowatch.com/search.php?basedon=Ubuntu}.
   \item[UNIX (UNIX-like, UN*X, *nix,~\ldots)] Family of operating systems sharing the same logic, software architecture and plenty of tools. See \url{https://en.wikipedia.org/wiki/Unix-like} for details.
   \item[Upstream] Developers usually support (e.g. by fixing of bugs) only newer versions of an application. If you use an older version and you encounter problems, no one can probably help you. Moreover, using old versions of software can be a~security risk because of security issues fixed in newer versions.
   \item[Variable] Named value storing various information, one of the basic part of any programming language, application, operating system.
@@ -845,7 +848,7 @@ Files 1-8 are not necessary for further processing by this pipeline, but may be 
 
 \begin{enumerate}
   \item \texttt{*$\_$prelim$\_$probe$\_$seq.fasta} -- Preliminary probe sequences.
-  \item \texttt{*$\_$prelim$\_$probe$\_$seq$\_$cluster$\_$100.fasta} -- Unclustered exons and clustered exons with 100% sequence identity.
+  \item \texttt{*$\_$prelim$\_$probe$\_$seq$\_$cluster$\_$100.fasta} -- Unclustered exons and clustered exons with 100\% sequence identity.
   \item \texttt{*$\_$prelim$\_$probe$\_$seq$\_$cluster$\_$90.clstr} -- Unclustered exons and clustered exons with more than a certain sequence similarity (CLSTR file).
   \item \texttt{*$\_$unique$\_$prelim$\_$probe$\_$seq.fasta} -- Unclustered exons / exons with less than a certain sequence similarity.
   \item \texttt{*$\_$similarity$\_$test.fasta} -- Contigs that comprise exons $\geq$ bait length and have a~certain total locus length.
@@ -938,17 +941,17 @@ You can use any command line arguments; the script will behave as usual. The pla
 
 Note for Mac OS~X users: the regular expressions above require GNU \texttt{sed}, not the version presented by default in Mac OS~X. It is installed by Sondovač using Homebrew (see page~\pageref{required-mac}), but to launch it you probably must use the command \texttt{gsed} instead of \texttt{sed}.
 
-\section{Sample data} % NOTE
+\section{Sample data} % FIXME Transcriptome now publicly available
 
 Together with the script, we provide the ZIP archive (1.8 GB) that contains example input files for running the script: \textit{Oxalis} genome skim data as well as the \textit{Ricinus} cpDNA and mtDNA reference sequences. See \url{https://github.com/V-Z/sondovac/wiki/Sample-data} for download of sample data.
 
 The package contains:
 
 \begin{enumerate}
-  \item \texttt{input2$\_$Ricinus$\_$communis$\_$reference$\_$plastid$\_$genome.fsa} -- cpDNA reference (para\-meter \texttt{-c}), GenBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/372450118/}{NC$\_$016736}.
+  \item \texttt{input2$\_$Ricinus$\_$communis$\_$reference$\_$plastid$\_$genome.fsa} -- cpDNA reference (para\-meter \texttt{-c}), GenBank reference number \href{https://www.ncbi.nlm.nih.gov/nuccore/372450118/}{NC$\_$016736}.
   \item \texttt{input3$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R1.fastq} -- paired-end genome sk\-im data, file 1~(forward reads, parameter \texttt{-t}).
   \item \texttt{input4$\_$J12$\_$Oxalis$\_$obtusa$\_$J12$\_$genome$\_$skim$\_$data$\_$R2.fastq} -- paired-end genome sk\-im data, file 2~(backward reads, parameter \texttt{-q}).
-  \item \texttt{input5$\_$Ricinus$\_$communis$\_$reference$\_$mitochondrial$\_$genome.fasta} -- mtDNA reference (parameter \texttt{-m}), GenBank reference number \href{http://www.ncbi.nlm.nih.gov/nuccore/323649872/}{NC$\_$015141}.
+  \item \texttt{input5$\_$Ricinus$\_$communis$\_$reference$\_$mitochondrial$\_$genome.fasta} -- mtDNA reference (parameter \texttt{-m}), GenBank reference number \href{https://www.ncbi.nlm.nih.gov/nuccore/323649872/}{NC$\_$015141}.
 \end{enumerate}
 
 The transcriptome input file is unpublished data from G. K.-S. Wong et al.. As soon as the data are published, we will post them on \href{https://github.com/V-Z/sondovac/wiki/Sample-data}{GitHub}. Data can now be found under
@@ -967,7 +970,7 @@ Explanation of command line parameters is on page~\pageref{script-usage}.
 
 If you have a question or encounter a problem, please see \url{https://github.com/V-Z/sondovac/issues} and feel free to ask any question and/or express any wish. The authors will do their best to help you.
 
-\section{Changelog} % NOTE
+\section{Changelog} % TODO
 
 List of changes in released versions of Sondovač.
 
@@ -1071,8 +1074,8 @@ The set of BASH scripts Sondovač is licensed under GNU General Public License v
 Sondovač & GNU GPL v. 3 & \url{https://gnu.org/licenses/gpl.html}\\
 Bowtie2 & GNU GPL v. 3 & \url{https://gnu.org/licenses/gpl.html}\\
 SAMtools & MIT/Expat License & \url{https://en.wikipedia.org/wiki/MIT_License}\\
-bam2fastq & Apache License 2.0 & \url{https://apache.org/licenses/LICENSE-2.0.html}\\ % NOTE
-% Picard & MIT License & \url{https://en.wikipedia.org/wiki/MIT_License}\\ % NOTE
+bam2fastq & Apache License 2.0 & \url{https://apache.org/licenses/LICENSE-2.0.html}\\ % TODO Replace bam2fastq by Picard
+% Picard & MIT License & \url{https://en.wikipedia.org/wiki/MIT_License}\\ % TODO Replace bam2fastq by Picard
 FLASh & GNU GPL v. 3 & \url{https://gnu.org/licenses/gpl.html}\\
 CD-HIT & GNU GPL v. 2 & \url{https://gnu.org/licenses/old-licenses/gpl-2.0.html}\\
 grap$\_$synglet\-on$\_$clusters.py & GNU GPL v. 3 & \url{https://gnu.org/licenses/gpl.html}\\
@@ -1086,7 +1089,7 @@ FASTX & GNU Affero GPL & \url{https://gnu.org/licenses/agpl.html}
 
 \subsection{GNU General Public License, Version 3, 29 June 2007}
 
-Copyright © 2007 Free Software Foundation, Inc. \url{http://fsf.org/}
+Copyright © 2007 Free Software Foundation, Inc. \url{https://fsf.org/}
 
 Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.
 
@@ -1387,7 +1390,7 @@ Each version is given a~distinguishing version number. If the Program specifies 
 
 \subsection{GNU Affero General Public License, Version 3, 19 November 2007}
 
-Copyright © 2007 Free Software Foundation, Inc. \url{http://fsf.org/}
+Copyright © 2007 Free Software Foundation, Inc. \url{https://fsf.org/}
 
 Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.
 
@@ -1597,9 +1600,9 @@ If the disclaimer of warranty and limitation of liability provided above cannot 
 
 END OF TERMS AND CONDITIONS
 
-\subsection{Apache License, Version 2.0, January 2004}
+\subsection{Apache License, Version 2.0, January 2004} % TODO Replace bam2fastq by Picard - remove Apache license then
 
-\url{http://www.apache.org/licenses/}
+\url{https://www.apache.org/licenses/}
 
 TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
@@ -1685,7 +1688,7 @@ THE SOFTWARE IS PROVIDED “AS IS“, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 \hrule
 \vfill
 \begin{tiny}
-  Created in typographical system \hologo{XeLaTeX}, \url{https://en.wikipedia.org/wiki/XeTeX}, references with \hologo{BibTeX}, \url{http://www.bibtex.org/} on openSUSE GNU/Linux, \url{http://www.opensuse.org/}, \today.
+  Created in typographical system \hologo{XeLaTeX}, \url{https://en.wikipedia.org/wiki/XeTeX}, references with \hologo{BibTeX}, \url{http://www.bibtex.org/} on openSUSE GNU/Linux, \url{https://www.opensuse.org/}, \today.
 \end{tiny}
 
 \end{document}

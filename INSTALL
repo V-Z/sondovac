@@ -9,7 +9,7 @@ Requirements to run Sondovač
 
 Sondovač is currently tested on major Linux distributions (in current versions) 
 openSUSE, Debian, Ubuntu, Linux Mint, Fedora, Centos and Scientific Linux; and 
-on Mac OS X (version 10.10 Yosemite).
+on Mac OS X.
 
 In order to run Sondovač you need a UNIX-based operating system (preferably 
 Linux, alternatively Mac OS X) equipped with BASH or compatible shell 
@@ -32,17 +32,16 @@ tools. If you lack some of the required tools, the script will notify you, and
 you will have to install them manually. If this is needed, check the 
 documentation for your operating system.
 
-If required programs are not installed, Sondovač will offer you 
-installation. You can use precompiled binaries available together with the 
-script (this is the recommended option) or (sometimes) from the web.
-In case you wish to compile the required software 
-yourself, the script will guide you through this process. This is 
-recommended only for advanced users, as compilation might sometimes be very 
-tricky. Users of Mac OS X can install those applications also using Homebrew 
-(see http://brew.sh/). For compilation you need Apache Ant, GNU G++, GNU GCC, 
-GIT, Java/OpenJDK, libpng developmental files, and zlib developmental files. 
-Ensure that you have those tools available - they should be readily available 
-for any UNIX-based operating system.
+If required programs are not installed, Sondovač will offer you installation. 
+You can use precompiled binaries available together with the script (this is 
+the recommended option) or (sometimes) from the web.In case you wish to compile 
+the required software yourself, the script will guide you through this process. 
+This is recommended only for advanced users, as compilation might sometimes be 
+very tricky. Users of Mac OS X can install those applications also using 
+Homebrew (see https://brew.sh/). For compilation you need Apache Ant, GNU G++, 
+GNU GCC, GIT, Java/OpenJDK, libpng developmental files, and zlib developmental 
+files. Ensure that you have those tools available - they should be readily 
+available for any UNIX-based operating system.
 
 sondovac_part_a.sh requires (and will install) the following software packages:
 * BLAT
@@ -63,20 +62,25 @@ The following UNIX tools are required to run Sondovač. They are usually readily
 available in UNIX systems (but see note for Mac OS X below), so there is 
 usually no need to install them manually. The tools are awk, bc, bunzip2, cat, 
 cp, curl or wget, cut, dirname, echo, egrep, cd, g++, gcc, grep, gunzip, join, 
-less, lsb_release or python (for Linux), make, mkdir, perl, pkg-config, pwd, 
-sed, sort, tar, tr, uname, uniq, unzip, wc.
+less, lsb_release or python, make, mkdir, perl, pkg-config, pwd, sed, sort, 
+tar, tr, uname, uniq, unzip, wc.
 
-For Mac OS X users, Homebrew (http://brew.sh/) will be installed by the script, 
-and it will install (new software or newer versions) Apache Ant, BASH (the 
-shell interpreter), GNU AWK, GNU coreutils, GNU GCC, git, GNU grep, GNU make, 
-pkg-config, GNU sed, and wget. Mac OS X is missing some tools and for others 
-(typically sed, grep or awk) contains outdated BSD versions. The script will 
-guide the user through the process, and it is possible to safely and easily 
-remove these tools afterwards if the user wishes to do so.
+For Mac OS X users, Homebrew (https://brew.sh/) will be installed by the 
+script, and it will install (new software or newer versions) Apache Ant, BASH 
+(the shell interpreter), GNU AWK, GNU coreutils, GNU GCC, git, GNU grep, GNU 
+make, pkg-config, GNU sed, and wget. Mac OS X is missing some tools and for 
+others (typically sed, grep or awk) contains outdated BSD versions. The script 
+will guide the user through the process, and it is possible to safely and 
+easily remove these tools afterwards if the user wishes to do so.
 
 See the PDF manual for details about tools required by Sondovač and their 
 manual installation. For most users it should be sufficient to be guided 
 by the script to install needed tools automatically.
+
+When Sondovač starts, a directory "bin" is created in the current working 
+directory. Sondovač saves binaries of required software packages in this 
+directory (if they are not available). The user can then add this directory 
+to PATH, move or delete it afterwards. See the PDF manual for details.
 
 
 First launch of Sondovač
@@ -113,10 +117,10 @@ Running in non-interactive, automated mode (parameter "-n", see README) with
 example data downloaded from https://github.com/V-Z/sondovac/wiki/Sample-data:
 
   ./sondovac_part_a.sh -f input1_JHCN_Oxalis_corniculata_transcriptome_data.fa \
-  -c input2_Ricinus_communis_reference_plastid_genome.fsa -m \
-  input5_Ricinus_communis_reference_mitochondrial_genome.fasta -t \
-  input3_J12_Oxalis_obtusa_genome_skim_data_R1.fastq -q \
-  input4_J12_Oxalis_obtusa_genome_skim_data_R2.fastq -n
+    -c input2_Ricinus_communis_reference_plastid_genome.fsa -m \
+    input5_Ricinus_communis_reference_mitochondrial_genome.fasta -t \
+    input3_J12_Oxalis_obtusa_genome_skim_data_R1.fastq -q \
+    input4_J12_Oxalis_obtusa_genome_skim_data_R2.fastq -n
 
 Modify parameter "-a", otherwise run interactively:
 
@@ -127,7 +131,7 @@ user must specify all required input files (parameters "-f", "-c", "-m", "-t"
 and "-q"). Moreover, parameter "-y" is modified:
 
   ./sondovac_part_a.sh -n -f input.fa -c referencecp.fasta -m referencemt.fsa \
-  -t reads1.fastq -q reads2.fastq -y 90
+    -t reads1.fastq -q reads2.fastq -y 90
 
 Modifying parameter "-s". Note interactive mode "-i" is implicit and does not 
 need to be specified explicitly:
@@ -152,8 +156,8 @@ with some basic tutorials first. You can try some of these:
 * https://www.debian.org/doc/manuals/debian-reference/ch01.en.html
 * https://en.wikibooks.org/wiki/Guide_to_Unix
 * http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html
-* https://trapa.cz/en/course-linux-command-line-2015
-* https://docs.fedoraproject.org/en-US/Fedora/22/html/System_Administrators_Guide
+* https://trapa.cz/en/course-linux-command-line-2016
+* https://docs.fedoraproject.org/f26/system-administrators-guide/Book_Info.html
 
 
 Geneious
@@ -163,12 +167,12 @@ Sondovač workflow is divided into three parts (see README and PDF manual for
 details):
 1) Raw input data are analyzed by sondovac_part_a.sh.
 2) Sequences obtained in part A are assembled by Geneious in a separate step by 
-   the user.
+     the user.
 3) Final probes are produced by sondovac_part_b.sh.
 
 For part (2) of the script the user must have Geneious. We plan to replace it 
 with a free open-source command line tool in a future release of Sondovač. 
-Visit http://www.geneious.com/ for download, purchase, installation and usage 
+Visit https://www.geneious.com/ for download, purchase, installation and usage 
 of Geneious.
 
 
@@ -176,27 +180,27 @@ Software links (including required versions)
 ================================================================================
 
 "X" denotes any subversion of a particular lineage, and "v. >" denotes any 
-version higher then noted. Generally, any current version should usually be 
+version higher than noted. Generally, any current version should usually be 
 fine.
 
 * Apache Ant 1.9.X - https://ant.apache.org/
-* bam2fastq 1.1.0 - http://gsl.hudsonalpha.org/information/software/bam2fastq
+* bam2fastq 1.1.0 - https://gsl.hudsonalpha.org/information/software/bam2fastq
 * BASH v. > 4 - https://www.gnu.org/software/bash/bash.html
-* BLAT v.36 - http://genome.ucsc.edu/FAQ/FAQblat.html
+* BLAT v.36 - https://genome.ucsc.edu/FAQ/FAQblat.html
 * Bowtie2 2.2.6 - http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
 * CD-HIT 4.6 - http://weizhongli-lab.org/cd-hit/
 * FASTX toolkit 0.0.14, libgtextutils - http://hannonlab.cshl.edu/fastx_toolkit/
-* FLASH 1.2.11 - http://sourceforge.net/projects/flashpage/
-* G++, GCC v. > 4.2 - http://gcc.gnu.org/
-* Geneious v. > 6.1 - http://www.geneious.com/
-* GIT v. > 2.0 - http://git-scm.com/
+* FLASH 1.2.11 - https://sourceforge.net/projects/flashpage/
+* G++, GCC v. > 4.2 - https://gcc.gnu.org/
+* Geneious v. > 6.1 - https://www.geneious.com/
+* GIT v. > 2.0 - https://git-scm.com/
 * GNU core utils 8.X - https://www.gnu.org/software/coreutils/coreutils.html
 * Java v. > 7 - https://www.java.com/ (or OpenJDK - http://openjdk.java.net/)
 * libpng 1.6.X - http://www.libpng.org/
 * Picard v. > 1.137 - https://broadinstitute.github.io/picard/
 * SAMtools, htsjdk 1.2 - http://www.htslib.org/
 * Sondovač - https://github.com/V-Z/sondovac/wiki
-* zlib 1.2.8 - http://zlib.net/
+* zlib 1.2.8 - https://zlib.net/
 
 
 Vocabulary
@@ -232,7 +236,7 @@ Vocabulary
 * Homebrew - Tool primarily for Mac OS X (although there is also a Linux 
   version available) replacing the practically missing package manager for this 
   system. Can be used to install plenty of various applications as well as 
-  updating tools already available in Mac OS X. See http://brew.sh/.
+  updating tools already available in Mac OS X. See https://brew.sh/.
 * Java - Very popular programming language. It requires Java runtime 
   environment to be installed, but the applications are very well transferable 
   among operating systems. See https://www.java.com/.

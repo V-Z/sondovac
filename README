@@ -1,9 +1,7 @@
 Sondovač 1.2 Basic help
 
-Sondovač (English pronunciation is "Sondovach". The word is a Czech neologism 
-meaning something like "The Prober" or "The Probe Maker") is a script to 
-create orthologous low-copy nuclear probes from transcriptome and genome skim 
-data for target enrichment.
+Sondovač is a script to create orthologous low-copy nuclear probes from 
+transcriptome and genome skim data for target enrichment.
 
 
 Script summary
@@ -52,49 +50,17 @@ containing exons of a minimum bait length and totaling minimum loci length (see
 comments above). To ensure that plastid sequences are absent from the probes, 
 the probe sequences are matched against the plastome reference sharing ≥90% 
 sequence similarity with BLAT and the hits removed from the probe set. The 
-workflow of Sondovač is summarized in Figure 1 of the PDF manual.
-
-The steps of Sondovač are consecutively numbered to aid comprehension.
-
-Sondovač has three parts: two script parts and an intermediate part using 
-Geneious. The workflow is as follows:
-
-A) sondovac_part_a.sh: Covers steps 1 to 6.
-  1)   Removal of transcripts sharing ≥90% sequence similarity.
-  2)   Removal of reads of plastid origin.
-  3)   Removal of reads of mitochondrial origin (optional).
-  4)   Combination of paired-end reads.
-  5)   Matching of the unique transcripts and the filtered, combined genome 
-       skim reads sharing ≥85% sequence similarity.
-  6)   Filtering of BLAT output:
-  6.1) Choice of transcript or genome skim sequences for further processing.
-  6.2) Removal of transcripts with >1000 BLAT hits.
-  6.3) Removal of transcript or genome skim BLAT hits [depending on the 
-       selection in (6.1)] containing masked nucleotides.
-
-Input files for sondovac_part_a.sh are FASTA transcriptome data, FASTQ 
-paired-end genome skim reads and a plastome (and possibly also mitochondriome) 
-reference. The input file for Geneious is the output of sondovac_part_a.sh.
-
-B) Geneious: Covers step 7 (see below and PDF manual)
-  7)  De novo assembly of the transcript or genome skim BLAT hits [depending 
-      on the selection in (6.1)] to larger contigs. Note that you need a copy 
-      of Geneious for this step.
-
-The output files of Geneious are input files for sondovac_part_b.sh.
-
-C) sondovac_part_b.sh: Covers steps 8 to 11.
-  8)  Retention of those contigs that comprise exons ≥ bait length and have a 
-      certain total locus length.
-  9)  Removal of probe sequences sharing ≥90% sequence similarity.
-  10) Retention of those contigs that comprise exons ≥ bait length and have a 
-      certain total locus length.
-  11) Removal of probe sequences sharing ≥90% sequence similarity with the 
-      plastome reference.
-
-The output file of sondovac_part_b.sh is the final list of probes, from which 
-the user needs to remove the putative plastid sequences indicated in step 11 of 
-the pipeline.
+workflow of Sondovač is summarized in Figure 1 of the PDF manual. Sondovač has 
+three parts: two script parts and an intermediate part using Geneious. Input 
+files for sondovac_part_a.sh are FASTA transcriptome data, FASTQ paired-end 
+genome skim reads and a plastome (and possibly also mitochondriome) reference. 
+The input file for Geneious is the output of sondovac_part_a.sh. The output 
+files of Geneious are input files for sondovac_part_b.sh. The output file of 
+sondovac_part_b.sh is the final list of probes, from which the user needs to 
+remove the putative plastid sequences indicated in step 11 of the pipeline. In 
+case of detection of remaining plastid sequences you will have to remove those 
+plastid sequences manually from the output file of sondovac_ part_b.sh (see 
+detailed documentation of sondovac_part_b.sh in the PDF manual).
 
 
 Software dependencies and installation
@@ -103,66 +69,8 @@ Software dependencies and installation
 Requirements to run Sondovač
 --------------------------------------------------------------------------------
 
-Sondovač uses several scientific software packages (namely bam2fastq, BLAT, 
-Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, Picard, 
-and SAMtools - see required versions and links below), and basic UNIX tools 
-(see below). Sondovač will check if those programs are installed - available in 
-the PATH (i.e. if the shell application can locate and launch respective 
-binaries). If you have those packages installed (in current versions), ensure 
-that their binaries are in PATH. This should not be a problem for basic tools 
-available in any UNIX-based operating system, as basic installation usually 
-contains all needed tools. If you lack some of the required tools, the script 
-will notify you, and you will have to install them manually. If this is 
-needed, check the documentation for your operating system.
-
-If required programs are not installed, Sondovač will offer you 
-installation. You can use precompiled binaries available together with the 
-script (this is the recommended option) or (sometimes) from the web. 
-In case you would like to compile required software 
-yourself, the script will guide you through this process. This is 
-recommended only for advanced users, as compilation might sometimes be very 
-tricky. Users of Mac OS X can install those applications also using Homebrew 
-(see http://brew.sh/). For compilation you need Apache Ant, GNU G++, GNU GCC, 
-GIT, Java/OpenJDK, libpng developmental files, and zlib developmental files. 
-Ensure you have those tools available - they should be readily available for 
-any UNIX-based operating system.
-
-The following UNIX tools are required to run Sondovač. They are usually readily 
-available in UNIX systems (but see note for Mac OS X below), so there is 
-usually no need to install them manually. The tools are awk, bc, bunzip2, cat, 
-cp, curl or wget, cut, dirname, dos2unis, echo, egrep, cd, g++, gcc, grep, 
-gunzip, join, less, lsb_release or python (for Linux), make, mkdir, paste, 
-perl, pkg-config, pwd, sed, sort, tar, tr, uname, uniq, unzip, wc.
-
-sondovac_part_a.sh requires (and will install) the following software packages:
-* BLAT
-* Bowtie2
-* SAMtools
-* bam2fastq (will be replaced by Picard in a future release)
-* FLASH
-* FASTX-toolkit
-
-sondovac_part_b.sh requires (and will install) the following software packages:
-* CD-HIT
-* BLAT
-
-For Mac OS X users, Homebrew (http://brew.sh/ and https://github.com/Homebrew/) 
-will be installed by the script, and it will install (new software or newer 
-versions) Apache Ant, BASH (the shell interpreter), GNU AWK, GNU coreutils, GNU 
-GCC, git, GNU grep, GNU make, pkg-config, GNU sed, and wget. Mac OS X is 
-missing some tools and for others (typically sed, grep or awk) contains 
-outdated BSD versions. The script will guide the user through the process, and 
-it is possible to safely and easily remove these tools afterwards if the user 
-wishes to do so.
-
-See the PDF manual for details about tools required by Sondovač and their 
-manual installation. For most users it should be sufficient to be guided by 
-the script to install needed tools automatically.
-
-When Sondovač starts, a directory "bin" is created in the current working 
-directory. Sondovač saves binaries of required software packages in this 
-directory (if they are not available). The user can then add this directory 
-to PATH, move or delete it afterwards. See the PDF manual for details.
+Sondovač uses several scientific software packages and UNIX tools. See INSTALL 
+and PDF manual for details.
 
 Geneious
 --------------------------------------------------------------------------------
@@ -170,45 +78,13 @@ Geneious
 Geneious is a DNA alignment, assembly, and analysis software and one of the 
 most common software platforms used in genomics. It is utilized for de novo 
 assembly in Sondovač. We plan to replace it by a free open-source command 
-line tool in a future release of Sondovač. Visit http://www.geneious.com/ 
+line tool in a future release of Sondovač. Visit https://www.geneious.com/ 
 for download, purchase, installation and usage of Geneious. After the input 
 data are processed (interactively or not) by sondovac_part_a.sh, the user must 
 process its output manually by Geneious according to the instructions given 
-below. The output of Geneious is then processed by sondovac_part_b.sh, which 
-produces the final probe set. Geneious was tested with versions 6, 7 and 8.
-
-Import the output file of part A of the script (sondovac_part_a.sh): 
-go to menu File | Import | From File... This file is named as:
-*_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa
-
-Select the file and go to menu Tools | Align / Assemble | De Novo Assemble.
-In "Data" frame select "Assemble by 1st (...) Underscore".
-In "Method" frame select Geneious Assembler (if you don't have other 
-assemblers, this option might be missing) and "Medium Sensitivity / Fast" 
-Sensitivity.
-
-In "Results" frame check "Save assembly report", "Save list of unused reads", 
-"Save in sub-folder", "Save contigs" (do not check "Maximum") and "Save 
-consensus sequences". Do not trim. Otherwise keep defaults. Run it. Geneious 
-may warn about possible hanging because of big file size. Do not use Geneious 
-for other tasks during the assembly. Running Geneious may take a long time.
-
-Select all resulting contigs (typically named "* Contig #") and export them 
-(go to menu File | Export | Selected Documents...) as "Tab-separated table 
-values (*.tsv)". Save the following columns (Hold Ctrl key to mark more 
-fields): "# Sequences", "% Pairwise Identity", "Description", "Mean Coverage", 
-"Name" and "Sequence Length". If this option would be inaccessible for you, 
-export all columns.
-
-Warning! Do not select and export "* Consensus Sequences", "* Unused Reads" or 
-"* Assembly Report" - only the individual "* contig #" files.
-
-Select items "Consensus Sequences" and "Unused Reads" and export them as one 
-FASTA. Go to menu File | Export | Selected Documents... and choose FASTA file 
-type.
-
-Use the exported files from Geneious as input for part B of the script 
-(sondovac_part_b.sh).
+in the PDF manual. The output of Geneious is then processed by sondovac_part_b
+.sh, which produces the final probe set. Geneious was tested with versions 6, 
+7, 8 and 9. See PDF manual for details.
 
 
 Command-line parameters to run Sondovač
@@ -237,16 +113,16 @@ General parameters:
            them correctly. Default value (if the user does not provide another 
            name) is "output". See below for the list of produced output files.
 -i       Running in interactive mode - the script will on-demand ask for the 
-	   required input files, installation of missing software etc. This is 
-	   the recommended default value (the script runs interactively without 
-	   explicitly using option "-n").
+           required input files, installation of missing software etc. This is 
+           he recommended default value (the script runs interactively without 
+           explicitly using option "-n").
 -n       Running in non-interactive mode. The user must provide at least the 
-	   required input files (see below). You can use only one of parameters 
-	   "-i" or "-n" (not both of them). If script fails to find some of the
-	   required software packages, it will exit. This is recommended for 
-	   batch or repeated analysis, on remote servers and for more advanced 
-	   users. The user must be sure that all required software is installed 
-	   (see INSTALL and PDF manual for details).
+           required input files (see below). You can use only one of parameters 
+           "-i" or "-n" (not both of them). If script fails to find some of the
+           required software packages, it will exit. This is recommended for 
+           batch or repeated analysis, on remote servers and for more advanced 
+           users. The user must be sure that all required software is installed 
+           (see INSTALL and PDF manual for details).
 
 Input files:
   Those parameters are required when running in non-interactive mode.
@@ -281,9 +157,9 @@ Optional parameters:
   not possible to change them at a later point (not even in interactive mode).
 
 -a ###   Maximum overlap length expected in approximately ≥90% of read pairs 
-	   (parameter -M of FLASH, see its manual for details). FLASH can not 
-	   combine paired-end reads that do not overlap by at least 10 bp 
-	   (default minimum overlap length).
+           (parameter -M of FLASH, see its manual for details). FLASH can not 
+           combine paired-end reads that do not overlap by at least 10 bp 
+           (default minimum overlap length).
          Step 4 of Sondovač, sondovac_part_a.sh.
          DEFAULT: 65
          OPTIONS: Integer ranging from 10 to 300
@@ -307,7 +183,7 @@ Optional parameters:
            and the filtered, combined genome skim reads. Transcripts with a 
            high number of BLAT hits, indicating repetitive elements, need to 
            be removed from the putative probe sequences.
-	 Step 6.2 of Sondovač, sondovac_part_a.sh.
+         Step 6.2 of Sondovač, sondovac_part_a.sh.
          DEFAULT: 1000
          OPTIONS: Integer ranging from 100 to 10000
 -b ###   Minimum exon (bait) length. The minimum exon length should not fall 
@@ -357,8 +233,7 @@ Modify parameter "-a", otherwise run interactively:
 
 Run in non-interactive mode (parameter "-n") - in such case the user must 
   specify all required input files (parameters "-f", "-c", "-m", "-t" and 
-"-q"). 
-  Moreover, parameter "-y" is modified:
+  "-q"). Moreover, parameter "-y" is modified:
 ./sondovac_part_a.sh -n -f input.fa -c referencecp.fa -m referencemt.fa \
   -t reads1.fastq -q reads2.fastq -y 90
 
@@ -407,14 +282,13 @@ Script sondovac_part_a.sh creates the following files:
       Final FASTA sequences for usage in Geneious.
 Files 1-8 are not necessary for further processing by this pipeline, but may be 
 useful for the user. The last file (9) is used as input file for Geneious in 
-the next step. An asterisk (*) denotes the beginning of the output files' names 
-specified by the user with parameter "-o". If the user does not select a custom 
-name, default value ("output") will be used.
+the next step.
 
 Geneious requires as input the last output file of sondovac_part_a.sh (file 9: 
 *_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa).
 
-Output of Geneious are two exported files (see Geneious chapter):
+Output of Geneious are two exported files (see Geneious chapter in the PDF 
+manual):
 1) Final assembled sequences exported as TSV.
 2) Final assembled sequences exported as FASTA.
 
@@ -462,42 +336,10 @@ ls -lh Desktop/MyFile*
 Sample data
 ================================================================================
 
-Together with the script, we provide the ZIP archive (1.8 GB) that contains 
-example input files for running the script: Oxalis genome skim data as well 
-as the Ricinus cpDNA and mtDNA reference sequences. See 
+Together with the script, we provide the ZIP archive (~1.8 GB) containing 
+example input files for running the script: Oxalis genome skimming data and 
+transcriptome as well as the Ricinus cpDNA and mtDNA reference sequences. See 
 https://github.com/V-Z/sondovac/wiki/Sample-data for download of sample data.
-
-The package contains:
-
-1) input2_Ricinus_communis_reference_plastid_genome.fsa - cpDNA reference 
-   (parameter -c), GenBank reference number NC_016736.
-2) input3_J12_Oxalis_obtusa_J12_genome_skim_data_R1.fastq - paired-end genome 
-   skim data, file 1 (parameter -t).
-3) input4_J12_Oxalis_obtusa_J12_genome_skim_data_R2.fastq - paired-end genome 
-   skim data, file 2 (parameter -q).
-4) input5_Ricinus_communis_reference_mitochondrial_genome.fasta - mtDNA 
-   reference (parameter -m), GenBank reference number NC_015141.
-
-The transcriptome input file is unpublished data from G. K.-S. Wong et al. As 
-soon as the data are published, we will post them on GitHub. Data can now 
-be found under
-* http://www.onekp.com/
-* http://www.onekp.com/samples/list.php
-* http://www.onekp.com/samples/single.php?id=JHCN
-
-The transcriptome FASTA file used for the probe design is named 
-JHCN-SOAPdenovo-Trans-assembly.dnas.out and can be found under 
-JHCN/Assembly/JHCN-SOAPdenovo-Trans-translated/.
-
-Information on access to data download is given in Matasci N, 
-Hung L-H, Yan Z, Carpenter EJ, Wickett NJ, Mirarab S, Nguyen N, Warnow T, 
-Ayyampalayam S, Barker M, Burleigh JG, Gitzendanner MA, Wafula E, Der JP, 
-dePamphilis CW, Roure B, Philippe H, Ruhfel BR, Miles NW, Graham SW, Mathews S, 
-Surek B, Melkonian M, Soltis DE, Soltis PS, Rothfels C, Pokorny L, Shaw JA, 
-DeGironimo L, Stevenson DW, Villarreal JC, Chen T, Kutchan TM, Rolf M, Baucom 
-RS, Deyholos MK, Samudrala R, Tian Z, Wu X, Sun X, Zhang Y, Wang J, 
-Leebens-Mack J and Wong G K-S (2014) Data access for the 1,000 Plants (1KP) 
-project. GigaScience 3:17, http://www.gigasciencejournal.com/content/3/1/17/
 
 
 Record output of Sondovač
@@ -518,8 +360,8 @@ License
 ================================================================================
 
 The script is licensed under permissive open-source license allowing 
-redistribution and modifications. Check file LICENSE for details and feel free 
-to enhance the script.
+redistribution and modifications. Check file LICENSE or PDF manual for details 
+and feel free to enhance the script.
 
 
 Citation
@@ -533,7 +375,7 @@ Roswitha Schmickl, Aaron Liston, Vojtěch Zeisek, Kenneth Oberlander, Kevin
 Phylogenetic marker development for target enrichment from transcriptome and
   genome skim data: the pipeline and its application in southern African 
   Oxalis (Oxalidaceae)
-Molecular Ecology Resources (2016) - early view available on-line
+Molecular Ecology Resources (2016)
 http://onlinelibrary.wiley.com/doi/10.1111/1755-0998.12487/abstract
 
 
@@ -549,7 +391,7 @@ Software references
 ================================================================================
 
 bam2fastq:
-* http://gsl.hudsonalpha.org/information/software/bam2fastq
+* https://gsl.hudsonalpha.org/information/software/bam2fastq
 BLAT:
 * W. James Kent
   BLAT – the BLAST-like alignment tool
@@ -559,39 +401,39 @@ Bowtie2:
 * Ben Langmead and Steven L. Salzberg
   Fast gapped-read alignment with Bowtie 2
   Nature Methods (2012) 9:357-359
-  http://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html
+  https://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html
 CD-HIT:
 * Weizhong Li, Lukasz Jaroszewski and Adam Godzik
   Clustering of highly homologous sequences to reduce the size of large
     protein databases
   Bioinformatics (2001) 17:282-283.
-  http://bioinformatics.oxfordjournals.org/content/17/3/282.short
+  https://academic.oup.com/bioinformatics/article/17/3/282/189639/Clustering-of-highly-homologous-sequences-to
 * Weizhong Li, Lukasz Jaroszewski and Adam Godzik
   Tolerating some redundancy significantly speeds up clustering of large
     protein databases
   Bioinformatics (2002) 18:77-82
-  http://bioinformatics.oxfordjournals.org/content/18/1/77.short
+  https://academic.oup.com/bioinformatics/article/18/1/77/243728/Tolerating-some-redundancy-significantly-speeds-up
 * Weizhong Li and Adam Godzik
   Cd-hit: a fast program for clustering and comparing large sets of
     protein or nucleotide sequences
   Bioinformatics (2006) 22:1658-1659
-  http://bioinformatics.oxfordjournals.org/content/22/13/1658.short
+  https://academic.oup.com/bioinformatics/article/22/13/1658/194225/Cd-hit-a-fast-program-for-clustering-and-comparing
 * Limin Fu, Beifang Niu, Zhengwei Zhu, Sitao Wu and Weizhong Li
   CD-HIT: accelerated for clustering the next generation sequencing data
   Bioinformatics (2012) 28:3150-3152
-  http://bioinformatics.oxfordjournals.org/content/28/23/3150.short
+  https://academic.oup.com/bioinformatics/article/28/23/3150/192160/CD-HIT-accelerated-for-clustering-the-next
 * Ying Huang, Beifang Niu, Ying Gao, Limin Fu and Weizhong Li
   CD-HIT Suite: a web server for clustering and comparing biological sequences
   Bioinformatics (2010) 26:680
-  http://bioinformatics.oxfordjournals.org/content/26/5/680.short
+  https://academic.oup.com/bioinformatics/article/26/5/680/212234/CD-HIT-Suite-a-web-server-for-clustering-and
 * Beifang Niu, Limin Fu, Shulei Sun and Weizhong Li
   Artificial and natural duplicates in pyrosequencing reads of metagenomic data
   BMC Bioinformatics (2010) 11:187
-  http://www.biomedcentral.com/1471-2105/11/187
+  https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-11-187
 * Weizhong Li, Limin Fu, Beifang Niu, Sitao Wu and John Wooley
   Ultrafast clustering algorithms for metagenomic sequence analysis
   Briefings in Bioinformatics (2012) 13(6):656-668
-  http://bib.oxfordjournals.org/content/13/6/656.abstract
+  https://academic.oup.com/bib/article/13/6/656/193286/Ultrafast-clustering-algorithms-for-metagenomic
 FASTX toolkit:
 * A. Gordon and G. J. Hannon
   FASTX-Toolkit. FASTQ/A short-reads pre-processing tools
@@ -601,7 +443,7 @@ FLASH:
 * Tanja Magoč and Steven L. Salzberg
   FLASH: fast length adjustment of short reads to improve genome assemblies
   Bioinformatics (2011) 27(21):2957-2963
-  http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract
+  https://academic.oup.com/bioinformatics/article/27/21/2957/217265/FLASH-fast-length-adjustment-of-short-reads-to
 Geneious
 * Matthew Kearse, Richard Moir, Amy Wilson, Steven Stones-Havas, Matthew 
     Cheung, Shane Sturrock, Simon Buxton, Alex Cooper, Sidney Markowitz, Chris 
@@ -609,7 +451,7 @@ Geneious
   Geneious Basic: An integrated and extendable desktop software platform for 
     the organization and analysis of sequence data
   Bioinformatics (2012) 28(12):1647-1649
-  http://bioinformatics.oxfordjournals.org/content/28/12/1647
+  https://academic.oup.com/bioinformatics/article/28/12/1647/267326/Geneious-Basic-An-integrated-and-extendable
 grab_syngleton_clusters.py
 * Kevin Weitemier, Shannon C K Straub, Richard C Cronn, Mark Fishbein, Roswitha 
     E. Schmickl, Angela McDonnell, Aaron Liston
@@ -618,20 +460,20 @@ grab_syngleton_clusters.py
   Applications in Plant Sciences (2014) 2(9):1-7
   http://www.bioone.org/doi/abs/10.3732/apps.1400042
 Picard:
-* http://broadinstitute.github.io/picard
+* https://broadinstitute.github.io/picard
 SAMtools:
 * Heng Li, Bob Handsaker, Alec Wysoker, Tim Fennell, Jue Ruan, Nils Homer,
     Gabor Marth, Goncalo Abecasis, Richard Durbin and 1000 Genome Project
     Data Processing Subgroup
   The Sequence Alignment/Map format and SAMtools
   Bioinformatics (2009) 25(16): 2078-2079
-  http://bioinformatics.oxfordjournals.org/content/25/16/2078.abstract
+  https://academic.oup.com/bioinformatics/article/25/16/2078/204688/The-Sequence-Alignment-Map-format-and-SAMtools
 * Heng Li
   A statistical framework for SNP calling, mutation discovery, association
     mapping and population genetical parameter estimation from sequencing data
   Bioinformatics (2011) 27(21): 2987-2993
-  http://bioinformatics.oxfordjournals.org/content/27/21/2987.abstract
+  https://academic.oup.com/bioinformatics/article/27/21/2987/217423/A-statistical-framework-for-SNP-calling-mutation
 * Heng Li
   Improving SNP discovery by base alignment quality
   Bioinformatics (2011) 27(8): 1157-1158.
-  http://bioinformatics.oxfordjournals.org/content/27/8/1157.short
+  https://academic.oup.com/bioinformatics/article/27/8/1157/227268/Improving-SNP-discovery-by-base-alignment-quality
