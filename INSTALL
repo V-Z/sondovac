@@ -1,4 +1,4 @@
-Sondovač 1.2 Install instructions
+Sondovač 1.3 Install instructions
 
 Sondovač is a script to create orthologous low-copy nuclear probes from 
 transcriptome and genome skim data for target enrichment.
@@ -20,17 +20,17 @@ upstream, otherwise we will not be able to help you in case of problems. Older
 operating systems can have different versions of shell and system libraries, 
 which can cause various problems and incompatibilities.
 
-Sondovač uses several scientific software packages (namely bam2fastq, BLAT, 
-Bowtie2, CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, Picard, 
-and SAMtools - see required versions and links below), and basic UNIX tools. 
-Sondovač will check if those programs are installed - available in the PATH 
-(i.e. if the shell application can locate and launch respective binaries). If 
-you have those packages installed (in current versions), ensure their binaries 
-are in PATH. This should not be a problem for basic tools available in any 
-UNIX-based operating system, as basic installation usually contains all needed 
-tools. If you lack some of the required tools, the script will notify you, and 
-you will have to install them manually. If this is needed, check the 
-documentation for your operating system.
+Sondovač uses several scientific software packages (namely BLAT, Bowtie2, 
+CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, and SAMtools - 
+see required versions and links below), and basic UNIX tools. Sondovač will 
+check if those programs are installed - available in the PATH (i.e. if the 
+shell application can locate and launch respective binaries). If you have those 
+packages installed (in current versions), ensure their binaries are in PATH. 
+This should not be a problem for basic tools available in any UNIX-based 
+operating system, as basic installation usually contains all needed tools. If 
+you lack some of the required tools, the script will notify you, and you will 
+have to install them manually. If this is needed, check the documentation for 
+your operating system.
 
 If required programs are not installed, Sondovač will offer you installation. 
 You can use precompiled binaries available together with the script (this is 
@@ -47,7 +47,6 @@ sondovac_part_a.sh requires (and will install) the following software packages:
 * BLAT
 * Bowtie2
 * SAMtools
-* bam2fastq (will be replaced by Picard in a future release)
 * FLASH
 * FASTX-toolkit
 
@@ -109,39 +108,6 @@ PDF manual):
 
   ./sondovac_part_a.sh -i
 
-Specify some of the required input files, otherwise run interactively:
-
-  ./sondovac_part_a.sh -i -f input.fa -t reads1.fastq -q reads2.fastq
-
-Running in non-interactive, automated mode (parameter "-n", see README) with 
-example data downloaded from https://github.com/V-Z/sondovac/wiki/Sample-data:
-
-  ./sondovac_part_a.sh -f input1_JHCN_Oxalis_corniculata_transcriptome_data.fa \
-    -c input2_Ricinus_communis_reference_plastid_genome.fsa -m \
-    input5_Ricinus_communis_reference_mitochondrial_genome.fasta -t \
-    input3_J12_Oxalis_obtusa_genome_skim_data_R1.fastq -q \
-    input4_J12_Oxalis_obtusa_genome_skim_data_R2.fastq -n
-
-Modify parameter "-a", otherwise run interactively:
-
-  ./sondovac_part_a.sh -i -a 300
-
-Running in non-interactive mode (parameter "-n", see README) - in such case the 
-user must specify all required input files (parameters "-f", "-c", "-m", "-t" 
-and "-q"). Moreover, parameter "-y" is modified:
-
-  ./sondovac_part_a.sh -n -f input.fa -c referencecp.fasta -m referencemt.fsa \
-    -t reads1.fastq -q reads2.fastq -y 90
-
-Modifying parameter "-s". Note interactive mode "-i" is implicit and does not 
-need to be specified explicitly:
-
-  ./sondovac_part_a.sh -s 950
-
-We recommend launching Sondovač at least for the first time in interactive 
-mode, so that the script will verify all requirements and install missing tools 
-when needed. Non-interactive mode is recommended for routine usage.
-
 
 Help for usage of terminal
 ================================================================================
@@ -149,14 +115,14 @@ Help for usage of terminal
 If you are not familiar with the usage of command line, familiarise yourself 
 with some basic tutorials first. You can try some of these:
 
-* https://activedoc.opensuse.org/book/opensuse-start-up/chapter-17-shell-basics
+* https://doc.opensuse.org/documentation/leap/startup/html/book.opensuse.startup/part.bash.html
 * https://help.ubuntu.com/community/UsingTheTerminal
 * https://www.gnu.org/software/bash/manual/ (advanced - full reference manual)
 * http://ubuntuguide.org/
 * https://www.debian.org/doc/manuals/debian-reference/ch01.en.html
 * https://en.wikibooks.org/wiki/Guide_to_Unix
 * http://www.tldp.org/LDP/Bash-Beginners-Guide/html/Bash-Beginners-Guide.html
-* https://trapa.cz/en/course-linux-command-line-2016
+* https://trapa.cz/en/course-linux-command-line-2017
 * https://docs.fedoraproject.org/f26/system-administrators-guide/Book_Info.html
 
 
@@ -176,149 +142,20 @@ Visit https://www.geneious.com/ for download, purchase, installation and usage
 of Geneious.
 
 
-Software links (including required versions)
+Software links
 ================================================================================
 
-"X" denotes any subversion of a particular lineage, and "v. >" denotes any 
-version higher than noted. Generally, any current version should usually be 
-fine.
-
-* Apache Ant 1.9.X - https://ant.apache.org/
-* bam2fastq 1.1.0 - https://gsl.hudsonalpha.org/information/software/bam2fastq
-* BASH v. > 4 - https://www.gnu.org/software/bash/bash.html
-* BLAT v.36 - https://genome.ucsc.edu/FAQ/FAQblat.html
-* Bowtie2 2.2.6 - http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
-* CD-HIT 4.6 - http://weizhongli-lab.org/cd-hit/
-* FASTX toolkit 0.0.14, libgtextutils - http://hannonlab.cshl.edu/fastx_toolkit/
-* FLASH 1.2.11 - https://sourceforge.net/projects/flashpage/
-* G++, GCC v. > 4.2 - https://gcc.gnu.org/
-* Geneious v. > 6.1 - https://www.geneious.com/
-* GIT v. > 2.0 - https://git-scm.com/
-* GNU core utils 8.X - https://www.gnu.org/software/coreutils/coreutils.html
-* Java v. > 7 - https://www.java.com/ (or OpenJDK - http://openjdk.java.net/)
-* libpng 1.6.X - http://www.libpng.org/
-* Picard v. > 1.137 - https://broadinstitute.github.io/picard/
-* SAMtools, htsjdk 1.2 - http://www.htslib.org/
+* BASH - https://www.gnu.org/software/bash/bash.html
+* BLAT - https://genome.ucsc.edu/FAQ/FAQblat.html
+* Bowtie2 - http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
+* CD-HIT - http://weizhongli-lab.org/cd-hit/
+* FASTX toolkit, libgtextutils - http://hannonlab.cshl.edu/fastx_toolkit/
+* FLASH - https://sourceforge.net/projects/flashpage/
+* G++, GCC - https://gcc.gnu.org/
+* Geneious - https://www.geneious.com/
+* GIT - https://git-scm.com/
+* GNU core utils - https://www.gnu.org/software/coreutils/coreutils.html
+* libpng - http://www.libpng.org/
+* SAMtools, htsjdk - http://www.htslib.org/
 * Sondovač - https://github.com/V-Z/sondovac/wiki
-* zlib 1.2.8 - https://zlib.net/
-
-
-Vocabulary
-================================================================================
-
-* Binary - An application in a form understandable by the computer, but usually 
-  not transferable among operating systems and/or hardware platforms. Binaries 
-  in Windows usually have the extension *.exe, in UNIX there is usually no 
-  extension.
-* BASH - "The command line" - fully featured programming scripting language 
-  accessible through the terminal of any UNIX-based operating system (any 
-  Linux, Mac OS X, Solaris, any variant of BSD and more). BASH scripts usually 
-  have the extension *.sh.
-* BSD - Group of popular UNIX-based operating systems. See 
-  https://en.wikipedia.org/wiki/Berkeley_Software_Distribution.
-* C - Popular programming language. Source code must be compiled for each 
-  operating system. See https://en.wikipedia.org/wiki/C_(programming_language).
-* C++ - Popular programming language. Source code must be compiled for each 
-  operating system. See https://en.wikipedia.org/wiki/C++.
-* Centos - Popular Linux distribution. Community remake of RedHat Enterprise 
-  Linux. See https://centos.org/.
-* Compilation - "Translation" of software application from the source code 
-  (text readable by human programmer) into binary form launchable by the 
-  computer. It requires special tools (compilers), and it usually must be done 
-  for every operating system and hardware platform.
-* Console - See "shell".
-* Debian - One of the oldest and most popular Linux distributions. See 
-  https://www.debian.org/.
-* Fedora - Popular Linux distribution developed together with RedHat Linux as 
-  its free community testing platform. See https://getfedora.org/.
-* GNU - Major project providing free software widely used in many operating 
-  systems, see https://gnu.org/.
-* Homebrew - Tool primarily for Mac OS X (although there is also a Linux 
-  version available) replacing the practically missing package manager for this 
-  system. Can be used to install plenty of various applications as well as 
-  updating tools already available in Mac OS X. See https://brew.sh/.
-* Java - Very popular programming language. It requires Java runtime 
-  environment to be installed, but the applications are very well transferable 
-  among operating systems. See https://www.java.com/.
-* Library - Pack of software tools and functions used by other applications.
-* License - Conditions under which software is distributed. Can be very 
-  restrictive (typically paid software) or permissive (typically free and 
-  open-source software).
-* Linux - One of the most common variants of UNIX-based operating systems. 
-  Linux kernel is used by many developers, so that there are plenty of Linux 
-  distributions ("flavors") from various sources (e.g. Ubuntu and derivatives, 
-  openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.). They share 
-  many features, although at first sight they can look different. See
-  https://en.wikipedia.org/wiki/Linux.
-* Linux Mint - Popular Linux distribution based on Debian and Ubuntu. See 
-  http://linuxmint.com/.
-* Mac OS X - Popular operating system produced by Apple. The system kernel is 
-  based on UNIX, see https://www.apple.com/osx/.
-* Open-source - Generally, the source code of an application is available 
-  together with the application and can, under certain conditions, be defined 
-  in license modified, redistributed etc. See 
-  https://en.wikipedia.org/wiki/Free_and_open-source_software.
-* openSUSE - Popular Linux distribution, see https://www.opensuse.org/.
-* Operating system - Basic system running on your computer - typically MS 
-  Windows (not supported by Sondovač, although it might work), Mac OS X 
-  or some Linux distribution (Ubuntu and derivatives, openSUSE, SLE, Debian, 
-  Linux Mint, Fedora, Centos, RedHat etc.).
-* Package - Software or its part, group of tools, library etc.. Basic unit of 
-  software management in most UNIX systems (mainly Linux, Solaris, BSD, 
-  practically missing in Mac OS X). Those systems usually have special 
-  applications (command line as well as graphical tools) to easily manage 
-  (install, remove, update) software.
-* Parameter(s) - Option(s) passed to any function/command line application to 
-  modify its usage. Some can be required, some are optional and some can be 
-  used only in particular cases. In case of shell applications, parameters are 
-  usually given such as "application -X", "application -parameter", 
-  "application -Param SomeValue" and so on. See manual for particular 
-  application (e.g. "man application"), in case of Sondovač see README and PDF 
-  manual.
-* PATH - Directories in the computer where the system looks for installed 
-  software (in a UNIX-based system you can view it by the command "echo 
-  $PATH"). If you need to modify it manually, see the documentation for your 
-  operating system.
-* Perl - Popular interpreted programming language excelling mainly in system 
-  tasks working with text. Perl scripts are easily transferable among operating 
-  systems. See https://www.perl.org/.
-* Python - Very popular and powerful interpreted programming language used for 
-  wide variety of tasks. Python scripts are easily transferable among operating 
-  systems. See https://www.python.org/.
-* RedHat - Probably the biggest Linux company providing mainly solutions for 
-  big companies. See https://www.redhat.com/.
-* Repository - Internet folder (available through HTTP or FTP) containing 
-  software packages for UNIX systems.
-* Scientific Linux - Popular Linux distribution. Community remake of RedHat 
-  Enterprise Linux. See https://www.scientificlinux.org/.
-* Script - Software application. It requires an interpreter (application 
-  installed on the computer that is able to launch scripts written in a 
-  particular language), but the application itself is portable among operating 
-  systems and hardware architectures, and it is written in plain text, so that 
-  developers can easily modify it. Common examples are Python, Perl or BASH.
-* Shell - "The command line" - the interface to interact with software using 
-  commands typed into the terminal window.
-* Solaris - Popular (mainly on servers) UNIX-based operating system, now 
-  developed by Oracle and including several independent clones. See
-  http://distrowatch.com/table.php?distribution=solaris.
-* Source code - Human-readable code written in any text editor used to develop 
-  any application. Applications written in interpreted languages (BASH, Perl, 
-  Python, ...) can be distributed just in form of a source code (nothing else 
-  is required). Other programming languages (C, C++, ...) require compilation 
-  to get fully functional application.
-* SUSE Linux Enterprise (SLE) - Large Linux company providing mainly solutions 
-  for big companies. See https://www.suse.com/.
-* Terminal - See "Shell".
-* Ubuntu - Popular Linux distribution, see http://www.ubuntu.com/. There are 
-  plenty of Linux distributions based on Ubuntu. See 
-  http://distrowatch.com/search.php?basedon=Ubuntu.
-* UNIX (UNIX-like, UN*X, *nix, ...) - Family of operating systems sharing the 
-  same logic, software architecture and plenty of tools. See 
-  https://en.wikipedia.org/wiki/Unix-like for details.
-* Upstream - Developers usually support (e.g. by fixing of bugs) only newer 
-  versions of an application. If you use an older version and you encounter 
-  problems, no one will probably help you. Moreover, using old versions of 
-  software can be a security risk because of security issues fixed in newer 
-  versions.
-* Variable - Named value storing various information, one of the basic part of 
-  any programming language, application, operating system.
+* zlib - https://zlib.net/

@@ -1,4 +1,4 @@
-Sondovač 1.2 Basic help
+Sondovač 1.3 Basic help
 
 Sondovač is a script to create orthologous low-copy nuclear probes from 
 transcriptome and genome skim data for target enrichment.
@@ -20,8 +20,7 @@ design LCN loci by a comparison between transcriptome and genome skim data.
 The script is licensed under open-source license GPL v.3 allowing further 
 modifications. It runs on major Linux distributions and Mac OS X. Strong 
 bioinformatics skills and access to high-performance computer clusters are not 
-required; Sondovač runs on a standard desktop computer equipped with modern CPU 
-like Intel i5 or i7.
+required; Sondovač runs on a standard desktop computer equipped with modern CPU.
 
 
 Pipeline - how the data are processed
@@ -32,30 +31,30 @@ get hundreds of orthologous LCN loci. Enrichment of multi-copy loci is
 minimized by using unique transcripts only, which are obtained by comparing all 
 transcripts and removing those sharing ≥90% sequence similarity using BLAT. 
 Before matching the genome skim data against those unique transcripts, reads of 
-plastid (and mitochondrial) origin are removed with Bowtie 2, SAMtools and 
-bam2fastq utilizing reference sequences. Paired-end reads are subsequently 
-combined with FLASH. These processed reads are matched against the unique 
-transcripts sharing ≥85% sequence similarity with BLAT. Transcripts with >1000 
-BLAT hits (indicating repetitive elements) and BLAT hits containing masked 
-nucleotides are removed before de novo assembly of the BLAT hits to larger 
-contigs with Geneious, using the medium sensitivity / fast setting. After 
-assembly, only those contigs that comprise exons of a minimum bait length 
-(usually ≥120 bp in case of probe design for phylogenies) and have a certain 
-minimum total locus length (multiple of the bait length, should not be too 
-short in order to obtain sufficient phylogenetically informative signal; we 
-recommend at least ≥600 bp) are retained. To ensure that probes do not target 
-multiple similar loci, any probe sequences sharing ≥90% sequence similarity are 
-removed using cd-hit-est, followed by a second filtering step for contigs 
-containing exons of a minimum bait length and totaling minimum loci length (see 
-comments above). To ensure that plastid sequences are absent from the probes, 
-the probe sequences are matched against the plastome reference sharing ≥90% 
-sequence similarity with BLAT and the hits removed from the probe set. The 
-workflow of Sondovač is summarized in Figure 1 of the PDF manual. Sondovač has 
-three parts: two script parts and an intermediate part using Geneious. Input 
-files for sondovac_part_a.sh are FASTA transcriptome data, FASTQ paired-end 
-genome skim reads and a plastome (and possibly also mitochondriome) reference. 
-The input file for Geneious is the output of sondovac_part_a.sh. The output 
-files of Geneious are input files for sondovac_part_b.sh. The output file of 
+plastid (and mitochondrial) origin are removed with Bowtie 2 and SAMtools 
+utilizing reference sequences. Paired-end reads are subsequently combined with 
+FLASH. These processed reads are matched against the unique transcripts sharing 
+≥85% sequence similarity with BLAT. Transcripts with >1000 BLAT hits 
+(indicating repetitive elements) and BLAT hits containing masked nucleotides 
+are removed before de novo assembly of the BLAT hits to larger contigs with 
+Geneious, using the medium sensitivity / fast setting. After assembly, only 
+those contigs that comprise exons of a minimum bait length (usually ≥120 bp in 
+case of probe design for phylogenies) and have a certain minimum total locus 
+length (multiple of the bait length, should not be too short in order to obtain 
+sufficient phylogenetically informative signal; we recommend at least ≥600 bp) 
+are retained. To ensure that probes do not target multiple similar loci, any 
+probe sequences sharing ≥90% sequence similarity are removed using cd-hit-est, 
+followed by a second filtering step for contigs containing exons of a minimum 
+bait length and totaling minimum loci length (see comments above). To ensure 
+that plastid sequences are absent from the probes, the probe sequences are 
+matched against the plastome reference sharing ≥90% sequence similarity with 
+BLAT and the hits removed from the probe set. The workflow of Sondovač is 
+summarized in Figure 1 of the PDF manual. Sondovač has three parts: two script 
+parts and an intermediate part using Geneious. Input files for 
+sondovac_part_a.sh are FASTA transcriptome data, FASTQ paired-end genome skim 
+reads and a plastome (and possibly also mitochondriome) reference. The input 
+file for Geneious is the output of sondovac_part_a.sh. The output files of 
+Geneious are input files for sondovac_part_b.sh. The output file of 
 sondovac_part_b.sh is the final list of probes, from which the user needs to 
 remove the putative plastid sequences indicated in step 11 of the pipeline. In 
 case of detection of remaining plastid sequences you will have to remove those 
@@ -342,20 +341,6 @@ transcriptome as well as the Ricinus cpDNA and mtDNA reference sequences. See
 https://github.com/V-Z/sondovac/wiki/Sample-data for download of sample data.
 
 
-Record output of Sondovač
-================================================================================
-
-To record the whole output of Sondovač (regardless of used parameters), use 
-utility "tee". This will produce a plain text output with everything printed to 
-the screen. It can be useful for reference or exploration if something went 
-wrong. Use it as follows:
-
-./sondovac_part_a.sh | tee records.log
-
-You can use any command line arguments, script will behave as usual. The 
-plain text file "records.log" will then contain all its output.
-
-
 License
 ================================================================================
 
@@ -385,95 +370,3 @@ Other questions not covered here and reporting problems
 If you have a question or you encounter a problem, please see 
 https://github.com/V-Z/sondovac/issues and feel free to ask any question 
 and/or express any wish. The authors will do their best to help you.
-
-
-Software references
-================================================================================
-
-bam2fastq:
-* https://gsl.hudsonalpha.org/information/software/bam2fastq
-BLAT:
-* W. James Kent
-  BLAT – the BLAST-like alignment tool
-  Genome Research (2002) 12:656-664
-  http://genome.cshlp.org/content/12/4/656.short
-Bowtie2:
-* Ben Langmead and Steven L. Salzberg
-  Fast gapped-read alignment with Bowtie 2
-  Nature Methods (2012) 9:357-359
-  https://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html
-CD-HIT:
-* Weizhong Li, Lukasz Jaroszewski and Adam Godzik
-  Clustering of highly homologous sequences to reduce the size of large
-    protein databases
-  Bioinformatics (2001) 17:282-283.
-  https://academic.oup.com/bioinformatics/article/17/3/282/189639/Clustering-of-highly-homologous-sequences-to
-* Weizhong Li, Lukasz Jaroszewski and Adam Godzik
-  Tolerating some redundancy significantly speeds up clustering of large
-    protein databases
-  Bioinformatics (2002) 18:77-82
-  https://academic.oup.com/bioinformatics/article/18/1/77/243728/Tolerating-some-redundancy-significantly-speeds-up
-* Weizhong Li and Adam Godzik
-  Cd-hit: a fast program for clustering and comparing large sets of
-    protein or nucleotide sequences
-  Bioinformatics (2006) 22:1658-1659
-  https://academic.oup.com/bioinformatics/article/22/13/1658/194225/Cd-hit-a-fast-program-for-clustering-and-comparing
-* Limin Fu, Beifang Niu, Zhengwei Zhu, Sitao Wu and Weizhong Li
-  CD-HIT: accelerated for clustering the next generation sequencing data
-  Bioinformatics (2012) 28:3150-3152
-  https://academic.oup.com/bioinformatics/article/28/23/3150/192160/CD-HIT-accelerated-for-clustering-the-next
-* Ying Huang, Beifang Niu, Ying Gao, Limin Fu and Weizhong Li
-  CD-HIT Suite: a web server for clustering and comparing biological sequences
-  Bioinformatics (2010) 26:680
-  https://academic.oup.com/bioinformatics/article/26/5/680/212234/CD-HIT-Suite-a-web-server-for-clustering-and
-* Beifang Niu, Limin Fu, Shulei Sun and Weizhong Li
-  Artificial and natural duplicates in pyrosequencing reads of metagenomic data
-  BMC Bioinformatics (2010) 11:187
-  https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-11-187
-* Weizhong Li, Limin Fu, Beifang Niu, Sitao Wu and John Wooley
-  Ultrafast clustering algorithms for metagenomic sequence analysis
-  Briefings in Bioinformatics (2012) 13(6):656-668
-  https://academic.oup.com/bib/article/13/6/656/193286/Ultrafast-clustering-algorithms-for-metagenomic
-FASTX toolkit:
-* A. Gordon and G. J. Hannon
-  FASTX-Toolkit. FASTQ/A short-reads pre-processing tools
-  2010
-  http://hannonlab.cshl.edu/fastx_toolkit/
-FLASH:
-* Tanja Magoč and Steven L. Salzberg
-  FLASH: fast length adjustment of short reads to improve genome assemblies
-  Bioinformatics (2011) 27(21):2957-2963
-  https://academic.oup.com/bioinformatics/article/27/21/2957/217265/FLASH-fast-length-adjustment-of-short-reads-to
-Geneious
-* Matthew Kearse, Richard Moir, Amy Wilson, Steven Stones-Havas, Matthew 
-    Cheung, Shane Sturrock, Simon Buxton, Alex Cooper, Sidney Markowitz, Chris 
-    Duran, Tobias Thierer, Bruce Ashton, Peter Meintjes1, and Alexei Drummond
-  Geneious Basic: An integrated and extendable desktop software platform for 
-    the organization and analysis of sequence data
-  Bioinformatics (2012) 28(12):1647-1649
-  https://academic.oup.com/bioinformatics/article/28/12/1647/267326/Geneious-Basic-An-integrated-and-extendable
-grab_syngleton_clusters.py
-* Kevin Weitemier, Shannon C K Straub, Richard C Cronn, Mark Fishbein, Roswitha 
-    E. Schmickl, Angela McDonnell, Aaron Liston
-  Hyb-Seq: Combining target enrichment and genome skimming for plant 
-    phylogenomics
-  Applications in Plant Sciences (2014) 2(9):1-7
-  http://www.bioone.org/doi/abs/10.3732/apps.1400042
-Picard:
-* https://broadinstitute.github.io/picard
-SAMtools:
-* Heng Li, Bob Handsaker, Alec Wysoker, Tim Fennell, Jue Ruan, Nils Homer,
-    Gabor Marth, Goncalo Abecasis, Richard Durbin and 1000 Genome Project
-    Data Processing Subgroup
-  The Sequence Alignment/Map format and SAMtools
-  Bioinformatics (2009) 25(16): 2078-2079
-  https://academic.oup.com/bioinformatics/article/25/16/2078/204688/The-Sequence-Alignment-Map-format-and-SAMtools
-* Heng Li
-  A statistical framework for SNP calling, mutation discovery, association
-    mapping and population genetical parameter estimation from sequencing data
-  Bioinformatics (2011) 27(21): 2987-2993
-  https://academic.oup.com/bioinformatics/article/27/21/2987/217423/A-statistical-framework-for-SNP-calling-mutation
-* Heng Li
-  Improving SNP discovery by base alignment quality
-  Bioinformatics (2011) 27(8): 1157-1158.
-  https://academic.oup.com/bioinformatics/article/27/8/1157/227268/Improving-SNP-discovery-by-base-alignment-quality
