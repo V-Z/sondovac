@@ -17,11 +17,7 @@ cpp
 make
 libpng12-devel
 zlib-devel
-gcc-java
-java-1_7_0-openjdk
-java-1_7_0-openjdk-devel
 git-core
-ant
 pkg-config
 wget
 dos2unix

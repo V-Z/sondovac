@@ -7,7 +7,7 @@ pkg-config
 gcc
 make
 git
-ant
 wget
 dos2unix
 python
+perl
