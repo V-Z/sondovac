@@ -1,8 +1,8 @@
 # Functions required by probe design script Sondovač
 
 # Version of the script
-SCRIPTVERSION=1.2
-RELEASEDATE=2016-06-28
+SCRIPTVERSION=1.3
+RELEASEDATE=201Y-MM-DD
 # Web page of the script
 WEB="https://github.com/V-Z/sondovac/"
 
@@ -282,8 +282,6 @@ function citationreference {
   echo "http://onlinelibrary.wiley.com/doi/10.1111/1755-0998.12487/abstract"
   echo
   echo "Citations of scientific software used by Sondovač:"
-  echo "${REDF}bam2fastq:${NORM}"
-  echo "${MAGF}${BOLD}*${NORM} http://gsl.hudsonalpha.org/information/software/bam2fastq"
   echo "${REDF}BLAT:${NORM}"
   echo "${MAGF}${BOLD}*${NORM} W. James Kent"
   echo "  BLAT – the BLAST-like alignment tool"
@@ -344,8 +342,6 @@ function citationreference {
   echo "    the organization and analysis of sequence data"
   echo "  Bioinformatics (2012) 28(12):1647-1649"
   echo "  http://bioinformatics.oxfordjournals.org/content/28/12/1647"
-#   echo "${REDF}Picard:${NORM}"
-#   echo "${MAGF}${BOLD}*${NORM} http://broadinstitute.github.io/picard"
   echo "${REDF}SAMtools:${NORM}"
   echo "${MAGF}${BOLD}*${NORM} Heng Li, Bob Handsaker, Alec Wysoker, Tim Fennell, Jue Ruan, Nils Homer,"
   echo "    Gabor Marth, Goncalo Abecasis, Richard Durbin and 1000 Genome Project"
