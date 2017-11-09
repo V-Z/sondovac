@@ -469,7 +469,7 @@ function compilesamtools {
   echo "\"${REDF}samtools${NORM}\" is available. ${GREF}OK.${NORM}"
   }
 
-# Check if samtools is available
+# Check if SAMtools is available
 { command -v samtools >/dev/null 2>&1 && echo "\"${REDF}samtools${NORM}\" is available. ${GREF}OK.${NORM}"; } || {
   echo
   echo >&2 "\"${REDF}samtools${NORM}\" is required but not installed or available in ${BOLD}PATH${NORM}."
@@ -1023,8 +1023,6 @@ echo "Input file: ${REDF}$INPUTFQ1${NORM}"
 echo "Input file: ${REDF}$INPUTFQ2${NORM}"
 # cpDNA reads mapped to reference - temporary file - will be deleted
 BOWTIE2CP="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_reads.sam"
-# SAM converted into BAM (removal of reads of plastid origin) - temporary file - will be deleted
-CPBAM="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_reads.bam"
 # Genome skim data without cpDNA reads
 FASTQNOCP="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_reads"
 # Input - reference genome - mtDNA
@@ -1036,8 +1034,6 @@ if [ -n "$REFERENCEMT0" ]; then
     REFERENCEMT2="${OUTPUTFILENAME%.*}.mt"
     # mtDNA reads mapped to reference - temporary file - will be deleted
     BOWTIE2MT="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads.sam"
-    # SAM converted into BAM (removal of reads of mitochondrial origin) - temporary file - will be deleted
-    MTBAM="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads.bam"
     # Genome skim data without mtDNA reads
     FASTQNOMT="${OUTPUTFILENAME%.*}_genome_skim_data_no_cp_no_mt_reads"
     # Combined paired-end genome skim reads
@@ -1237,27 +1233,18 @@ bowtie2 -x $REFERENCECP2 -1 $INPUTFQ1 -2 $INPUTFQ2 -S $BOWTIE2CP || {
 echo
 echo "Mapping finished"
 
-# Convert SAM to BAM with SAMtools
+# Convert SAM to FASTQ with SAMtools
 echo
-echo "${CYAF}Converting SAM to BAM. This may take longer time.${NORM}"
-samtools view -bT $REFERENCECP $BOWTIE2CP > $CPBAM || {
+echo "${CYAF}Converting SAM to FASTQ. This may take longer time.${NORM}"
+samtools view -b -T $REFERENCECP $BOWTIE2CP | samtools fastq -n - -1 $FASTQNOCP.1.fq -2 $FASTQNOCP.2.fq || {
   echo
-  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of SAM to BAM with samtools failed.${NORM} Aborting."
+  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of SAM to FASTQ with SAMtools failed.${NORM} Aborting."
   echo "Check if files ${REDF}$REFERENCECP${NORM} and ${REDF}$BOWTIE2CP${NORM} are correct."
   echo
   exit 1
   }
 echo
 
-# Remove the cpDNA reads with bam2fastq
-echo "${CYAF}Removing cpDNA reads. This may take longer time.${NORM}"
-bam2fastq --no-aligned $CPBAM -o $FASTQNOCP#.fq || {
-  echo
-  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of cpDNA reads with bam2fastq failed.${NORM} Aborting."
-  echo "Check if file ${REDF}$CPBAM${NORM} is correct."
-  echo
-  exit 1
-  }
 echo
 echo "${CYAF}Removed reads saved${NORM} for possible later usage as"
 ls -1 $FASTQNOCP*
@@ -1285,33 +1272,22 @@ if [[ -n "$REFERENCEMT" && -n "$REFERENCEMT0" ]]; then
   # Map the mtDNA reads to the reference mitochondriome with Bowtie2
   echo "${CYAF}Mapping mtDNA reads to reference mitochondriome. This may take longer time.${NORM}"
   echo
-  bowtie2 -x $REFERENCEMT2 -1 `echo $FASTQNOCP`_1.fq -2 `echo $FASTQNOCP`_2.fq -S $BOWTIE2MT || {
+  bowtie2 -x $REFERENCEMT2 -1 $FASTQNOCP.1.fq -2 $FASTQNOCP.2.fq -S $BOWTIE2MT || {
     echo
     echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Mapping mtDNA reads to reference mitochondriome with bowtie2 failed.${NORM}"
     echo "Aborting. Check if files ${REDF}$REFERENCEMT2${NORM},"
-    echo "${REDF}`echo $FASTQNOCP`_1.fq${NORM} and ${REDF}`echo $FASTQNOCP`_2.fq${NORM} are correct."
+    echo "${REDF}$FASTQNOCP.1.fq${NORM} and ${REDF}$FASTQNOCP.2.fq${NORM} are correct."
     echo
     exit 1
     }
   echo
 
-  # Convert SAM to BAM with SAMtools
-  echo "${CYAF}Converting SAM to BAM. This may take longer time.${NORM}"
-  samtools view -bT $REFERENCEMT $BOWTIE2MT > $MTBAM || {
+  # Convert SAM to FASTQ with SAMtools
+  echo "${CYAF}Converting SAM to FASTQ. This may take longer time.${NORM}"
+  samtools view -b -T $REFERENCEMT $BOWTIE2MT | samtools fastq -n - -1 $FASTQNOMT.1.fq -2 $FASTQNOMT.2.fq || {
     echo
-    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of SAM to BAM failed.${NORM} Aborting. Check if files"
+    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of SAM to FASTQ with SAMtools failed.${NORM} Aborting. Check if files"
     echo "${REDF}$REFERENCEMT${NORM} and ${REDF}$BOWTIE2MT${NORM} are correct."
-    echo
-    exit 1
-    }
-  echo
-
-  # Remove the mtDNA reads with bam2fastq
-  echo "${CYAF}Removing mtDNA reads. This may take longer time.${NORM}"
-  bam2fastq --no-aligned $MTBAM -o $FASTQNOMT#.fq || {
-    echo
-    echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of mtDNA reads failed.${NORM} Aborting."
-    echo "Check if file ${REDF}$MTBAM${NORM} is correct."
     echo
     exit 1
     }
@@ -1322,10 +1298,10 @@ if [[ -n "$REFERENCEMT" && -n "$REFERENCEMT0" ]]; then
   echo
   echo "${CYAF}Combining paired-end reads${NORM}"
   echo
-  flash -o $FLASHOUT -M $FLASHM `echo $FASTQNOMT`_1.fq `echo $FASTQNOMT`_2.fq || {
+  flash -o $FLASHOUT -M $FLASHM $FASTQNOMT.1.fq $FASTQNOMT.2.fq || {
     echo
     echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Combining paired-end reads failed.${NORM} Aborting. Check if files"
-    echo "${REDF}$REFERENCEMT${NORM}, ${REDF}`echo $FASTQNOMT`_1.fq${NORM} and ${REDF}`echo $FASTQNOMT`_2.fq${NORM} are correct."
+    echo "${REDF}$REFERENCEMT${NORM}, ${REDF}$FASTQNOMT.1.fq${NORM} and ${REDF}$FASTQNOMT.2.fq${NORM} are correct."
     echo
     exit 1
     }
@@ -1483,26 +1459,26 @@ grep -v n $TABREMOVED | awk '{print $1"\t"length($2)}' | awk '{s+=$2;a++}END{pri
 echo
 echo "Removing unneeded temporal files"
 if [ -n "$REFERENCEMT0" ]; then
-  rm $INPUTFILE0 $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $REFERENCECP $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $CPBAM $REFERENCEMT2* $REFERENCEMT $BOWTIE2MT $MTBAM $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
+  rm $INPUTFILE0 $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $REFERENCECP $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $REFERENCEMT2* $REFERENCEMT $BOWTIE2M$FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
     echo
     echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
     echo "  \"$INPUTFILE0\", \"$UNIQUELIST\", \"$INPUTTAB\","
     echo "  \"$SORTEDINPUT\", \"$REFERENCECP\", \"$JOINEDTS\","
     echo "  \"$JOINEDTABS\", \"$REFERENCECP2*\", \"$REFERENCEMT\","
-    echo "  \"$BOWTIE2CP\", \"$CPBAM\", \"$REFERENCEMT2*\","
-    echo "  \"$BOWTIE2MT\", \"$CPBAM\", \"$FLASHOUT.extendedFrags.fastq\","
+    echo "  \"$BOWTIE2CP\", \"$REFERENCEMT2*\","
+    echo "  \"$BOWTIE2MT\", \"$FLASHOUT.extendedFrags.fastq\","
     echo "  \"$TAB\", \"$TABLIST\",, \"$TABBLAT\" and"
     echo "  \"$TABREMOVED\"."
     confirmgo
     }
   else
-    rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $CPBAM $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
+    rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
       echo
       echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
       echo "  \"$INPUTFILE0\", \"$UNIQUELIST\", \"$INPUTTAB\","
       echo "  \"$SORTEDINPUT\", \"$JOINEDTS\", \"$JOINEDTABS\","
       echo "  \"$REFERENCECP\", \"$REFERENCECP2*\",\"$BOWTIE2CP\","
-      echo "  \"$CPBAM\", \"$FLASHOUT.extendedFrags.fastq\", \"$TAB\","
+      echo "  \"$FLASHOUT.extendedFrags.fastq\", \"$TAB\","
       echo "  \"$TABLIST\", \"$TABBLAT\" and \"$TABREMOVED\"."
       confirmgo
       }
