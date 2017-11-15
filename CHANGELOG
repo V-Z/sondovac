@@ -9,6 +9,7 @@ Version 1.3 regular release released YYYY-MM-DD
 * bam2fastq is dropped in favour of samtools fastq. No plans to use Picard 
   anymore (part A).
 * Simplified INSTALL and README not to only copy PDF manual.
+* Corrected output of part A - ensure to have always valid FASTA.
 
 
 Version 1.2 regular release released 2016-06-28

@@ -1359,10 +1359,10 @@ confirmgo
 
 echo "${REDF}Step 6 of the pipeline${NORM} - filtering of BLAT output."
 
-# Modification of the PSLX file is needed (remove headers, select the field with the transcript (target) sequence names and the field with the query sequences, convert to FASTA) for usage in Geneious
+# Modification of the PSLX file is needed: remove headers (first 5 lines), select the field with the transcript (target) sequence names and the field with the query sequences, remove empty sequences
 echo
 echo "${CYAF}Modifying PSLX BLAT output${NORM} for usage in Geneious"
-{ sed 1,5d $BLATOUTFIN | cut -f14,$PSLXCUT | awk '{n=split($2,a,",");for(i=1;i<=n;i++)print $1"_"NR"_"i,a[i]}' | sed 's/^/>/' | sed 's/ /\n/' > $BLATOUTFIN2; } || {
+{ sed 1,5d $BLATOUTFIN | cut -f 14,$PSLXCUT | awk '{n=split($2,a,",");for(i=1;i<=n;i++)print $1"_"NR"_"i,a[i]}' | grep "[0-9_]\+[[:blank:]][acgtuwsmkrybdhvn\-]\+" > $TAB; } || {
   echo
   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Modifying PSLX BLAT output failed.${NORM} Aborting."
   echo "Check if file ${REDF}$BLATOUTFIN${NORM} is correct."
@@ -1371,19 +1371,8 @@ echo "${CYAF}Modifying PSLX BLAT output${NORM} for usage in Geneious"
   }
 echo
 echo "${CYAF}Modified file saved${NORM} as"
-echo "  ${REDF}$BLATOUTFIN2${NORM} for possible later usage."
+echo "  ${REDF}$TAB${NORM} for possible later usage."
 confirmgo
-
-# Convert FASTA to TAB
-echo "Converting FASTA to TAB"
-fasta2tab $BLATOUTFIN2 $TAB || {
-  echo
-  echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA to TAB failed.${NORM} Aborting."
-  echo "Check if file ${REDF}$BLATOUTFIN2${NORM} is correct."
-  echo
-  exit 1
-  }
-echo
 
 { awk '{print $1"\t"length($2)"\t"$2}' $TAB | awk '{sum+=$2}END{print sum}'; } || {
   echo
@@ -1398,7 +1387,7 @@ echo
 # Count the number of times each transcript hit a genome skim read
 echo
 echo "Counting number of times each transcript hit a genom skim read"
-{ cut -f1 -d_ $TAB | sort | uniq -c | sort -n -r > $TABLIST; } || {
+{ cut -f 1 -d "_" $TAB | sort | uniq -c | sort -n -r > $TABLIST; } || {
   echo
   echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Counting of number of times each transcript hit a genom skim read failed.${NORM}"
   echo "Aborting. Check if file ${REDF}$TAB${NORM} is correct."
@@ -1465,10 +1454,9 @@ if [ -n "$REFERENCEMT0" ]; then
     echo "  \"$INPUTFILE0\", \"$UNIQUELIST\", \"$INPUTTAB\","
     echo "  \"$SORTEDINPUT\", \"$REFERENCECP\", \"$JOINEDTS\","
     echo "  \"$JOINEDTABS\", \"$REFERENCECP2*\", \"$REFERENCEMT\","
-    echo "  \"$BOWTIE2CP\", \"$REFERENCEMT2*\","
-    echo "  \"$BOWTIE2MT\", \"$FLASHOUT.extendedFrags.fastq\","
-    echo "  \"$TAB\", \"$TABLIST\",, \"$TABBLAT\" and"
-    echo "  \"$TABREMOVED\"."
+    echo "  \"$BOWTIE2CP\", \"$REFERENCEMT2*\", \"$BOWTIE2MT\","
+    echo "  \"$FLASHOUT.extendedFrags.fastq\", \"$TAB\","
+    echo "  \"$TABLIST\",, \"$TABBLAT\" and \"$TABREMOVED\"."
     confirmgo
     }
   else
@@ -1538,39 +1526,15 @@ echo "${BLUF}===================================================================
 echo "${CYAF}Resulting FASTA was saved as${NORM}"
 echo "${REDF}${BOLD}$FINALA${NORM}"
 echo "for usage in Geneious (step 7 of the pipeline)."
-echo "${CYAF}Use this file in next step of the pipeline. See ${REDF}README${CYAF} and ${REDF}manual${CYAF} for details.${NORM}"
+echo "${CYAF}Use this file in next step of the pipeline. See ${REDF}PDF manual${CYAF} for details.${NORM}"
 echo "${BLUF}================================================================================${NORM}"
 confirmgo
 
-echo "${CYAF}Run Geneious${NORM} (tested with versions 6, 7 and 8; see ${REDF}README${NORM} and ${REDF}manual${NORM} for details):"
 echo "${BLUF}================================================================================${NORM}"
-echo "Import output file \"${REDF}$FINALA${NORM}\" (${CYAF}File ${REDF}|${CYAF} Import ${REDF}|${CYAF} From File...${NORM})."
-echo "Select the file and go to menu ${CYAF}Tools ${REDF}|${CYAF} Align / Assemble ${REDF}|${CYAF} De Novo Assemble${NORM}."
-echo "In \"${REDF}Data${NORM}\" frame select \"${CYAF}Assemble by 1st (...) Underscore${NORM}\"."
-echo "In \"${REDF}Method${NORM}\" frame select Geneious Assembler (if you don't have other assemblers,"	
-echo "  this option might be missing) and \"${CYAF}Medium Sensitivity / Fast${NORM}\" Sensitivity."
-echo "In \"${REDF}Results${NORM}\" frame check \"${CYAF}Save assembly report${NORM}\", \"${CYAF}Save list of unused reads${NORM}\","
-echo "  \"${CYAF}Save in sub-folder${NORM}\", \"${CYAF}Save contigs${NORM}\" (do not check \"${CYAF}Maximum${NORM}\") and"
-echo "  \"${CYAF}Save consensus sequences${NORM}\"."
-echo "${CYAF}Do not trim. Otherwise keep defaults.${NORM} ${REDF}Run it.${NORM}"
-echo "Geneious may warn about possible hanging because of big file size."
-echo "Do not use Geneious for other tasks during the assembly."
+echo "${CYAF}Run Geneious${NORM} (tested with versions 6-9), see ${REDF}PDf manual${NORM} for details"
 echo
-echo "${CYAF}Select all resulting contigs${NORM} (typically named \"${REDF}* Contig #${NORM}\") and ${CYAF}export them${NORM}"
-echo "  (${CYAF}File ${REDF}|${CYAF} Export ${REDF}|${CYAF} Selected Documents...${NORM}) as \"${CYAF}Tab-separated table values (*.tsv)${NORM}\"."
-echo "${CYAF}Save following columns${NORM} (Hold ${REDF}Ctrl${NORM} key to mark more fields): \"${CYAF}# Sequences${NORM}\","
-echo "  \"${CYAF}% Pairwise Identity${NORM}\", \"${CYAF}Description${NORM}\", \"${CYAF}Mean Coverage${NORM}\", \"${CYAF}Name${NORM}\" and"
-echo "  \"${CYAF}Sequence Length${NORM}\"."
-echo "If this option would be inaccessible for you, export all columns."
-echo "${REDF}${BOLD}Warning! Do not select and export${NORM} \"${CYAF}* Consensus Sequences${NORM}\", \"${CYAF}* Unused Reads${NORM}\""
-echo "or \"${CYAF}* Assembly Report${NORM}\" - only the individual  \"${CYAF}* contig #${NORM}\" files."
-echo
-echo "Select items \"${REDF}Consensus Sequences${NORM}\" and \"${REDF}Unused Reads${NORM}\" and ${CYAF}export both of them"
-echo "  as one FASTA file.${NORM}"
-echo "Go to menu ${CYAF}File ${REDF}|${CYAF} Export ${REDF}|${CYAF} Selected Documents...${NORM} and choose ${REDF}FASTA${NORM} file type."
-echo
-echo "${CYAF}Use exported files from Geneious as input for part B${NORM} of the script"
-echo "  (${REDF}./sondovac_part_b.sh -h${NORM}; see ${REDF}README${NORM} and/or ${REDF}PDF manual${NORM} for details)."
+echo "${CYAF}Use exported files from Geneious as input for part B${NORM} of the Sondovač script:"
+echo "  ${REDF}./sondovac_part_b.sh -h${NORM}, see ${REDF}PDF manual${NORM} for details."
 echo "${BLUF}================================================================================${NORM}"
 echo
 echo "Script exited successfully..."
