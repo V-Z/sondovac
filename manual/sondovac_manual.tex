@@ -845,11 +845,12 @@ Files 1-8 are not necessary for further processing by this pipeline, but may be 
   \item \texttt{*$\_$prelim$\_$probe$\_$seq$\_$cluster$\_$90.clstr} -- Unclustered exons and clustered exons with more than a certain sequence similarity (CLSTR file).
   \item \texttt{*$\_$unique$\_$prelim$\_$probe$\_$seq.fasta} -- Unclustered exons / exons with less than a certain sequence similarity.
   \item \texttt{*$\_$similarity$\_$test.fasta} -- Contigs that comprise exons $\geq$ bait length and have a~certain total locus length.
-  \item \underline{\texttt{*$\_$target$\_$enrichment$\_$probe$\_$sequences.fasta} -- \textbf{Final probes in FASTA.}}
-  \item \texttt{*$\_$possible$\_$cp$\_$dna$\_$gene$\_$in$\_$probe$\_$set.pslx} -- \hl{\textbf{In case of any BLAT hits, the user needs to manually remove these plastid probe sequences}} from \texttt{*$\_$target$\_$enrichm\-ent$\_$probe$\_$sequences.fasta}; the remaining ones are the final probe sequences in FASTA. \hl{\textbf{Not removing them will take lots of space on the Illumina lane for enriched plastid reads that should actually be available for enriched nuclear reads.}}
+  \item \texttt{*$\_$target$\_$enrichment$\_$probe$\_$sequences$\_$with$\_$pt.fasta} -- All probes in FASTA, with putative plastid sequences (if there were any BLAT hits, putative plastid sequences are listed in next file).
+  \item \texttt{*$\_$possible$\_$cp$\_$dna$\_$gene$\_$in$\_$probe$\_$set.pslx} -- In case of any BLAT hits, putative remaining plastid probe sequences from \texttt{*$\_$target$\_$enrichm\-ent$\_$probe$\_$sequences$\_$with$\_$pt.fasta} are listed here. \textbf{Not removing plastid genes will take lots of space on the Illumina lane for enriched plastid reads that should actually be available for enriched nuclear reads.}
+  \item \underline{\texttt{*$\_$target$\_$enrichment$\_$probe$\_$sequences.fasta}} -- \textbf{Final probes in FASTA.}
 \end{enumerate}
 
-An asterisk (*) denotes the beginning of the output files' names specified by the user with parameter \texttt{-o}. If the user does not select a~custom name, the default value (\texttt{output}) will be used. By default, output files are created in the same directory from which Sondovač was launched. Output files can be saved in a~custom directory by specifying an output directory with parameter \texttt{-o}:
+An asterisk (\texttt{*}) denotes the beginning of the output files' names specified by the user with parameter \texttt{-o}. If the user does not select a~custom name, the default value (\texttt{output}) will be used. By default, output files are created in the same directory from which Sondovač was launched. Output files can be saved in a~custom directory by specifying an output directory with parameter \texttt{-o}:
 
 \begin{bashcode}
   # Find current directory (e.g. /home/user):
@@ -974,6 +975,7 @@ List of changes in released versions of Sondovač.
   \item \texttt{bam2fastq} is dropped in favour of \texttt{samtools fastq}. No plans to use \texttt{Picard} anymore (part~A).
   \item Simplified \texttt{INSTALL} and \texttt{README} not to only copy PDF manual.
   \item Corrected output of part~A -- ensure to have always valid FASTA.
+  \item Automatically remove putative plastid sequences from final probe set (part~B), list of all probes (with putative plastid sequences) and list of putative plastid sequences are available.
 \end{itemize}
 
 \subsection{Version 1.2 regular release released 2016-06-28}

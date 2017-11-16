@@ -444,10 +444,14 @@ PROBEPRELIMFORJOIN="${OUTPUTFILENAME%.*}_similarity_test_assemblies_for_join"
 PROBEPRELIMSORT="${OUTPUTFILENAME%.*}_similarity_test_assemblies_sort.tab"
 # Exons of a certain minimum length and exons making up genes of a certain minimum total locus length - temporary file - will be deleted
 PROBEPRELIMFIN="${OUTPUTFILENAME%.*}_similarity_test_assemblies_fin.tab"
-# Probes in FASTA
-PROBESEQUENCES="${OUTPUTFILENAME%.*}_target_enrichment_probe_sequences.fasta"
+# Probes in FASTA (with putative cpDNA genes)
+PROBESEQUENCES="${OUTPUTFILENAME%.*}_target_enrichment_probe_sequences_with_pt.fasta"
 # Putative cpDNA genes in probe set
 PROBESEQUENCESCP="${OUTPUTFILENAME%.*}_possible_cp_dna_genes_in_probe_set.pslx"
+# List of names putative cpDNA genes in probe set
+PROBESEQUENCESCPLIST="${OUTPUTFILENAME%.*}_possible_cp_dna_genes_in_probe_set.txt"
+# Final probes in FASTA (without putative cpDNA genes)
+PROBESEQUENCESNOCP="${OUTPUTFILENAME%.*}_target_enrichment_probe_sequences.fasta"
 
 # Assemble the obtained sequences in contigs
 
@@ -937,7 +941,7 @@ echo
 
 # Make a file with all exons of a certain minimum length making up genes of a certain minimum total length
 echo "Joining all exons ≥${CYAF}$BAITL${NORM} bp and making up genes of ≥${CYAF}$MINLOCUSLENGTH${NORM} bp"
-join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT > $PROBEPRELIMFIN || {
+join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT | sed 's/^\(.\+\) \(Contig\)/>\1_\2/' > $PROBEPRELIMFIN || {
 	echo
 	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Joining of exons failed.${NORM} Aborting."
 	echo "Check if files ${REDF}$PROBEPRELIMFORJOIN${NORM} and ${REDF}$PROBEPRELIMSORT${NORM}"
@@ -966,7 +970,7 @@ confirmgo
 
 # Convert TAB to FASTA
 echo "Converting TAB to FASTA"
-{ sed 's/^\(.\+\) \(Contig\)/>\1_\2/' $PROBEPRELIMFIN | sed 's/ /\n/' > $PROBESEQUENCES; } || {
+{ sed 's/ /\n/' $PROBEPRELIMFIN > $PROBESEQUENCES; } || {
 	echo
 	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of TAB to FASTA failed.${NORM} Aborting."
 	echo "Check if file ${REDF}$PROBEPRELIMFIN${NORM} is correct file (sequences in TAB)."
@@ -978,9 +982,11 @@ echo
 echo "${REDF}${BOLD}Success!${NORM}"
 echo
 echo "${BLUF}================================================================================${NORM}"
-echo "${CYAF}Final output file was written as${NORM}"
+echo "${CYAF}Probes with all sequences (including putative plastid genes) are in${NORM}"
 echo "${REDF}${BOLD}$PROBESEQUENCES${NORM}"
 echo "${CYAF}This file contains the probe sequences.${NORM}"
+echo "${CYAF}In next step, putative plastid sequences will be removed.${NORM}"
+echo "We ${REDF}STRONGLY RECOMMEND${NORM} to ${CYAF}remove those genes${NORM} from the final probe set."
 echo "${BLUF}================================================================================${NORM}"
 confirmgo
 
@@ -1003,15 +1009,43 @@ echo
 
 echo "${BLUF}================================================================================${NORM}"
 echo "File ${REDF}${BOLD}$PROBESEQUENCESCP${NORM}"
-echo "contains ${CYAF}putative plastid genes in final probe set${NORM}."
-echo "We ${REDF}STRONGLY RECOMMEND${NORM} to ${CYAF}remove those genes${NORM} from the final probe set in file"
-echo "${REDF}${BOLD}$PROBESEQUENCES${NORM}."
+echo "contains ${CYAF}putative plastid genes found in ${REDF}${BOLD}$PROBESEQUENCES${NORM} set${NORM}."
+echo "We ${REDF}STRONGLY RECOMMEND${NORM} to ${CYAF}remove those genes${NORM} from the final probe set."
+echo "${BLUF}================================================================================${NORM}"
+confirmgo
+
+# Extracting names of putative plastid sequence
+echo "Preparing to remove putative plastid genes from final probe set"
+sed 1,5d $PROBESEQUENCESCP | cut -f 10 | sort -u | sed 's/^/\\</g' | sed 's/$/\\>/g' > $PROBESEQUENCESCPLIST || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Processing of file containing remaining putative plastid sequences failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$PROBESEQUENCESCP${NORM} correct PSLX file (BLAT output)."
+	echo
+	exit 1
+	}
+# Removing putative plastid sequence from all probes, converting to FASTA
+echo "Removing remaining putative plastid genes from final probe set and converting to FASTA"
+grep -v -f $PROBESEQUENCESCPLIST $PROBEPRELIMFIN | sed 's/ /\n/' > $PROBESEQUENCESNOCP || {
+	echo
+	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of putative plastid genes from final probe set failed.${NORM} Aborting."
+	echo "Check if file ${REDF}$PROBEPRELIMFIN${NORM} is correct file (sequences in TAB)."
+	echo
+	exit 1
+	}
+echo
+
+echo "${REDF}${BOLD}Success!${NORM}"
+echo
+echo "${BLUF}================================================================================${NORM}"
+echo "${CYAF}Final output file was written as${NORM}"
+echo "${REDF}${BOLD}$PROBESEQUENCESNOCP${NORM}"
+echo "${CYAF}This file contains the probe sequences. Putative plastid genes were removed.${NORM}"
 echo "${BLUF}================================================================================${NORM}"
 confirmgo
 
 # Remove temporal files
 echo "Removing unneeded temporal files"
-rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN  || {
+rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESCPLIST || {
 	echo
 	echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Removal of temporal files failed.${NORM} Remove following files manually:"
 	echo "  \"$REFERENCECP\", \"$SEQUENCES\", \"$SEQUENCESTAB\","
@@ -1020,12 +1054,13 @@ rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUS
 	echo "  \"$SEQUENCESPROBES120600MODIF\", \"$SEQUENCESPROBES120600ASSEM\", \"$SEQUENCESPROBES120600CONTIG\","
 	echo "  \"$PROBEPRELIM0\", \"$PROBEPRELIMCLUSTER90\", \"$UNIQUEPROBEPRELIM\","
 	echo "  \"$PROBEPRELIMCDHIT\", \"$PROBEPRELIMFORJOIN\", \"$PROBEPRELIMSORT\","
-	echo "  and \"$PROBEPRELIMFIN\"."
+	echo "  \"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESCPLIST\"."
 	confirmgo
 	}
+echo
 
 # List kept files which user can use for another analysis
-echo "${CYAF}Following files are kept for possible later usage (see manual for details):${NORM}"
+echo "${CYAF}Following files are kept for possible later usage (see PDF manual for details):${NORM}"
 echo "${BLUF}================================================================================${NORM}"
 echo "${CYAF}1)${NORM} Preliminary probe sequences:"
 echo "${REDF}$PROBEPRELIM${NORM}"
@@ -1037,10 +1072,12 @@ echo "${CYAF}4)${NORM} Unclustered exons / exons with less than a certain sequen
 echo "${REDF}$UNIQUEPROBEPRELIMF${NORM}"
 echo "${CYAF}5)${NORM} Contigs comprising exons ≥ bait length having a certain minimum total locus length:"
 echo "${REDF}$PROBEPRELIMCDHIT2${NORM}"
-echo "${CYAF}6)${NORM} Putative plastid genes in final probe set:"
-echo "${REDF}$PROBESEQUENCESCP${NORM}"
-echo "${CYAF}7)${NORM} Final probe sequences in FASTA format:"
+echo "${CYAF}6)${NORM} Probe sequences in FASTA format (including putative plastid genes):"
 echo "${REDF}$PROBESEQUENCES${NORM}"
+echo "${CYAF}7)${NORM} Putative plastid genes in final probe set:"
+echo "${REDF}$PROBESEQUENCESCP${NORM}"
+echo "${CYAF}8)${NORM} ${BOLD}Final probe sequences in FASTA format:${NORM}"
+echo "${REDF}${BOLD}$PROBESEQUENCESNOCP${NORM}"
 echo "${BLUF}================================================================================${NORM}"
 confirmgo
 

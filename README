@@ -259,26 +259,26 @@ Script sondovac_part_a.sh requires as input files:
    This file is not required.
 
 Script sondovac_part_a.sh creates the following files:
-1)  *_renamed.fasta - If needed, copy of the transcriptome input file with the 
-      changed labels of the FASTA sequences (unique numbers corresponding to 
-      the line numbers in the  original file) will be created. File 
-2)  *_old_and_new_names.tsv then contains two columns: 1) the original 
-      sequence labels as in the user-provided transcriptome input file and 2) 
-      new sequence labels. This might be useful to trace back certain 
-      sequences/probes. 1)  *_blat_unique_transcripts.psl - Output of BLAT 
-      (removal of transcripts sharing ≥90% sequence similarity).
-3)  *_unique_transcripts.fasta - Unique transcripts in FASTA format.
-4)  *_genome_skim_data_no_cp_reads* - Genome skim data without cpDNA reads.
-5)  *_genome_skim_data_no_cp_no_mt_reads* - Genome skim data without mtDNA 
-      reads - only if mitochondriome reference sequence was used.
-6)  *_combined_reads_co_cp_no_mt_reads* - Combined paired-end genome skim reads.
-7)  *_blat_unique_transcripts_versus_genome_skim_data.pslx - Output of BLAT 
-      (matching of the unique transcripts and the filtered, combined genome 
-      skim reads sharing ≥85% sequence similarity).
-8)  *_blat_unique_transcripts_versus_genome_skim_data.fasta - Matching 
-      sequences in FASTA.
-9) *_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa - 
-      Final FASTA sequences for usage in Geneious.
+1) *_renamed.fasta - If needed, copy of the transcriptome input file with the 
+     changed labels of the FASTA sequences (unique numbers corresponding to 
+     the line numbers in the  original file) will be created. File 
+2) *_old_and_new_names.tsv then contains two columns: 1) the original 
+     sequence labels as in the user-provided transcriptome input file and 2) 
+     new sequence labels. This might be useful to trace back certain 
+     sequences/probes. 1)  *_blat_unique_transcripts.psl - Output of BLAT 
+     (removal of transcripts sharing ≥90% sequence similarity).
+3) *_unique_transcripts.fasta - Unique transcripts in FASTA format.
+4) *_genome_skim_data_no_cp_reads* - Genome skim data without cpDNA reads.
+5) *_genome_skim_data_no_cp_no_mt_reads* - Genome skim data without mtDNA 
+     reads - only if mitochondriome reference sequence was used.
+6) *_combined_reads_co_cp_no_mt_reads* - Combined paired-end genome skim reads.
+7) *_blat_unique_transcripts_versus_genome_skim_data.pslx - Output of BLAT 
+     (matching of the unique transcripts and the filtered, combined genome 
+     skim reads sharing ≥85% sequence similarity).
+8) *_blat_unique_transcripts_versus_genome_skim_data.fasta - Matching 
+     sequences in FASTA.
+9) *_blat_unique_transcripts_versus_genome_skim_data-no_missing_fin.fsa - Final 
+     FASTA sequences for usage in Geneious.
 Files 1-8 are not necessary for further processing by this pipeline, but may be 
 useful for the user. The last file (9) is used as input file for Geneious in 
 the next step.
@@ -297,20 +297,25 @@ Script sondovac_part_b.sh requires as input files:
 3) Assembled sequences exported from Geneious as FASTA.
 
 Script sondovac_part_b.sh creates the following files:
-1) *_prelim_probe_seq.fasta - Preliminary probe sequences.
-2) *_prelim_probe_seq_cluster_100.fasta - Unclustered exons and clustered exons 
+1) *_prelim_probe_seq.fasta – Preliminary probe sequences.
+2) *_prelim_probe_seq_cluster_100.fasta – Unclustered exons and clustered exons 
      with 100% sequence identity.
-3) *_prelim_probe_seq_cluster_90.clstr - Unclustered exons and clustered exons 
+3) *_prelim_probe_seq_cluster_90.clstr – Unclustered exons and clustered exons 
      with more than a certain sequence similarity (CLSTR file).
-4) *_unique_prelim_probe_seq.fasta - Unclustered exons / exons with less than a 
+4) *_unique_prelim_probe_seq.fasta – Unclustered exons / exons with less than a 
      certain sequence similarity.
-5) *_similarity_test.fasta - Exons that comprise exons ≥ bait length and have 
+5) *_similarity_test.fasta – Contigs that comprise exons ≥ bait length and have 
      a certain total locus length.
-6) *_target_enrichment_probe_sequences.fasta - Probes in FASTA.
-7) *_possible_cp_dna_genes_in_probe_set.pslx - In case of any BLAT hits, the 
-     user might need to manually remove these plastid probe sequences from 
-     *_target_enrichment_probe_sequences.fasta (the previous script outfile); 
-     the remaining ones are the final probe sequences in FASTA.
+6) *_target_enrichment_probe_sequences_with_pt.fasta – All probes in FASTA, 
+     with putative plastid sequences (if there were any BLAT hits, putative 
+     plastid sequences are listed in next file).
+7) *_possible_cp_dna_gene_in_probe_set.pslx – In case of any BLAT hits, 
+     putative re- maining plastid probe sequences from *_target_enrichment_probe
+     _sequences_with_pt.fasta are listed here. Not removing plastid genes will 
+     take lots of space on the Illumina lane for enriched plastid reads that 
+     should actually be available for enriched nuclear reads.
+8) *_target_enrichment_probe_sequences.fasta – Final probes in FASTA.
+
 
 An asterisk (*) denotes the beginning of the output files' names specified by 
 the user with parameter "-o". If user does not select a custom name, default 
