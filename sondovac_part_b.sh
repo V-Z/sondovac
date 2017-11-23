@@ -303,7 +303,7 @@ function compilecdhit {
 			do
 				case "$CDHIT" in
 					C|c)
-						compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.5-2016-0304
+						compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.8-2017-0621
 						break
 						;;
 					S|s)
@@ -335,7 +335,7 @@ function compilecdhit {
 							*) echo
 								echo "Binary is not available for ${REDF}$OS $OSB${NORM}."
 								echo
-								compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.5-2016-0304
+								compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.8-2017-0621
 								;;
 							esac
 						break
@@ -354,7 +354,7 @@ function compilecdhit {
 								}
 							else
 								echo "This is not Mac OS X. Going to compile..."
-								compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.5-2016-0304
+								compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.8-2017-0621
 							fi
 						break
 						;;

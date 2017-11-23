@@ -22,3 +22,4 @@ git
 wget
 dos2unix
 python
+tbb-devel
