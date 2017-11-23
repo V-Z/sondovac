@@ -264,7 +264,9 @@ See below for details about tools required by Sondovač and their manual install
 \subsection{Installation of required software in Linux} % TODO Installation of scientific software via package managers
 \label{required-linux}
 
-Linux distributions have precise package management tools (similar, but with more functions, to various app stores known from Android, iOS or recent Mac OS~X, MS~Windows, etc.), but unfortunately Linux repositories commonly do not contain all needed scientific packages (or not enough recent versions). We recommend pre-compiled binaries of scientific applications available together with the script. If the user wishes to compile the software, for whatever reason, the script will guide through that process.
+Linux distributions have precise package management tools (similar, but with more functions, to various app stores known from Android, iOS or recent Mac OS~X, MS~Windows, etc.), but unfortunately Linux repositories\footnote{On-line directories containing various software.} commonly do not contain all needed scientific packages (or not enough recent versions). We recommend to check if repositories of Linux distribution in use contain required scientific software and if not, use pre-compiled binaries of scientific applications available together with the script. If the user wishes to compile the software, for whatever reason, the script will guide through that process. Please note, that compilation may be complicated and require certain level of experience.
+
+Following sections describe adding of extra repositories (if necessary) and installation of required scientific software on major Linux distributions. It is not part of the script itself, it must be done manually, and might require adjusting for particular Linux installation. For Linux users, the script offers usage of precompiled binaries or compilation of required software. Unfortunately, it is hard to cover variability of Linux distributions.
 
 \subsubsection{openSUSE and SUSE Linux Enterprise (SLE)}
 
@@ -292,9 +294,23 @@ SUSE Linux Enterprise (\url{https://www.suse.com/}) and openSUSE (\url{https://w
 
 Originally, those distributions used only \texttt{rpm*} commands (see \texttt{rpm --help} and \texttt{man rpm} for basic usage).
 
+For openSUSE, there is \href{https://en.opensuse.org/openSUSE:Science_Repositories}{Science Repository}. User can add and use it like this:
+
+\begin{bashcode}
+  # Help for adding new repository
+  zypper ar -h
+  # Add scientific repository containing Bowtie2 and SAMtools
+  sudo zypper ar -r http://download.opensuse.org/repositories/science/` \
+    lsb_release -d | cut -f 2 | sed 's/ /_/'`/science.repo -n science -e -f \
+    -p 120
+  # Install Bowtie2 and SAMtools (Blat, CD-HIT, FASTX and FLASh are missing)
+  sudo zypper in bowtie2 samtools
+  # Note backslash ("\") means that the code continues on the next line
+\end{bashcode}
+
 \subsubsection{Debian, Ubuntu, Linux Mint and derivatives}
 
-Debian (\url{https://www.debian.org/}), Linux Mint (\url{https://linuxmint.com/}), Ubuntu (\url{https://www.ubuntu.com/}) and all derived distributions\footnote{For complete lists see \url{https://distrowatch.com/search.php?basedon=Debian} and \url{https://distrowatch.com/search.php?basedon=Ubuntu}.} like Kubuntu (\url{https://www.kubuntu.com/}) use for package management commands \texttt{apt-get} (basic) and \texttt{aptitude} (text-based front-end for \texttt{apt-get}, recommended, not available by default in every DEB based distribution). There are more tools available\footnote{See \url{https://wiki.debian.org/PackageManagement} for list of tools and \url{https://www.debian.org/doc/manuals/debian-reference/ch02.en.html} for exhaustive documentation. A~shorter introduction is available at \url{https://help.ubuntu.com/community/AptGet/Howto} and \url{http://ubuntuguide.org/wiki/Ubuntu_Trusty_Packages_and_Repositories}. Ubuntu-specific information at \url{https://help.ubuntu.com/stable/ubuntu-help/addremove.html}.}, we will describe only the basic usage needed for our purpose. The script will check if all required software packages are installed, and if not, will install them. You can also install manually:
+The biggest ``family'' of Linux distributions. Debian (\url{https://www.debian.org/}) (one of the odlest and biggest distributions), Linux Mint (\url{https://linuxmint.com/}), Ubuntu (\url{https://www.ubuntu.com/}) and all derived distributions\footnote{For complete lists see \url{https://distrowatch.com/search.php?basedon=Debian} and \url{https://distrowatch.com/search.php?basedon=Ubuntu}.} like Kubuntu (\url{https://kubuntu.com/}) use for package management commands \texttt{apt-get} (basic) and \texttt{aptitude} (text-based front-end for \texttt{apt-get}, recommended, not available by default in every DEB based distribution). There are more tools available\footnote{See \url{https://wiki.debian.org/PackageManagement} for list of tools and \url{https://www.debian.org/doc/manuals/debian-reference/ch02.en.html} for exhaustive documentation. A~shorter introduction is available at \url{https://help.ubuntu.com/community/AptGet/Howto} and \url{http://ubuntuguide.org/wiki/Ubuntu_Trusty_Packages_and_Repositories}. Ubuntu-specific information at \url{https://help.ubuntu.com/stable/ubuntu-help/addremove.html}.}, we will describe only the basic usage needed for our purpose. The script will check if all required software packages are installed, and if not, will install them. You can also install manually:
 
 \begin{bashcode}
   # Verify installation of basic tools (they are installed in 99.9%):
@@ -326,6 +342,15 @@ Debian (\url{https://www.debian.org/}), Linux Mint (\url{https://linuxmint.com/}
 
 Note you can use \texttt{aptitude} in a~similar way as \texttt{apt-*} commands (e.g. \texttt{aptitude instal PACKAGE} etc.). For special package operations, there are plenty of \texttt{dpkg} commands for advanced management.
 
+Debian-based distributions have Bowtie2, CD-HIT, FASTX Toolkit and SAMtools (Blat and FLASh are missing) in their repositories. For Debian, it is readily installable, for Ubuntu it is necessary to enable \texttt{universe} repository by command \texttt{sudo add-apt-repository universe}. For graphical way and more details see \url{https://help.ubuntu.com/community/Repositories/Ubuntu}. Not not all Linux distributions derived from Debian and Ubuntu contain the packages. It is possible to add repositories from Debian or Ubuntu, but description is beyond this guide.
+
+\begin{bashcode}
+  # On Ubuntu and derivatives, allow universe repository
+  sudo add-apt-repository universe
+  # Install scientific packages
+  sudo apt-get install bowtie2 cd-hit fastx-toolkit samtools
+\end{bashcode}
+
 \subsubsection{RedHat, Fedora, Centos, Scientific Linux and derivatives}
 
 RedHat (\url{https://www.redhat.com/}), Fedora (\url{https://getfedora.org/}; until version 21), Centos (\url{https://centos.org/}) and Scientific Linux (\url{https://www.scientificlinux.org/}) and other related distributions\footnote{See \url{https://distrowatch.com/search.php?basedon=Fedora} for complete list.} use for package management command \texttt{yum}\footnote{See \url{http://yum.baseurl.org/} for details.}. The script will check if all required software packages are installed, and if not, will install them. You can also install manually:
@@ -348,7 +373,17 @@ RedHat (\url{https://www.redhat.com/}), Fedora (\url{https://getfedora.org/}; un
   # Note backslash ("\") means that the code continues on the next line
 \end{bashcode}
 
-Since version 22, Fedora uses the command \texttt{dnf} for package management. It replaces older \texttt{yum}, and \texttt{yum} commands are redirected to \texttt{dnf}. The basic usage is the same, so that one can just replace \texttt{yum} with \texttt{dnf} in the above examples. Originally, those distributions used only \texttt{rpm*} commands (see \texttt{rpm --help} and \texttt{man rpm} for basic usage).
+Since version 22, Fedora uses the command \texttt{dnf} for package management. It replaces older \texttt{yum}, and \texttt{yum} commands are redirected to \texttt{dnf}. The basic usage is the same, so that one can just replace \texttt{yum} with \texttt{dnf} in the above examples. Originally, those distributions used only \texttt{rpm*} commands (see \texttt{rpm --help} and \texttt{man rpm} for basic usage). 
+
+Unfortunately, these disctributions do not contain much of required software (at least not in official repositories). Only Fedora has FASTX Toolkit available (which is positive as this package can be hard to install).
+
+\begin{bashcode}
+  # Install FASTX Toolkit on recent Fedora
+  dnf install fastx_toolkit
+  dnf -h # Usage help
+\end{bashcode}
+
+See \url{https://dnf.readthedocs.io/en/latest/command_ref.html} for more usage of DNF on recent Fedora.
 
 \subsection{Installation of required software in Mac OS~X}
 \label{required-mac}
@@ -409,17 +444,17 @@ The script will guide the user through all those steps and basic usage of Homebr
   # Note backslash ("\") means that the code continues on the next line
 \end{bashcode}
 
-Within the Homebrew project, there is also a~scientific section (Homebrew Science, see \url{https://brew.sh/homebrew-science/}) containing plenty of software\footnote{See \url{https://github.com/Homebrew/homebrew-science/wiki/List-of-homebrew-science-formulae} for co\-mplete list of available scientific packages.}. When the script checks for required scientific packages, it offers several ways to install missing software. Mac OS~X users can also use Homebrew. It is the recommended way. If the user wishes to install the software manually, it is possible to use the following commands:
+Within the Homebrew project, there is also a~scientific section (Homebrew Science, see \url{https://brew.sh/homebrew-science/}) containing plenty of software\footnote{See \url{https://github.com/Homebrew/homebrew-science/wiki/List-of-homebrew-science-formulae} for co\-mplete list of available scientific packages.}. When the script checks for required scientific packages, it offers several ways to install missing software. Mac OS~X users can also use Homebrew. It is the recommended way. If the user wishes to install the software manually, it is possible to use the following command:
 
 \begin{bashcode}
   # Install required scientific packages using Homebrew Science
   brew install homebrew/science/blat homebrew/science/bowtie2 \
     homebrew/science/samtools homebrew/science/flash \
-    homebrew/science/fastx_toolkit
+    homebrew/science/fastx_toolkit homebrew/science/cd-hit
   # Note backslash ("\") means that the code continues on the next line
 \end{bashcode}
 
-Using Homebrew, software will be installed system-wide, and Homebrew easily allows checks for updates.
+Using Homebrew, software will be installed system-wide, and Homebrew easily allows checks for updates. Homebrew Science contains all software required by Sondovač.
 
 \subsection{First launch of Sondovač}
 \label{script-start}
@@ -507,7 +542,7 @@ If you are not familiar with the use of command line, try some basic tutorials f
   \item \url{http://ryanstutorials.net/linuxtutorial/}
   \item \url{http://www.hypexr.org/bash_tutorial.php}
   \item \url{http://mywiki.wooledge.org/BashGuide}
-  \item \url{https://docs.fedoraproject.org/f26/system-administrators-guide/Book_Info.html}
+  \item \url{https://docs.fedoraproject.org/f26/system-administrators-guide/}
 \end{itemize}
 
 \subsection{Geneious}
@@ -634,7 +669,7 @@ Sondovač requires certain software to be installed (see Table~\ref{software-lin
   \item[Library] Pack of software tools and functions used by other applications.
   \item[License] Conditions under which software is distributed. Can be very restrictive (typically paid software) or permissive (typically free and open-source software).
   \item[Linux] One of the most common variants of UNIX-based operating systems. Linux kernel is used by many developers, so that there are plenty of Linux distributions ("flavors") from various sources (e.g. Ubuntu and derivatives, openSUSE, SLE, Debian, Linux Mint, Fedora, Centos, RedHat etc.). They share many features, although at first sight they can look different. See \url{https://en.wikipedia.org/wiki/Linux}.
-  \item[Linux Mint] Popular Linux distribution based on Debian and Ubuntu, see \url{https://linuxmint.com/}.
+  \item[Linux Mint] Popular Linux distribution based on Ubuntu (mainly) and Debian, see \url{https://linuxmint.com/}.
   \item[Mac OS~X] Popular operating system produced by Apple. The system kernel is based on UNIX, see \url{https://www.apple.com/osx/}.
   \item[Open-source] Generally, the source code of an application is available together with the application and can, under certain conditions, be defined in license modified, redistributed etc. See \url{https://en.wikipedia.org/wiki/Free_and_open-source_software}.
   \item[openSUSE] Popular Linux distribution, see \url{https://www.opensuse.org/}.
@@ -846,7 +881,7 @@ Files 1-8 are not necessary for further processing by this pipeline, but may be 
   \item \texttt{*$\_$unique$\_$prelim$\_$probe$\_$seq.fasta} -- Unclustered exons / exons with less than a certain sequence similarity.
   \item \texttt{*$\_$similarity$\_$test.fasta} -- Contigs that comprise exons $\geq$ bait length and have a~certain total locus length.
   \item \texttt{*$\_$target$\_$enrichment$\_$probe$\_$sequences$\_$with$\_$pt.fasta} -- All probes in FASTA, with putative plastid sequences (if there were any BLAT hits, putative plastid sequences are listed in next file).
-  \item \texttt{*$\_$possible$\_$cp$\_$dna$\_$gene$\_$in$\_$probe$\_$set.pslx} -- In case of any BLAT hits, putative remaining plastid probe sequences from \texttt{*$\_$target$\_$enrichm\-ent$\_$probe$\_$sequences$\_$with$\_$pt.fasta} are listed here. \textbf{Not removing plastid genes will take lots of space on the Illumina lane for enriched plastid reads that should actually be available for enriched nuclear reads.}
+  \item \texttt{*$\_$possible$\_$cp$\_$dna$\_$gene$\_$in$\_$probe$\_$set.pslx} -- In case of any BLAT hits, putative remaining plastid probe sequences from \texttt{*$\_$target$\_$enrichm\-ent$\_$probe$\_$sequences$\_$with$\_$pt\-.fasta} are listed here. \textbf{Not removing plastid genes will take lots of space on the Illumina lane for enriched plastid reads that should actually be available for enriched nuclear reads.}
   \item \underline{\texttt{*$\_$target$\_$enrichment$\_$probe$\_$sequences.fasta}} -- \textbf{Final probes in FASTA.}
 \end{enumerate}
 
@@ -969,13 +1004,14 @@ If you have a question or encounter a problem, please see \url{https://github.co
 
 List of changes in released versions of Sondovač.
 
-\subsection{Version 1.3 regular release released YYYY-MM-DD}
+\subsection{Version 1.3 regular release released 2017-MM-DD}
 
 \begin{itemize}
   \item \texttt{bam2fastq} is dropped in favour of \texttt{samtools fastq}. No plans to use \texttt{Picard} anymore (part~A).
   \item Simplified \texttt{INSTALL} and \texttt{README} not to only copy PDF manual.
   \item Corrected output of part~A -- ensure to have always valid FASTA.
   \item Automatically remove putative plastid sequences from final probe set (part~B), list of all probes (with putative plastid sequences) and list of putative plastid sequences are available.
+  \item Updated software distributed with Sondovač, updated respective sections of manual.
 \end{itemize}
 
 \subsection{Version 1.2 regular release released 2016-06-28}

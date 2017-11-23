@@ -13,6 +13,8 @@ Version 1.3 regular release released YYYY-MM-DD
 * Automatically remove putative plastid sequences from final probe set (part 
   B), list of all probes (with putative plastid sequences) and list of putative 
   plastid sequences are available.
+* Updated software distributed with Sondovač, updated respective sections of 
+  manual.
 
 
 Version 1.2 regular release released 2016-06-28
