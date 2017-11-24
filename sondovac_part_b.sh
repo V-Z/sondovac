@@ -39,7 +39,7 @@ BLATIDENT=90
 # Minimum total locus length
 MINLOCUSLENGTH=600
 # Default name of output files
-OUTPUTFILENAME="output"
+OUTPUTFILENAME=`realpath "output"`
 # Add also unassembled sequences longer than minimal length
 REMAINING="YES"
 
@@ -106,7 +106,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
 			citationreference
 			;;
 		o)
-			OUTPUTFILENAME=$OPTARG
+			OUTPUTFILENAME=`realpath $OPTARG`
 			echo "Output files will start name with ${REDF}$OUTPUTFILENAME${NORM}"
 			;;
 		i)
