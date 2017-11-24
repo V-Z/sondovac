@@ -21,16 +21,16 @@ operating systems can have different versions of shell and system libraries,
 which can cause various problems and incompatibilities.
 
 Sondovač uses several scientific software packages (namely BLAT, Bowtie2, 
-CD-HIT, FASTX toolkit, FLASH, Geneious, htsjdk, libgtextutils, and SAMtools - 
-see required versions and links below), and basic UNIX tools. Sondovač will 
-check if those programs are installed - available in the PATH (i.e. if the 
-shell application can locate and launch respective binaries). If you have those 
-packages installed (in current versions), ensure their binaries are in PATH. 
-This should not be a problem for basic tools available in any UNIX-based 
-operating system, as basic installation usually contains all needed tools. If 
-you lack some of the required tools, the script will notify you, and you will 
-have to install them manually. If this is needed, check the documentation for 
-your operating system.
+CD-HIT, FLASH, Geneious, htsjdk, libgtextutils, and SAMtools - see required 
+versions and links below), and basic UNIX tools. Sondovač will check if those 
+programs are installed - available in the PATH (i.e. if the shell application 
+can locate and launch respective binaries). If you have those packages 
+installed (in current versions), ensure their binaries are in PATH. This should 
+not be a problem for basic tools available in any UNIX-based operating system, 
+as basic installation usually contains all needed tools. If you lack some of 
+the required tools, the script will notify you, and you will have to install 
+them manually. If this is needed, check the documentation for your operating 
+system.
 
 If required programs are not installed, Sondovač will offer you installation. 
 You can use precompiled binaries available together with the script (this is 
@@ -48,7 +48,6 @@ sondovac_part_a.sh requires (and will install) the following software packages:
 * Bowtie2
 * SAMtools
 * FLASH
-* FASTX-toolkit
 
 sondovac_part_b.sh requires (and will install) the following software packages:
 * CD-HIT
@@ -61,16 +60,16 @@ The following UNIX tools are required to run Sondovač. They are usually readily
 available in UNIX systems (but see note for Mac OS X below), so there is 
 usually no need to install them manually. The tools are awk, bc, bunzip2, cat, 
 cp, curl or wget, cut, dirname, echo, egrep, cd, g++, gcc, grep, gunzip, join, 
-less, lsb_release or python, make, mkdir, perl, pkg-config, pwd, sed, sort, 
-tar, tr, uname, uniq, unzip, wc.
+less, lsb_release or python, make, mkdir, perl, pwd, sed, sort, tar, tr, uname, 
+uniq, unzip, wc.
 
 For Mac OS X users, Homebrew (https://brew.sh/) will be installed by the 
 script, and it will install (new software or newer versions) Apache Ant, BASH 
-(the shell interpreter), GNU AWK, GNU coreutils, GNU GCC, git, GNU grep, GNU 
-make, pkg-config, GNU sed, and wget. Mac OS X is missing some tools and for 
-others (typically sed, grep or awk) contains outdated BSD versions. The script 
-will guide the user through the process, and it is possible to safely and 
-easily remove these tools afterwards if the user wishes to do so.
+(the shell interpreter), GNU AWK, GNU coreutils, GNU GCC, GNU grep, GNU make, 
+GNU sed, and wget. Mac OS X is missing some tools and for others (typically 
+sed, grep or awk) contains outdated BSD versions. The script will guide the 
+user through the process, and it is possible to safely and easily remove these 
+tools afterwards if the user wishes to do so.
 
 See the PDF manual for details about tools required by Sondovač and their 
 manual installation. For most users it should be sufficient to be guided 
@@ -148,11 +147,9 @@ Software links
 * BLAT - https://genome.ucsc.edu/FAQ/FAQblat.html
 * Bowtie2 - http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
 * CD-HIT - http://weizhongli-lab.org/cd-hit/
-* FASTX toolkit, libgtextutils - http://hannonlab.cshl.edu/fastx_toolkit/
 * FLASH - https://sourceforge.net/projects/flashpage/
 * G++, GCC - https://gcc.gnu.org/
 * Geneious - https://www.geneious.com/
-* GIT - https://git-scm.com/
 * GNU core utils - https://www.gnu.org/software/coreutils/coreutils.html
 * libpng - http://www.libpng.org/
 * SAMtools, htsjdk - http://www.htslib.org/

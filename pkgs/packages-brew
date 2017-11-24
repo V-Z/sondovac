@@ -3,10 +3,8 @@ gnu-sed
 gawk
 grep
 bash
-pkg-config
 gcc
 make
-git
 wget
 dos2unix
 python

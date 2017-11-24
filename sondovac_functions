@@ -2,7 +2,7 @@
 
 # Version of the script
 SCRIPTVERSION=1.3
-RELEASEDATE=201Y-MM-DD
+RELEASEDATE=2017-MM-DD
 # Web page of the script
 WEB="https://github.com/V-Z/sondovac/"
 
@@ -324,11 +324,6 @@ function citationreference {
   echo "  Ultrafast clustering algorithms for metagenomic sequence analysis"
   echo "  Briefings in Bioinformatics (2012) 13(6):656-668"
   echo "  http://bib.oxfordjournals.org/content/13/6/656.abstract"
-  echo "${REDF}FASTX toolkit:${NORM}"
-  echo "${MAGF}${BOLD}*${NORM} A. Gordon and G. J. Hannon"
-  echo "  FASTX-Toolkit. FASTQ/A short-reads pre-processing tools"
-  echo "  2010"
-  echo "  http://hannonlab.cshl.edu/fastx_toolkit/"
   echo "${REDF}FLASH:${NORM}"
   echo "${MAGF}${BOLD}*${NORM} Tanja Magoč and Steven L. Salzberg"
   echo "  FLASH: fast length adjustment of short reads to improve genome assemblies"

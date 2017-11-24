@@ -15,6 +15,7 @@ Version 1.3 regular release released YYYY-MM-DD
   plastid sequences are available.
 * Updated software distributed with Sondovač, updated respective sections of 
   manual.
+* Removed FASTX Toolkit, conversion from FASTQ to FASTA is done by simple shell function.
 
 
 Version 1.2 regular release released 2016-06-28

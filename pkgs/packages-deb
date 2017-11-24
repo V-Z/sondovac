@@ -17,9 +17,6 @@ cpp
 make
 libpng12-dev
 zlib1g-dev
-git
-pkg-config
-realpath
 wget
 dos2unix
 python

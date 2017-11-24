@@ -8,7 +8,6 @@ gzip
 less
 lsb
 perl
-pkgconfig
 sed
 tar
 unzip
@@ -18,7 +17,6 @@ cpp
 make
 libpng12-devel
 zlib-devel
-git
 wget
 dos2unix
 python
