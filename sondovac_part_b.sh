@@ -226,6 +226,9 @@ workdirpath
 
 # Check availability of all needed binaries
 
+# Check if realpath is available
+checktools realpath
+
 # Check if grep is available
 checktools grep
 

@@ -222,6 +222,9 @@ workdirpath
 
 # Check availability of all needed binaries
 
+# Check if realpath is available
+checktools realpath
+
 # Check if paste is available
 checktools paste
 
@@ -1145,11 +1148,13 @@ if [[ -n "$REFERENCEMT" && -n "$REFERENCEMT0" ]]; then
 	echo
 
 	# Combine the paired-end reads with FLASH - with mitochondrial reads
+	# Sanitize output variable for usage by FLASh (it always starts with './', thus absolute URL is not usable)
+	FLASHOUT2=$(realpath --relative-to=$WORKDIR $FLASHOUT)
 	echo "${REDF}Step 4 of the pipeline${NORM} - combination of paired-end reads."
 	echo
 	echo "${CYAF}Combining paired-end reads${NORM}"
 	echo
-	flash -o $FLASHOUT -M $FLASHM $FASTQNOMT.1.fq $FASTQNOMT.2.fq || {
+	flash -o $FLASHOUT2 -M $FLASHM $FASTQNOMT.1.fq $FASTQNOMT.2.fq || {
 		echo
 		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Combining paired-end reads failed.${NORM} Aborting. Check if files"
 		echo "${REDF}$REFERENCEMT${NORM}, ${REDF}$FASTQNOMT.1.fq${NORM} and ${REDF}$FASTQNOMT.2.fq${NORM} are correct."
@@ -1163,7 +1168,7 @@ if [[ -n "$REFERENCEMT" && -n "$REFERENCEMT0" ]]; then
 		echo
 		echo "${CYAF}Combining paired-end reads${NORM}"
 		echo
-		flash -o $FLASHOUT -M $FLASHM `echo $FASTQNOCP`_1.fq `echo $FASTQNOCP`_2.fq || {
+		flash -o $FLASHOUT2 -M $FLASHM `echo $FASTQNOCP`_1.fq `echo $FASTQNOCP`_2.fq || {
 			echo
 			echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Combining paired-end reads failed.${NORM} Aborting. Check if files"
 			echo "${REDF}$REFERENCECP${NORM}, ${REDF}`echo $FASTQNOCP`_1.fq${NORM} and ${REDF}`echo $FASTQNOCP`_2.fq${NORM} are correct."
