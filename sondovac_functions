@@ -7,7 +7,6 @@ RELEASEDATE=2017-12-18
 WEB="https://github.com/V-Z/sondovac/"
 
 # Introductory message for users
-echo
 echo " ##############################################################################"
 echo " #                                                                            #"
 echo " #     Sondovač is a script to create orthologous low-copy nuclear probes     #"
@@ -19,13 +18,13 @@ echo " #          When using this script, please cite Schmickl et al. 2016      
 echo " #                                                                            #"
 echo " ##############################################################################"
 echo
-echo -e "\tThis is version $SCRIPTVERSION released $RELEASEDATE."
-echo -e "\tFor newest version check $WEB or \"$0 -u\""
-echo -e "\tIn case of problems not covered in README for user support see $WEB"
+echo -e "\tThis is version ${SCRIPTVERSION} released ${RELEASEDATE}."
+echo -e "\tFor newest version check ${WEB} or \"$0 -u\""
+echo -e "\tIn case of problems not covered in README for user support see ${WEB}"
 echo -e "\tFor basic usage see \"$0 -h\""
 echo -e "\tFor detailed usage instructions see README or \"$0 -r\""
 echo
-echo "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. For more information see LICENSE, https://gnu.org/licenses/gpl.html or '$0 -l'."
+echo "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. For more information see LICENSE, https://gnu.org/licenses/gpl.html or \"$0 -l\"."
 echo
 echo "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
 echo
@@ -46,7 +45,7 @@ function generaloptions {
 
 # Check availability of basic UNIX binaries
 function checktools {
-	{ command -v $1 >/dev/null 2>&1 && echo "Command \"$1\" is available. OK."; } || {
+	{ command -v "$1" >/dev/null 2>&1 && echo "Command \"$1\" is available. OK."; } || {
 		echo "Error! Command\"$1\" is required but not installed! Aborting. Please, install \"$1\" and ensure it is in PATH. It should be readily available for any UNIX-based system (Linux, Mac OS X, BSD, ...). See PDF manual for more information."
 		echo
 		exit 1
@@ -56,9 +55,8 @@ function checktools {
 # Display license information
 function licenser {
 	checktools less
-	less $SCRIPTDIR/LICENSE || {
-		echo
-		echo "Error! Can not display file $SCRIPTDIR/LICENSE! Is your installation correct? See https://gnu.org/licenses/gpl.html for GNU GPL v.3 and $WEB to ensure you have all needed files."
+	less "${SCRIPTDIR}"/LICENSE || {
+		echo "Error! Can not display file ${SCRIPTDIR}/LICENSE! Is your installation correct? See https://gnu.org/licenses/gpl.html for GNU GPL v.3 and ${WEB} to ensure you have all needed files."
 		echo
 		exit 1
 		}
@@ -69,9 +67,8 @@ function licenser {
 # Display README
 function readmeview {
 	checktools less
-	less $SCRIPTDIR/README || {
-		echo
-		echo "Error! Can not display file $SCRIPTDIR/README! Is your installation correct? See $WEB to ensure you have all needed files."
+	less "${SCRIPTDIR}"/README || {
+		echo "Error! Can not display file ${SCRIPTDIR}/README! Is your installation correct? See ${WEB} to ensure you have all needed files."
 		echo
 		exit 1
 		}
@@ -82,9 +79,8 @@ function readmeview {
 # Display INSTALL
 function installview {
 	checktools less
-	less $SCRIPTDIR/INSTALL || {
-		echo
-		echo "Error! Can not display file $SCRIPTDIR/INSTALL! Is your installation correct? See $WEB to ensure you have all needed files."
+	less "${SCRIPTDIR}"/INSTALL || {
+		echo "Error! Can not display file ${SCRIPTDIR}/INSTALL! Is your installation correct? See ${WEB} to ensure you have all needed files."
 		echo
 		exit 1
 		}
@@ -167,7 +163,7 @@ function citationreference {
 	echo "  Bioinformatics (2011) 27(8): 1157-1158."
 	echo "  http://bioinformatics.oxfordjournals.org/content/27/8/1157.short"
 	echo
-	echo "For more information see README, you can do so by \"$0 -r\" and/or PDF manual and/or visit $WEB"
+	echo "For more information see README, you can do so by \"$0 -r\" and/or PDF manual and/or visit ${WEB}"
 	echo
 	exit
 	}
@@ -177,27 +173,29 @@ function workdirpath {
 	# Check if there is bin directory, if not, create it
 	checktools pwd
 	checktools mkdir
-	WORKDIR=`pwd`
-	mkdir -p $WORKDIR/bin/bin || {
-		echo
-		echo "Error! Can not create directory \"bin\" in directory \"$WORKDIR\"! Do you have write permission for directory \"$WORKDIR\"?"
+	WORKDIR="$(pwd)"
+	mkdir -p "${WORKDIR}"/bin/bin || {
+		echo "Error! Can not create directory \"bin\" in directory \"${WORKDIR}\"! Do you have write permission for directory \"${WORKDIR}\"?"
 		echo
 		exit 1
 		}
-	BIN=$WORKDIR/bin/bin
+	BIN="${WORKDIR}"/bin/bin
+	echo "For future work consider adding \"${BIN}\" to PATH, as it will contain binaries of tools used in this pipeline. Alternatively, you can move whole \"${WORKDIR}/bin\" to your preferred location, but ensure to move all files and keep relative paths."
 	echo
-	echo "For future work consider adding \"$BIN\" to PATH, as it will contain binaries of tools used in this pipeline. Alternatively, you can move whole \"$WORKDIR/bin\" to your preferred location, but ensure to move all files and keep relative paths."
-	confirmgo
-	cd $WORKDIR
+	cd "${WORKDIR}" || {
+		echo "Error! Can't go to${WORKDIR}! Do you have write permission for directory \"${WORKDIR}\"?"
+		echo
+		exit 1
+		}
 	# Add bin directory in current directory into PATH
-	export PATH=$BIN:$PATH
+	export PATH="${BIN}:${PATH}"
 	}
 
 # Check if input files have DOS or UNIX encoding
 function eolcheck {
-	if awk '/\r$/{exit 0;} 1{exit 1;}' $1; then
+	if awk '/\r$/{exit 0;} 1{exit 1;}' "$1"; then
 		echo "Input file $1 has DOS end of lines. It will be converted into UNIX end of lines"
-		dos2unix $1 || {
+		dos2unix "$1" || {
 			echo "Error! Conversion to UNIX EOL failed. Aborting. Check if $1 is valid file."
 			echo
 			exit 1
@@ -213,7 +211,7 @@ function eolcheck {
 # $1 is input FASTA file provided by the user, $2 is output non-interleaved FASTA file
 function noninterleavedfasta {
 	echo "Converting possibly interleaved FASTA file $1 into non-interleaved FASTA file $2"
-	{ awk 'BEGIN{RS=">"}NR>1{sub("\n","\t");gsub("\n",""); print RS$0}' $1 | sed 's/\t/\n/g' > $2; } || {
+	{ awk 'BEGIN{RS=">"}NR>1{sub("\n","\t");gsub("\n",""); print RS$0}' "$1" | sed 's/\t/\n/g' > "$2"; } || {
 		echo "Error! Conversion of FASTA failed. Aborting. Check if $1 is correct FASTA file."
 		echo
 		exit 1
@@ -235,7 +233,7 @@ function checkblat {
 # $1 is input file in FASTA, $2 output file in TAB
 function fasta2tab {
 	#awk '/>/{if (x)print x;x="";}{x=(!x)?$0:x"\t"$0;}END{print x;}' $1 | sed 's/>[[:blank:]]*/>/g' | sed 's/[[:blank:]]+/ /g' | tr "\n" "\t" | sed 's/\t>/\n>/g' | sed 's/^>//g' | sed 's/[[:blank:]]*$//g' > $2
-	sed 's/[[:blank:]]\{1,\}/_/g' $1 | awk '/>/{if (x)print x;x="";}{x=(!x)?$0:x"\t"$0;}END{print x;}' | sed 's/^>//g' > $2 || {
+	sed 's/[[:blank:]]\{1,\}/_/g' "$1" | awk '/>/{if (x)print x;x="";}{x=(!x)?$0:x"\t"$0;}END{print x;}' | sed 's/^>//g' > "$2" || {
 		echo "Error! Conversion of FASTA to TAB (TSV) failed. Aborting. Check if $1 is correct FASTA file."
 		echo
 		exit 1
