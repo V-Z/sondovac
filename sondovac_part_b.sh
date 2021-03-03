@@ -192,9 +192,6 @@ checkmodef
 # Ensure user reads introductory information
 confirmgo
 
-# Check operating system
-oscheck
-
 # Set variables for working directory and PATH
 workdirpath
 
@@ -236,108 +233,9 @@ checkblat
 # Check if Python is available
 checktools python
 
-# Function to compile CD-HIT
-function compilecdhit {
-	{
-	checktools make &&
-	checktools g++ &&
-	echo &&
-	echo "Compiling \"CD-HIT\" from source code..." &&
-	echo &&
-	cd $1 &&
-	make -s openmp=yes || { echo "There is no MPI available - no multi-thread support." && make -s openmp=no; } &&
-	cp -a *.pl $BIN/ || echo "No Perl scripts in this build..." &&
-	cp -a cd-hit* $BIN/ &&
-	cd $WORKDIR &&
-	echo &&
-	echo "\"CD-HIT\" is available. OK."
-		} || {
-		echo
-		echo "Error! Compilation failed. Please go to https://github.com/weizhongli/cdhit/releases download cd-hit-*.tgz, compile it and ensure it is in PATH. Check last error messages to find out why compilation failed."
-		echo
-		exit 1
-		}
-	}
-
 # Check if cd-hit-est is available
 { command -v cd-hit-est >/dev/null 2>&1 && echo "\"cd-hit-est\" is available. OK."; } || {
-	echo "CD-HIT is required but not installed or available in PATH."
-	if [ "$STARTINI" == "I" ]; then
-		echo
-		echo "Type \"C\" to compile \"CD-HIT\" 4.6.5 from source available together with this script."
-		echo "Type \"S\" to download latest \"CD-HIT\" source from https://github.com/weizhongli/cdhit and compile it"
-		echo "Type \"B\" to copy \"CD-HIT\" 4.6.5 binary available together with the script (recommended, available for Linux and Mac OS X)."
-		echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended). See \"brew info homebrew/science/cd-hit\" for more details."
-		echo "Type \"M\" for manual installation - script will exit, and you will have to install \"CD-HIT\" yourself."
-		read CDHIT
-		while :
-			do
-				case "$CDHIT" in
-					C|c)
-						compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.8-2017-0621
-						break
-						;;
-					S|s)
-						downloaderselector
-						checktools unzip
-						$DOWNLOADER cd-hit-master.zip https://github.com/weizhongli/cdhit/archive/master.zip || {
-							echo
-							echo "Error! Download failed. Please, go to https://github.com/weizhongli/cdhit/releases/, download latest cd-hit-*.tar.gz and compile it manually."
-							echo
-							exit 1
-							}
-						unzip -nq cd-hit-master.zip
-						compilecdhit cdhit-master
-						break
-						;;
-					B|b)
-						echo "Copying \"CD-HIT\" binaries"
-						case "$OS" in
-							Mac)
-								cp -pr $SCRIPTDIR/pkgs/macosx/bin/cd-hit* $BIN/
-								cp -p $SCRIPTDIR/pkgs/macosx/bin/*.pl $BIN/ || echo
-								;;
-							Linux)
-								cp -p $SCRIPTDIR/pkgs/linux64b/bin/cd-hit* $BIN/
-								cp -p $SCRIPTDIR/pkgs/linux64b/bin/*.pl $BIN/
-								;;
-							*) echo
-								echo "Binary is not available for $OS $OSB."
-								echo
-								compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.8-2017-0621
-								;;
-							esac
-						break
-						;;
-					H|h)
-						if [ "$OS" == "Mac" ]; then
-							{ echo "Installing \"CD-HIT\" using Homebrew" &&
-							brew install homebrew/science/cd-hit &&
-							echo "\"CD-HIT\" is available. OK."
-								} || {
-								echo
-								echo "Error! Installation of \"CD-HIT\" failed. Please, do it manually. For details see \"brew info homebrew/science/cd-hit\" and \"brew help\"."
-								echo
-								exit 1
-								}
-							else
-								echo "This is not Mac OS X. Going to compile..."
-								compilecdhit $SCRIPTDIR/src/cd-hit-v4.6.8-2017-0621
-							fi
-						break
-						;;
-					M|m)
-						echo
-						echo "Please, go to http://weizhongli-lab.org/cd-hit/, install \"CD-HIT\" and ensure it is in PATH."
-						echo
-						exit
-						;;
-					*) echo "Wrong option. Use C, S, B, H or M." && read CDHIT;;
-					esac
-				done
-		else
-			exit 1
-		fi
+	echo "CD-HIT (command cd-hit-est) is required but not installed or available in PATH. See https://github.com/weizhongli/cdhit for installation of CD-HIT."
 	}
 
 # Input files
