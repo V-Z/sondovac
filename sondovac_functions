@@ -20,24 +20,14 @@ echo " #                                                                        
 echo " ##############################################################################"
 echo
 echo -e "\tThis is version $SCRIPTVERSION released $RELEASEDATE."
-echo -e "\tFor newest version check $WEB or"
-echo -e "\t\t$0 -u"
-echo -e "\tIn case of problems not covered in README for user support see"
-echo -e "\t\t$WEB"
-echo -e "\tFor basic usage see"
-echo -e "\t\t$0 -h"
-echo -e "\tFor detailed usage instructions see README or"
-echo -e "\t\t$0 -r"
+echo -e "\tFor newest version check $WEB or \"$0 -u\""
+echo -e "\tIn case of problems not covered in README for user support see $WEB"
+echo -e "\tFor basic usage see \"$0 -h\""
+echo -e "\tFor detailed usage instructions see README or \"$0 -r\""
 echo
-echo "This program is free software: you can redistribute it and/or modify it under"
-echo "the terms of the GNU General Public License as published by the Free Software"
-echo "Foundation, either version 3 of the License, or (at your option) any later"
-echo "version. For more information see LICENSE, https://gnu.org/licenses/gpl.html"
-echo "or \"$0 -l\"."
+echo "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. For more information see LICENSE, https://gnu.org/licenses/gpl.html or '$0 -l'."
 echo
-echo "This program is distributed in the hope that it will be useful, but WITHOUT ANY"
-echo "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR"
-echo "A PARTICULAR PURPOSE. See the GNU General Public License for more details."
+echo "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
 echo
 echo "################################################################################"
 echo
@@ -47,37 +37,21 @@ function generaloptions {
 	echo
 	echo "Usage options:"
 	echo -e "\t-h, -v\tPrint this help message and exit."
-	echo -e "\t-u\tCheck for updates of Sondovač at $WEB"
-	echo -e "\t\t  and download of newer version will be offered to the user."
-	echo -e "\t-l\tDisplay LICENSE for license information (this script is licensed"
-	echo -e "\t\t  under GNU GPL v.3, other software under variable licenses)."
-	echo -e "\t\t  Exit viewing by pressing the \"Q\" key."
-	echo -e "\t-r\tDisplay README for detailed usage instructions. Exit viewing by"
-	echo -e "\t\t  pressing the \"Q\" key. More information is available in the PDF"
-	echo -e "\t\t  manual."
-	echo -e "\t-p\tDisplay INSTALL for detailed installation instructions. Exit"
-	echo -e "\t\t  viewing by pressing the \"Q\" key. More information is available"
-	echo -e "\t\t  in the PDF manual."
+	echo -e "\t-u\tCheck for updates of Sondovač at $WEB and download of newer version will be offered to the user."
+	echo -e "\t-l\tDisplay LICENSE for license information (this script is licensed under GNU GPL v.3, other software under variable licenses). Exit viewing by pressing the \"Q\" key."
+	echo -e "\t-r\tDisplay README for detailed usage instructions. Exit viewing by pressing the \"Q\" key. More information is available in the PDF manual."
+	echo -e "\t-p\tDisplay INSTALL for detailed installation instructions. Exit viewing by pressing the \"Q\" key. More information is available in the PDF manual."
 	echo -e "\t-e\tDisplay detailed citation information and exit."
-	echo -e "\t-o\tSet name of output files. Output files will start with that"
-	echo -e "\t\t  name. Do not use spaces or special characters, only letters, numbers, dots, underscores or minuses."
-	echo -e "\t\t  See README or PDF manual for details."
-	echo -e "\t-i\tRunning in interactive mode. Script will on-demand ask for"
-	echo -e "\t\t  required input files, installation of missing software etc."
-	echo -e "\t\t  This is the recommended default value (the script runs"
-	echo -e "\t\t  interactively without explicitly using option -n)."
-	echo -e "\t-n\tRunning in non-interactive mode. The user must provide at least"
-	echo -e "\t\t  the required input files below. You can use only one of the"
-	echo -e "\t\t  parameters -i or -n (not both of them). If script fails"
-	echo -e "\t\t  to find some of the required software packages, it will exit."
+	echo -e "\t-o\tSet name of output files. Output files will start with that name. Do not use spaces or special characters, only letters, numbers, dots, underscores or minuses. See README or PDF manual for details."
+	echo -e "\t-i\tRunning in interactive mode. Script will on-demand ask for required input files, installation of missing software etc. This is the recommended default value (the script runs interactively without explicitly using option -n)."
+	echo -e "\t-n\tRunning in non-interactive mode. The user must provide at least the required input files below. You can use only one of the parameters -i or -n (not both of them). If script fails to find some of the required software packages, it will exit."
 	}
 
 # Check if user didn't use together -n and -i
 function checkmodef {
 	if [ "$CHECKMODE" == 2 ]; then
 		echo
-		echo "Error! You provided both parameters -i (interactive mode) and -n"
-		echo "  (non-interactive mode). You must use only one of them (either -i or -n)!"
+		echo "Error! You provided both parameters -i (interactive mode) and -n (non-interactive mode). You must use only one of them (either -i or -n)!"
 		echo
 		exit 1
 		fi
@@ -108,9 +82,7 @@ function downloaderselector {
 			echo "The script will use \"curl\" to download from the internet."
 			else
 				echo
-				echo "Error! Command \"wget\" as well as \"curl\" are missing. The script can need one"
-				echo "of them to download some of the required software packages and other things from the internet."
-				echo "Please, install one of them manually and restart previous task."
+				echo "Error! Command \"wget\" as well as \"curl\" are missing. The script can need one of them to download some of the required software packages and other things from the internet. Please, install one of them manually and restart previous task."
 				echo
 				exit 1
 				fi
@@ -120,10 +92,7 @@ function downloaderselector {
 # Check availability of basic UNIX binaries
 function checktools {
 	{ command -v $1 >/dev/null 2>&1 && echo "Command \"$1\" is available. OK."; } || {
-		echo "Error! Command\"$1\" is required but not installed! Aborting."
-		echo "Please, install \"$1\" and ensure it is in PATH."
-		echo "It should be readily available for any UNIX-based system (Linux, Mac OS X, BSD, ...)."
-		echo "See PDF manual for more information."
+		echo "Error! Command\"$1\" is required but not installed! Aborting. Please, install \"$1\" and ensure it is in PATH. It should be readily available for any UNIX-based system (Linux, Mac OS X, BSD, ...). See PDF manual for more information."
 		echo
 		exit 1
 		}
@@ -142,16 +111,13 @@ function scriptupdater {
 		mv .info .info~
 		} || {
 			echo
-			echo "Error! Downloading of version information available on-line failed. "
-			echo "Please, go to $WEB and check for available version manually."
-			echo "Your current version is $SCRIPTVERSION."
+			echo "Error! Downloading of version information available on-line failed. Please, go to $WEB and check for available version manually. Your current version is $SCRIPTVERSION."
 			echo
 			exit 1
 			}
 	echo
 	if [[ (( "$SCRIPTVERSION" < "$ONLINEVERSION" )) ]]; then
-		echo "Your version is $SCRIPTVERSION. On-line available version $ONLINEVERSION is newer."
-		echo "Would you like to install newer version now? (Yes/No)"
+		echo "Your version is $SCRIPTVERSION. On-line available version $ONLINEVERSION is newer. Would you like to install newer version now? (Yes/No)"
 		read UPDATER
 		while :
 			do
@@ -163,17 +129,14 @@ function scriptupdater {
 						NEWVERSION=`curl -s -L https://raw.githubusercontent.com/V-Z/sondovac/master/.info | grep NEWVERSION | cut -f 2 -d "="`
 						$DOWNLOADER sondovac.$ONLINEVERSION.zip $NEWVERSION || {
 							echo
-							echo "Error! Downloading of newer version available on-line failed."
-							echo "Please, go to $WEB and download and unpack newer version manually."
+							echo "Error! Downloading of newer version available on-line failed. Please, go to $WEB and download and unpack newer version manually."
 							echo
 							exit 1
 							}
 						echo
 						unzip sondovac.$ONLINEVERSION.zip
 						echo
-						echo "Newer version $ONLINEVERSION is available in directory"
-						echo -e"\t\"$WORKDIR/sondovac\"."
-						echo "Please, replace current files by content of this directory and launch newer version."
+						echo "Newer version $ONLINEVERSION is available in directory \"$WORKDIR/sondovac\". Please, replace current files by content of this directory and launch newer version."
 						echo
 						break
 						;;
@@ -188,8 +151,7 @@ function scriptupdater {
 				done
 		else
 			echo
-			echo "Your version of the script is the newest one (version $SCRIPTVERSION.)."
-			echo "See also README, and in case of questions visit $WEB."
+			echo "Your version of the script is the newest one (version $SCRIPTVERSION.). See also README, and in case of questions visit $WEB."
 			echo
 			fi
 	exit
@@ -200,9 +162,7 @@ function licenser {
 	checktools less
 	less $SCRIPTDIR/LICENSE || {
 		echo
-		echo "Error! Can not display file $SCRIPTDIR/LICENSE!"
-		echo "Is your installation correct? See https://gnu.org/licenses/gpl.html for"
-		echo "GNU GPL v.3 and $WEB to ensure you have all needed files."
+		echo "Error! Can not display file $SCRIPTDIR/LICENSE! Is your installation correct? See https://gnu.org/licenses/gpl.html for GNU GPL v.3 and $WEB to ensure you have all needed files."
 		echo
 		exit 1
 		}
@@ -215,9 +175,7 @@ function readmeview {
 	checktools less
 	less $SCRIPTDIR/README || {
 		echo
-		echo "Error! Can not display file $SCRIPTDIR/README!"
-		echo "Is your installation correct?"
-		echo "See $WEB to ensure you have all needed files."
+		echo "Error! Can not display file $SCRIPTDIR/README! Is your installation correct? See $WEB to ensure you have all needed files."
 		echo
 		exit 1
 		}
@@ -230,9 +188,7 @@ function installview {
 	checktools less
 	less $SCRIPTDIR/INSTALL || {
 		echo
-		echo "Error! Can not display file $SCRIPTDIR/INSTALL!"
-		echo "Is your installation correct?"
-		echo "See $WEB to ensure you have all needed files."
+		echo "Error! Can not display file $SCRIPTDIR/INSTALL! Is your installation correct? See $WEB to ensure you have all needed files."
 		echo
 		exit 1
 		}
@@ -246,13 +202,9 @@ function citationreference {
 	echo "################################################################################"
 	echo
 	echo "When using Sondovač, please cite:"
-	echo "Roswitha Schmickl, Aaron Liston, Vojtěch Zeisek, Kenneth Oberlander, Kevin"
-	echo "  Weitemier, Shannon C.K. Straub, Richard C. Cronn, Léanne L. Dreyer and Jan"
-	echo "  Suda"
-	echo "Phylogenetic marker development for target enrichment from transcriptome and"
-	echo "  genome skim data: the pipeline and its application in southern African Oxalis"
-	echo "  (Oxalidaceae)"
-	echo "Molecular Ecology Resources (2016) - early view available on-line"
+	echo "Roswitha Schmickl, Aaron Liston, Vojtěch Zeisek, Kenneth Oberlander, Kevin Weitemier, Shannon C.K. Straub, Richard C. Cronn, Léanne L. Dreyer and Jan Suda"
+	echo "Phylogenetic marker development for target enrichment from transcriptome and genome skim data: the pipeline and its application in southern African Oxalis (Oxalidaceae)"
+	echo "Molecular Ecology Resources (2016)"
 	echo "http://onlinelibrary.wiley.com/doi/10.1111/1755-0998.12487/abstract"
 	echo
 	echo "Citations of scientific software used by Sondovač:"
@@ -268,18 +220,15 @@ function citationreference {
 	echo "  http://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html"
 	echo "CD-HIT:"
 	echo "* Weizhong Li, Lukasz Jaroszewski and Adam Godzik"
-	echo "  Clustering of highly homologous sequences to reduce the size of large"
-	echo "  protein databases"
+	echo "  Clustering of highly homologous sequences to reduce the size of large protein databases"
 	echo "  Bioinformatics (2001) 17:282-283."
 	echo "  http://bioinformatics.oxfordjournals.org/content/17/3/282.short"
 	echo "* Weizhong Li, Lukasz Jaroszewski and Adam Godzik"
-	echo "  Tolerating some redundancy significantly speeds up clustering of large"
-	echo "  protein databases"
+	echo "  Tolerating some redundancy significantly speeds up clustering of large protein databases"
 	echo "  Bioinformatics (2002) 18:77-82"
 	echo "  http://bioinformatics.oxfordjournals.org/content/18/1/77.short"
 	echo "* Weizhong Li and Adam Godzik"
-	echo "  Cd-hit: a fast program for clustering and comparing large sets of"
-	echo "  protein or nucleotide sequences"
+	echo "  Cd-hit: a fast program for clustering and comparing large sets of protein or nucleotide sequences"
 	echo "  Bioinformatics (2006) 22:1658-1659"
 	echo "  http://bioinformatics.oxfordjournals.org/content/22/13/1658.short"
 	echo "* Limin Fu, Beifang Niu, Zhengwei Zhu, Sitao Wu and Weizhong Li"
@@ -304,23 +253,17 @@ function citationreference {
 	echo "  Bioinformatics (2011) 27(21):2957-2963"
 	echo "  http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract"
 	echo "Geneious:"
-	echo "* Matthew Kearse, Richard Moir, Amy Wilson, Steven Stones-Havas, Matthew"
-	echo "    Cheung, Shane Sturrock, Simon Buxton, Alex Cooper, Sidney Markowitz, Chris"
-	echo "    Duran, Tobias Thierer, Bruce Ashton, Peter Meintjes1, and Alexei Drummond"
-	echo "  Geneious Basic: An integrated and extendable desktop software platform for"
-	echo "    the organization and analysis of sequence data"
+	echo "* Matthew Kearse, Richard Moir, Amy Wilson, Steven Stones-Havas, Matthew Cheung, Shane Sturrock, Simon Buxton, Alex Cooper, Sidney Markowitz, Chris Duran, Tobias Thierer, Bruce Ashton, Peter Meintjes1, and Alexei Drummond"
+	echo "  Geneious Basic: An integrated and extendable desktop software platform for the organization and analysis of sequence data"
 	echo "  Bioinformatics (2012) 28(12):1647-1649"
 	echo "  http://bioinformatics.oxfordjournals.org/content/28/12/1647"
 	echo "SAMtools:"
-	echo "* Heng Li, Bob Handsaker, Alec Wysoker, Tim Fennell, Jue Ruan, Nils Homer,"
-	echo "    Gabor Marth, Goncalo Abecasis, Richard Durbin and 1000 Genome Project"
-	echo "    Data Processing Subgroup"
+	echo "* Heng Li, Bob Handsaker, Alec Wysoker, Tim Fennell, Jue Ruan, Nils Homer, Gabor Marth, Goncalo Abecasis, Richard Durbin and 1000 Genome Project Data Processing Subgroup"
 	echo "  The Sequence Alignment/Map format and SAMtools"
 	echo "  Bioinformatics (2009) 25(16): 2078-2079"
 	echo "  http://bioinformatics.oxfordjournals.org/content/25/16/2078.abstract"
 	echo "* Heng Li"
-	echo "  A statistical framework for SNP calling, mutation discovery, association"
-	echo "    mapping and population genetical parameter estimation from sequencing data"
+	echo "  A statistical framework for SNP calling, mutation discovery, association mapping and population genetical parameter estimation from sequencing data"
 	echo "  Bioinformatics (2011) 27(21): 2987-2993"
 	echo "  http://bioinformatics.oxfordjournals.org/content/27/21/2987.abstract"
 	echo "* Heng Li"
@@ -328,9 +271,7 @@ function citationreference {
 	echo "  Bioinformatics (2011) 27(8): 1157-1158."
 	echo "  http://bioinformatics.oxfordjournals.org/content/27/8/1157.short"
 	echo
-	echo "For more information see README, you can do so by"
-	echo -e "\t$0 -r"
-	echo "and/or PDF manual and/or visit $WEB"
+	echo "For more information see README, you can do so by \"$0 -r\" and/or PDF manual and/or visit $WEB"
 	echo
 	exit
 	}
@@ -351,8 +292,7 @@ function debinstall {
 			echo
 			echo "Error! Can not check installed packages. Ensure following packages are installed:"
 			cat $SCRIPTDIR/pkgs/packages-deb || {
-				echo "Error! Can not find file $SCRIPTDIR/pkgs/packages-deb"
-				echo "Go to $WEB and verify if your installation is correct."
+				echo "Error! Can not find file $SCRIPTDIR/pkgs/packages-deb Go to $WEB and verify if your installation is correct."
 				echo
 				exit 1
 				}
@@ -364,8 +304,7 @@ function debinstall {
 		echo
 		echo "Packages \"$PACKAGES\" are missing."
 		echo
-		echo "Compilation may require to install them.Would you like to install them now?"
-		echo "It requires administrative privileges. (Yes/No)"
+		echo "Compilation may require to install them.Would you like to install them now? It requires administrative privileges. (Yes/No)"
 		read DEBIANI
 		while :
 			do
@@ -374,19 +313,14 @@ function debinstall {
 						echo "Installing required packages..."
 						{ { sudo apt-get update && sudo apt-get install $PACKAGES; } || { su -c 'apt-get update' && su -c "apt-get install $PACKAGES"; }; } || {
 							echo
-							echo "Installation of packages \"$PACKAGES\" failed."
-							echo "Those packages may be required to install software used by Sondovač."
-							echo "If so, install those packages manually. See INSTALL or PDF manual for details."
+							echo "Installation of packages \"$PACKAGES\" failed. Those packages may be required to install software used by Sondovač. If so, install those packages manually. See INSTALL or PDF manual for details."
 							confirmgo
 							}
 						break
 						;;
 					N|n|NO|No|no)
 						echo
-						echo "You may need packages \"$PACKAGES\""
-						echo "If compilation of some software required for the pipeline fails,"
-						echo "install them manually. See INSTALL or PDF manual for details. See also"
-						echo "https://help.ubuntu.com/community/CompilingEasyHowTo"
+						echo "You may need packages \"$PACKAGES\" If compilation of some software required for the pipeline fails, install them manually. See INSTALL or PDF manual for details. See also https://help.ubuntu.com/community/CompilingEasyHowTo"
 						confirmgo
 						break
 						;;
@@ -414,8 +348,7 @@ function rpminstall {
 			echo
 			echo "Error! Can not check installed packages. Ensure following packages are installed:"
 			cat $SCRIPTDIR/pkgs/packages-rh || {
-				echo "Error! Can not find file $SCRIPTDIR/pkgs/packages-rh"
-				echo "Go to $WEB and verify if your installation is correct."
+				echo "Error! Can not find file $SCRIPTDIR/pkgs/packages-rh Go to $WEB and verify if your installation is correct."
 				echo
 				exit 1
 				}
@@ -426,8 +359,7 @@ function rpminstall {
 		echo
 		echo "Packages \"$PACKAGES\" are missing."
 		echo
-		echo "Compilation may require to install them. Would you like to install them now?"
-		echo "It requires administrative privileges. (Yes/No)"
+		echo "Compilation may require to install them. Would you like to install them now? It requires administrative privileges. (Yes/No)"
 		read RPMI
 		while :
 			do
@@ -436,18 +368,14 @@ function rpminstall {
 						echo "Installing required packages..."
 						{ sudo yum install $PACKAGES || su -c "yum install $PACKAGES"; } || {
 							echo
-							echo "Installation of packages \"$PACKAGES\" failed."
-							echo "Those packages may be required to install software used by Sondovač."
-							echo "If so, install those packages manually. See INSTALL for details."
+							echo "Installation of packages \"$PACKAGES\" failed. Those packages may be required to install software used by Sondovač. If so, install those packages manually. See INSTALL for details."
 							confirmgo
 							}
 						break
 						;;
 					N|n|NO|No|no)
 						echo
-						echo "You may need packages \"$PACKAGES\""
-						echo "If compilation of some software required for the pipeline fails,"
-						echo "install them manually. See INSTALL for details."
+						echo "You may need packages \"$PACKAGES\" If compilation of some software required for the pipeline fails, install them manually. See INSTALL for details."
 						confirmgo
 						break
 						;;
@@ -464,12 +392,7 @@ function oscheck {
 
 	OSCHECKS=`uname -s` || {
 		echo
-		echo "Command \"uname\" is not available on the system, is not in the PATH or the user"
-		echo "does not have permission to use it, so that operating system is not detectable."
-		echo "Assuming Linux."
-		echo "If this is not correct, you may experience problems during installation of"
-		echo "required software. If so, please install required dependencies manually."
-		echo "See INSTALL for more details."
+		echo "Command \"uname\" is not available on the system, is not in the PATH or the user does not have permission to use it, so that operating system is not detectable. Assuming Linux. If this is not correct, you may experience problems during installation of required software. If so, please install required dependencies manually. See INSTALL for more details."
 		OS="Linux"
 		confirmgo
 		}
@@ -483,11 +406,7 @@ function oscheck {
 			*BSD*|*bsd*) OS="BSD";;
 			SOLARIS|Solaris|solaris|SUN*|Sun|sun*) OS="Solaris";;
 			*) echo
-				echo "OS other than Linux, Mac OS X, BSD, Solaris or Windows or undetectable OS."
-				echo "Assuming Linux."
-				echo "If this is not correct, you may experience problems during installation"
-				echo "of needed software. If so, please install required dependencies manually."
-				echo "See INSTALL or PDF manual for more details."
+				echo "OS other than Linux, Mac OS X, BSD, Solaris or Windows or undetectable OS. Assuming Linux. If this is not correct, you may experience problems during installation of needed software. If so, please install required dependencies manually. See INSTALL or PDF manual for more details."
 				OS="Linux"
 				confirmgo
 				;;
@@ -497,33 +416,20 @@ function oscheck {
 	# Warning for Windows users
 	if [ "$OS" == "Windows" ]; then
 		echo
-		echo "Warning!Running this pipeline on Windows (native or any emulation)"
-		echo "is not supported, although it may be possible."
-		echo "We are not able to guarantee the pipeline to work."
-		echo "See INSTALL or PDF manual for more details."
-		echo "We wish you good luck. :-)"
+		echo "Warning! Running this pipeline on Windows (native or any emulation) is not supported, although it may be possible. We are not able to guarantee the pipeline to work. See INSTALL or PDF manual for more details. We wish you good luck. :-)"
 		confirmgo
 		fi
 
 	# Warning for BSD and Solaris users
 	if [ "$OS" == "BSD" -o "$OS" == "Solaris" ]; then
 		echo
-		echo "Warning!Running this pipeline on any version of $OS was not tested,"
-		echo "although it is supposed to work."
-		echo "We are not able to guarantee the pipeline to work."
-		echo "See INSTALL or PDF manual for more details."
-		echo "We wish you good luck. :-)"
+		echo "Warning! Running this pipeline on any version of $OS was not tested, although it is supposed to work. We are not able to guarantee the pipeline to work. See INSTALL or PDF manual for more details. We wish you good luck. :-)"
 		confirmgo
 		fi
 
 	OSCHECKB=`uname -m` || {
 		echo
-		echo "Command \"uname\" is not available on the system, is not in the PATH or the user"
-		echo "does not have permission to use it, so that type of the CPU is not detectable."
-		echo "Assuming 64 bit CPU."
-		echo "If this is not correct, you may experience problems during installation"
-		echo "of needed software. If so, please install required dependencies manually."
-		echo "See INSTALL or PDF manual for more details."
+		echo "Command \"uname\" is not available on the system, is not in the PATH or the user does not have permission to use it, so that type of the CPU is not detectable. Assuming 64 bit CPU. If this is not correct, you may experience problems during installation of needed software. If so, please install required dependencies manually. See INSTALL or PDF manual for more details."
 		OSB="64b"
 		confirmgo; }
 
@@ -533,11 +439,7 @@ function oscheck {
 			*x86_64*|*ia64*) OSB="64b";;
 			*i386*|*i486*|*i586*|*i686*) OSB="32b";;
 			*) echo
-				echo "OS other than 64 or 32 bit or undetectable OS details."
-				echo "Assuming 64 bit."
-				echo "If this is not correct, you may experience problems during installation"
-				echo "of needed software. If so, please install required dependencies manually."
-				echo "See INSTALL or PDF manual for more details."
+				echo "OS other than 64 or 32 bit or undetectable OS details. Assuming 64 bit. If this is not correct, you may experience problems during installation of needed software. If so, please install required dependencies manually. See INSTALL or PDF manual for more details."
 				OSB="64b"
 				confirmgo
 				;;
@@ -547,11 +449,7 @@ function oscheck {
   # Warning for 32 bit systems
 	if [ "$OSB" == "32b" ]; then
 		echo
-		echo "Warning!Some packages are not available for $OSB bit system,"
-		echo "it will probably be impossible to run the pipeline on this system."
-		echo "We recommend to upgrade CPU and/or reinstall operating system for 64 bit system."
-		echo "See INSTALL or PDF manual for more details."
-		echo "We wish you good luck. :-)"
+		echo "Warning! Some packages are not available for $OSB bit system, it will probably be impossible to run the pipeline on this system. We recommend to upgrade CPU and/or reinstall operating system for 64 bit system. See INSTALL or PDF manual for more details. We wish you good luck. :-)"
 		confirmgo
 		fi
 
@@ -562,18 +460,13 @@ function oscheck {
 	if [ "$OS" == "Linux" ]; then
 		{ DISTRIBUTION=`lsb_release -is` || DISTRIBUTION=`python -c 'import platform ; print (platform.dist()[0])'` || DISTRIBUTION=`python -c 'import platform ; print platform.dist()[0]'`; } || {
 			echo
-			echo "Unable to detect Linux version! Probably because command \"lsb_release\" is"
-			echo "missing, not in PATH or not available for current user. For some steps you may"
-			echo "need compilation tools (see INSTALL for details). Ensure you have those tools available."
+			echo "Unable to detect Linux version! Probably because command \"lsb_release\" is missing, not in PATH or not available for current user. For some steps you may need compilation tools (see INSTALL for details). Ensure you have those tools available."
 			confirmgo
 			}
 		if [ "$STARTINI" == "I" ]; then
 			if [ -n "$OSCHECKS" ]; then
 			echo
-			echo "If you prefer to compile some of the software required by Sondovač, although we"
-			echo "recommend to use binaries provided by the script, you will need compilation tools."
-			echo "The following section will check for presence of compilation tools for your Linux"
-			echo "distribution. If you pefer usage of provided binaries, you can skip it."
+			echo "If you prefer to compile some of the software required by Sondovač, although we recommend to use binaries provided by the script, you will need compilation tools. The following section will check for presence of compilation tools for your Linux distribution. If you prefer usage of provided binaries, you can skip it."
 			confirmgo
 			case "$DISTRIBUTION" in
 				*[Ss][Uu][Ss][Ee]*)
@@ -593,8 +486,7 @@ function oscheck {
 							echo
 							echo "Error! Can not check installed packages. Ensure following packages are installed:"
 							cat $SCRIPTDIR/pkgs/packages-suse || {
-								echo "Error! Can not find file $SCRIPTDIR/pkgs/packages-suse"
-								echo "Go to $WEB and verify if your installation is correct."
+								echo "Error! Can not find file $SCRIPTDIR/pkgs/packages-suse Go to $WEB and verify if your installation is correct."
 								echo
 								exit 1
 								}
@@ -605,8 +497,7 @@ function oscheck {
 						echo
 						echo "Packages \"$PACKAGES\" are missing."
 						echo
-						echo "Compilation may require to install them. Would you like to install them now?"
-						echo "It requires administrative privileges. (Yes/No)"
+						echo "Compilation may require to install them. Would you like to install them now? It requires administrative privileges. (Yes/No)"
 						read SUSEI
 						while :
 							do
@@ -615,18 +506,14 @@ function oscheck {
 										echo "Installing required packages..."
 										{ sudo zypper in $PACKAGES || su -c "zypper in $PACKAGES"; } || {
 											echo
-											echo "Installation of packages \"$PACKAGES\" failed."
-											echo "Those packages may be required to install software used by Sondovač."
-											echo "If so, install those packages manually. See INSTALL for details."
+											echo "Installation of packages \"$PACKAGES\" failed. Those packages may be required to install software used by Sondovač. If so, install those packages manually. See INSTALL for details."
 											confirmgo
 											}
 										break
 										;;
 									N|n|NO|No|no)
 										echo
-										echo "You may need packages \"$PACKAGES\""
-										echo "If compilation of some software required for the pipeline fails,"
-										echo "install them manually. See INSTALL for details."
+										echo "You may need packages \"$PACKAGES\" If compilation of some software required for the pipeline fails, install them manually. See INSTALL for details."
 										confirmgo
 										break
 										;;
@@ -669,10 +556,7 @@ function oscheck {
 					;;
 				# Another distros...
 				*) echo
-					echo "Unknown Linux distribution, probably not openSUSE, SUSE, RedHat, Fedora,"
-					echo "Centos, Scientific, Debian, Ubuntu, Linux Mint or derivatives. For some"
-					echo "steps you may need compilation tools (see INSTALL or PDF manual for details)."
-					echo "Ensure you have those tools available."
+					echo "Unknown Linux distribution, probably not openSUSE, SUSE, RedHat, Fedora, Centos, Scientific, Debian, Ubuntu, Linux Mint or derivatives. For some steps you may need compilation tools (see INSTALL or PDF manual for details). Ensure you have those tools available."
 					confirmgo
 					break
 					;;
@@ -686,16 +570,9 @@ function oscheck {
 		if [ "$STARTINI" == "I" ]; then
 			echo
 			# Check for Xcode
-			echo "Xcode is required to install Homebrew, which is required to upgrade and install"
-			echo "software used by Sondovač. See INSTALL or PDF manual for details."
+			echo "Xcode is required to install Homebrew, which is required to upgrade and install software used by Sondovač. See INSTALL or PDF manual for details."
 			echo
-			echo "Unfortunately, it is not easily possible to universally check for presence of"
-			echo "Xcode."
-			echo "If you have never used command \"make\" or not installed Xcode manually, you"
-			echo "probably do not have it. If you have ever compiled any software, you probably"
-			echo "have Xcode installed. After installation of Xcode you will probably have to"
-			echo "restart Sondovač."
-			echo "Would you like to install Xcode now? (Yes/No)"
+			echo "Unfortunately, it is not easily possible to universally check for presence of Xcode. If you have never used command \"make\" or not installed Xcode manually, you probably do not have it. If you have ever compiled any software, you probably have Xcode installed. After installation of Xcode you will probably have to restart Sondovač. Would you like to install Xcode now? (Yes/No)"
 			read XCODEI
 			while :
 				do
@@ -704,11 +581,7 @@ function oscheck {
 							echo "Installing Xcode..."
 							xcode-select --install || {
 								echo
-								echo "Installation of Xcode failed. This is commonly because it has been already"
-								echo "installed."
-								echo "If you see in output below Xcode path and version, you can safely continue."
-								echo "Otherwise see, please, command \"xcode-select --help\""
-								echo "and https://developer.apple.com/xcode/ and install Xcode manually."
+								echo "Installation of Xcode failed. This is commonly because it has been already installed. If you see in output below Xcode path and version, you can safely continue. Otherwise see, please, command \"xcode-select --help\" and https://developer.apple.com/xcode/ and install Xcode manually."
 								xcode-select --print-path
 								xcode-select --version
 								confirmgo
@@ -717,10 +590,7 @@ function oscheck {
 							;;
 						N|n|NO|No|no)
 							echo
-							echo "Xcode is required for installation of software needed by Sondovač."
-							echo "If you do not have Xcode installed, install it manually."
-							echo "See INSTALL or PDF manual for details. IIf you see in output below Xcode path and"
-							echo "version, you can safely continue."
+							echo "Xcode is required for installation of software needed by Sondovač. If you do not have Xcode installed, install it manually. See INSTALL or PDF manual for details. IIf you see in output below Xcode path and version, you can safely continue."
 							xcode-select --print-path
 							xcode-select --version
 							confirmgo
@@ -731,18 +601,13 @@ function oscheck {
 					done
 			echo
 			# Check for Homebrew, install if not available
-			echo "Homebrew is a service allowing to install and manage various applications. "
-			echo "See http://brew.sh/ and/or manual for more information."
-			echo "Testing if Homebrew is available..."
+			echo "Homebrew is a service allowing to install and manage various applications. See http://brew.sh/ and/or manual for more information. Testing if Homebrew is available..."
 			{ command -v brew >/dev/null 2>&1 &&
-				echo "Homebrew is available. OK." &&
-				echo "Checking for Homebrew updates..." &&
+				echo "Homebrew is available. OK. Checking for Homebrew updates..." &&
 				echo &&
 				brew update
 				} || {
-					echo "Homebrew is not available."
-					echo "Homebrew is required to install software required by Sondovač."
-					echo "Would you like to install it now? (Yes/No)"
+					echo "Homebrew is not available. Homebrew is required to install software required by Sondovač. Would you like to install it now? (Yes/No)"
 					read BREWI
 					while :
 						do
@@ -751,8 +616,7 @@ function oscheck {
 									echo "Installing Homebrew..."
 									ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" || {
 										echo
-										echo "Error! Installation of Homebrew failed. Please, go to http://brew.sh/ and"
-										echo "install it manually."
+										echo "Error! Installation of Homebrew failed. Please, go to http://brew.sh/ and install it manually."
 										echo
 										exit 1
 										}
@@ -760,9 +624,7 @@ function oscheck {
 									;;
 								N|n|NO|No|no)
 									echo
-									echo "Homebrew is required to install software required by Sondovač."
-									echo "Please, go to http://brew.sh/ install it manually."
-									echo "See INSTALL or PDF manual for details."
+									echo "Homebrew is required to install software required by Sondovač. Please, go to http://brew.sh/ install it manually. See INSTALL or PDF manual for details."
 									echo
 									exit
 									;;
@@ -771,8 +633,7 @@ function oscheck {
 							done
 					}
 			echo
-			echo "Script will now check for presence of required Homebrew formulae."
-			echo "Formulae will be installed when needed."
+			echo "Script will now check for presence of required Homebrew formulae. Formulae will be installed when needed."
 			confirmgo
 			echo "Checking for installed packages (brew formulae)..."
 			while read BREWFORMULA; do
@@ -780,19 +641,14 @@ function oscheck {
 					echo
 					echo "Formula \"$BREWFORMULA\" is missing. Going to install it..."
 					brew install $BREWFORMULA || {
-						echo "Installation of formula \"$BREWFORMULA\" failed."
-						echo "Please, install Homebrew formula \"$BREWFORMULA\" and ensure it is available."
-						echo "See PDF manual for details."
+						echo "Installation of formula \"$BREWFORMULA\" failed. Please, install Homebrew formula \"$BREWFORMULA\" and ensure it is available. See PDF manual for details."
 						confirmgo
 						}
 					else
 						echo
-						echo "Formula \"$BREWFORMULA\" is present. OK."
-						echo "Going to reinstall it to ensure it is up-to-date and installed in correct place."
+						echo "Formula \"$BREWFORMULA\" is present. OK. Going to reinstall it to ensure it is up-to-date and installed in correct place."
 						brew reinstall $BREWFORMULA || {
-							echo "Installation of formula \"$BREWFORMULA\" failed."
-							echo "Please, check Homebrew formula \"$BREWFORMULA\" and ensure it is available."
-							echo "See PDF manual for details."
+							echo "Installation of formula \"$BREWFORMULA\" failed. Please, check Homebrew formula \"$BREWFORMULA\" and ensure it is available. See PDF manual for details."
 							confirmgo
 							}
 						fi
@@ -813,17 +669,14 @@ function oscheck {
 			# Remove duplicities from PATH
 			export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),"");if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
 			echo "Current PATH is: $PATH"
-			echo "Consider to make this PATH permanent, as it contains more utilities and newer"
-			echo "versions than in original installation of Mac OS X."
+			echo "Consider to make this PATH permanent, as it contains more utilities and newer versions than in original installation of Mac OS X."
 			confirmgo
 			else
 				echo
 				echo "Checking if Homebrew and required formulae are installed."
 				{ command -v brew >/dev/null 2>&1 && echo "Homebrew is available. OK."; } || {
 					echo
-					echo "Error! Homebrew is missing! Check INSTALL and PDF manual for details or run Sondovač"
-					echo "interactively to install it automatically:"
-					echo -e "\t$0 -i"
+					echo "Error! Homebrew is missing! Check INSTALL and PDF manual for details or run Sondovač interactively to install it automatically: \"$0 -i\""
 					echo
 					exit 1
 					}
@@ -832,10 +685,7 @@ function oscheck {
 						echo "Formula \"$BREWFORMULA\" is installed. OK."
 						else
 							echo
-							echo "Error! Formula \"$BREWFORMULA\" is missing."
-							echo "Check INSTALL and PDF manual for details or run Sondovač interactively to install"
-							echo "it automatically:"
-							echo -e "\t$0 -i"
+							echo "Error! Formula \"$BREWFORMULA\" is missing. Check INSTALL and PDF manual for details or run Sondovač interactively to install it automatically: \"$0 -i\""
 							echo
 							exit 1
 							fi
@@ -848,8 +698,7 @@ function oscheck {
 			# Remove duplicities from PATH
 			export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),"");if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
 			echo "Current PATH is: $PATH"
-			echo "Consider to make this PATH permanent, as it contains more utilities and newer"
-			echo "versions than in original installation of Mac OS X."
+			echo "Consider to make this PATH permanent, as it contains more utilities and newer versions than in original installation of Mac OS X."
 			echo
 			fi
 		fi
@@ -863,17 +712,13 @@ function workdirpath {
 	WORKDIR=`pwd`
 	mkdir -p $WORKDIR/bin/bin || {
 		echo
-		echo "Error! Can not create directory \"bin\" in directory \"$WORKDIR\"!"
-		echo "Do you have write permission for directory \"$WORKDIR\"?"
+		echo "Error! Can not create directory \"bin\" in directory \"$WORKDIR\"! Do you have write permission for directory \"$WORKDIR\"?"
 		echo
 		exit 1
 		}
 	BIN=$WORKDIR/bin/bin
 	echo
-	echo "For future work consider adding \"$BIN\""
-	echo "to PATH, as it will contain binaries of tools used in this pipeline."
-	echo "Alternatively, you can move whole \"$WORKDIR/bin\""
-	echo "to your preferred location, but ensure to move all files and keep relative paths."
+	echo "For future work consider adding \"$BIN\" to PATH, as it will contain binaries of tools used in this pipeline. Alternatively, you can move whole \"$WORKDIR/bin\" to your preferred location, but ensure to move all files and keep relative paths."
 	confirmgo
 	cd $WORKDIR
 	# Add bin directory in current directory into PATH
@@ -883,11 +728,9 @@ function workdirpath {
 # Check if input files have DOS or UNIX encoding
 function eolcheck {
 	if awk '/\r$/{exit 0;} 1{exit 1;}' $1; then
-		echo "Input file $1 has DOS end of lines."
-		echo "It will be converted into UNIX end of lines"
+		echo "Input file $1 has DOS end of lines. It will be converted into UNIX end of lines"
 		dos2unix $1 || {
-			echo "Error! Conversion to UNIX EOL failed. Aborting."
-			echo "  Check if $1 is valid file."
+			echo "Error! Conversion to UNIX EOL failed. Aborting. Check if $1 is valid file."
 			echo
 			exit 1
 			}
@@ -901,11 +744,9 @@ function eolcheck {
 # Function to convert interleaved FASTA into non-interleaved (if necessary)
 # $1 is input FASTA file provided by the user, $2 is output non-interleaved FASTA file
 function noninterleavedfasta {
-	echo "Converting possibly interleaved FASTA file $1"
-	echo "  into non-interleaved FASTA file $2"
+	echo "Converting possibly interleaved FASTA file $1 into non-interleaved FASTA file $2"
 	{ awk 'BEGIN{RS=">"}NR>1{sub("\n","\t");gsub("\n",""); print RS$0}' $1 | sed 's/\t/\n/g' > $2; } || {
-		echo "Error! Conversion of FASTA failed. Aborting"
-		echo " Check if $1 is correct FASTA file."
+		echo "Error! Conversion of FASTA failed. Aborting. Check if $1 is correct FASTA file."
 		echo
 		exit 1
 		}
@@ -924,9 +765,7 @@ function compileblat {
 	echo "Downloading \"BLAT\" source code" &&
 	if [ -z $MACHTYPE ]; then
 		echo
-		echo "Error! Variable \$MACHTYPE required by BLAT is missing."
-		echo "Trying to create it. If it fails, create global variable \$MACHTYPE manually,"
-		echo "download binary or compile it on another comparable machine."
+		echo "Error! Variable \$MACHTYPE required by BLAT is missing. Trying to create it. If it fails, create global variable \$MACHTYPE manually, download binary or compile it on another comparable machine."
 		MACHTYPE=$HOME/bin/$OSB
 		else
 			echo
@@ -939,16 +778,14 @@ function compileblat {
 	cd blatSrc &&
 	{ mkdir -p $HOME/bin/$MACHTYPE || {
 		echo
-		echo "Error! Can not create directory"
-		echo "\"$HOME/bin/$MACHTYPE\" required by BLAT. Aborting."
+		echo "Error! Can not create directory \"$HOME/bin/$MACHTYPE\" required by BLAT. Aborting."
 		echo
 		exit 1
 		}; } &&
 	export PATH=$PATH:$HOME/bin/$MACHTYPE &&
 	{ mkdir -p lib/$MACHTYPE || {
 		echo
-		echo "Error! Can not create directory"
-		echo "\"$(pwd)/lib/$MACHTYPE\" required by BLAT. Aborting."
+		echo "Error! Can not create directory \"$(pwd)/lib/$MACHTYPE\" required by BLAT. Aborting."
 		echo
 		exit 1
 		}; } &&
@@ -959,8 +796,7 @@ function compileblat {
 	echo "\"BLAT\" is available. OK."
 	} || {
 		echo
-		echo "Error! Compilation failed. Please, go to https://users.soe.ucsc.edu/~kent/src/,"
-		echo "download latest blatSrc*.zip, compile it and ensure it is in PATH"
+		echo "Error! Compilation failed. Please, go to https://users.soe.ucsc.edu/~kent/src/, download latest blatSrc*.zip, compile it and ensure it is in PATH"
 		exit 1
 		}
 	}
@@ -972,18 +808,10 @@ function checkblat {
 		echo "BLAT is required but not installed or available in PATH."
 		echo
 		if [ "$STARTINI" == "I" ]; then
-			echo "Type \"S\" to compile \"BLAT\" from source available on https://users.soe.ucsc.edu/~kent/src/"
-			echo "  (BLAT license does not allow redistributions; required if \"BLAT\" is not"
-			echo "  available for your system). Together with standard compilation tools"
-			echo "  \"BLAT\" requires libpng developmental files."
-			echo "Type \"D\" to download \"BLAT\" from http://hgdownload.cse.ucsc.edu/admin/exe/"
-			echo "  automatically for your OS (BLAT license does not allow redistributions;"
-			echo "  available for 64 bit Linux and Mac OS X, recommended)."
-			echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
-			echo "  See \"brew info homebrew/science/blat\" for more details."
-			echo "Type \"M\" for manual installation - script will exit, and you will have to"
-			echo "  install \"BLAT\" yourself. Check http://genome.ucsc.edu/FAQ/FAQblat.html"
-			echo "  for more information."
+			echo "Type \"S\" to compile \"BLAT\" from source available on https://users.soe.ucsc.edu/~kent/src/ (BLAT license does not allow redistributions; required if \"BLAT\" is not available for your system). Together with standard compilation tools \"BLAT\" requires libpng developmental files."
+			echo "Type \"D\" to download \"BLAT\" from http://hgdownload.cse.ucsc.edu/admin/exe/ automatically for your OS (BLAT license does not allow redistributions; available for 64 bit Linux and Mac OS X, recommended)."
+			echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended). See \"brew info homebrew/science/blat\" for more details."
+			echo "Type \"M\" for manual installation - script will exit, and you will have to install \"BLAT\" yourself. Check http://genome.ucsc.edu/FAQ/FAQblat.html for more information."
 			read BLAT
 			while :
 				do
@@ -1003,9 +831,7 @@ function checkblat {
 								echo "\"BLAT\" is available. OK."
 								} || {
 									echo
-									echo "Error! Download of \"BLAT\" failed. Please, go to"
-									echo "http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/"
-									echo "and download blat binary yourself."
+									echo "Error! Download of \"BLAT\" failed. Please, go to http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/ and download blat binary yourself."
 									echo
 									exit 1
 									}
@@ -1018,9 +844,7 @@ function checkblat {
 									echo "\"BLAT\" is available. OK."
 									} || {
 										echo
-										echo "Error! Download of \"BLAT\" failed. Please, go to"
-										echo "http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/"
-										echo "and download blat binary yourself."
+										echo "Error! Download of \"BLAT\" failed. Please, go to http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/ and download blat binary yourself."
 										echo
 										exit 1
 										}
@@ -1037,8 +861,7 @@ function checkblat {
 								echo "\"BLAT\" is available. OK."
 								} || {
 									echo
-									echo "Error! Installation of \"BLAT\" failed. Please, do it manually. For details see"
-									echo "\"brew info homebrew/science/blat\" and \"brew help\"."
+									echo "Error! Installation of \"BLAT\" failed. Please, do it manually. For details see \"brew info homebrew/science/blat\" and \"brew help\"."
 									echo
 									exit 1
 									}
@@ -1048,8 +871,7 @@ function checkblat {
 									fi
 							break
 							;;
-						M|m) echo "Please, go to http://genome.ucsc.edu/FAQ/FAQblat.html and download and install"
-							echo "\"BLAT\" and ensure it is in PATH."
+						M|m) echo "Please, go to http://genome.ucsc.edu/FAQ/FAQblat.html and download and install \"BLAT\" and ensure it is in PATH."
 							echo
 							exit 2
 							;;
@@ -1084,8 +906,7 @@ function readinputfile {
 							fi
 					done
 			else
-				echo "As input $2 file you provided via parameter $1 file \"$CHECKFILEREAD\"."
-				echo " Would you like to use it (Yes) or to provide new file (New)?"
+				echo "As input $2 file you provided via parameter $1 file \"$CHECKFILEREAD\". Would you like to use it (Yes) or to provide new file (New)?"
 				read CHECKFILE
 				while :
 					do
@@ -1156,10 +977,10 @@ function readinputfile {
 function fasta2tab {
 	#awk '/>/{if (x)print x;x="";}{x=(!x)?$0:x"\t"$0;}END{print x;}' $1 | sed 's/>[[:blank:]]*/>/g' | sed 's/[[:blank:]]+/ /g' | tr "\n" "\t" | sed 's/\t>/\n>/g' | sed 's/^>//g' | sed 's/[[:blank:]]*$//g' > $2
 	sed 's/[[:blank:]]\{1,\}/_/g' $1 | awk '/>/{if (x)print x;x="";}{x=(!x)?$0:x"\t"$0;}END{print x;}' | sed 's/^>//g' > $2 || {
-		echo "Error! Conversion of FASTA to TAB (TSV) failed. Aborting"
-		echo " Check if $1 is correct FASTA file."
+		echo "Error! Conversion of FASTA to TAB (TSV) failed. Aborting. Check if $1 is correct FASTA file."
 		echo
 		exit 1
 		}
 	echo
 	}
+

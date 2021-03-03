@@ -11,20 +11,14 @@ source $SCRIPTDIR/mac_aliases
 # Load functions shared by both parts, introductory message
 source $SCRIPTDIR/sondovac_functions || {
 	echo
-	echo "Fatal error!"
-	echo "Unable to load file \"sondovac_functions\" with required functions!"
-	echo "It must be in same directory as \"$0\""
-	echo "Check it and, if needed, download again whole script from"
-	echo "https://github.com/V-Z/sondovac/"
+	echo "Fatal error! Unable to load file \"sondovac_functions\" with required functions! It must be in same directory as \"$0\" Check it and, if needed, download again whole script from https://github.com/V-Z/sondovac/"
 	echo
 	exit 1
 	}
 
 echo "This is part A of the pipeline."
 echo
-echo "This part is for filtering of raw data and their preparation for assembly in"
-echo "Geneious. Results of Geneious assembly are processed in part B to get the final"
-echo "list of low-copy nuclear probe sequences. See README and/or manual for details."
+echo "This part is for filtering of raw data and their preparation for assembly in Geneious. Results of Geneious assembly are processed in part B to get the final list of low-copy nuclear probe sequences. See README and/or manual for details."
 
 # Default values
 # Counter if not both -i and -n options are used
@@ -59,37 +53,21 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
 		h|v)
 			generaloptions
 			echo
-			echo -e "\tIf options -f, -c, -m, -t and/or -q are used and the script is running"
-			echo -e "\t  in interactive mode, those values will be used as defaults, but may"
-			echo -e "\t  later be overwritten."
+			echo -e "\tIf options -f, -c, -m, -t and/or -q are used and the script is running in interactive mode, those values will be used as defaults, but may later be overwritten."
 			echo
 			echo -e "\tOptions required for running in non-interactive mode:"
 			echo -e "\t-f\tTranscriptome input file in FASTA format."
 			echo -e "\t-c\tPlastome reference sequence input file in FASTA format."
-			echo -e "\t-m\tMitochondriome reference sequence input file in FASTA format."
-			echo -e "\t\t  This file is optional. In interactive mode you will each time"
-			echo -e "\t\t  be asked if you wish to use it."
+			echo -e "\t-m\tMitochondriome reference sequence input file in FASTA format. This file is optional. In interactive mode you will each time be asked if you wish to use it."
 			echo -e "\t-t\tPaired-end genome skim input file in FASTQ format (first file)."
 			echo -e "\t-q\tPaired-end genome skim input file in FASTQ format (second file)."
 			echo
 			echo -e "\tOther optional arguments (if not provided, default values are used):"
-			echo -e "\t-a\tMaximum overlap length expected in approximately 90% of read"
-			echo -e "\t\t  pairs (parameter \"-M\" of FLASH, see its manual for details)."
-			echo -e "\t\tDefault value: 65 (integer ranging from 10 to 300)"
-			echo -e "\t-y\tSequence similarity between unique transcripts and the filtered,"
-			echo -e "\t\t  combined genome skim reads (parameter \"-minIdentity\" of BLAT,"
-			echo -e "\t\t  see its manual for details)."
-			echo -e "\t\tDefault value: 85 (integer ranging from 70 to 100; the default"
-			echo -e "\t\t  value of 85% minimum sequence similarity suggests gene"
-			echo -e "\t\t  orthology)"
-			echo -e "\t-s\tNumber of BLAT hits per transcript when matching unique"
-			echo -e "\t\t  transcripts and the filtered, combined genome skim reads."
-			echo -e "\t\tDefault value: 1000 (integer ranging from 100 to 10000)"
-			echo -e "\t-g\tUse genome skim sequences instead of transcripts for making the"
-			echo -e "\t\t  probes. Default is usage of genome skim sequences (no parameter)."
-			echo -e "\tWARNING! If parameters -a, -y, -s or -g are not provided, default values"
-			echo -e "\t\t are taken, and it is not possible to change them later (not even"
-			echo -e "\t\t in interactive mode)."
+			echo -e "\t-a\tMaximum overlap length expected in approximately 90% of read pairs (parameter \"-M\" of FLASH, see its manual for details). Default value: 65 (integer ranging from 10 to 300)"
+			echo -e "\t-y\tSequence similarity between unique transcripts and the filtered, combined genome skim reads (parameter \"-minIdentity\" of BLAT, see its manual for details). Default value: 85 (integer ranging from 70 to 100; the default value of 85% minimum sequence similarity suggests gene orthology)"
+			echo -e "\t-s\tNumber of BLAT hits per transcript when matching unique transcripts and the filtered, combined genome skim reads. Default value: 1000 (integer ranging from 100 to 10000)"
+			echo -e "\t-g\tUse genome skim sequences instead of transcripts for making the probes. Default is usage of genome skim sequences (no parameter)."
+			echo -e "\tWARNING! If parameters -a, -y, -s or -g are not provided, default values are taken, and it is not possible to change them later (not even in interactive mode)."
 			echo
 			echo "Examples:"
 			echo "Basic and the most simple usage:"
@@ -100,12 +78,9 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
 			echo "$0 -n -f input.fa -c referencecp.fa -m referencemt.fa -t reads1.fastq -q reads2.fastq"
 			echo "Modify parameter -a, otherwise run interactively:"
 			echo "$0 -i -a 300"
-			echo "Run in non-interactive mode (parameter -n) - in such case user must specify all"
-			echo "  required input files (parameters -f, -c, -m, -t and -q). Moreover, parameter"
-			echo "  -y is modified:"
+			echo "Run in non-interactive mode (parameter -n) - in such case user must specify all required input files (parameters -f, -c, -m, -t and -q). Moreover, parameter -y is modified:"
 			echo "$0 -n -f input.fa -c referencecp.fa -m referencemt.fa -t reads1.fastq -q reads2.fastq -y 90"
-			echo "Modifying parameter -s. Note interactive mode -i is implicit and does not need"
-			echo "  to be specified explicitly:"
+			echo "Modifying parameter -s. Note interactive mode -i is implicit and does not need to be specified explicitly:"
 			echo "$0 -s 950"
 			echo
 			exit 2
@@ -200,8 +175,7 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
 			;;
 		?)
 			echo
-			echo "Invalid option(s)!"
-			echo "See \"$0 -h\" for usage options."
+			echo "Invalid option(s)! See \"$0 -h\" for usage options."
 			echo
 			exit 1
 			;;
@@ -285,13 +259,10 @@ function compilebowtie {
 	cp -r bowtie2* $BIN/ &&
 	cd $WORKDIR &&
 	echo &&
-	echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
-	echo "   and \"bowtie2-build-s\" are available. OK."
+	echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\" and \"bowtie2-build-s\" are available. OK."
 	} || {
 		echo
-		echo "Error! Compilation failed. Please, go to"
-		echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
-		echo "  download bowtie2-$BOWTIE2V-source.zip, compile it, and ensure it is in PATH."
+		echo "Error! Compilation failed. Please, go to http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/ download bowtie2-$BOWTIE2V-source.zip, compile it, and ensure it is in PATH."
 		echo
 		exit 1
 		}
@@ -304,25 +275,18 @@ function compilebowtie {
 	command -v bowtie2-build >/dev/null 2>&1 &&
 	command -v bowtie2-build-l >/dev/null 2>&1 &&
 	command -v bowtie2-build-s >/dev/null 2>&1 &&
-	echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
-	echo "  and \"bowtie2-build-s\" are available. OK."
+	echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\" and \"bowtie2-build-s\" are available. OK."
 	} || {
 		echo
-		echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\""
-		echo "  and \"bowtie2-build-s\" are required but not installed or available in PATH."
+		echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\" and \"bowtie2-build-s\" are required but not installed or available in PATH."
 		if [ "$STARTINI" == "I" ]; then
 			echo
 			echo "Type \"C\" to compile \"Bowtie2-$BOWTIE2V\" from source available together with this script."
-			echo "Type \"S\" to compile \"Bowtie2-$BOWTIE2V\" from source code downloaded from"
-			echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
-			echo "Type \"D\" to download \"Bowtie2-$BOWTIE2V\" binary from"
-			echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/ for your OS."
-			echo "Type \"B\" to copy Bowtie2-2.$BOWTIE2V binary available together with the script"
-			echo "  (recommended, available for Linux and Mac OS X)."
-			echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
-			echo "  See \"brew info homebrew/science/bowtie2\" for more details."
-			echo "Type \"M\" for manual installation - script will exit, and you will have to install"
-			echo "  Bowtie2 yourself."
+			echo "Type \"S\" to compile \"Bowtie2-$BOWTIE2V\" from source code downloaded from http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
+			echo "Type \"D\" to download \"Bowtie2-$BOWTIE2V\" binary from http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/ for your OS."
+			echo "Type \"B\" to copy Bowtie2-2.$BOWTIE2V binary available together with the script (recommended, available for Linux and Mac OS X)."
+			echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended). See \"brew info homebrew/science/bowtie2\" for more details."
+			echo "Type \"M\" for manual installation - script will exit, and you will have to install Bowtie2 yourself."
 			read BOWTIE
 			while :
 				do
@@ -338,13 +302,10 @@ function compilebowtie {
 								$DOWNLOADER bowtie2-$BOWTIE2V-linux-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-linux-x86_64.zip &&
 								unzip -nq bowtie2-$BOWTIE2V-linux-x86_64.zip &&
 								cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
-								echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
-								echo "  and \"bowtie2-build-s\" are available. OK."
+								echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\" and \"bowtie2-build-s\" are available. OK."
 								} || {
 									echo
-									echo "Error! Download failed. Please, go to"
-									echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
-									echo "  and download and unpack bowtie2-$BOWTIE2V-linux-x86_64.zip manually."
+									echo "Error! Download failed. Please, go to http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/ and download and unpack bowtie2-$BOWTIE2V-linux-x86_64.zip manually."
 									echo
 									exit 1
 									}
@@ -354,13 +315,10 @@ function compilebowtie {
 									$DOWNLOADER bowtie2-$BOWTIE2V-macos-x86_64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-macos-x86_64.zip &&
 									unzip -nq bowtie2-$BOWTIE2V-macos-x86_64.zip &&
 									cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
-									echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\"" &&
-									echo "  and \"bowtie2-build-s\" are available. OK."
+									echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\" and \"bowtie2-build-s\" are available. OK."
 									} || {
 										echo
-										echo "Error! Download failed. Please, go to"
-										echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
-										echo "  and download and unpack bowtie2-$BOWTIE2V-macos-x86_64.zip manually."
+										echo "Error! Download failed. Please, go to http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/ and download and unpack bowtie2-$BOWTIE2V-macos-x86_64.zip manually."
 										echo
 										exit 1
 										}
@@ -370,13 +328,10 @@ function compilebowtie {
 										$DOWNLOADER bowtie2-$BOWTIE2V-mingw-win64.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-mingw-win64.zip &&
 										unzip -nq bowtie2-$BOWTIE2V-mingw-win64.zip &&
 										cp bowtie2-$BOWTIE2V/bowtie2* $BIN/ &&
-										echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\""
-										echo "  and \"bowtie2-build-s\" are available. OK."
+										echo "\"bowtie2\", \"bowtie-align-l\", \"bowtie-align-s\", \"bowtie2-build\", \"bowtie2-build-l\" and \"bowtie2-build-s\" are available. OK."
 										} || {
 											echo
-											echo "Error! Download failed. Please, go to"
-											echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
-											echo "  and download and unpack bowtie2-$BOWTIE2V-mingw-win64.zip manually."
+											echo "Error! Download failed. Please, go to http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/ and download and unpack bowtie2-$BOWTIE2V-mingw-win64.zip manually."
 											echo
 											exit 1
 											}
@@ -394,9 +349,7 @@ function compilebowtie {
 							echo "Downloading \"Bowtie2-$BOWTIE2V\" source code"
 							$DOWNLOADER bowtie2-$BOWTIE2V-source.zip http://downloads.sourceforge.net/project/bowtie-bio/bowtie2/$BOWTIE2V/bowtie2-$BOWTIE2V-source.zip || {
 								echo
-								echo "Error! Download failed. Please, go to"
-								echo "  http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/"
-								echo "  and download bowtie2-$BOWTIE2V-source.zip and compile it manually."
+								echo "Error! Download failed. Please, go to http://sourceforge.net/projects/bowtie-bio/files/bowtie2/$BOWTIE2V/ and download bowtie2-$BOWTIE2V-source.zip and compile it manually."
 								echo
 								exit 1
 								}
@@ -435,8 +388,7 @@ function compilebowtie {
 								echo "\"Bowtie2\" is available. OK."
 								} || {
 									echo
-									echo "Error! Installation of \"Bowtie2\" failed. Please, do it manually. For details see"
-									echo "\"brew info homebrew/science/bowtie2\" and \"brew help\"."
+									echo "Error! Installation of \"Bowtie2\" failed. Please, do it manually. For details see \"brew info homebrew/science/bowtie2\" and \"brew help\"."
 									echo
 									exit 1
 									}
@@ -447,8 +399,7 @@ function compilebowtie {
 							break
 							;;
 						M|m)
-							echo "Please, go to http://bowtie-bio.sourceforge.net/bowtie2/index.shtml and install"
-							echo " latest Bowtie2, and ensure it is in PATH."
+							echo "Please, go to http://bowtie-bio.sourceforge.net/bowtie2/index.shtml and install latest Bowtie2, and ensure it is in PATH."
 							exit 2
 							;;
 						*) echo "Wrong option. Use C, D, S, B, H or M." && read BOWTIE;;
@@ -478,18 +429,11 @@ function compilesamtools {
 	echo >&2 "\"samtools\" is required but not installed or available in PATH."
 	if [ "$STARTINI" == "I" ]; then
 		echo
-		echo "Type \"C\" to compile \"SAMtools-1.6\" from source available together with this script."
-		echo "  Makefile was modified not to require GNU ncurses library."
-		echo "Type \"S\" to download latest developmental \"SAMtools\" source from"
-		echo "  https://github.com/samtools/samtools/ and compile it. Compilation requires GNU"
-		echo "  ncurses library and is recommended only for advanced users. If compilation"
-		echo "  fails, check SAMtools' INSTALL file for details and adjust its Makefile."
-		echo "Type \"B\" to copy \"SAMtools-1.6\" binary available together with the script"
-		echo "  (recommended, available for Linux and Mac OS X)."
-		echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
-		echo "  See \"brew info homebrew/science/samtools\" for more details."
-		echo "Type \"M\" for manual installation - script will exit, and you will have to"
-		echo "  install \"SAMtools\" yourself."
+		echo "Type \"C\" to compile \"SAMtools-1.6\" from source available together with this script. Makefile was modified not to require GNU ncurses library."
+		echo "Type \"S\" to download latest developmental \"SAMtools\" source from https://github.com/samtools/samtools/ and compile it. Compilation requires GNU ncurses library and is recommended only for advanced users. If compilation fails, check SAMtools' INSTALL file for details and adjust its Makefile."
+		echo "Type \"B\" to copy \"SAMtools-1.6\" binary available together with the script (recommended, available for Linux and Mac OS X)."
+		echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended). See \"brew info homebrew/science/samtools\" for more details."
+		echo "Type \"M\" for manual installation - script will exit, and you will have to install \"SAMtools\" yourself."
 		read SAMTOOLS
 		while :
 			do
@@ -497,8 +441,7 @@ function compilesamtools {
 					C|c)
 						compilesamtools || {
 							echo
-							echo "Error! Compilation failed. Please, go to http://www.htslib.org/download/"
-							echo "  download samtools-1.6, compile it, and ensure it is in PATH."
+							echo "Error! Compilation failed. Please, go to http://www.htslib.org/download/ download samtools-1.6, compile it, and ensure it is in PATH."
 							echo
 							exit 1
 							}
@@ -526,9 +469,7 @@ function compilesamtools {
 						echo "\"samtools\" is available. OK."
 						} || {
 							echo
-							echo "Error! Compilation failed. Please, go to http://www.htslib.org/download/ for"
-							echo "  latest stable version of \"SAMtools\" or https://github.com/samtools/ for latest"
-							echo "  developmental version, download samtools, compile it, and ensure it is in PATH."
+							echo "Error! Compilation failed. Please, go to http://www.htslib.org/download/ for latest stable version of \"SAMtools\" or https://github.com/samtools/ for latest developmental version, download samtools, compile it, and ensure it is in PATH."
 							echo
 							exit 1
 							}
@@ -604,8 +545,7 @@ function compilesamtools {
 						echo "\"SAMtools\" is available. OK."
 						} || {
 							echo
-							echo "Error! Installation of \"SAMtools\" failed. Please, do it manually. For details see"
-							echo "\"brew info homebrew/science/samtools\" and \"brew help\"."
+							echo "Error! Installation of \"SAMtools\" failed. Please, do it manually. For details see \"brew info homebrew/science/samtools\" and \"brew help\"."
 							echo
 							exit 1
 							}
@@ -616,8 +556,7 @@ function compilesamtools {
 						break
 						;;
 					M|m)
-						echo "Please, go to http://www.htslib.org/ and install \"SAMtools\" and ensure it is"
-						echo "  in PATH."
+						echo "Please, go to http://www.htslib.org/ and install \"SAMtools\" and ensure it is in PATH."
 						exit 2
 						;;
 					*) echo "Wrong option. Use C, S, B, H or M." && read SAMTOOLS;;
@@ -645,9 +584,7 @@ function compileflash {
 	echo "\"flash\" is available. OK."
 	} || {
 		echo
-		echo "Error! Compilation failed. Please, go to"
-		echo "  http://sourceforge.net/projects/flashpage/files/ download latest"
-		echo "  FLASH-*.tar.gz, compile it manually, and ensure it is in PATH."
+		echo "Error! Compilation failed. Please, go to http://sourceforge.net/projects/flashpage/files/ download latest FLASH-*.tar.gz, compile it manually, and ensure it is in PATH."
 		echo
 		exit 1
 		}
@@ -660,16 +597,11 @@ function compileflash {
 	if [ "$STARTINI" == "I" ]; then
 		echo
 		echo "Type \"C\" to compile \"FLASH\" from source available together with this script."
-		echo "Type \"S\" to download \"FLASH\" source from"
-		echo "  http://sourceforge.net/projects/flashpage/ and compile it."
-		echo "Type \"D\" to download \"FLASH\" binary from"
-		echo "  http://sourceforge.net/projects/flashpage/ (available only for Windows)."
-		echo "Type \"B\" to copy \"FLASH 1.2.11\" binary available together with the script"
-		echo "  (recommended, available for Linux and Mac OS X)."
-		echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
-		echo "  See \"brew info homebrew/science/flash\" for more details."
-		echo "Type \"M\" for manual installation - script will exit, and you will have to"
-		echo "  install \"FLASH\" yourself."
+		echo "Type \"S\" to download \"FLASH\" source from http://sourceforge.net/projects/flashpage/ and compile it."
+		echo "Type \"D\" to download \"FLASH\" binary from http://sourceforge.net/projects/flashpage/ (available only for Windows)."
+		echo "Type \"B\" to copy \"FLASH 1.2.11\" binary available together with the script (recommended, available for Linux and Mac OS X)."
+		echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended). See \"brew info homebrew/science/flash\" for more details."
+		echo "Type \"M\" for manual installation - script will exit, and you will have to install \"FLASH\" yourself."
 		read FLASH
 		while :
 			do
@@ -687,8 +619,7 @@ function compileflash {
 						echo "Downloading \"FLASH\" source code"
 						$DOWNLOADER FLASH-1.2.11.tar.gz http://downloads.sourceforge.net/project/flashpage/FLASH-1.2.11.tar.gz || {
 							echo
-							echo "Error! Download failed. Please, go to http://sourceforge.net/projects/flashpage/files/"
-							echo "  download FLASH-*.tar.gz, compile it manually, and ensure it is in PATH."
+							echo "Error! Download failed. Please, go to http://sourceforge.net/projects/flashpage/files/ download FLASH-*.tar.gz, compile it manually, and ensure it is in PATH."
 							echo
 							exit 1
 							}
@@ -710,8 +641,7 @@ function compileflash {
 								echo "Downloading \"FLASH\" for $OS"
 								$DOWNLOADER FLASH-1.2.11-windows-bin.zip http://downloads.sourceforge.net/project/flashpage/FLASH-1.2.11-windows-bin.zip || {
 									echo
-									echo "Error! Download failed. Please, go to http://sourceforge.net/projects/flashpage/files/"
-									echo "  download FLASH-*windows-bin.zip, unpack it, and ensure it is in PATH."
+									echo "Error! Download failed. Please, go to http://sourceforge.net/projects/flashpage/files/ download FLASH-*windows-bin.zip, unpack it, and ensure it is in PATH."
 									echo
 									exit 1
 									}
@@ -748,8 +678,7 @@ function compileflash {
 							echo "\"FLASH\" is available. OK."
 							} || {
 								echo
-								echo "Error! Installation of \"FLASH\" failed. Please, do it manually. For details see"
-								echo "\"brew info homebrew/science/flash\" and \"brew help\"."
+								echo "Error! Installation of \"FLASH\" failed. Please, do it manually. For details see \"brew info homebrew/science/flash\" and \"brew help\"."
 								echo
 								exit 1
 								}
@@ -760,8 +689,7 @@ function compileflash {
 						break
 						;;
 					M|m)
-						echo "Please, go to http://ccb.jhu.edu/software/FLASH/ and install \"FLASH\" and ensure it"
-						echo "  is in PATH"
+						echo "Please, go to http://ccb.jhu.edu/software/FLASH/ and install \"FLASH\" and ensure it is in PATH"
 						exit 2
 						;;
 					*) echo "Wrong option. Use C, S, D, B, H or M." && read FLASH;;
@@ -799,8 +727,7 @@ CHECKFILEREADOUT=""
 # Input data, mitochondriome reference in FASTA
 if [ "$STARTINI" == "I" ]; then
 	echo
-	echo "Would you like to use mitochondriome reference sequence input file in FASTA"
-	echo "  format? (Yes/No)"
+	echo "Would you like to use mitochondriome reference sequence input file in FASTA format? (Yes/No)"
 	read MTINPUTQ
 	while :
 	do
@@ -920,8 +847,7 @@ if [ -n "$REFERENCEMT0" ]; then
 
 # Check if FASTA input files are non-interleaved (required) - if not, FASTA input file converted
 echo
-echo "Checking if input FASTA files are non-interleaved (required) - interleaved"
-echo "  FASTA files are converted not to be interleaved"
+echo "Checking if input FASTA files are non-interleaved (required) - interleaved FASTA files are converted not to be interleaved"
 echo
 noninterleavedfasta $INPUTFILE1 $INPUTFILE0
 noninterleavedfasta $REFERENCECP0 $REFERENCECP
@@ -931,16 +857,12 @@ if [ -n "$REFERENCEMT0" ]; then
 
 # Transcriptome input file has required labeling scheme - only unique numbers
 
-echo "FASTA sequence names in input file $INPUTFILE0"
-echo "  must be renamed to be correctly handled in part A. New file with correct labels"
-echo "  (only increasing unique numbers) will be created."
-echo "Depending on size of your transcriptome file it can take longer time."
+echo "FASTA sequence names in input file $INPUTFILE0 must be renamed to be correctly handled in part A. New file with correct labels (only increasing unique numbers) will be created. Depending on size of your transcriptome file it can take longer time."
 while read LINE; do
 	N=$((++N)) &&
 	echo $LINE | sed -e 's/^>.*$/>'$N'/'
 	done < $INPUTFILE0 > $INPUTFILE || {
-		echo "Error! Renaming failed. Aborting. Ensure $INPUTFILE0"
-		echo "  has as labels of sequences only unique numbers (nothing else)."
+		echo "Error! Renaming failed. Aborting. Ensure $INPUTFILE0 has as labels of sequences only unique numbers (nothing else)."
 		echo
 		exit 1
 		}
@@ -978,22 +900,19 @@ echo
 echo "Filtering for unique transcripts:"
 { cut -f 10 $BLATOUT | uniq -c | awk '{print$1}' | sort | uniq -c; } || {
 	echo
-	echo "Error! Filtering of BLAT output failed. Aborting."
-	echo "Check if files $INPUTFILE and $BLATOUT are correct."
+	echo "Error! Filtering of BLAT output failed. Aborting. Check if files $INPUTFILE and $BLATOUT are correct."
 	echo
 	exit 1
 	}
 echo
-echo "Filtered transcripts saved  for possible later usage as"
-echo "  $BLATOUT  for possible later usage."
+echo "Filtered transcripts saved  for possible later usage as $BLATOUT  for possible later usage."
 confirmgo
 
 # Make a list of these unique transcripts (names and sequences) and convert this file to FASTA
 echo "Making list of unique transcripts"
 cut -f 10 $BLATOUT | uniq -c | awk '{if($1==1){print $0}}' | awk '{print $2}' | awk '{printf "%012d\n", $0;}' > $UNIQUELIST || {
 	echo
-	echo "Error! Making list of unique transcripts failed. Aborting."
-	echo "Check if files $BLATOUT and $INPUTFILE are correct."
+	echo "Error! Making list of unique transcripts failed. Aborting. Check if files $BLATOUT and $INPUTFILE are correct."
 	echo
 	exit 1
 	}
@@ -1003,8 +922,7 @@ echo
 echo "Converting original data into TXT for subsequent joining"
 fasta2tab $INPUTFILE $INPUTTAB || {
 	echo
-	echo "Error! Conversion of $INPUTFILE failed. Aborting."
-	echo "Check if $INPUTFILE is valid FASTA file."
+	echo "Error! Conversion of $INPUTFILE failed. Aborting. Check if $INPUTFILE is valid FASTA file."
 	echo
 	exit 1
 	}
@@ -1013,8 +931,7 @@ echo
 echo "Sorting unique transcripts"
 { awk '{$1=sprintf("%012d", $1); print $0}' $INPUTTAB | sort > $SORTEDINPUT; } || {
 	echo
-	echo "Error! Sorting of unique transcripts failed. Aborting. Check if"
-	echo "$INPUTFILE is correct FASTA file and check if file $INPUTTAB is correct."
+	echo "Error! Sorting of unique transcripts failed. Aborting. Check if $INPUTFILE is correct FASTA file and check if file $INPUTTAB is correct."
 	echo
 	exit 1
 	}
@@ -1022,8 +939,7 @@ echo "Sorting unique transcripts"
 # Apply the join command
 join -j1 $UNIQUELIST $SORTEDINPUT > $JOINEDTS || {
 	echo
-	echo "Error! Joining failed. Aborting. Check files"
-	echo "$UNIQUELIST and $SORTEDINPUT if they have same number of lines."
+	echo "Error! Joining failed. Aborting. Check files $UNIQUELIST and $SORTEDINPUT if they have same number of lines."
 	echo
 	exit 1
 	}
@@ -1033,8 +949,7 @@ echo
 echo "Converting to FASTA"
 sed 's/ /\t/g' $JOINEDTS > $JOINEDTABS || {
 	echo
-	echo "Error! Conversion of $JOINEDTS to FASTA failed."
-	echo "Aborting. Check if file  $JOINEDTS is correct."
+	echo "Error! Conversion of $JOINEDTS to FASTA failed. Aborting. Check if file  $JOINEDTS is correct."
 	echo
 	exit 1
 	}
@@ -1042,13 +957,11 @@ sed 's/ /\t/g' $JOINEDTS > $JOINEDTABS || {
 echo
 awk '{print ">"$1"\n"$2}' $JOINEDTABS > $JOINEDFA || {
 	echo
-	echo "Error! Conversion of $JOINEDTS to FASTA failed."
-	echo "Aborting. Check if file $JOINEDTABS is correct."
+	echo "Error! Conversion of $JOINEDTS to FASTA failed. Aborting. Check if file $JOINEDTABS is correct."
 	echo
 	exit 1
 	}
-echo "Joined transcripts written in FASTA format as"
-echo "  $JOINEDFA for possible later usage."
+echo "Joined transcripts written in FASTA format as $JOINEDFA for possible later usage."
 confirmgo
 
 # Step 2: Find genome skim data (only nuclear reads), which align to the unique transcripts
@@ -1065,8 +978,7 @@ echo "Creating a reference plastome index"
 echo
 bowtie2-build $REFERENCECP $REFERENCECP2 || {
 	echo
-	echo "Error! Creating a reference plastome index with bowtie2-build failed.  Aborting."
-	echo "Check if file $REFERENCECP is correct."
+	echo "Error! Creating a reference plastome index with bowtie2-build failed.  Aborting. Check if file $REFERENCECP is correct."
 	echo
 	exit 1
 	}
@@ -1077,10 +989,7 @@ echo "Mapping cpDNA reads to the reference plastome. This may take longer time."
 echo
 bowtie2 -x $REFERENCECP2 -1 $INPUTFQ1 -2 $INPUTFQ2 -S $BOWTIE2CP || {
 	echo
-	echo "Error! Mapping cpDNA reads to the reference plastome with bowtie2 failed."
-	echo "Aborting. Check if files $REFERENCECP,"
-	echo "$REFERENCECP2, $INPUTFQ1"
-	echo "and $INPUTFQ2 are correct."
+	echo "Error! Mapping cpDNA reads to the reference plastome with bowtie2 failed. Aborting. Check if files $REFERENCECP, $REFERENCECP2, $INPUTFQ1 and $INPUTFQ2 are correct."
 	echo
 	exit 1
 	}
@@ -1092,8 +1001,7 @@ echo
 echo "Converting SAM to FASTQ. This may take longer time."
 samtools view -b -T $REFERENCECP $BOWTIE2CP | samtools fastq -n - -1 $FASTQNOCP.1.fq -2 $FASTQNOCP.2.fq || {
 	echo
-	echo "Error! Conversion of SAM to FASTQ with SAMtools failed. Aborting."
-	echo "Check if files $REFERENCECP and $BOWTIE2CP are correct."
+	echo "Error! Conversion of SAM to FASTQ with SAMtools failed. Aborting. Check if files $REFERENCECP and $BOWTIE2CP are correct."
 	echo
 	exit 1
 	}
@@ -1116,8 +1024,7 @@ if [[ -n "$REFERENCEMT" && -n "$REFERENCEMT0" ]]; then
 	echo
 	bowtie2-build $REFERENCEMT $REFERENCEMT2 || {
 		echo
-		echo "Error! Creating of reference mitochondriome index with bowtie2-build failed."
-		echo "Aborting. Check if files $REFERENCEMT and $REFERENCEMT2 are correct."
+		echo "Error! Creating of reference mitochondriome index with bowtie2-build failed. Aborting. Check if files $REFERENCEMT and $REFERENCEMT2 are correct."
 		echo
 		exit 1
 		}
@@ -1128,9 +1035,7 @@ if [[ -n "$REFERENCEMT" && -n "$REFERENCEMT0" ]]; then
 	echo
 	bowtie2 -x $REFERENCEMT2 -1 $FASTQNOCP.1.fq -2 $FASTQNOCP.2.fq -S $BOWTIE2MT || {
 		echo
-		echo "Error! Mapping mtDNA reads to reference mitochondriome with bowtie2 failed."
-		echo "Aborting. Check if files $REFERENCEMT2,"
-		echo "$FASTQNOCP.1.fq and $FASTQNOCP.2.fq are correct."
+		echo "Error! Mapping mtDNA reads to reference mitochondriome with bowtie2 failed. Aborting. Check if files $REFERENCEMT2, $FASTQNOCP.1.fq and $FASTQNOCP.2.fq are correct."
 		echo
 		exit 1
 		}
@@ -1140,8 +1045,7 @@ if [[ -n "$REFERENCEMT" && -n "$REFERENCEMT0" ]]; then
 	echo "Converting SAM to FASTQ. This may take longer time."
 	samtools view -b -T $REFERENCEMT $BOWTIE2MT | samtools fastq -n - -1 $FASTQNOMT.1.fq -2 $FASTQNOMT.2.fq || {
 		echo
-		echo "Error! Conversion of SAM to FASTQ with SAMtools failed. Aborting. Check if files"
-		echo "$REFERENCEMT and $BOWTIE2MT are correct."
+		echo "Error! Conversion of SAM to FASTQ with SAMtools failed. Aborting. Check if files $REFERENCEMT and $BOWTIE2MT are correct."
 		echo
 		exit 1
 		}
@@ -1155,8 +1059,7 @@ if [[ -n "$REFERENCEMT" && -n "$REFERENCEMT0" ]]; then
 	echo
 	flash -o $(basename "${FLASHOUT}") -M $FLASHM $FASTQNOMT.1.fq $FASTQNOMT.2.fq || {
 		echo
-		echo "Error! Combining paired-end reads failed. Aborting. Check if files"
-		echo "$REFERENCEMT, $FASTQNOMT.1.fq and $FASTQNOMT.2.fq are correct."
+		echo "Error! Combining paired-end reads failed. Aborting. Check if files $REFERENCEMT, $FASTQNOMT.1.fq and $FASTQNOMT.2.fq are correct."
 		echo
 		exit 1
 		}
@@ -1169,8 +1072,7 @@ if [[ -n "$REFERENCEMT" && -n "$REFERENCEMT0" ]]; then
 		echo
 		flash -o $(basename "${FLASHOUT}") -M "${FLASHM}" "${FASTQNOCP}".1.fq "${FASTQNOCP}".2.fq || {
 			echo
-			echo "Error! Combining paired-end reads failed. Aborting. Check if files"
-			echo "${REDF}$REFERENCECP${NORM}, ${REDF}`echo $FASTQNOCP`.1.fq${NORM} and ${REDF}`echo $FASTQNOCP`.2.fq${NORM} are correct."
+			echo "Error! Combining paired-end reads failed. Aborting. Check if files ${REDF}$REFERENCECP${NORM}, ${REDF}`echo $FASTQNOCP`.1.fq${NORM} and ${REDF}`echo $FASTQNOCP`.2.fq${NORM} are correct."
 			echo
 			exit 1
 			}
@@ -1179,8 +1081,7 @@ if [[ -n "$REFERENCEMT" && -n "$REFERENCEMT0" ]]; then
 # Step 5 - matching of the unique transcripts and the filtered, combined genome skim reads sharing ≥85% sequence similarity
 
 echo
-echo "Step 5 of the pipeline - matching of the unique transcripts and the filtered,"
-echo "  combined genome skim reads sharing ≥85% sequence similarity."
+echo "Step 5 of the pipeline - matching of the unique transcripts and the filtered, combined genome skim reads sharing ≥85% sequence similarity."
 
 # Convert FASTQ file to FASTA
 echo
@@ -1188,27 +1089,22 @@ echo "Converting FASTQ to FASTA. This may take longer time."
 # print the first and 2nd line of every 4 lines # AWK: cat IN.fq | awk '{if(NR%4==1) {printf(">%s\n",substr($0,2));} else if(NR%4==2) print;}' > OUT.fa
 sed -n '1~4s/^@/>/p;2~4p' $FLASHOUT.extendedFrags.fastq > $FLASHOUT.extendedFrags.fa || {
 	echo
-	echo "Error! Conversion of FASTQ to FASTA failed. Aborting. Check if file"
-	echo "$FLASHOUT.extendedFrags.fastq is correct."
+	echo "Error! Conversion of FASTQ to FASTA failed. Aborting. Check if file $FLASHOUT.extendedFrags.fastq is correct."
 	echo
 	exit 1
 	}
-echo "Converted FASTA saved as"
-echo "  $FLASHOUT.extendedFrags.fa for possible later usage."
+echo "Converted FASTA saved as $FLASHOUT.extendedFrags.fa for possible later usage."
 confirmgo
 
 # BLAT between the unique transcripts and the genome skim data
-echo "BLAT between the unique transcripts and the genome skim data."
-echo "This may take longer time."
+echo "BLAT between the unique transcripts and the genome skim data. This may take longer time."
 blat -t=dna -q=dna -minIdentity=$BLATIDENT -out=pslx $JOINEDFA $FLASHOUT.extendedFrags.fa $BLATOUTFIN || {
 	echo
-	echo "Error! BLAT between the unique transcripts and the genome skim data failed."
-	echo "Aborting. Check if files $JOINEDFA and $FLASHOUT.extendedFrags.fa are correct."
+	echo "Error! BLAT between the unique transcripts and the genome skim data failed. Aborting. Check if files $JOINEDFA and $FLASHOUT.extendedFrags.fa are correct."
 	echo
 	exit 1
 	}
-echo " BLAT output saved as"
-echo "  $BLATOUTFIN for possible later usage."
+echo " BLAT output saved as $BLATOUTFIN for possible later usage."
 confirmgo
 
 # Step 6: Assemble the obtained sequences in contigs
@@ -1220,20 +1116,17 @@ echo
 echo "Modifying PSLX BLAT output for usage in Geneious"
 { sed 1,5d $BLATOUTFIN | cut -f 14,$PSLXCUT | awk '{n=split($2,a,",");for(i=1;i<=n;i++)print $1"_"NR"_"i,a[i]}' | grep "[0-9_]\+[[:blank:]][acgtuwsmkrybdhvn\-]\+" > $TAB; } || {
 	echo
-	echo "Error! Modifying PSLX BLAT output failed. Aborting."
-	echo "Check if file $BLATOUTFIN is correct."
+	echo "Error! Modifying PSLX BLAT output failed. Aborting. Check if file $BLATOUTFIN is correct."
 	echo
 	exit 1
 	}
 echo
-echo "Modified file saved as"
-echo "  $TAB for possible later usage."
+echo "Modified file saved as $TAB for possible later usage."
 confirmgo
 
 { awk '{print $1"\t"length($2)"\t"$2}' $TAB | awk '{sum+=$2}END{print sum}'; } || {
 	echo
-	echo "Error! Conversion of FASTA to TAB failed. Aborting."
-	echo "Check if file $TAB is correct."
+	echo "Error! Conversion of FASTA to TAB failed. Aborting. Check if file $TAB is correct."
 	echo
 	exit 1
 	}
@@ -1245,8 +1138,7 @@ echo
 echo "Counting number of times each transcript hit a genom skim read"
 { cut -f 1 -d "_" $TAB | sort | uniq -c | sort -n -r > $TABLIST; } || {
 	echo
-	echo "Error! Counting of number of times each transcript hit a genom skim read failed."
-	echo "Aborting. Check if file $TAB is correct."
+	echo "Error! Counting of number of times each transcript hit a genom skim read failed. Aborting. Check if file $TAB is correct."
 	echo
 	exit 1
 	}
@@ -1256,8 +1148,7 @@ echo
 echo "Listing transcripts with >$BLATSCORE BLAT scores"
 { awk '$1>'"$BLATSCORE"'' $TABLIST | awk '{print $2}' > $TABBLAT; } || {
 	echo
-	echo "Error! Listing of transcripts with >$BLATSCORE BLAT scores failed. Aborting."
-	echo "Check if file $TABLIST is correct."
+	echo "Error! Listing of transcripts with >$BLATSCORE BLAT scores failed. Aborting. Check if file $TABLIST is correct."
 	echo
 	exit 1
 	}
@@ -1267,8 +1158,7 @@ echo
 echo "Removing transcripts with >$BLATSCORE BLAT score"
 grep -v -f $TABBLAT $TAB > $TABREMOVED || {
 	echo
-	echo "Error! Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting."
-	echo "Check if files $TABBLAT and $TAB are correct."
+	echo "Error! Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting. Check if files $TABBLAT and $TAB are correct."
 	echo
 	exit 1
 	}
@@ -1286,16 +1176,14 @@ echo
 echo "Converting TAB to FASTA and removing sequences with \"n\""
 { grep -v n $TABREMOVED | sed 's/^/>/' | sed 's/\t/\n/' > $FINALA; } || {
 	echo
-	echo "Error! Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting."
-	echo "Check if file $TABREMOVED is correct."
+	echo "Error! Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting. Check if file $TABREMOVED is correct."
 	echo
 	exit 1
 	}
 
 grep -v n $TABREMOVED | awk '{print $1"\t"length($2)}' | awk '{s+=$2;a++}END{print s}' || {
 	echo
-	echo "Error! Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting."
-	echo "Check if file $TABREMOVED is correct."
+	echo "Error! Removing of transcripts with >$BLATSCORE BLAT score failed. Aborting. Check if file $TABREMOVED is correct."
 	echo
 	exit 1
 	}
@@ -1306,24 +1194,13 @@ echo "Removing unneeded temporal files"
 if [ -n "$REFERENCEMT0" ]; then
 	rm $INPUTFILE0 $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $REFERENCECP $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $REFERENCEMT2* $REFERENCEMT $BOWTIE2M$FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
 		echo
-		echo "Error! Removal of temporal files failed. Remove following files manually:"
-		echo "  \"$INPUTFILE0\", \"$UNIQUELIST\", \"$INPUTTAB\","
-		echo "  \"$SORTEDINPUT\", \"$REFERENCECP\", \"$JOINEDTS\","
-		echo "  \"$JOINEDTABS\", \"$REFERENCECP2*\", \"$REFERENCEMT\","
-		echo "  \"$BOWTIE2CP\", \"$REFERENCEMT2*\", \"$BOWTIE2MT\","
-		echo "  \"$FLASHOUT.extendedFrags.fastq\", \"$TAB\","
-		echo "  \"$TABLIST\",, \"$TABBLAT\" and \"$TABREMOVED\"."
+		echo "Error! Removal of temporal files failed. Remove following files manually: \"$INPUTFILE0\", \"$UNIQUELIST\", \"$INPUTTAB\", \"$SORTEDINPUT\", \"$REFERENCECP\", \"$JOINEDTS\", \"$JOINEDTABS\", \"$REFERENCECP2*\", \"$REFERENCEMT\", \"$BOWTIE2CP\", \"$REFERENCEMT2*\", \"$BOWTIE2MT\", \"$FLASHOUT.extendedFrags.fastq\", \"$TAB\", \"$TABLIST\",, \"$TABBLAT\" and \"$TABREMOVED\"."
 		confirmgo
 		}
 	else
 		rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
 			echo
-			echo "Error! Removal of temporal files failed. Remove following files manually:"
-			echo "  \"$INPUTFILE0\", \"$UNIQUELIST\", \"$INPUTTAB\","
-			echo "  \"$SORTEDINPUT\", \"$JOINEDTS\", \"$JOINEDTABS\","
-			echo "  \"$REFERENCECP\", \"$REFERENCECP2*\",\"$BOWTIE2CP\","
-			echo "  \"$FLASHOUT.extendedFrags.fastq\", \"$TAB\","
-			echo "  \"$TABLIST\", \"$TABBLAT\" and \"$TABREMOVED\"."
+			echo "Error! Removal of temporal files failed. Remove following files manually: \"$INPUTFILE0\", \"$UNIQUELIST\", \"$INPUTTAB\", \"$SORTEDINPUT\", \"$JOINEDTS\", \"$JOINEDTABS\", \"$REFERENCECP\", \"$REFERENCECP2*\",\"$BOWTIE2CP\", \"$FLASHOUT.extendedFrags.fastq\", \"$TAB\", \"$TABLIST\", \"$TABBLAT\" and \"$TABREMOVED\"."
 			confirmgo
 			}
 		fi
@@ -1333,8 +1210,7 @@ echo
 echo "Following files are kept for possible later usage (see manual for details):"
 echo "================================================================================"
 if [ -n "$REFERENCEMT" ]; then
-	echo "1) List of old names of FASTA sequences in $INPUTFILE0 and"
-	echo "   renamed FASTA sequences in $INPUTFILE:"
+	echo "1) List of old names of FASTA sequences in $INPUTFILE0 and renamed FASTA sequences in $INPUTFILE:"
 	echo "$TRANSCRIPTOMEFASTANAMES"
 	echo "2) Output of BLAT (removal of transcripts sharing ≥90% sequence similarity):"
 	echo "$BLATOUT"
@@ -1346,16 +1222,14 @@ if [ -n "$REFERENCEMT" ]; then
 	ls $FASTQNOMT*
 	echo "6) Combined paired-end genome skim reads:"
 	echo "$FLASHOUT.extendedFrags.fa"
-	echo "7) Output of BLAT (matching of the unique transcripts and the filtered,"
-	echo "   combined genome skim reads sharing ≥85% sequence similarity):"
+	echo "7) Output of BLAT (matching of the unique transcripts and the filtered, combined genome skim reads sharing ≥85% sequence similarity):"
 	echo "$BLATOUTFIN"
 	echo "8) Matching sequences in FASTA:"
 	echo "$BLATOUTFIN2"
 	echo "9) Final FASTA sequences for usage in Geneious:"
 	echo "$FINALA"
 	else
-		echo "1)  List of old names of FASTA sequences in $INPUTFILE0 and"
-		echo "    renamed FASTA sequences in $INPUTFILE:"
+		echo "1)  List of old names of FASTA sequences in $INPUTFILE0 and renamed FASTA sequences in $INPUTFILE:"
 		echo "$TRANSCRIPTOMEFASTANAMES"
 		echo "2) Output of BLAT (removal of transcripts sharing ≥90% sequence similarity):"
 		echo "$BLATOUT"
@@ -1365,8 +1239,7 @@ if [ -n "$REFERENCEMT" ]; then
 		ls $FASTQNOCP*
 		echo "5) Combined paired-end genome skim reads:"
 		echo "$FLASHOUT.extendedFrags.fa"
-		echo "6) Output of BLAT (matching of the unique transcripts and the filtered,"
-		echo "   combined genome skim reads sharing ≥85% sequence similarity):"
+		echo "6) Output of BLAT (matching of the unique transcripts and the filtered, combined genome skim reads sharing ≥85% sequence similarity):"
 		echo "$BLATOUTFIN"
 		echo "7) Matching sequences in FASTA:"
 		echo "$BLATOUTFIN2"
@@ -1390,7 +1263,7 @@ echo "==========================================================================
 echo "Run Geneious (tested with versions 6-9), see PDf manual for details"
 echo
 echo "Use exported files from Geneious as input for part B of the Sondovač script:"
-echo "  ./sondovac_part_b.sh -h, see PDF manual for details."
+echo "  \"$0 -h\", see PDF manual for details."
 echo "================================================================================"
 echo
 echo "Script exited successfully..."

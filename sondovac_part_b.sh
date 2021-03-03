@@ -11,19 +11,14 @@ source $SCRIPTDIR/mac_aliases
 # Load functions shared by both parts, introductory message
 source $SCRIPTDIR/sondovac_functions || {
 	echo
-	echo "Fatal error!"
-	echo "Unable to load file \"sondovac_functions\" with required functions!"
-	echo "It must be in same directory as \"$0\""
-	echo "Check it and, if needed, download again whole script from"
-	echo "https://github.com/V-Z/sondovac/"
+	echo "Fatal error! Unable to load file \"sondovac_functions\" with required functions! It must be in same directory as \"$0\" Check it and, if needed, download again whole script from https://github.com/V-Z/sondovac/"
 	echo
 	exit 1
 	}
 
 echo "This is part B of the pipeline."
 echo
-echo "This part processes assembly output from Geneious and produces the final list of"
-echo "low-copy nuclear probe sequences."
+echo "This part processes assembly output from Geneious and produces the final list of low-copy nuclear probe sequences."
 
 # Default values
 # Counter if not both -i and -n options are used
@@ -56,9 +51,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
 		h|v)
 			generaloptions
 			echo
-			echo -e "\tIf options -c, -x and/or -z are used and script is running in"
-			echo -e "\t  interactive mode, those values will be used as defaults, but may be"
-			echo -e "\t  later overwritten."
+			echo -e "\tIf options -c, -x and/or -z are used and script is running in interactive mode, those values will be used as defaults, but may be later overwritten."
 			echo
 			echo -e "\tOptions required for running in non-interactive mode:"
 			echo -e "\t-c\tPlastome reference sequence input file in FASTA format."
@@ -66,27 +59,11 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
 			echo -e "\t-z\tInput file in FASTA format (output of Geneious assembly)."
 			echo
 			echo -e "\tOther optional arguments (if not provided, default values are used):"
-			echo -e "\t-b\tBait length"
-			echo -e "\t\tDefault value: 120 (preferred length for phylogeny, use any of"
-			echo -e "\t\t  values 80, 100 or 120)."
-			echo -e "\t-d\tSequence similarity between the developed probe sequences"
-			echo -e "\t\t  (parameter \"-c\" of cd-hit-est, see its manual for details)."
-			echo -e "\t\tDefault value: 0.9 (use decimal number ranging from 0.85 to"
-			echo -e "\t\t  0.95)."
-			echo -e "\t-y\tSequence similarity between the probes and plastome reference"
-			echo -e "\t\t  searching for possible plastid genes in probe set (parameter"
-			echo -e "\t\t  \"-minIdentity\" of BLAT, see its manual for details)."
-			echo -e "\t\tDefault value: 90 (integer ranging from 85 to 95)."
-			echo -e "\t-k\tMinimum total locus length."
-			echo -e "\t\tDefault value: 600. Allowed values are 360, 480, 600, 720, 840,"
-			echo -e "\t\t  960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 and 2040."
-			echo -e "\t\t  When running in interactive mode, the user will be asked"
-			echo -e "\t\t  which value to use. A table summarizing the total number"
-			echo -e "\t\t  of LCN loci and the total number of base pairs for these"
-			echo -e "\t\t  values will be displayed to facilitate this choice."
-			echo -e "\tWARNING! If parameters -b, -d or -y are not provided, default values"
-			echo -e "\t  are taken, and it is not possible to change them later (not even in"
-			echo -e "\t  interactive mode)."
+			echo -e "\t-b\tBait length. Default value: 120 (preferred length for phylogeny, use any of values 80, 100 or 120)."
+			echo -e "\t-d\tSequence similarity between the developed probe sequences (parameter \"-c\" of cd-hit-est, see its manual for details). Default value: 0.9 (use decimal number ranging from 0.85 to 0.95)."
+			echo -e "\t-y\tSequence similarity between the probes and plastome reference searching for possible plastid genes in probe set (parameter \"-minIdentity\" of BLAT, see its manual for details). Default value: 90 (integer ranging from 85 to 95)."
+			echo -e "\t-k\tMinimum total locus length. Default value: 600. Allowed values are 360, 480, 600, 720, 840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 and 2040. When running in interactive mode, the user will be asked which value to use. A table summarizing the total number of LCN loci and the total number of base pairs for these values will be displayed to facilitate this choice."
+			echo -e "\tWARNING! If parameters -b, -d or -y are not provided, default values are taken, and it is not possible to change them later (not even in interactive mode)."
 			echo
 			exit 2
 			;;
@@ -152,8 +129,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
 				echo "Sequence similarity: $CDHITSIM"
 				else
 					echo
-					echo "Error! For parameter \"-d\" you did not provide decimal number ranging from 0.85"
-					echo "  to 0.95!"
+					echo "Error! For parameter \"-d\" you did not provide decimal number ranging from 0.85 to 0.95!"
 					echo
 					exit 1
 				fi
@@ -190,8 +166,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
 				1920) MINLOCUSLENGTH=1920;;
 				2040) MINLOCUSLENGTH=2040;;
 				*) echo
-					echo "Error! For parameter \"-k\" you did not provide any of values 360, 480, 600, 720,"
-					echo "  840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040!"
+					echo "Error! For parameter \"-k\" you did not provide any of values 360, 480, 600, 720, 840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040!"
 					echo
 					exit 1
 				esac
@@ -199,8 +174,7 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
 			;;
 		?)
 			echo
-			echo "Invalid option(s)!"
-			echo "See \"$0 -h\" for usage options."
+			echo "Invalid option(s)! See \"$0 -h\" for usage options."
 			echo
 			exit 1
 			;;
@@ -279,9 +253,7 @@ function compilecdhit {
 	echo "\"CD-HIT\" is available. OK."
 		} || {
 		echo
-		echo "Error! Compilation failed. Please go to https://github.com/weizhongli/cdhit/releases"
-		echo "download cd-hit-*.tgz, compile it and ensure it is in PATH."
-		echo "Check last error messages to find out why compilation failed."
+		echo "Error! Compilation failed. Please go to https://github.com/weizhongli/cdhit/releases download cd-hit-*.tgz, compile it and ensure it is in PATH. Check last error messages to find out why compilation failed."
 		echo
 		exit 1
 		}
@@ -293,14 +265,10 @@ function compilecdhit {
 	if [ "$STARTINI" == "I" ]; then
 		echo
 		echo "Type \"C\" to compile \"CD-HIT\" 4.6.5 from source available together with this script."
-		echo "Type \"S\" to download latest \"CD-HIT\" source from"
-		echo "  https://github.com/weizhongli/cdhit and compile it"
-		echo "Type \"B\" to copy \"CD-HIT\" 4.6.5 binary available together with the script"
-		echo "  (recommended, available for Linux and Mac OS X)."
-		echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
-		echo "  See \"brew info homebrew/science/cd-hit\" for more details."
-		echo "Type \"M\" for manual installation - script will exit, and you will have to install"
-		echo "  \"CD-HIT\" yourself."
+		echo "Type \"S\" to download latest \"CD-HIT\" source from https://github.com/weizhongli/cdhit and compile it"
+		echo "Type \"B\" to copy \"CD-HIT\" 4.6.5 binary available together with the script (recommended, available for Linux and Mac OS X)."
+		echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended). See \"brew info homebrew/science/cd-hit\" for more details."
+		echo "Type \"M\" for manual installation - script will exit, and you will have to install \"CD-HIT\" yourself."
 		read CDHIT
 		while :
 			do
@@ -314,9 +282,7 @@ function compilecdhit {
 						checktools unzip
 						$DOWNLOADER cd-hit-master.zip https://github.com/weizhongli/cdhit/archive/master.zip || {
 							echo
-							echo "Error! Download failed. Please, go to"
-							echo "  https://github.com/weizhongli/cdhit/releases/,"
-							echo "  download latest cd-hit-*.tar.gz and compile it manually."
+							echo "Error! Download failed. Please, go to https://github.com/weizhongli/cdhit/releases/, download latest cd-hit-*.tar.gz and compile it manually."
 							echo
 							exit 1
 							}
@@ -350,8 +316,7 @@ function compilecdhit {
 							echo "\"CD-HIT\" is available. OK."
 								} || {
 								echo
-								echo "Error! Installation of \"CD-HIT\" failed. Please, do it manually. For details see"
-								echo "\"brew info homebrew/science/cd-hit\" and \"brew help\"."
+								echo "Error! Installation of \"CD-HIT\" failed. Please, do it manually. For details see \"brew info homebrew/science/cd-hit\" and \"brew help\"."
 								echo
 								exit 1
 								}
@@ -363,8 +328,7 @@ function compilecdhit {
 						;;
 					M|m)
 						echo
-						echo "Please, go to http://weizhongli-lab.org/cd-hit/, install \"CD-HIT\" and ensure"
-						echo "  it is in PATH."
+						echo "Please, go to http://weizhongli-lab.org/cd-hit/, install \"CD-HIT\" and ensure it is in PATH."
 						echo
 						exit
 						;;
@@ -465,16 +429,14 @@ eolcheck $TSVLIST
 eolcheck $SEQUENCES0
 
 # Check if FASTA input files are non-interleaved (required) - if not, FASTA input file converted
-echo "Checking if input FASTA files are non-interleaved (required) - interleaved"
-echo "  FASTA files are converted not to be interleaved"
+echo "Checking if input FASTA files are non-interleaved (required) - interleaved FASTA files are converted not to be interleaved"
 echo
 noninterleavedfasta $REFERENCECP0 $REFERENCECP
 noninterleavedfasta $SEQUENCES0 $SEQUENCES
 
 # Step 8: Retention of those contigs that comprise exons ≥ bait length (default is 120 bp) and have a certain minimum total locus length
 
-echo "Step 8 of the pipeline - retention of those contigs that comprise exons ≥ bait"
-echo "  length ($BAITL bp) and have a certain minimum total locus length"
+echo "Step 8 of the pipeline - retention of those contigs that comprise exons ≥ bait length ($BAITL bp) and have a certain minimum total locus length"
 
 # Check if TSV output of Geneious contains at least required columns
 echo
@@ -524,8 +486,7 @@ if grep -q "# Sequences" $TSVLIST; then
 		exit 1
 	fi || {
 		echo
-		echo "Error! Checking of required columns failed. Aborting."
-		echo "Check if file $TSVLIST is correct TSV file correctly exported from Geneious."
+		echo "Error! Checking of required columns failed. Aborting. Check if file $TSVLIST is correct TSV file correctly exported from Geneious."
 		echo
 		exit 1
 		}
@@ -538,28 +499,21 @@ if egrep -q "^# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[
 		TSVLIST2=$TSVLIST
 		echo
 	else
-		echo "Input file $TSVLIST seems to contain more columns or columns in"
-		echo "  another order than required."
-		echo "Needed columns will be extracted in required order."
+		echo "Input file $TSVLIST seems to contain more columns or columns in another order than required. Needed columns will be extracted in required order."
 		checktools perl
 		$SCRIPTDIR/geneious_column_separator.pl $TSVLIST || {
 			echo
-			echo "Error! Extraction failed. Aborting."
-			echo "Either script $SCRIPTDIR/geneious_column_separator.pl"
-			echo "  is missing or there is something wrong with $TSVLIST"
-			echo "Please, prepare required file manually."
+			echo "Error! Extraction failed. Aborting. Either script $SCRIPTDIR/geneious_column_separator.pl is missing or there is something wrong with $TSVLIST Please, prepare required file manually."
 			echo -e "$REQUIREDCOLS"
 			echo
 			exit 1
 			}
 		TSVLIST2="${TSVLIST%.*}.columns.tsv"
-		echo "File with extracted columns was saved as"
-		echo "$TSVLIST2 for possible later usage."
+		echo "File with extracted columns was saved as $TSVLIST2 for possible later usage."
 		confirmgo
 	fi || {
 		echo
-		echo "Error! Checking of required columns failed. Aborting."
-		echo "Check if file $TSVLIST is correct TSV file correctly exported from Geneious."
+		echo "Error! Checking of required columns failed. Aborting. Check if file $TSVLIST is correct TSV file correctly exported from Geneious."
 		echo
 		exit 1
 		}
@@ -572,8 +526,7 @@ echo
 # Calculation of the total number of base pairs, based on exons ≥ bait length
 { echo "Total number of base pairs: `cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | awk '{s+=$1}END{print s}'`."; } || {
 	echo
-	echo "Error! Checking statistics failed. Aborting. Check if file"
-	echo "$TSVLIST2 is correct TSV file containing all required columns:"
+	echo "Error! Checking statistics failed. Aborting. Check if file $TSVLIST2 is correct TSV file containing all required columns:"
 	echo -e "$REQUIREDCOLS"
 	echo
 	exit 1
@@ -583,8 +536,7 @@ confirmgo
 # Check number of contigs
 { echo "Number of contigs longer than $BAITL bp: `cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | wc -l`."; } || {
 	echo
-	echo "Error! Checking number of contigs failed. Aborting. Check if file"
-	echo "$TSVLIST2 is correct TSV file containing all required columns"
+	echo "Error! Checking number of contigs failed. Aborting. Check if file $TSVLIST2 is correct TSV file containing all required columns"
 	echo -e "$REQUIREDCOLS"
 	echo
 	exit 1
@@ -601,8 +553,7 @@ fasta2tab $SEQUENCES $SEQUENCESTAB
 	awk -F '[_\t]' '{ printf "%012d_", $1; print; }' $SEQUENCESTAB > $SEQUENCESTAB.temp &&
 	mv $SEQUENCESTAB.temp $SEQUENCESTAB &&
 	sed -i 's/_[[:digit:]]\+//' $SEQUENCESTAB; } || {
-		echo "Error! Modifications of FASTA labels failed. Aborting."
-		echo "Check if $SEQUENCESTAB is correct file."
+		echo "Error! Modifications of FASTA labels failed. Aborting. Check if $SEQUENCESTAB is correct file."
 		echo
 		exit 1
 		}
@@ -611,8 +562,7 @@ echo
 # Separate the assembled sequences
 echo "Separating assembled sequences"
 grep 'Assembly\|Contig' $SEQUENCESTAB > $SEQUENCESTABASSE || {
-	echo "Error! Separation of assembled sequences failed. Aborting."
-	echo "Check if $SEQUENCESTAB is correct file (FASTA converted into TAB)."
+	echo "Error! Separation of assembled sequences failed. Aborting. Check if $SEQUENCESTAB is correct file (FASTA converted into TAB)."
 	echo
 	exit 1
 	}
@@ -629,8 +579,7 @@ for LOCUSLENGTH in 0360 0480 0600 0720 0840 0960 1080 1200 1320 1440 1560 1680 1
 	echo -e "≥$LOCUSLENGTH bp\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}')\t\t$(awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$LOCUSLENGTHN"'' | wc -l)"
 	done || {
 		echo
-		echo "Error! Checking number of assembled sequences failed. Aborting."
-		echo "Check if file $SEQUENCESTABASSE is correct (FASTA converted into TAB)."
+		echo "Error! Checking number of assembled sequences failed. Aborting. Check if file $SEQUENCESTABASSE is correct (FASTA converted into TAB)."
 		echo
 		exit 1
 		}
@@ -638,8 +587,7 @@ echo
 
 # Select the optimal minimum total locus length
 if [ "$STARTINI" == "I" ]; then
-	echo "Select minimum total locus length. Possible values are 360, 480, 600,"
-	echo "  720, 840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040."
+	echo "Select minimum total locus length. Possible values are 360, 480, 600, 720, 840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040."
 	read MINLOCUSLENGTHTEST
 	while :
 		do
@@ -705,8 +653,7 @@ if [ "$STARTINI" == "I" ]; then
 				break
 				;;
 			*)
-				echo "Wrong option. Use 360, 480, 600, 720, 840, 960, 1080, 1200, 1320, 1440,"
-				echo "  1560, 1680, 1800, 1920 or 2040."
+				echo "Wrong option. Use 360, 480, 600, 720, 840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040."
 				read MINLOCUSLENGTHTEST
 				;;
 			esac
@@ -723,8 +670,7 @@ MINLOCUSLENGTHN=$(expr $MINLOCUSLENGTH - 1)
 echo "Saving sequences of selected length (≥$MINLOCUSLENGTH bp)"
 { awk '{print $1"\t"length($2)}' $SEQUENCESTABASSE | sed 's/^.*\([[:digit:]]\{12\}\).*\t/\1\t/' | awk '$2>'"$BAITLN"'' | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' > $SEQUENCESPROBESLOCUSLENGTH; } || {
 	echo
-	echo "Error! Saving sequences of selected length failed. Aborting."
-	echo "Check if file $SEQUENCESTABASSE is correct (FASTA converted into TAB)."
+	echo "Error! Saving sequences of selected length failed. Aborting. Check if file $SEQUENCESTABASSE is correct (FASTA converted into TAB)."
 	echo
 	exit 1
 	}
@@ -736,8 +682,7 @@ echo
 echo "Extracting and sorting the exons making up genes of ≥$MINLOCUSLENGTH bp"
 { sed 's/^/Assembly_/' $SEQUENCESPROBESLOCUSLENGTH | cut -f 1 -d " " | sort -k 1,1 > $SEQUENCESPROBESLOCUSLENGTHFORJOIN; } || {
 	echo
-	echo "Error! Extraction and sort of the exons failed. Aborting."
-	echo "Check if file $SEQUENCESPROBESLOCUSLENGTH is correct (FASTA converted into TAB)."
+	echo "Error! Extraction and sort of the exons failed. Aborting. Check if file $SEQUENCESPROBESLOCUSLENGTH is correct (FASTA converted into TAB)."
 	echo
 	exit 1
 	}
@@ -747,8 +692,7 @@ echo
 echo "Selecting ≥$BAITL bp exons"
 { awk '{print $1"\t"length($2)"\t"$2}' $SEQUENCESTABASSE | awk '$2>'"$BAITLN"'' > $SEQUENCESTABASSEBAITL; } || {
 	echo
-	echo "Error! Selection of the exons failed. Aborting."
-	echo "Check if file $SEQUENCESTABASSE is correct (FASTA converted into TAB)."
+	echo "Error! Selection of the exons failed. Aborting. Check if file $SEQUENCESTABASSE is correct (FASTA converted into TAB)."
 	echo
 	exit 1
 	}
@@ -758,8 +702,7 @@ echo
 echo "Sorting exons ≥$BAITL bp"
 { grep '[Cc]ontig' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*\([Cc]ontig_[[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT && REMAINING="YES"; } || {
 	echo
-	echo "Error! Sorting of exons failed. Aborting."
-	echo "Check if file $SEQUENCESTABASSEBAITL is correct (FASTA converted into TAB)."
+	echo "Error! Sorting of exons failed. Aborting. Check if file $SEQUENCESTABASSEBAITL is correct (FASTA converted into TAB)."
 	echo
 	exit 1
 	}
@@ -767,8 +710,7 @@ echo "Sorting exons ≥$BAITL bp"
 if [ ! -s "$SEQUENCESTABASSEBAITLSORT" ]; then
 	{ grep '[Aa]ssembly' $SEQUENCESTABASSEBAITL | sed 's/^.*\([[:digit:]]\{12\}\).*[Aa]ssembly_\([[:digit:]]\{1,\}\).*\>\t\([[:digit:]]\{1,\}\)\t\([[:alpha:]]\{1,\}$\)/Assembly_\1\t\2\t\3\t\4/' | sort -k 1,1 > $SEQUENCESTABASSEBAITLSORT && REMAINING="NO"; } || {
 		echo
-		echo "Error! Sorting of exons failed. Aborting."
-		echo "Check if file $SEQUENCESTABASSEBAITL is correct (FASTA converted into TAB)."
+		echo "Error! Sorting of exons failed. Aborting. Check if file $SEQUENCESTABASSEBAITL is correct (FASTA converted into TAB)."
 		echo
 		exit 1
 		}
@@ -779,9 +721,7 @@ echo
 echo "Selecting all exons ≥$BAITL bp and all exons making up genes of ≥$MINLOCUSLENGTH bp"
 join $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITLSORT > $SEQUENCESPROBES120600FIN || {
 	echo
-	echo "Error! Selection of the exons failed. Aborting."
-	echo "Check if files $SEQUENCESPROBESLOCUSLENGTHFORJOIN and $SEQUENCESTABASSEBAITLSORT"
-	echo "  are correct (tabular files listing respective exons and their sequences)."
+	echo "Error! Selection of the exons failed. Aborting. Check if files $SEQUENCESPROBESLOCUSLENGTHFORJOIN and $SEQUENCESTABASSEBAITLSORT are correct (tabular files listing respective exons and their sequences)."
 	echo
 	exit 1
 	}
@@ -792,8 +732,7 @@ echo "Converting TAB to FASTA"
 { sed 's/ /_/' $SEQUENCESPROBES120600FIN | sed 's/ /_/' > $SEQUENCESPROBES120600MODIF &&
 	sed 's/^/>/' $SEQUENCESPROBES120600MODIF | sed 's/ /\n/' > $SEQUENCESPROBES120600ASSEM; } || {
 		echo
-		echo "Error! Conversion of FASTA to TAB failed. Aborting."
-		echo "Check if file $SEQUENCESPROBES120600FIN is correct FASTA file."
+		echo "Error! Conversion of FASTA to TAB failed. Aborting. Check if file $SEQUENCESPROBES120600FIN is correct FASTA file."
 		echo
 		exit 1
 		}
@@ -804,8 +743,7 @@ echo
 if [ "$REMAINING"=="YES" ]; then
 	{ grep -v '[Cc]ontig' $SEQUENCESTABASSEBAITL | awk '$2>'"$MINLOCUSLENGTHN"'' | sed 's/^/>/' | sed 's/\t/_/' | sed 's/\t/\n/' > $SEQUENCESPROBES120600CONTIG; } || {
 		echo
-		echo "Error! Extraction of remaining exons failed. Aborting."
-		echo "Check if file $SEQUENCESTABASSEBAITL is correct (FASTA converted into TAB)."
+		echo "Error! Extraction of remaining exons failed. Aborting. Check if file $SEQUENCESTABASSEBAITL is correct (FASTA converted into TAB)."
 		echo
 		exit 1
 		}
@@ -815,8 +753,7 @@ if [ "$REMAINING"=="YES" ]; then
 echo "Writing FASTA file with preliminary probe sequences"
 cat $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG > $PROBEPRELIM0 || {
 	echo
-	echo "Error! Writing of preliminary probe sequences failed. Aborting."
-	echo "Check if files $SEQUENCESPROBES120600ASSEM and $SEQUENCESPROBES120600CONTIG are correct FASTA files."
+	echo "Error! Writing of preliminary probe sequences failed. Aborting. Check if files $SEQUENCESPROBES120600ASSEM and $SEQUENCESPROBES120600CONTIG are correct FASTA files."
 	echo
 	exit 1
 	}
@@ -826,49 +763,40 @@ echo
 echo "Ensuring all sequences have correct labels"
 sed 's/^>[^0123456789]*\([[:digit:]]\{12\}\)[^0123456789]*\([[:digit:]]\{1,\}\)[^0123456789]*\([[:digit:]]\{1,\}\)$/>Assembly_\1_Contig_\2_\3/' $PROBEPRELIM0 > $PROBEPRELIM || {
 	echo
-	echo "Error! Checking of FASTA sequence labels failed. Aborting."
-	echo "Check if file $PROBEPRELIM0 is correct FASTA file."
+	echo "Error! Checking of FASTA sequence labels failed. Aborting. Check if file $PROBEPRELIM0 is correct FASTA file."
 	echo
 	exit 1
 	}
 echo
-echo "Preliminary probe sequences saved as"
-echo "  $PROBEPRELIM for possible later usage."
+echo "Preliminary probe sequences saved as $PROBEPRELIM for possible later usage."
 confirmgo
 
 # Step 9: Make the final quality control of the probe sequences
 
-echo "Step 9 of the pipeline - removal of probe sequences sharing ≥90%"
-echo "  sequence similarity"
+echo "Step 9 of the pipeline - removal of probe sequences sharing ≥90% sequence similarity"
 echo
 
 # Check for sequence similarity between the developed probe sequences with CD-HIT-EST
 
 # Clustering exons with 100% sequence identity: retaining unclustered exons and, in case of 100% sequence identity, retaining the longest exon
-echo "Checking sequence similarity between the probe sequences (exons)"
-echo "  Detecting identical probe sequences and retaining the longest one"
-echo "  in such a case. Retaining also the unclustered probe sequences."
+echo "Checking sequence similarity between the probe sequences (exons) Detecting identical probe sequences and retaining the longest one in such a case. Retaining also the unclustered probe sequences."
 echo
 cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCLUSTER100 -d 0 -c 1.0 -p 1 || {
 	echo
-	echo "Error! Checking of the sequence similarity failed. Aborting."
-	echo "Check if file $PROBEPRELIM is correct FASTA file."
+	echo "Error! Checking of the sequence similarity failed. Aborting. Check if file $PROBEPRELIM is correct FASTA file."
 	echo
 	exit 1
 	}
 echo
-echo "Clustered exons with 100% sequence identity were saved as"
-echo "$PROBEPRELIMCLUSTER100 for possible later usage."
+echo "Clustered exons with 100% sequence identity were saved as $PROBEPRELIMCLUSTER100 for possible later usage."
 confirmgo
 
 # Clustering and removing exons with more than a certain sequence similarity
-echo "Detecting and removing probe sequences (exons) that are similar"
-echo "  to each other above a certain threshold"
+echo "Detecting and removing probe sequences (exons) that are similar to each other above a certain threshold"
 echo
 cd-hit-est -i $PROBEPRELIMCLUSTER100 -o $PROBEPRELIMCLUSTER90 -d 0 -c $CDHITSIM -p 1 -g 1 || {
 	echo
-	echo "Error! Checking of the probe sequence failed. Aborting."
-	echo "Check if file $PROBEPRELIMCLUSTER100 is correct FASTA file."
+	echo "Error! Checking of the probe sequence failed. Aborting. Check if file $PROBEPRELIMCLUSTER100 is correct FASTA file."
 	echo
 	exit 1
 	}
@@ -876,34 +804,29 @@ echo
 # Finding those clusters from a CD-HIT CLSTR file that include only one sequence or multiple sequences with 100% identity (in which case the longest sequence is choosen)
 python $SCRIPTDIR/grab_singleton_clusters.py -i $PROBEPRELIMCLUSTER90.clstr -o $UNIQUEPROBEPRELIMCLUSTER90 || {
 	echo
-	echo "Error! Checking of the probe sequence failed. Aborting."
-	echo "Check if file $PROBEPRELIMCLUSTER90.clstr is correct output of cd-hit-est."
+	echo "Error! Checking of the probe sequence failed. Aborting. Check if file $PROBEPRELIMCLUSTER90.clstr is correct output of cd-hit-est."
 	echo
 	exit 1
 	}
 
-echo "Unclustered exons and clustered exons with 100% identity were saved as"
-echo "  $UNIQUEPROBEPRELIMCLUSTER90 for possible later usage."
+echo "Unclustered exons and clustered exons with 100% identity were saved as $UNIQUEPROBEPRELIMCLUSTER90 for possible later usage."
 confirmgo
 
 echo "Postprocessing extracted sequences"
 { grep -v '>Cluster' $UNIQUEPROBEPRELIMCLUSTER90 | cut -d ' ' -f 2 | sed -e 's/\.\.\./\\\>/' -e 's/^/^/' > $UNIQUEPROBEPRELIM &&
 grep -A 1 -f $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 | sed '/^--$/d' > $UNIQUEPROBEPRELIMF; } || {
 	echo
-	echo "Error! Postprocessing of extracted sequences failed. Aborting."
-	echo "Check if file $UNIQUEPROBEPRELIMCLUSTER90 is correct output of cd-hit-est."
+	echo "Error! Postprocessing of extracted sequences failed. Aborting. Check if file $UNIQUEPROBEPRELIMCLUSTER90 is correct output of cd-hit-est."
 	echo
 	exit 1
 	}
 echo
-echo "Postprocessed extracted sequences were saved as"
-echo "  $UNIQUEPROBEPRELIMF for possible later usage."
+echo "Postprocessed extracted sequences were saved as $UNIQUEPROBEPRELIMF for possible later usage."
 confirmgo
 
 # Step 10: Retention of those probe sequences that comprise exons of a certain minimum length (default is 120 bp) and have a certain minimum total locus length
 
-echo "Step 10 of the pipeline - retention of those probe sequences that comprise exons"
-echo "  of a certain minimum length ($BAITL bp) and have a certain minimum total locus length"
+echo "Step 10 of the pipeline - retention of those probe sequences that comprise exons of a certain minimum length ($BAITL bp) and have a certain minimum total locus length"
 echo
 
 # One of the three outfiles of last steps of part 9 is a FASTA file, it has to be converted to TAB
@@ -913,8 +836,7 @@ fasta2tab $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT
 echo "Writing the exons into temporal file"
 { awk '{print $1"\t"length($2)}' $PROBEPRELIMCDHIT | sed 's/_/\t/g' | cut -f 2,6 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' > $PROBEPRELIMCDHIT2; } || {
 	echo
-	echo "Error! Writing of the exons failed. Aborting."
-	echo "Check if file $PROBEPRELIMCDHIT is correct file (sequences in TAB)."
+	echo "Error! Writing of the exons failed. Aborting. Check if file $PROBEPRELIMCDHIT is correct file (sequences in TAB)."
 	echo
 	exit 1
 	}
@@ -924,8 +846,7 @@ echo
 echo "Extracting and sorting the exons making up genes of ≥$MINLOCUSLENGTH bp"
 { sed 's/^/Assembly_/' $PROBEPRELIMCDHIT2 | cut -f 1 -d " " | sort -k 1,1 > $PROBEPRELIMFORJOIN; } || {
 	echo
-	echo "Error! Extraction and sorting of exons failed. Aborting."
-	echo "Check if file $PROBEPRELIMCDHIT2 is correct file (sequences in TAB)."
+	echo "Error! Extraction and sorting of exons failed. Aborting. Check if file $PROBEPRELIMCDHIT2 is correct file (sequences in TAB)."
 	echo
 	exit 1
 	}
@@ -935,8 +856,7 @@ echo
 echo "Modifying the exon number and sorting"
 { sed 's/_C/\tC/' $PROBEPRELIMCDHIT | sort -k 1,1 > $PROBEPRELIMSORT; } || {
 	echo
-	echo "Error! Modification of the exons failed. Aborting."
-	echo "Check if file $PROBEPRELIMCDHIT is correct file (sequences in TAB)."
+	echo "Error! Modification of the exons failed. Aborting. Check if file $PROBEPRELIMCDHIT is correct file (sequences in TAB)."
 	echo
 	exit 1
 	}
@@ -946,9 +866,7 @@ echo
 echo "Joining all exons ≥$BAITL bp and making up genes of ≥$MINLOCUSLENGTH bp"
 join $PROBEPRELIMFORJOIN $PROBEPRELIMSORT | sed 's/^\(.\+\) \(Contig\)/>\1_\2/' > $PROBEPRELIMFIN || {
 	echo
-	echo "Error! Joining of exons failed. Aborting."
-	echo "Check if files $PROBEPRELIMFORJOIN and $PROBEPRELIMSORT"
-	echo "  are correct files (sequences in TAB)."
+	echo "Error! Joining of exons failed. Aborting. Check if files $PROBEPRELIMFORJOIN and $PROBEPRELIMSORT are correct files (sequences in TAB)."
 	echo
 	exit 1
 	}
@@ -975,8 +893,7 @@ confirmgo
 echo "Converting TAB to FASTA"
 { sed 's/ /\n/' $PROBEPRELIMFIN > $PROBESEQUENCES; } || {
 	echo
-	echo "Error! Conversion of TAB to FASTA failed. Aborting."
-	echo "Check if file $PROBEPRELIMFIN is correct file (sequences in TAB)."
+	echo "Error! Conversion of TAB to FASTA failed. Aborting. Check if file $PROBEPRELIMFIN is correct file (sequences in TAB)."
 	echo
 	exit 1
 	}
@@ -985,35 +902,28 @@ echo
 echo "Success!"
 echo
 echo "================================================================================"
-echo "Probes with all sequences (including putative plastid genes) are in"
-echo "$PROBESEQUENCES"
-echo "This file contains the probe sequences."
-echo "In next step, putative plastid sequences will be removed."
-echo "We STRONGLY RECOMMEND to remove those genes from the final probe set."
+echo "Probes with all sequences (including putative plastid genes) are in $PROBESEQUENCES"
+echo "This file contains the probe sequences. In next step, putative plastid sequences will be removed. We STRONGLY RECOMMEND to remove those genes from the final probe set."
 echo "================================================================================"
 confirmgo
 
 # Step 11 - removal of putative cpDNA sequences in final probe list
 
-echo "Step 11 of the pipeline - detection of probe sequences sharing ≥$BLATIDENT% sequence"
-echo "similarity with the plastome reference"
+echo "Step 11 of the pipeline - detection of probe sequences sharing ≥$BLATIDENT% sequence imilarity with the plastome reference"
 echo
 
 # Remove remaining cp genes from probe set
 echo "Detecting remaining plastid genes in probe set"
 blat -t=dna -q=dna -minIdentity=$BLATIDENT -out=pslx $REFERENCECP $PROBESEQUENCES $PROBESEQUENCESCP || {
 	echo
-	echo "Error! Detection of remaining plastid genes failed. Aborting."
-	echo "Check if files $REFERENCECP and $PROBESEQUENCES are correct FASTA file."
+	echo "Error! Detection of remaining plastid genes failed. Aborting. Check if files $REFERENCECP and $PROBESEQUENCES are correct FASTA file."
 	echo
 	exit 1
 	}
 echo
 
 echo "================================================================================"
-echo "File $PROBESEQUENCESCP"
-echo "contains putative plastid genes found in $PROBESEQUENCES set."
-echo "We STRONGLY RECOMMEND to remove those genes from the final probe set."
+echo "File $PROBESEQUENCESCP contains putative plastid genes found in $PROBESEQUENCES set. We STRONGLY RECOMMEND to remove those genes from the final probe set."
 echo "================================================================================"
 confirmgo
 
@@ -1021,8 +931,7 @@ confirmgo
 echo "Preparing to remove putative plastid genes from final probe set"
 sed 1,5d $PROBESEQUENCESCP | cut -f 10 | sort -u | sed 's/^/\\</g' | sed 's/$/\\>/g' > $PROBESEQUENCESCPLIST || {
 	echo
-	echo "Error! Processing of file containing remaining putative plastid sequences failed. Aborting."
-	echo "Check if file $PROBESEQUENCESCP correct PSLX file (BLAT output)."
+	echo "Error! Processing of file containing remaining putative plastid sequences failed. Aborting. Check if file $PROBESEQUENCESCP correct PSLX file (BLAT output)."
 	echo
 	exit 1
 	}
@@ -1030,8 +939,7 @@ sed 1,5d $PROBESEQUENCESCP | cut -f 10 | sort -u | sed 's/^/\\</g' | sed 's/$/\\
 echo "Removing remaining putative plastid genes from final probe set and converting to FASTA"
 grep -v -f $PROBESEQUENCESCPLIST $PROBEPRELIMFIN | sed 's/ /\n/' > $PROBESEQUENCESNOCP || {
 	echo
-	echo "Error! Removal of putative plastid genes from final probe set failed. Aborting."
-	echo "Check if file $PROBEPRELIMFIN is correct file (sequences in TAB)."
+	echo "Error! Removal of putative plastid genes from final probe set failed. Aborting. Check if file $PROBEPRELIMFIN is correct file (sequences in TAB)."
 	echo
 	exit 1
 	}
@@ -1040,8 +948,7 @@ echo
 echo "Success!"
 echo
 echo "================================================================================"
-echo "Final output file was written as"
-echo "$PROBESEQUENCESNOCP"
+echo "Final output file was written as $PROBESEQUENCESNOCP"
 echo "This file contains the probe sequences. Putative plastid genes were removed."
 echo "================================================================================"
 confirmgo
@@ -1050,14 +957,7 @@ confirmgo
 echo "Removing unneeded temporal files"
 rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESCPLIST || {
 	echo
-	echo "Error! Removal of temporal files failed. Remove following files manually:"
-	echo "  \"$REFERENCECP\", \"$SEQUENCES\", \"$SEQUENCESTAB\","
-	echo "  \"$SEQUENCESTABASSE\", \"$SEQUENCESPROBESLOCUSLENGTH\",\"$SEQUENCESPROBESLOCUSLENGTHFORJOIN\","
-	echo "  \"$SEQUENCESTABASSEBAITL\", \"$SEQUENCESTABASSEBAITLSORT\",\"$SEQUENCESPROBES120600FIN\","
-	echo "  \"$SEQUENCESPROBES120600MODIF\", \"$SEQUENCESPROBES120600ASSEM\", \"$SEQUENCESPROBES120600CONTIG\","
-	echo "  \"$PROBEPRELIM0\", \"$PROBEPRELIMCLUSTER90\", \"$UNIQUEPROBEPRELIM\","
-	echo "  \"$PROBEPRELIMCDHIT\", \"$PROBEPRELIMFORJOIN\", \"$PROBEPRELIMSORT\","
-	echo "  \"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESCPLIST\"."
+	echo "Error! Removal of temporal files failed. Remove following files manually: \"$REFERENCECP\", \"$SEQUENCES\", \"$SEQUENCESTAB\", \"$SEQUENCESTABASSE\", \"$SEQUENCESPROBESLOCUSLENGTH\",\"$SEQUENCESPROBESLOCUSLENGTHFORJOIN\", \"$SEQUENCESTABASSEBAITL\", \"$SEQUENCESTABASSEBAITLSORT\",\"$SEQUENCESPROBES120600FIN\", \"$SEQUENCESPROBES120600MODIF\", \"$SEQUENCESPROBES120600ASSEM\", \"$SEQUENCESPROBES120600CONTIG\", \"$PROBEPRELIM0\", \"$PROBEPRELIMCLUSTER90\", \"$UNIQUEPROBEPRELIM\", \"$PROBEPRELIMCDHIT\", \"$PROBEPRELIMFORJOIN\", \"$PROBEPRELIMSORT\", \"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESCPLIST\"."
 	confirmgo
 	}
 echo
