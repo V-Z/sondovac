@@ -37,7 +37,6 @@ function generaloptions {
 	echo
 	echo "Usage options:"
 	echo -e "\t-h, -v\tPrint this help message and exit."
-	echo -e "\t-u\tCheck for updates of Sondovač at $WEB and download of newer version will be offered to the user."
 	echo -e "\t-l\tDisplay LICENSE for license information (this script is licensed under GNU GPL v.3, other software under variable licenses). Exit viewing by pressing the \"Q\" key."
 	echo -e "\t-r\tDisplay README for detailed usage instructions. Exit viewing by pressing the \"Q\" key. More information is available in the PDF manual."
 	echo -e "\t-p\tDisplay INSTALL for detailed installation instructions. Exit viewing by pressing the \"Q\" key. More information is available in the PDF manual."
@@ -78,65 +77,6 @@ function checktools {
 		echo
 		exit 1
 		}
-	}
-
-# Function to update whole script
-function scriptupdater {
-	downloaderselector
-	checktools grep
-	checktools cut
-	checktools mv
-	echo
-	echo "Checking for updates..."
-	{ $DOWNLOADER .info https://raw.githubusercontent.com/V-Z/sondovac/master/.info &&
-		ONLINEVERSION=`grep 'CURRENTVERSION' .info | cut -f 2 -d "="` &&
-		mv .info .info~
-		} || {
-			echo
-			echo "Error! Downloading of version information available on-line failed. Please, go to $WEB and check for available version manually. Your current version is $SCRIPTVERSION."
-			echo
-			exit 1
-			}
-	echo
-	if [[ (( "$SCRIPTVERSION" < "$ONLINEVERSION" )) ]]; then
-		echo "Your version is $SCRIPTVERSION. On-line available version $ONLINEVERSION is newer. Would you like to install newer version now? (Yes/No)"
-		read UPDATER
-		while :
-			do
-				case "$UPDATER" in
-					Y|y|YES|Yes|yes)
-						checktools unzip
-						echo
-						echo "Downloading newer version of the script..."
-						NEWVERSION=`curl -s -L https://raw.githubusercontent.com/V-Z/sondovac/master/.info | grep NEWVERSION | cut -f 2 -d "="`
-						$DOWNLOADER sondovac.$ONLINEVERSION.zip $NEWVERSION || {
-							echo
-							echo "Error! Downloading of newer version available on-line failed. Please, go to $WEB and download and unpack newer version manually."
-							echo
-							exit 1
-							}
-						echo
-						unzip sondovac.$ONLINEVERSION.zip
-						echo
-						echo "Newer version $ONLINEVERSION is available in directory \"$WORKDIR/sondovac\". Please, replace current files by content of this directory and launch newer version."
-						echo
-						break
-						;;
-					N|n|NO|No|no)
-						echo
-						echo "Please, go to $WEB and download and unpack newer script version manually."
-						echo
-						break
-						;;
-					*) echo "Wrong option. Use Y or N." && read UPDATER;;
-					esac
-				done
-		else
-			echo
-			echo "Your version of the script is the newest one (version $SCRIPTVERSION.). See also README, and in case of questions visit $WEB."
-			echo
-			fi
-	exit
 	}
 
 # Display license information

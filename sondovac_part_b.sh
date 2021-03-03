@@ -46,7 +46,7 @@ SEQUENCES=""
 SEQUENCES0=""
 
 # Parse initial arguments
-while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
+while getopts "hvlrpeo:inc:x:z:b:d:y:k:" START; do
 	case "$START" in
 		h|v)
 			generaloptions
@@ -66,9 +66,6 @@ while getopts "hvulrpeo:inc:x:z:b:d:y:k:" START; do
 			echo -e "\tWARNING! If parameters -b, -d or -y are not provided, default values are taken, and it is not possible to change them later (not even in interactive mode)."
 			echo
 			exit 2
-			;;
-		u)
-			scriptupdater
 			;;
 		l)
 			licenser

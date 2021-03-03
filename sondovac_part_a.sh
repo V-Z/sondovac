@@ -48,7 +48,7 @@ REFERENCEMT=""
 REFERENCEMT0=""
 
 # Parse initial arguments
-while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
+while getopts "hvlrpeo:inf:c:m:t:q:a:y:s:g" START; do
 	case "$START" in
 		h|v)
 			generaloptions
@@ -84,9 +84,6 @@ while getopts "hvulrpeo:inf:c:m:t:q:a:y:s:g" START; do
 			echo "$0 -s 950"
 			echo
 			exit 2
-			;;
-		u)
-			scriptupdater
 			;;
 		l)
 			licenser
