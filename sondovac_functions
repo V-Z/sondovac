@@ -6,95 +6,69 @@ RELEASEDATE=2017-12-18
 # Web page of the script
 WEB="https://github.com/V-Z/sondovac/"
 
-# Define font styles
-BOLD=$(tput bold) # bold text
-UNDE=$(tput smul) # underlined text
-NUND=$(tput rmul) # cancel underlined text
-NORM=$(tput sgr0) # back to normal text - resets colors, bold and reverse text
-# Text colors
-BLAF=$(tput setaf 0) # black text color
-REDF=$(tput setaf 1) # red text color
-GREF=$(tput setaf 2) # green text color
-YELF=$(tput setaf 3) # yellow text color
-BLUF=$(tput setaf 4) # blue text color
-MAGF=$(tput setaf 5) # magenta text color
-CYAF=$(tput setaf 6) # cyan text color
-WHIF=$(tput setaf 7) # white text color
-REVF=$(tput setaf 9) # reset default text color
-# Background colors
-BLAB=$(tput setab 0) # black background color
-REDB=$(tput setab 1) # red background color
-GREB=$(tput setab 2) # green background color
-YELB=$(tput setab 3) # yellow background color
-BLUB=$(tput setab 4) # blue background color
-MAGB=$(tput setab 5) # magenta background color
-CYAB=$(tput setab 6) # cyan background color
-WHIB=$(tput setab 7) # white background color
-REVB=$(tput setab 9) # reset default background color
-
 # Introductory message for users
 echo
-echo " ${BLUF}##############################################################################"
+echo " ##############################################################################"
 echo " #                                                                            #"
-echo " #     ${REDF}${BOLD}Sondovač${NORM}${REDF} is a script to create orthologous low-copy nuclear probes     ${BLUF}#"
-echo " #${NORM}        ${REDF}from transcriptome and genome skim data for target enrichment       ${BLUF}#"
-echo " #${NORM}                                                                            ${BLUF}#"
-echo " #${NORM}       Copyright (C) 2015 R. Schmickl, A. Liston, V. Zeisek and others      ${BLUF}#"
-echo " #${NORM}                                                                            ${BLUF}#"
-echo " #${NORM}          When using this script, please cite Schmickl et al. 2016          ${BLUF}#"
-echo " #${NORM}                                                                            ${BLUF}#"
-echo " ##############################################################################${NORM}"
+echo " #     Sondovač is a script to create orthologous low-copy nuclear probes     #"
+echo " #        from transcriptome and genome skim data for target enrichment       #"
+echo " #                                                                            #"
+echo " #       Copyright (C) 2015 R. Schmickl, A. Liston, V. Zeisek and others      #"
+echo " #                                                                            #"
+echo " #          When using this script, please cite Schmickl et al. 2016          #"
+echo " #                                                                            #"
+echo " ##############################################################################"
 echo
-echo -e "\tThis is version ${REDF}$SCRIPTVERSION${NORM} released ${REDF}$RELEASEDATE${NORM}."
-echo -e "\tFor newest version check ${REDF}$WEB${NORM} or"
-echo -e "\t\t${REDF}$0 -u${NORM}"
-echo -e "\tIn case of problems not covered in README${NORM} for user support see"
-echo -e "\t\t${REDF}$WEB${NORM}"
+echo -e "\tThis is version $SCRIPTVERSION released $RELEASEDATE."
+echo -e "\tFor newest version check $WEB or"
+echo -e "\t\t$0 -u"
+echo -e "\tIn case of problems not covered in README for user support see"
+echo -e "\t\t$WEB"
 echo -e "\tFor basic usage see"
-echo -e "\t\t${REDF}$0 -h${NORM}"
-echo -e "\tFor detailed usage instructions see README${NORM} or"
-echo -e "\t\t${REDF}$0 -r${NORM}"
+echo -e "\t\t$0 -h"
+echo -e "\tFor detailed usage instructions see README or"
+echo -e "\t\t$0 -r"
 echo
-echo "${CYAF}This program is free software${NORM}: you can redistribute it and/or modify it under"
+echo "This program is free software: you can redistribute it and/or modify it under"
 echo "the terms of the GNU General Public License as published by the Free Software"
 echo "Foundation, either version 3 of the License, or (at your option) any later"
-echo "version. For more information see ${CYAF}LICENSE${NORM}, ${CYAF}https://gnu.org/licenses/gpl.html${NORM}"
-echo "or \"${CYAF}$0 -l${NORM}\"."
+echo "version. For more information see LICENSE, https://gnu.org/licenses/gpl.html"
+echo "or \"$0 -l\"."
 echo
-echo "This program is distributed in the hope that it will be useful, but ${REDF}WITHOUT ANY"
+echo "This program is distributed in the hope that it will be useful, but WITHOUT ANY"
 echo "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR"
-echo "A PARTICULAR PURPOSE${NORM}. See the GNU General Public License for more details."
+echo "A PARTICULAR PURPOSE. See the GNU General Public License for more details."
 echo
-echo "${BLUF}################################################################################${NORM}"
+echo "################################################################################"
 echo
 
 # Help for command line options shared by both parts of the script
 function generaloptions {
 	echo
-	echo "${CYAF}Usage options:${NORM}"
-	echo -e "\t${REDF}-h${NORM}, ${REDF}-v${NORM}\t${CYAF}Print this help message and exit."
-	echo -e "\t${REDF}-u${NORM}\t${CYAF}Check for updates${NORM} of Sondovač at ${REDF}$WEB${NORM}"
+	echo "Usage options:"
+	echo -e "\t-h, -v\tPrint this help message and exit."
+	echo -e "\t-u\tCheck for updates of Sondovač at $WEB"
 	echo -e "\t\t  and download of newer version will be offered to the user."
-	echo -e "\t${REDF}-l${NORM}\t${CYAF}Display ${REDF}LICENSE${NORM} for license information (this script is licensed"
+	echo -e "\t-l\tDisplay LICENSE for license information (this script is licensed"
 	echo -e "\t\t  under GNU GPL v.3, other software under variable licenses)."
-	echo -e "\t\t  Exit viewing by pressing the \"${REDF}Q${NORM}\" key."
-	echo -e "\t${REDF}-r${NORM}\t${CYAF}Display ${REDF}README${NORM} for detailed usage instructions. Exit viewing by"
-	echo -e "\t\t  pressing the \"${REDF}Q${NORM}\" key. More information is available in the PDF"
+	echo -e "\t\t  Exit viewing by pressing the \"Q\" key."
+	echo -e "\t-r\tDisplay README for detailed usage instructions. Exit viewing by"
+	echo -e "\t\t  pressing the \"Q\" key. More information is available in the PDF"
 	echo -e "\t\t  manual."
-	echo -e "\t${REDF}-p${NORM}\t${CYAF}Display ${REDF}INSTALL${NORM}${NORM} for detailed installation instructions. Exit"
-	echo -e "\t\t  viewing by pressing the \"${REDF}Q${NORM}\" key. More information is available"
+	echo -e "\t-p\tDisplay INSTALL for detailed installation instructions. Exit"
+	echo -e "\t\t  viewing by pressing the \"Q\" key. More information is available"
 	echo -e "\t\t  in the PDF manual."
-	echo -e "\t${REDF}-e${NORM}\t${CYAF}Display detailed citation information${NORM} and exit."
-	echo -e "\t${REDF}-o${NORM}\t${CYAF}Set name of output files.${NORM} Output files will start with that"
+	echo -e "\t-e\tDisplay detailed citation information and exit."
+	echo -e "\t-o\tSet name of output files. Output files will start with that"
 	echo -e "\t\t  name. Do not use spaces or special characters, only letters, numbers, dots, underscores or minuses."
 	echo -e "\t\t  See README or PDF manual for details."
-	echo -e "\t${REDF}-i${NORM}\t${CYAF}Running in interactive mode.${NORM} Script will on-demand ask for"
+	echo -e "\t-i\tRunning in interactive mode. Script will on-demand ask for"
 	echo -e "\t\t  required input files, installation of missing software etc."
 	echo -e "\t\t  This is the recommended default value (the script runs"
-	echo -e "\t\t  interactively without explicitly using option ${BOLD}-n${NORM})."
-	echo -e "\t${REDF}-n${NORM}\t${CYAF}Running in non-interactive mode.${NORM} The user ${BOLD}must${NORM} provide at least"
-	echo -e "\t\t  the required input files below. You can use ${BOLD}only one${NORM} of the"
-	echo -e "\t\t  parameters ${BOLD}-i${NORM} or ${BOLD}-n${NORM} (not both of them). If script fails"
+	echo -e "\t\t  interactively without explicitly using option -n)."
+	echo -e "\t-n\tRunning in non-interactive mode. The user must provide at least"
+	echo -e "\t\t  the required input files below. You can use only one of the"
+	echo -e "\t\t  parameters -i or -n (not both of them). If script fails"
 	echo -e "\t\t  to find some of the required software packages, it will exit."
 	}
 
@@ -102,8 +76,8 @@ function generaloptions {
 function checkmodef {
 	if [ "$CHECKMODE" == 2 ]; then
 		echo
-		echo "${REDF}${BOLD}Error!${NORM} You provided both parameters ${BOLD}-i${NORM} (interactive mode) and ${BOLD}-n${NORM}"
-		echo "  (non-interactive mode). You ${BOLD}must${NORM} use ${BOLD}only one${NORM} of them (${BOLD}either -i${NORM} or ${BOLD}-n${NORM})!"
+		echo "Error! You provided both parameters -i (interactive mode) and -n"
+		echo "  (non-interactive mode). You must use only one of them (either -i or -n)!"
 		echo
 		exit 1
 		fi
@@ -113,10 +87,10 @@ function checkmodef {
 function confirmgo {
 	if [ "$STARTINI" == "I" ]; then
 		echo
-		echo "${REDF}${BOLD}Press any key to continue...${NORM} (or press ${CYAF}${BOLD}Ctrl${NORM}+${CYAF}${BOLD}C${NORM} to ${CYAF}exit${NORM} the script)."
+		echo "Press any key to continue... (or press Ctrl+C to exit the script)."
 		read -n 1
 		echo
-		echo "${CYAF}Continuing...${NORM}"
+		echo "Continuing..."
 		echo
 		else
 			echo
@@ -134,7 +108,7 @@ function downloaderselector {
 			echo "The script will use \"curl\" to download from the internet."
 			else
 				echo
-				echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Command \"${REDF}wget${CYAF}\" as well as \"${REDF}curl${CYAF}\" are missing.${NORM} The script can need one"
+				echo "Error! Command \"wget\" as well as \"curl\" are missing. The script can need one"
 				echo "of them to download some of the required software packages and other things from the internet."
 				echo "Please, install one of them manually and restart previous task."
 				echo
@@ -145,9 +119,9 @@ function downloaderselector {
 
 # Check availability of basic UNIX binaries
 function checktools {
-	{ command -v $1 >/dev/null 2>&1 && echo "Command \"${REDF}$1${NORM}\" is available. ${GREF}OK.${NORM}"; } || {
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Command\"${REDF}$1${CYAF}\" is required but not installed!${NORM} ${REDF}Aborting.${NORM}"
-		echo "Please, install \"$1\" and ensure it is in ${BOLD}PATH${NORM}."
+	{ command -v $1 >/dev/null 2>&1 && echo "Command \"$1\" is available. OK."; } || {
+		echo "Error! Command\"$1\" is required but not installed! Aborting."
+		echo "Please, install \"$1\" and ensure it is in PATH."
 		echo "It should be readily available for any UNIX-based system (Linux, Mac OS X, BSD, ...)."
 		echo "See PDF manual for more information."
 		echo
@@ -168,16 +142,16 @@ function scriptupdater {
 		mv .info .info~
 		} || {
 			echo
-			echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Downloading of version information available on-line failed.${NORM} "
-			echo "Please, go to ${REDF}$WEB${NORM} and check for available version manually."
-			echo "Your current version is ${BOLD}$SCRIPTVERSION${NORM}."
+			echo "Error! Downloading of version information available on-line failed. "
+			echo "Please, go to $WEB and check for available version manually."
+			echo "Your current version is $SCRIPTVERSION."
 			echo
 			exit 1
 			}
 	echo
 	if [[ (( "$SCRIPTVERSION" < "$ONLINEVERSION" )) ]]; then
-		echo "Your version is ${REDF}$SCRIPTVERSION${NORM}. On-line available version ${REDF}$ONLINEVERSION${NORM} is newer."
-		echo "${CYAF}Would you like to install newer version now?${NORM} (${REDF}Yes${NORM}/${REDF}No${NORM})"
+		echo "Your version is $SCRIPTVERSION. On-line available version $ONLINEVERSION is newer."
+		echo "Would you like to install newer version now? (Yes/No)"
 		read UPDATER
 		while :
 			do
@@ -189,8 +163,8 @@ function scriptupdater {
 						NEWVERSION=`curl -s -L https://raw.githubusercontent.com/V-Z/sondovac/master/.info | grep NEWVERSION | cut -f 2 -d "="`
 						$DOWNLOADER sondovac.$ONLINEVERSION.zip $NEWVERSION || {
 							echo
-							echo "${REDF}${BOLD}Error!${NORM} Downloading of newer version available on-line failed."
-							echo "Please, go to ${REDF}$WEB${NORM} and download and unpack newer version manually."
+							echo "Error! Downloading of newer version available on-line failed."
+							echo "Please, go to $WEB and download and unpack newer version manually."
 							echo
 							exit 1
 							}
@@ -198,24 +172,24 @@ function scriptupdater {
 						unzip sondovac.$ONLINEVERSION.zip
 						echo
 						echo "Newer version $ONLINEVERSION is available in directory"
-						echo -e"\t\"${REDF}$WORKDIR/${BOLD}sondovac${NORM}\"."
-						echo "${CYAF}Please, replace current files by content of this directory and launch newer version.${NORM}"
+						echo -e"\t\"$WORKDIR/sondovac\"."
+						echo "Please, replace current files by content of this directory and launch newer version."
 						echo
 						break
 						;;
 					N|n|NO|No|no)
 						echo
-						echo "Please, go to ${REDF}$WEB${NORM} and download and unpack newer script version manually."
+						echo "Please, go to $WEB and download and unpack newer script version manually."
 						echo
 						break
 						;;
-					*) echo "${CYAF}Wrong option.${NORM} Use ${REDF}Y${NORM} or ${REDF}N${NORM}." && read UPDATER;;
+					*) echo "Wrong option. Use Y or N." && read UPDATER;;
 					esac
 				done
 		else
 			echo
-			echo "${CYAF}Your version of the script is the newest one${NORM} (version ${REDF}$SCRIPTVERSION${NORM}.)."
-			echo "See also ${REDF}README${NORM}, and in case of questions visit ${REDF}$WEB${NORM}."
+			echo "Your version of the script is the newest one (version $SCRIPTVERSION.)."
+			echo "See also README, and in case of questions visit $WEB."
 			echo
 			fi
 	exit
@@ -226,9 +200,9 @@ function licenser {
 	checktools less
 	less $SCRIPTDIR/LICENSE || {
 		echo
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not display file $SCRIPTDIR/LICENSE!${NORM}"
+		echo "Error! Can not display file $SCRIPTDIR/LICENSE!"
 		echo "Is your installation correct? See https://gnu.org/licenses/gpl.html for"
-		echo "GNU GPL v.3 and ${REDF}$WEB${NORM} to ensure you have all needed files."
+		echo "GNU GPL v.3 and $WEB to ensure you have all needed files."
 		echo
 		exit 1
 		}
@@ -241,9 +215,9 @@ function readmeview {
 	checktools less
 	less $SCRIPTDIR/README || {
 		echo
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not display file $SCRIPTDIR/README!${NORM}"
+		echo "Error! Can not display file $SCRIPTDIR/README!"
 		echo "Is your installation correct?"
-		echo "See ${REDF}$WEB${NORM} to ensure you have all needed files."
+		echo "See $WEB to ensure you have all needed files."
 		echo
 		exit 1
 		}
@@ -256,9 +230,9 @@ function installview {
 	checktools less
 	less $SCRIPTDIR/INSTALL || {
 		echo
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not display file $SCRIPTDIR/INSTALL!${NORM}"
+		echo "Error! Can not display file $SCRIPTDIR/INSTALL!"
 		echo "Is your installation correct?"
-		echo "See ${REDF}$WEB${NORM} to ensure you have all needed files."
+		echo "See $WEB to ensure you have all needed files."
 		echo
 		exit 1
 		}
@@ -269,9 +243,9 @@ function installview {
 # Display detailed citation information
 function citationreference {
 	echo
-	echo "${BLUF}################################################################################${NORM}"
+	echo "################################################################################"
 	echo
-	echo "${CYAF}When using ${REDF}Sondovač${NORM}${CYAF}, please cite:${NORM}"
+	echo "When using Sondovač, please cite:"
 	echo "Roswitha Schmickl, Aaron Liston, Vojtěch Zeisek, Kenneth Oberlander, Kevin"
 	echo "  Weitemier, Shannon C.K. Straub, Richard C. Cronn, Léanne L. Dreyer and Jan"
 	echo "  Suda"
@@ -282,81 +256,81 @@ function citationreference {
 	echo "http://onlinelibrary.wiley.com/doi/10.1111/1755-0998.12487/abstract"
 	echo
 	echo "Citations of scientific software used by Sondovač:"
-	echo "${REDF}BLAT:${NORM}"
-	echo "${MAGF}${BOLD}*${NORM} W. James Kent"
+	echo "BLAT:"
+	echo "* W. James Kent"
 	echo "  BLAT – the BLAST-like alignment tool"
 	echo "  Genome Research (2002) 12:656-664"
 	echo "  http://genome.cshlp.org/content/12/4/656.short"
-	echo "${REDF}Bowtie2:${NORM}"
-	echo "${MAGF}${BOLD}*${NORM} Ben Langmead and Steven L. Salzberg"
+	echo "Bowtie2:"
+	echo "* Ben Langmead and Steven L. Salzberg"
 	echo "  Fast gapped-read alignment with Bowtie 2"
 	echo "  Nature Methods (2012) 9:357-359"
 	echo "  http://www.nature.com/nmeth/journal/v9/n4/full/nmeth.1923.html"
-	echo "${REDF}CD-HIT:${NORM}"
-	echo "${MAGF}${BOLD}*${NORM} Weizhong Li, Lukasz Jaroszewski and Adam Godzik"
+	echo "CD-HIT:"
+	echo "* Weizhong Li, Lukasz Jaroszewski and Adam Godzik"
 	echo "  Clustering of highly homologous sequences to reduce the size of large"
 	echo "  protein databases"
 	echo "  Bioinformatics (2001) 17:282-283."
 	echo "  http://bioinformatics.oxfordjournals.org/content/17/3/282.short"
-	echo "${MAGF}${BOLD}*${NORM} Weizhong Li, Lukasz Jaroszewski and Adam Godzik"
+	echo "* Weizhong Li, Lukasz Jaroszewski and Adam Godzik"
 	echo "  Tolerating some redundancy significantly speeds up clustering of large"
 	echo "  protein databases"
 	echo "  Bioinformatics (2002) 18:77-82"
 	echo "  http://bioinformatics.oxfordjournals.org/content/18/1/77.short"
-	echo "${MAGF}${BOLD}*${NORM} Weizhong Li and Adam Godzik"
+	echo "* Weizhong Li and Adam Godzik"
 	echo "  Cd-hit: a fast program for clustering and comparing large sets of"
 	echo "  protein or nucleotide sequences"
 	echo "  Bioinformatics (2006) 22:1658-1659"
 	echo "  http://bioinformatics.oxfordjournals.org/content/22/13/1658.short"
-	echo "${MAGF}${BOLD}*${NORM} Limin Fu, Beifang Niu, Zhengwei Zhu, Sitao Wu and Weizhong Li"
+	echo "* Limin Fu, Beifang Niu, Zhengwei Zhu, Sitao Wu and Weizhong Li"
 	echo "  CD-HIT: accelerated for clustering the next generation sequencing data"
 	echo "  Bioinformatics (2012) 28:3150-3152"
 	echo "  http://bioinformatics.oxfordjournals.org/content/28/23/3150.short"
-	echo "${MAGF}${BOLD}*${NORM} Ying Huang, Beifang Niu, Ying Gao, Limin Fu and Weizhong Li"
+	echo "* Ying Huang, Beifang Niu, Ying Gao, Limin Fu and Weizhong Li"
 	echo "  CD-HIT Suite: a web server for clustering and comparing biological sequences"
 	echo "  Bioinformatics (2010) 26:680"
 	echo "  http://bioinformatics.oxfordjournals.org/content/26/5/680.short"
-	echo "${MAGF}${BOLD}*${NORM} Beifang Niu, Limin Fu, Shulei Sun and Weizhong Li"
+	echo "* Beifang Niu, Limin Fu, Shulei Sun and Weizhong Li"
 	echo "  Artificial and natural duplicates in pyrosequencing reads of metagenomic data"
 	echo "  BMC Bioinformatics (2010) 11:187"
 	echo "  http://www.biomedcentral.com/1471-2105/11/187"
-	echo "${MAGF}${BOLD}*${NORM} Weizhong Li, Limin Fu, Beifang Niu, Sitao Wu and John Wooley"
+	echo "* Weizhong Li, Limin Fu, Beifang Niu, Sitao Wu and John Wooley"
 	echo "  Ultrafast clustering algorithms for metagenomic sequence analysis"
 	echo "  Briefings in Bioinformatics (2012) 13(6):656-668"
 	echo "  http://bib.oxfordjournals.org/content/13/6/656.abstract"
-	echo "${REDF}FLASH:${NORM}"
-	echo "${MAGF}${BOLD}*${NORM} Tanja Magoč and Steven L. Salzberg"
+	echo "FLASH:"
+	echo "* Tanja Magoč and Steven L. Salzberg"
 	echo "  FLASH: fast length adjustment of short reads to improve genome assemblies"
 	echo "  Bioinformatics (2011) 27(21):2957-2963"
 	echo "  http://bioinformatics.oxfordjournals.org/content/27/21/2957.abstract"
-	echo "${REDF}Geneious:${NORM}"
-	echo "${MAGF}${BOLD}*${NORM} Matthew Kearse, Richard Moir, Amy Wilson, Steven Stones-Havas, Matthew"
+	echo "Geneious:"
+	echo "* Matthew Kearse, Richard Moir, Amy Wilson, Steven Stones-Havas, Matthew"
 	echo "    Cheung, Shane Sturrock, Simon Buxton, Alex Cooper, Sidney Markowitz, Chris"
 	echo "    Duran, Tobias Thierer, Bruce Ashton, Peter Meintjes1, and Alexei Drummond"
 	echo "  Geneious Basic: An integrated and extendable desktop software platform for"
 	echo "    the organization and analysis of sequence data"
 	echo "  Bioinformatics (2012) 28(12):1647-1649"
 	echo "  http://bioinformatics.oxfordjournals.org/content/28/12/1647"
-	echo "${REDF}SAMtools:${NORM}"
-	echo "${MAGF}${BOLD}*${NORM} Heng Li, Bob Handsaker, Alec Wysoker, Tim Fennell, Jue Ruan, Nils Homer,"
+	echo "SAMtools:"
+	echo "* Heng Li, Bob Handsaker, Alec Wysoker, Tim Fennell, Jue Ruan, Nils Homer,"
 	echo "    Gabor Marth, Goncalo Abecasis, Richard Durbin and 1000 Genome Project"
 	echo "    Data Processing Subgroup"
 	echo "  The Sequence Alignment/Map format and SAMtools"
 	echo "  Bioinformatics (2009) 25(16): 2078-2079"
 	echo "  http://bioinformatics.oxfordjournals.org/content/25/16/2078.abstract"
-	echo "${MAGF}${BOLD}*${NORM} Heng Li"
+	echo "* Heng Li"
 	echo "  A statistical framework for SNP calling, mutation discovery, association"
 	echo "    mapping and population genetical parameter estimation from sequencing data"
 	echo "  Bioinformatics (2011) 27(21): 2987-2993"
 	echo "  http://bioinformatics.oxfordjournals.org/content/27/21/2987.abstract"
-	echo "${MAGF}${BOLD}*${NORM} Heng Li"
+	echo "* Heng Li"
 	echo "  Improving SNP discovery by base alignment quality"
 	echo "  Bioinformatics (2011) 27(8): 1157-1158."
 	echo "  http://bioinformatics.oxfordjournals.org/content/27/8/1157.short"
 	echo
-	echo "For more information see ${REDF}README${NORM}, you can do so by"
-	echo -e "\t${REDF}$0 -r${NORM}"
-	echo "and/or PDF manual and/or visit ${REDF}$WEB${NORM}"
+	echo "For more information see README, you can do so by"
+	echo -e "\t$0 -r"
+	echo "and/or PDF manual and/or visit $WEB"
 	echo
 	exit
 	}
@@ -368,17 +342,17 @@ function debinstall {
 	# Check if all required packages are installed
 	while read PACKAGENAME; do
 		if dpkg -l $PACKAGENAME | grep -q 'ii  '; then
-			echo "Package \"${REDF}$PACKAGENAME${NORM}\" is available. ${GREF}OK.${NORM}"
+			echo "Package \"$PACKAGENAME\" is available. OK."
 			else
-				echo "Package \"${REDF}$PACKAGENAME${NORM}\" ${REDF}is missing.${NORM} It will be installed."
+				echo "Package \"$PACKAGENAME\" is missing. It will be installed."
 				PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
 				fi
 		done < $SCRIPTDIR/pkgs/packages-deb || {
 			echo
-			echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not check installed packages.${NORM} Ensure following packages are installed:"
+			echo "Error! Can not check installed packages. Ensure following packages are installed:"
 			cat $SCRIPTDIR/pkgs/packages-deb || {
-				echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not find file $SCRIPTDIR/pkgs/packages-deb${NORM}"
-				echo "Go to ${REDF}$WEB${NORM} and verify if your installation is correct."
+				echo "Error! Can not find file $SCRIPTDIR/pkgs/packages-deb"
+				echo "Go to $WEB and verify if your installation is correct."
 				echo
 				exit 1
 				}
@@ -388,10 +362,10 @@ function debinstall {
 	if [ -n "$PACKAGES" ]; then
 		# Install missing packages
 		echo
-		echo "Packages \"${REDF}$PACKAGES${NORM}\" are missing."
+		echo "Packages \"$PACKAGES\" are missing."
 		echo
-		echo "Compilation may require to install them.${CYAF}Would you like to install them now?${NORM}"
-		echo "It requires administrative privileges. (${REDF}Yes${NORM}/${REDF}No${NORM})"
+		echo "Compilation may require to install them.Would you like to install them now?"
+		echo "It requires administrative privileges. (Yes/No)"
 		read DEBIANI
 		while :
 			do
@@ -400,27 +374,27 @@ function debinstall {
 						echo "Installing required packages..."
 						{ { sudo apt-get update && sudo apt-get install $PACKAGES; } || { su -c 'apt-get update' && su -c "apt-get install $PACKAGES"; }; } || {
 							echo
-							echo "${CYAF}Installation of packages \"${REDF}$PACKAGES${CYAF}\" failed.${NORM}"
+							echo "Installation of packages \"$PACKAGES\" failed."
 							echo "Those packages may be required to install software used by Sondovač."
-							echo "If so, install those packages manually. See ${REDF}INSTALL${NORM} or PDF manual for details."
+							echo "If so, install those packages manually. See INSTALL or PDF manual for details."
 							confirmgo
 							}
 						break
 						;;
 					N|n|NO|No|no)
 						echo
-						echo "${CYAF}You may need packages \"${REDF}$PACKAGES${NORM}\""
+						echo "You may need packages \"$PACKAGES\""
 						echo "If compilation of some software required for the pipeline fails,"
-						echo "install them manually. See ${REDF}INSTALL${NORM} or PDF manual for details. See also"
-						echo "${REDF}https://help.ubuntu.com/community/CompilingEasyHowTo${NORM}"
+						echo "install them manually. See INSTALL or PDF manual for details. See also"
+						echo "https://help.ubuntu.com/community/CompilingEasyHowTo"
 						confirmgo
 						break
 						;;
-					*) echo "${CYAF}Wrong option.${NORM} Use ${REDF}Y${NORM} or ${REDF}N${NORM}." && read DEBIANI;;
+					*) echo "Wrong option. Use Y or N." && read DEBIANI;;
 					esac
 				done
 		else
-			echo "Packages required for compilation are installed. ${GREF}OK.${NORM}"
+			echo "Packages required for compilation are installed. OK."
 			fi
 	}
 
@@ -431,17 +405,17 @@ function rpminstall {
 	# Check if all required packages are installed
 	while read PACKAGENAME; do
 		if rpm -q --quiet $PACKAGENAME; then
-			echo "Package \"${REDF}$PACKAGENAME${NORM}\" is available. ${GREF}OK.${NORM}"
+			echo "Package \"$PACKAGENAME\" is available. OK."
 			else
-				echo "Package \"${REDF}$PACKAGENAME${NORM}\" ${REDF}is missing.${NORM} It will be installed."
+				echo "Package \"$PACKAGENAME\" is missing. It will be installed."
 				PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
 				fi
 		done < $SCRIPTDIR/pkgs/packages-rh || {
 			echo
-			echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not check installed packages. Ensure following packages are installed:${NORM}"
+			echo "Error! Can not check installed packages. Ensure following packages are installed:"
 			cat $SCRIPTDIR/pkgs/packages-rh || {
-				echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not find file $SCRIPTDIR/pkgs/packages-rh${NORM}"
-				echo "Go to ${REDF}$WEB${NORM} and verify if your installation is correct."
+				echo "Error! Can not find file $SCRIPTDIR/pkgs/packages-rh"
+				echo "Go to $WEB and verify if your installation is correct."
 				echo
 				exit 1
 				}
@@ -450,10 +424,10 @@ function rpminstall {
 	if [ -n "$PACKAGES" ]; then
 		# Install missing packages
 		echo
-		echo "Packages \"${REDF}$PACKAGES${NORM}\" are missing."
+		echo "Packages \"$PACKAGES\" are missing."
 		echo
-		echo "Compilation may require to install them. ${CYAF}Would you like to install them now?${NORM}"
-		echo "It requires administrative privileges. (${REDF}Yes${NORM}/${REDF}No${NORM})"
+		echo "Compilation may require to install them. Would you like to install them now?"
+		echo "It requires administrative privileges. (Yes/No)"
 		read RPMI
 		while :
 			do
@@ -462,26 +436,26 @@ function rpminstall {
 						echo "Installing required packages..."
 						{ sudo yum install $PACKAGES || su -c "yum install $PACKAGES"; } || {
 							echo
-							echo "${CYAF}Installation of packages \"${REDF}$PACKAGES${CYAF}\" failed.${NORM}"
+							echo "Installation of packages \"$PACKAGES\" failed."
 							echo "Those packages may be required to install software used by Sondovač."
-							echo "If so, install those packages manually. See ${REDF}INSTALL${NORM} for details."
+							echo "If so, install those packages manually. See INSTALL for details."
 							confirmgo
 							}
 						break
 						;;
 					N|n|NO|No|no)
 						echo
-						echo "${CYAF}You may need packages \"${REDF}$PACKAGES${NORM}\""
+						echo "You may need packages \"$PACKAGES\""
 						echo "If compilation of some software required for the pipeline fails,"
-						echo "install them manually. See ${REDF}INSTALL${NORM} for details."
+						echo "install them manually. See INSTALL for details."
 						confirmgo
 						break
 						;;
-					*) echo "${CYAF}Wrong option.${NORM} Use ${REDF}Y${NORM} or ${REDF}N${NORM}." && read RPMI;;
+					*) echo "Wrong option. Use Y or N." && read RPMI;;
 					esac
 				done
 		else
-			echo "Packages required for compilation are installed. ${GREF}OK.${NORM}"
+			echo "Packages required for compilation are installed. OK."
 			fi
 	}
 
@@ -490,12 +464,12 @@ function oscheck {
 
 	OSCHECKS=`uname -s` || {
 		echo
-		echo "${CYAF}Command \"uname\" is not available on the system, is not in the ${REDF}PATH${CYAF} or the user"
+		echo "Command \"uname\" is not available on the system, is not in the PATH or the user"
 		echo "does not have permission to use it, so that operating system is not detectable."
-		echo "${REDF}${BOLD}Assuming Linux.${NORM}"
+		echo "Assuming Linux."
 		echo "If this is not correct, you may experience problems during installation of"
 		echo "required software. If so, please install required dependencies manually."
-		echo "See ${REDF}INSTALL${NORM} for more details."
+		echo "See INSTALL for more details."
 		OS="Linux"
 		confirmgo
 		}
@@ -509,11 +483,11 @@ function oscheck {
 			*BSD*|*bsd*) OS="BSD";;
 			SOLARIS|Solaris|solaris|SUN*|Sun|sun*) OS="Solaris";;
 			*) echo
-				echo "${CYAF}OS other than Linux, Mac OS X, BSD, Solaris or Windows or undetectable OS."
-				echo "${REDF}${BOLD}Assuming Linux.${NORM}"
+				echo "OS other than Linux, Mac OS X, BSD, Solaris or Windows or undetectable OS."
+				echo "Assuming Linux."
 				echo "If this is not correct, you may experience problems during installation"
 				echo "of needed software. If so, please install required dependencies manually."
-				echo "See ${REDF}INSTALL${NORM} or PDF manual for more details."
+				echo "See INSTALL or PDF manual for more details."
 				OS="Linux"
 				confirmgo
 				;;
@@ -523,33 +497,33 @@ function oscheck {
 	# Warning for Windows users
 	if [ "$OS" == "Windows" ]; then
 		echo
-		echo "${REDF}${BOLD}Warning!${CYAF}Running this pipeline on Windows (native or any emulation)"
-		echo "is not supported, although it may be possible.${NORM}"
+		echo "Warning!Running this pipeline on Windows (native or any emulation)"
+		echo "is not supported, although it may be possible."
 		echo "We are not able to guarantee the pipeline to work."
-		echo "See ${REDF}INSTALL${NORM} or PDF manual for more details."
-		echo "${GREF}We wish you good luck. :-)${NORM}"
+		echo "See INSTALL or PDF manual for more details."
+		echo "We wish you good luck. :-)"
 		confirmgo
 		fi
 
 	# Warning for BSD and Solaris users
 	if [ "$OS" == "BSD" -o "$OS" == "Solaris" ]; then
 		echo
-		echo "${REDF}${BOLD}Warning!${CYAF}Running this pipeline on any version of $OS was not tested,"
-		echo "although it is supposed to work.${NORM}"
+		echo "Warning!Running this pipeline on any version of $OS was not tested,"
+		echo "although it is supposed to work."
 		echo "We are not able to guarantee the pipeline to work."
-		echo "See ${REDF}INSTALL${NORM} or PDF manual for more details."
-		echo "${GREF}We wish you good luck. :-)${NORM}"
+		echo "See INSTALL or PDF manual for more details."
+		echo "We wish you good luck. :-)"
 		confirmgo
 		fi
 
 	OSCHECKB=`uname -m` || {
 		echo
-		echo "${CYAF}Command \"uname\" is not available on the system, is not in the ${REDF}PATH${CYAF} or the user"
+		echo "Command \"uname\" is not available on the system, is not in the PATH or the user"
 		echo "does not have permission to use it, so that type of the CPU is not detectable."
-		echo "${REDF}${BOLD}Assuming 64 bit CPU.${NORM}"
+		echo "Assuming 64 bit CPU."
 		echo "If this is not correct, you may experience problems during installation"
 		echo "of needed software. If so, please install required dependencies manually."
-		echo "See ${REDF}INSTALL${NORM} or PDF manual for more details."
+		echo "See INSTALL or PDF manual for more details."
 		OSB="64b"
 		confirmgo; }
 
@@ -559,11 +533,11 @@ function oscheck {
 			*x86_64*|*ia64*) OSB="64b";;
 			*i386*|*i486*|*i586*|*i686*) OSB="32b";;
 			*) echo
-				echo "${CYAF}OS other than 64 or 32 bit or undetectable OS details."
-				echo "${REDF}${BOLD}Assuming 64 bit.${NORM}"
+				echo "OS other than 64 or 32 bit or undetectable OS details."
+				echo "Assuming 64 bit."
 				echo "If this is not correct, you may experience problems during installation"
 				echo "of needed software. If so, please install required dependencies manually."
-				echo "See ${REDF}INSTALL${NORM} or PDF manual for more details."
+				echo "See INSTALL or PDF manual for more details."
 				OSB="64b"
 				confirmgo
 				;;
@@ -573,33 +547,33 @@ function oscheck {
   # Warning for 32 bit systems
 	if [ "$OSB" == "32b" ]; then
 		echo
-		echo "${REDF}${BOLD}Warning!${CYAF}Some packages are not available for ${REDF}$OSB${CYAF} bit system,"
-		echo "it will probably be impossible to run the pipeline on this system.${NORM}"
+		echo "Warning!Some packages are not available for $OSB bit system,"
+		echo "it will probably be impossible to run the pipeline on this system."
 		echo "We recommend to upgrade CPU and/or reinstall operating system for 64 bit system."
-		echo "See ${REDF}INSTALL${NORM} or PDF manual for more details."
-		echo "${GREF}We wish you good luck. :-)${NORM}"
+		echo "See INSTALL or PDF manual for more details."
+		echo "We wish you good luck. :-)"
 		confirmgo
 		fi
 
-	echo "Current OS is ${REDF}$OS $OSB${NORM}."
+	echo "Current OS is $OS $OSB."
 	echo
 
 	# If on Linux, check distribution and notify user about possible need of compilation tools
 	if [ "$OS" == "Linux" ]; then
 		{ DISTRIBUTION=`lsb_release -is` || DISTRIBUTION=`python -c 'import platform ; print (platform.dist()[0])'` || DISTRIBUTION=`python -c 'import platform ; print platform.dist()[0]'`; } || {
 			echo
-			echo "${CYAF}Unable to detect Linux version! Probably because command \"${REDF}lsb_release${CYAF}\" is"
-			echo "missing, not in ${REDF}PATH${CYAF} or not available for current user.${NORM} For some steps you may"
-			echo "need compilation tools (see ${REDF}INSTALL${NORM} for details). Ensure you have those tools available."
+			echo "Unable to detect Linux version! Probably because command \"lsb_release\" is"
+			echo "missing, not in PATH or not available for current user. For some steps you may"
+			echo "need compilation tools (see INSTALL for details). Ensure you have those tools available."
 			confirmgo
 			}
 		if [ "$STARTINI" == "I" ]; then
 			if [ -n "$OSCHECKS" ]; then
 			echo
-			echo "If you prefer to compile some of the software required by Sondovač, although ${CYAF}we"
-			echo "recommend to use binaries provided by the script${NORM}, you will need compilation tools."
+			echo "If you prefer to compile some of the software required by Sondovač, although we"
+			echo "recommend to use binaries provided by the script, you will need compilation tools."
 			echo "The following section will check for presence of compilation tools for your Linux"
-			echo "distribution. ${CYAF}If you pefer usage of provided binaries, you can skip it${NORM}."
+			echo "distribution. If you pefer usage of provided binaries, you can skip it."
 			confirmgo
 			case "$DISTRIBUTION" in
 				*[Ss][Uu][Ss][Ee]*)
@@ -610,17 +584,17 @@ function oscheck {
 					# Check if all required packages are installed
 					while read PACKAGENAME; do
 						if rpm -q --quiet $PACKAGENAME; then
-							echo "Package \"${REDF}$PACKAGENAME${NORM}\" is available. ${GREF}OK.${NORM}"
+							echo "Package \"$PACKAGENAME\" is available. OK."
 							else
-								echo "Package \"${REDF}$PACKAGENAME${NORM}\" ${REDF}is missing.${NORM} It will be installed."
+								echo "Package \"$PACKAGENAME\" is missing. It will be installed."
 								PACKAGES="$PACKAGES"$(echo " $PACKAGENAME")
 								fi
 						done < $SCRIPTDIR/pkgs/packages-suse || {
 							echo
-							echo "${REDF}${BOLD}Error!${NORM} Can not check installed packages. Ensure following packages are installed:"
+							echo "Error! Can not check installed packages. Ensure following packages are installed:"
 							cat $SCRIPTDIR/pkgs/packages-suse || {
-								echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not find file $SCRIPTDIR/pkgs/packages-suse${NORM}"
-								echo "Go to ${REDF}$WEB${NORM} and verify if your installation is correct."
+								echo "Error! Can not find file $SCRIPTDIR/pkgs/packages-suse"
+								echo "Go to $WEB and verify if your installation is correct."
 								echo
 								exit 1
 								}
@@ -629,10 +603,10 @@ function oscheck {
 					if [ -n "$PACKAGES" ]; then
 						# Install missing packages
 						echo
-						echo "Packages \"${REDF}$PACKAGES${NORM}\" are missing."
+						echo "Packages \"$PACKAGES\" are missing."
 						echo
-						echo "Compilation may require to install them. ${CYAF}Would you like to install them now?${NORM}"
-						echo "It requires administrative privileges. (${REDF}Yes${NORM}/${REDF}No${NORM})"
+						echo "Compilation may require to install them. Would you like to install them now?"
+						echo "It requires administrative privileges. (Yes/No)"
 						read SUSEI
 						while :
 							do
@@ -641,26 +615,26 @@ function oscheck {
 										echo "Installing required packages..."
 										{ sudo zypper in $PACKAGES || su -c "zypper in $PACKAGES"; } || {
 											echo
-											echo "${CYAF}Installation of packages \"${REDF}$PACKAGES${CYAF}\" failed.${NORM}"
+											echo "Installation of packages \"$PACKAGES\" failed."
 											echo "Those packages may be required to install software used by Sondovač."
-											echo "If so, install those packages manually. See ${REDF}INSTALL${NORM} for details."
+											echo "If so, install those packages manually. See INSTALL for details."
 											confirmgo
 											}
 										break
 										;;
 									N|n|NO|No|no)
 										echo
-										echo "${CYAF}You may need packages \"${REDF}$PACKAGES${NORM}\""
+										echo "You may need packages \"$PACKAGES\""
 										echo "If compilation of some software required for the pipeline fails,"
-										echo "install them manually. See ${REDF}INSTALL${NORM} for details."
+										echo "install them manually. See INSTALL for details."
 										confirmgo
 										break
 										;;
-									*) echo "${CYAF}Wrong option.${NORM} Use ${REDF}Y${NORM} or ${REDF}N${NORM}." && read SUSEI;;
+									*) echo "Wrong option. Use Y or N." && read SUSEI;;
 									esac
 								done
 						else
-							echo "Packages required for compilation are installed. ${GREF}OK.${NORM}"
+							echo "Packages required for compilation are installed. OK."
 							fi
 					;;
 				*[Uu]buntu*)
@@ -695,9 +669,9 @@ function oscheck {
 					;;
 				# Another distros...
 				*) echo
-					echo "${CYAF}Unknown Linux distribution, probably not openSUSE, SUSE, RedHat, Fedora,"
-					echo "Centos, Scientific, Debian, Ubuntu, Linux Mint or derivatives.${NORM} For some"
-					echo "steps you may need compilation tools (see ${REDF}INSTALL${NORM} or PDF manual for details)."
+					echo "Unknown Linux distribution, probably not openSUSE, SUSE, RedHat, Fedora,"
+					echo "Centos, Scientific, Debian, Ubuntu, Linux Mint or derivatives. For some"
+					echo "steps you may need compilation tools (see INSTALL or PDF manual for details)."
 					echo "Ensure you have those tools available."
 					confirmgo
 					break
@@ -712,16 +686,16 @@ function oscheck {
 		if [ "$STARTINI" == "I" ]; then
 			echo
 			# Check for Xcode
-			echo "${CYAF}Xcode is required to install Homebrew${NORM}, which is required to upgrade and install"
-			echo "software used by Sondovač. See ${REDF}INSTALL${NORM} or PDF manual for details."
+			echo "Xcode is required to install Homebrew, which is required to upgrade and install"
+			echo "software used by Sondovač. See INSTALL or PDF manual for details."
 			echo
-			echo "${REDF}Unfortunately, it is not easily possible to universally check for presence of"
-			echo "Xcode.${NORM}"
+			echo "Unfortunately, it is not easily possible to universally check for presence of"
+			echo "Xcode."
 			echo "If you have never used command \"make\" or not installed Xcode manually, you"
 			echo "probably do not have it. If you have ever compiled any software, you probably"
-			echo "have Xcode installed. ${REDF}After installation of Xcode you will probably have to"
-			echo "restart Sondovač.${NORM}"
-			echo "${CYAF}Would you like to install Xcode now?${NORM} (${REDF}Yes${NORM}/${REDF}No${NORM})"
+			echo "have Xcode installed. After installation of Xcode you will probably have to"
+			echo "restart Sondovač."
+			echo "Would you like to install Xcode now? (Yes/No)"
 			read XCODEI
 			while :
 				do
@@ -730,9 +704,9 @@ function oscheck {
 							echo "Installing Xcode..."
 							xcode-select --install || {
 								echo
-								echo "${REDF}Installation of Xcode failed.${NORM} This is commonly because it has been already"
+								echo "Installation of Xcode failed. This is commonly because it has been already"
 								echo "installed."
-								echo "${CYAF}If you see in output below Xcode path and version, you can safely continue.${NORM}"
+								echo "If you see in output below Xcode path and version, you can safely continue."
 								echo "Otherwise see, please, command \"xcode-select --help\""
 								echo "and https://developer.apple.com/xcode/ and install Xcode manually."
 								xcode-select --print-path
@@ -743,32 +717,32 @@ function oscheck {
 							;;
 						N|n|NO|No|no)
 							echo
-							echo "${REDF}Xcode is required for installation of software needed by Sondovač.${NORM}"
+							echo "Xcode is required for installation of software needed by Sondovač."
 							echo "If you do not have Xcode installed, install it manually."
-							echo "See ${REDF}INSTALL${NORM} or PDF manual for details. ${CYAF}IIf you see in output below Xcode path and"
-							echo "version, you can safely continue.${NORM}"
+							echo "See INSTALL or PDF manual for details. IIf you see in output below Xcode path and"
+							echo "version, you can safely continue."
 							xcode-select --print-path
 							xcode-select --version
 							confirmgo
 							break
 							;;
-						*) echo "${CYAF}Wrong option.${NORM} Use ${REDF}Y${NORM} or ${REDF}N${NORM}." && read XCODEI;;
+						*) echo "Wrong option. Use Y or N." && read XCODEI;;
 						esac
 					done
 			echo
 			# Check for Homebrew, install if not available
-			echo "${CYAF}Homebrew is a service allowing to install and manage various applications.${NORM} "
-			echo "See ${REDF}http://brew.sh/${NORM} and/or manual for more information."
+			echo "Homebrew is a service allowing to install and manage various applications. "
+			echo "See http://brew.sh/ and/or manual for more information."
 			echo "Testing if Homebrew is available..."
 			{ command -v brew >/dev/null 2>&1 &&
-				echo "Homebrew is available. ${GREF}OK.${NORM}" &&
+				echo "Homebrew is available. OK." &&
 				echo "Checking for Homebrew updates..." &&
 				echo &&
 				brew update
 				} || {
 					echo "Homebrew is not available."
-					echo "${REDF}Homebrew is required to install software required by Sondovač.${NORM}"
-					echo "${CYAF}Would you like to install it now?${NORM} (${REDF}Yes${NORM}/${REDF}No${NORM})"
+					echo "Homebrew is required to install software required by Sondovač."
+					echo "Would you like to install it now? (Yes/No)"
 					read BREWI
 					while :
 						do
@@ -777,7 +751,7 @@ function oscheck {
 									echo "Installing Homebrew..."
 									ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" || {
 										echo
-										echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Installation of Homebrew failed.${NORM} Please, go to ${REDF}http://brew.sh/${NORM} and"
+										echo "Error! Installation of Homebrew failed. Please, go to http://brew.sh/ and"
 										echo "install it manually."
 										echo
 										exit 1
@@ -786,68 +760,68 @@ function oscheck {
 									;;
 								N|n|NO|No|no)
 									echo
-									echo "${REDF}Homebrew is required to install software required by Sondovač.${NORM}"
-									echo "Please, go to ${REDF}http://brew.sh/${NORM} install it manually."
-									echo "See ${REDF}INSTALL${NORM} or PDF manual for details."
+									echo "Homebrew is required to install software required by Sondovač."
+									echo "Please, go to http://brew.sh/ install it manually."
+									echo "See INSTALL or PDF manual for details."
 									echo
 									exit
 									;;
-								*) echo "${CYAF}Wrong option.${NORM} Use ${REDF}Y${NORM} or ${REDF}N${NORM}." && read BREWI;;
+								*) echo "Wrong option. Use Y or N." && read BREWI;;
 									esac
 							done
 					}
 			echo
-			echo "${CYAF}Script will now check for presence of required Homebrew formulae.${NORM}"
+			echo "Script will now check for presence of required Homebrew formulae."
 			echo "Formulae will be installed when needed."
 			confirmgo
 			echo "Checking for installed packages (brew formulae)..."
 			while read BREWFORMULA; do
 				if [[ ! $(brew ls --versions $BREWFORMULA) ]]; then
 					echo
-					echo "Formula \"${REDF}$BREWFORMULA${NORM}\" is missing. Going to install it..."
+					echo "Formula \"$BREWFORMULA\" is missing. Going to install it..."
 					brew install $BREWFORMULA || {
-						echo "${REDF}Installation of formula \"$BREWFORMULA\" failed.${NORM}"
-						echo "Please, install Homebrew formula \"${REDF}$BREWFORMULA${NORM}\" and ensure it is available."
+						echo "Installation of formula \"$BREWFORMULA\" failed."
+						echo "Please, install Homebrew formula \"$BREWFORMULA\" and ensure it is available."
 						echo "See PDF manual for details."
 						confirmgo
 						}
 					else
 						echo
-						echo "Formula \"${REDF}$BREWFORMULA${NORM}\" is present. ${GREF}OK.${NORM}"
+						echo "Formula \"$BREWFORMULA\" is present. OK."
 						echo "Going to reinstall it to ensure it is up-to-date and installed in correct place."
 						brew reinstall $BREWFORMULA || {
-							echo "${REDF}Installation of formula \"$BREWFORMULA\" failed.${NORM}"
-							echo "Please, check Homebrew formula \"${REDF}$BREWFORMULA${NORM}\" and ensure it is available."
+							echo "Installation of formula \"$BREWFORMULA\" failed."
+							echo "Please, check Homebrew formula \"$BREWFORMULA\" and ensure it is available."
 							echo "See PDF manual for details."
 							confirmgo
 							}
 						fi
 				echo
-				echo "Information about formula \"${REDF}$BREWFORMULA${NORM}\":"
+				echo "Information about formula \"$BREWFORMULA\":"
 				brew info $BREWFORMULA
 				echo
 				done < $SCRIPTDIR/pkgs/packages-brew
 			echo
-			echo "${CYAF}List of currently installed Homebrew formulae:${NORM}"
+			echo "List of currently installed Homebrew formulae:"
 			brew list
 			echo
 			echo "See \"brew help\" or PDF manual for information about management of Homebrew formulae."
 			confirmgo
 			# Modify PATH to contain newly installed software
-			echo "${CYAF}Modifying ${REDF}PATH${CYAF} to contain binaries installed by Homebrew in correct place.${NORM}"
+			echo "Modifying PATH to contain binaries installed by Homebrew in correct place."
 			export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
 			# Remove duplicities from PATH
 			export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),"");if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
-			echo "Current ${REDF}PATH${NORM} is: ${REDF}$PATH${NORM}"
-			echo "Consider to make this ${REDF}PATH${NORM} permanent, as it contains more utilities and newer"
+			echo "Current PATH is: $PATH"
+			echo "Consider to make this PATH permanent, as it contains more utilities and newer"
 			echo "versions than in original installation of Mac OS X."
 			confirmgo
 			else
 				echo
-				echo "${CYAF}Checking if Homebrew and required formulae are installed.${NORM}"
-				{ command -v brew >/dev/null 2>&1 && echo "Homebrew is available. ${GREF}OK.${NORM}"; } || {
+				echo "Checking if Homebrew and required formulae are installed."
+				{ command -v brew >/dev/null 2>&1 && echo "Homebrew is available. OK."; } || {
 					echo
-					echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Homebrew is missing!${NORM} Check ${REDF}INSTALL${NORM} and PDF manual for details or run Sondovač"
+					echo "Error! Homebrew is missing! Check INSTALL and PDF manual for details or run Sondovač"
 					echo "interactively to install it automatically:"
 					echo -e "\t$0 -i"
 					echo
@@ -855,13 +829,13 @@ function oscheck {
 					}
 				while read BREWFORMULA; do
 					if [[ $(brew ls --versions $BREWFORMULA) ]]; then
-						echo "Formula \"$BREWFORMULA\" is installed. ${GREF}OK.${NORM}"
+						echo "Formula \"$BREWFORMULA\" is installed. OK."
 						else
 							echo
-							echo "${REDF}${BOLD}Error!${NORM} Formula \"${REDF}$BREWFORMULA${NORM}\" is missing."
-							echo "Check ${REDF}INSTALL${NORM} and PDF manual for details or run Sondovač interactively to install"
+							echo "Error! Formula \"$BREWFORMULA\" is missing."
+							echo "Check INSTALL and PDF manual for details or run Sondovač interactively to install"
 							echo "it automatically:"
-							echo -e "\t${REDF}$0 -i${NORM}"
+							echo -e "\t$0 -i"
 							echo
 							exit 1
 							fi
@@ -869,12 +843,12 @@ function oscheck {
 					done < $SCRIPTDIR/pkgs/packages-brew
 			echo
 			# Modify PATH to contain newly installed software
-			echo "Modifying ${REDF}PATH${NORM} to contain binaries installed by Homebrew in correct place."
+			echo "Modifying PATH to contain binaries installed by Homebrew in correct place."
 			export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:$PATH"
 			# Remove duplicities from PATH
 			export PATH="$(echo "$PATH" | awk 'BEGIN{RS=":";}{sub(sprintf("%c$",10),"");if(A[$0]){}else{A[$0]=1;printf(((NR==1)?"":":")$0)}}')"
-			echo "Current ${REDF}PATH${NORM} is: $PATH"
-			echo "Consider to make this ${REDF}PATH${NORM} permanent, as it contains more utilities and newer"
+			echo "Current PATH is: $PATH"
+			echo "Consider to make this PATH permanent, as it contains more utilities and newer"
 			echo "versions than in original installation of Mac OS X."
 			echo
 			fi
@@ -889,16 +863,16 @@ function workdirpath {
 	WORKDIR=`pwd`
 	mkdir -p $WORKDIR/bin/bin || {
 		echo
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not create directory \"${REDF}bin\" in directory \"${REDF}$WORKDIR${NORM}\"!"
-		echo "Do you have write permission for directory \"${REDF}$WORKDIR${NORM}\"?"
+		echo "Error! Can not create directory \"bin\" in directory \"$WORKDIR\"!"
+		echo "Do you have write permission for directory \"$WORKDIR\"?"
 		echo
 		exit 1
 		}
 	BIN=$WORKDIR/bin/bin
 	echo
-	echo "For future work consider adding \"${REDF}$BIN${NORM}\""
-	echo "to ${REDF}PATH${NORM}, as it will contain binaries of tools used in this pipeline."
-	echo "Alternatively, you can move whole \"${REDF}$WORKDIR/bin${NORM}\""
+	echo "For future work consider adding \"$BIN\""
+	echo "to PATH, as it will contain binaries of tools used in this pipeline."
+	echo "Alternatively, you can move whole \"$WORKDIR/bin\""
 	echo "to your preferred location, but ensure to move all files and keep relative paths."
 	confirmgo
 	cd $WORKDIR
@@ -909,17 +883,17 @@ function workdirpath {
 # Check if input files have DOS or UNIX encoding
 function eolcheck {
 	if awk '/\r$/{exit 0;} 1{exit 1;}' $1; then
-		echo "Input file ${REDF}$1${NORM} ${CYAF}has DOS end of lines.${NORM}"
+		echo "Input file $1 has DOS end of lines."
 		echo "It will be converted into UNIX end of lines"
 		dos2unix $1 || {
-			echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion to UNIX EOL failed.${NORM} Aborting."
-			echo "  Check if ${REDF}$1${NORM} is valid file."
+			echo "Error! Conversion to UNIX EOL failed. Aborting."
+			echo "  Check if $1 is valid file."
 			echo
 			exit 1
 			}
 		echo
 		else
-			echo "Input file ${REDF}$1${NORM} ${CYAF}has UNIX end of lines.${NORM} ${GREF}OK.${NORM}"
+			echo "Input file $1 has UNIX end of lines. OK."
 			echo
 		fi
 	}
@@ -927,11 +901,11 @@ function eolcheck {
 # Function to convert interleaved FASTA into non-interleaved (if necessary)
 # $1 is input FASTA file provided by the user, $2 is output non-interleaved FASTA file
 function noninterleavedfasta {
-	echo "Converting possibly interleaved FASTA file ${REDF}$1${NORM}"
-	echo "  into non-interleaved FASTA file ${REDF}$2${NORM}"
+	echo "Converting possibly interleaved FASTA file $1"
+	echo "  into non-interleaved FASTA file $2"
 	{ awk 'BEGIN{RS=">"}NR>1{sub("\n","\t");gsub("\n",""); print RS$0}' $1 | sed 's/\t/\n/g' > $2; } || {
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA failed.${NORM} Aborting"
-		echo " Check if ${REDF}$1${NORM} is correct FASTA file."
+		echo "Error! Conversion of FASTA failed. Aborting"
+		echo " Check if $1 is correct FASTA file."
 		echo
 		exit 1
 		}
@@ -947,16 +921,16 @@ function compileblat {
 	checktools make &&
 	checktools gcc &&
 	checktools cp &&
-	echo "Downloading \"${REDF}BLAT${NORM}\" source code" &&
+	echo "Downloading \"BLAT\" source code" &&
 	if [ -z $MACHTYPE ]; then
 		echo
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Variable ${BOLD}\$MACHTYPE required by BLAT is missing.${NORM}"
-		echo "Trying to create it. If it fails, create global variable ${BOLD}\$MACHTYPE${NORM} manually,"
+		echo "Error! Variable \$MACHTYPE required by BLAT is missing."
+		echo "Trying to create it. If it fails, create global variable \$MACHTYPE manually,"
 		echo "download binary or compile it on another comparable machine."
 		MACHTYPE=$HOME/bin/$OSB
 		else
 			echo
-			echo "BLAT binaries will be available in ${REDF}$HOME/bin/$MACHTYPE${NORM} and ${REDF}$BIN${NORM} (consider adding them into the ${BOLD}PATH${NORM})."
+			echo "BLAT binaries will be available in $HOME/bin/$MACHTYPE and $BIN (consider adding them into the PATH)."
 			confirmgo
 		fi &&
 	echo &&
@@ -965,50 +939,50 @@ function compileblat {
 	cd blatSrc &&
 	{ mkdir -p $HOME/bin/$MACHTYPE || {
 		echo
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not create directory"
-		echo "\"${REDF}$HOME/bin/$MACHTYPE${NORM}\" required by BLAT. Aborting."
+		echo "Error! Can not create directory"
+		echo "\"$HOME/bin/$MACHTYPE\" required by BLAT. Aborting."
 		echo
 		exit 1
 		}; } &&
 	export PATH=$PATH:$HOME/bin/$MACHTYPE &&
 	{ mkdir -p lib/$MACHTYPE || {
 		echo
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Can not create directory"
-		echo "\"${REDF}$(pwd)/lib/$MACHTYPE${NORM}\" required by BLAT. Aborting."
+		echo "Error! Can not create directory"
+		echo "\"$(pwd)/lib/$MACHTYPE\" required by BLAT. Aborting."
 		echo
 		exit 1
 		}; } &&
-	echo "Compiling \"${REDF}BLAT${NORM}\" from source code" &&
+	echo "Compiling \"BLAT\" from source code" &&
 	make -s &&
 	cd $WORKDIR &&
 	cp -p $HOME/bin/$MACHTYPE/* $BIN/ &&
-	echo "\"${REDF}BLAT${NORM}\" is available. ${GREF}OK.${NORM}"
+	echo "\"BLAT\" is available. OK."
 	} || {
 		echo
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Compilation failed.${NORM} Please, go to ${REDF}https://users.soe.ucsc.edu/~kent/src/${NORM},"
-		echo "download latest blatSrc*.zip, compile it and ensure it is in ${BOLD}PATH${NORM}"
+		echo "Error! Compilation failed. Please, go to https://users.soe.ucsc.edu/~kent/src/,"
+		echo "download latest blatSrc*.zip, compile it and ensure it is in PATH"
 		exit 1
 		}
 	}
 
 # Check if BLAT is available
 function checkblat {
-	{ command -v blat >/dev/null 2>&1 && echo "\"${REDF}BLAT${NORM}\" is available. ${GREF}OK.${NORM}"; } || {
+	{ command -v blat >/dev/null 2>&1 && echo "\"BLAT\" is available. OK."; } || {
 		echo
-		echo "${CYAF}BLAT is required but not installed or available in ${BOLD}PATH${NORM}.${NORM}"
+		echo "BLAT is required but not installed or available in PATH."
 		echo
 		if [ "$STARTINI" == "I" ]; then
-			echo "Type \"${REDF}S${NORM}\" ${CYAF}to compile \"BLAT\" from source${NORM} available on ${REDF}https://users.soe.ucsc.edu/~kent/src/${NORM}"
+			echo "Type \"S\" to compile \"BLAT\" from source available on https://users.soe.ucsc.edu/~kent/src/"
 			echo "  (BLAT license does not allow redistributions; required if \"BLAT\" is not"
 			echo "  available for your system). Together with standard compilation tools"
 			echo "  \"BLAT\" requires libpng developmental files."
-			echo "Type \"${REDF}D${NORM}\" ${CYAF}to download \"BLAT\"${NORM} from ${REDF}http://hgdownload.cse.ucsc.edu/admin/exe/${NORM}"
+			echo "Type \"D\" to download \"BLAT\" from http://hgdownload.cse.ucsc.edu/admin/exe/"
 			echo "  automatically for your OS (BLAT license does not allow redistributions;"
 			echo "  available for 64 bit Linux and Mac OS X, recommended)."
-			echo "Type \"${REDF}H${NORM}\" ${CYAF}for installation using Homebrew${NORM} (only for Mac OS X, recommended)."
-			echo "  See \"${REDF}brew info homebrew/science/blat${NORM}\" for more details."
-			echo "Type \"${REDF}M${NORM}\" ${CYAF}for manual installation - script will exit${NORM}, and you will have to"
-			echo "  install \"BLAT\" yourself. Check ${REDF}http://genome.ucsc.edu/FAQ/FAQblat.html${NORM}"
+			echo "Type \"H\" for installation using Homebrew (only for Mac OS X, recommended)."
+			echo "  See \"brew info homebrew/science/blat\" for more details."
+			echo "Type \"M\" for manual installation - script will exit, and you will have to"
+			echo "  install \"BLAT\" yourself. Check http://genome.ucsc.edu/FAQ/FAQblat.html"
 			echo "  for more information."
 			read BLAT
 			while :
@@ -1022,15 +996,15 @@ function checkblat {
 							downloaderselector
 							if [ "$OS" == "Mac" ]; then
 								{
-								echo "${CYAF}Downloading blat binary for ${REDF}$OS${NORM}" &&
+								echo "Downloading blat binary for $OS" &&
 								$DOWNLOADER blat http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/blat &&
 								chmod +x blat &&
 								mv blat $BIN/ &&
-								echo "\"${REDF}BLAT${NORM}\" is available. ${GREF}OK.${NORM}"
+								echo "\"BLAT\" is available. OK."
 								} || {
 									echo
-									echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download of \"${REDF}BLAT${NORM}\" failed.${NORM} Please, go to"
-									echo "${REDF}http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/${NORM}"
+									echo "Error! Download of \"BLAT\" failed. Please, go to"
+									echo "http://hgdownload.cse.ucsc.edu/admin/exe/macOSX.x86_64/blat/"
 									echo "and download blat binary yourself."
 									echo
 									exit 1
@@ -1041,30 +1015,30 @@ function checkblat {
 									$DOWNLOADER blat http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/blat &&
 									chmod +x blat &&
 									mv blat $BIN/ &&
-									echo "\"${REDF}BLAT${NORM}\" is available. ${GREF}OK.${NORM}"
+									echo "\"BLAT\" is available. OK."
 									} || {
 										echo
-										echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Download of \"${REDF}BLAT${NORM}\" failed.${NORM} Please, go to"
-										echo "${REDF}http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/${NORM}"
+										echo "Error! Download of \"BLAT\" failed. Please, go to"
+										echo "http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/"
 										echo "and download blat binary yourself."
 										echo
 										exit 1
 										}
 									else
-										echo "Unknown OS or OS without \"${REDF}BLAT${NORM}\" binary available."
+										echo "Unknown OS or OS without \"BLAT\" binary available."
 										compileblat
 										fi
 							break
 							;;
 						H|h)
 							if [ "$OS" == "Mac" ]; then			
-								{ echo "Installing \"${REDF}BLAT${NORM}\" using Homebrew" &&
+								{ echo "Installing \"BLAT\" using Homebrew" &&
 								brew install homebrew/science/blat &&
-								echo "\"${REDF}BLAT${NORM}\" is available. ${GREF}OK.${NORM}"
+								echo "\"BLAT\" is available. OK."
 								} || {
 									echo
-									echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Installation of${NORM} \"${REDF}BLAT${NORM}\" ${CYAF}failed.${NORM} Please, do it manually. For details see"
-									echo "\"${REDF}brew info homebrew/science/blat${NORM}\" and \"${REDF}brew help${NORM}\"."
+									echo "Error! Installation of \"BLAT\" failed. Please, do it manually. For details see"
+									echo "\"brew info homebrew/science/blat\" and \"brew help\"."
 									echo
 									exit 1
 									}
@@ -1074,12 +1048,12 @@ function checkblat {
 									fi
 							break
 							;;
-						M|m) echo "Please, go to ${REDF}http://genome.ucsc.edu/FAQ/FAQblat.html${NORM} and download and install"
-							echo "\"${REDF}BLAT${NORM}\" and ensure it is in ${BOLD}PATH${NORM}."
+						M|m) echo "Please, go to http://genome.ucsc.edu/FAQ/FAQblat.html and download and install"
+							echo "\"BLAT\" and ensure it is in PATH."
 							echo
 							exit 2
 							;;
-						*) echo "${CYAF}Wrong option.${NORM} Use ${REDF}S${NORM}, ${REDF}D${NORM}, ${REDF}H${NORM} or ${REDF}M${NORM}." && read BLAT;;
+						*) echo "Wrong option. Use S, D, H or M." && read BLAT;;
 					esac
 				done
 			else
@@ -1095,34 +1069,34 @@ function readinputfile {
 	CHECKFILEREAD=$3
 	if [ "$STARTINI" == "I" ]; then
 		if [ -z "$CHECKFILEREAD" ]; then
-			echo "${CYAF}Provide file name for ${REDF}$2${NORM}:"
+			echo "Provide file name for $2:"
 			while :
 				do
 					read CHECKFILEREAD
 					# Test if input file is readable
 					if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
 						echo
-						echo "Input file \"${REDF}$CHECKFILEREAD${NORM}\" exists and is readable. ${CYAF}Proceeding...${NORM}"
+						echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
 						break
 						else
-							echo "${REDF}${BOLD}Error!${NORM} ${CYAF}File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
+							echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
 							echo "Provide new one:"
 							fi
 					done
 			else
-				echo "As input ${REDF}$2${NORM} file you provided via parameter ${BOLD}$1${NORM} file \"$CHECKFILEREAD\"."
-				echo "${CYAF} Would you like to use it (${REDF}Yes${CYAF}) or to provide new file (${REDF}New${CYAF})?${NORM}"
+				echo "As input $2 file you provided via parameter $1 file \"$CHECKFILEREAD\"."
+				echo " Would you like to use it (Yes) or to provide new file (New)?"
 				read CHECKFILE
 				while :
 					do
 						case "$CHECKFILE" in
 							Y|y|YES|Yes|yes)
-								echo "Keeping \"${REDF}$CHECKFILEREAD${NORM}\"..."
+								echo "Keeping \"$CHECKFILEREAD\"..."
 								echo
 								if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
-									echo "Input file \"${REDF}$CHECKFILEREAD${NORM}\" exists and is readable. ${CYAF}Proceeding..${NORM}."
+									echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
 									else
-										echo "${REDF}${BOLD}Error!${NORM} ${CYAF}File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
+										echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
 										echo "Provide new one:"
 										while :
 											do
@@ -1130,10 +1104,10 @@ function readinputfile {
 												# Test if input file is readable
 												if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
 													echo
-													echo "Input file \"${REDF}$CHECKFILEREAD${NORM}\" exists and is readable. ${CYAF}Proceeding...${NORM}"
+													echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
 													break
 													else
-														echo "${REDF}${BOLD}Error!${NORM} ${CYAF}File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
+														echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
 															echo "Provide new one:"
 														fi
 												done
@@ -1141,24 +1115,24 @@ function readinputfile {
 								break
 								;;
 							N|n|NO|No|no|NEW|New|new)
-								echo "${CYAF}Provide file name for new ${REDF}$2${NORM}:"
+								echo "Provide file name for new $2:"
 								while :
 									do
 										read CHECKFILEREAD
 										# Test if input file is readable
 										if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
 											echo
-											echo "Input file \"${REDF}$CHECKFILEREAD${NORM}\" exists and is readable. ${CYAF}Proceeding...${NORM}"
+											echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
 											break
 											else
-												echo "${REDF}${BOLD}Error!${NORM} ${CYAF}File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
+												echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
 												echo "Provide new one:"
 												fi
 										done
 								break
 								;;
 							*)
-								echo "${CYAF}Wrong option.${NORM} Use ${REDF}Y${NORM} or ${REDF}N${NORM}."
+								echo "Wrong option. Use Y or N."
 								read CHECKFILE
 								;;
 							esac
@@ -1167,9 +1141,9 @@ function readinputfile {
 			else
 				if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
 					echo
-					echo "Input file \"${REDF}$CHECKFILEREAD${NORM}\" exists and is readable. ${CYAF}Proceeding...${NORM}"
+					echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
 					else
-						echo "${REDF}${BOLD}Error!${NORM} ${CYAF}File \"${REDF}$CHECKFILEREAD${CYAF}\" does not exist, is empty or is not readable!${NORM}"
+						echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
 						exit 1
 						fi
 		fi
@@ -1182,8 +1156,8 @@ function readinputfile {
 function fasta2tab {
 	#awk '/>/{if (x)print x;x="";}{x=(!x)?$0:x"\t"$0;}END{print x;}' $1 | sed 's/>[[:blank:]]*/>/g' | sed 's/[[:blank:]]+/ /g' | tr "\n" "\t" | sed 's/\t>/\n>/g' | sed 's/^>//g' | sed 's/[[:blank:]]*$//g' > $2
 	sed 's/[[:blank:]]\{1,\}/_/g' $1 | awk '/>/{if (x)print x;x="";}{x=(!x)?$0:x"\t"$0;}END{print x;}' | sed 's/^>//g' > $2 || {
-		echo "${REDF}${BOLD}Error!${NORM} ${CYAF}Conversion of FASTA to TAB (TSV) failed.${NORM} Aborting"
-		echo " Check if ${REDF}$1${NORM} is correct FASTA file."
+		echo "Error! Conversion of FASTA to TAB (TSV) failed. Aborting"
+		echo " Check if $1 is correct FASTA file."
 		echo
 		exit 1
 		}
