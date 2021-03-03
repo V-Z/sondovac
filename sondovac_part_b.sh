@@ -21,10 +21,6 @@ echo
 echo "This part processes assembly output from Geneious and produces the final list of low-copy nuclear probe sequences."
 
 # Default values
-# Counter if not both -i and -n options are used
-CHECKMODE=0
-# If not specifying explicitly otherwise (using -n), running in interactive mode
-STARTINI="I"
 # Minimum bait/exon length
 BAITL=120
 # CD-HIT sequence similarity
@@ -46,7 +42,7 @@ SEQUENCES=""
 SEQUENCES0=""
 
 # Parse initial arguments
-while getopts "hvlrpeo:inc:x:z:b:d:y:k:" START; do
+while getopts "hvlrpeo:c:x:z:b:d:y:k:" START; do
 	case "$START" in
 		h|v)
 			generaloptions
@@ -82,16 +78,6 @@ while getopts "hvlrpeo:inc:x:z:b:d:y:k:" START; do
 		o)
 			OUTPUTFILENAME=`realpath $OPTARG`
 			echo "Output files will start name with $OUTPUTFILENAME"
-			;;
-		i)
-			echo "Running in interactive mode..."
-			STARTINI="I"
-			CHECKMODE=$((CHECKMODE+1))
-			;;
-		n)
-			echo "Running in non-interactive mode..."
-			STARTINI="N"
-			CHECKMODE=$((CHECKMODE+1))
 			;;
 		c)
 			REFERENCECP0=$OPTARG
@@ -181,14 +167,6 @@ while getopts "hvlrpeo:inc:x:z:b:d:y:k:" START; do
 # Set bait length
 BAITLN=$(expr $BAITL - 1)
 
-# Check if user didn't use together -n and -i
-checkmodef
-
-# Check which operating system the script is running on
-
-# Ensure user reads introductory information
-confirmgo
-
 # Set variables for working directory and PATH
 workdirpath
 
@@ -234,25 +212,6 @@ checktools python
 { command -v cd-hit-est >/dev/null 2>&1 && echo "\"cd-hit-est\" is available. OK."; } || {
 	echo "CD-HIT (command cd-hit-est) is required but not installed or available in PATH. See https://github.com/weizhongli/cdhit for installation of CD-HIT."
 	}
-
-# Input files
-CHECKFILEREADOUT=""
-
-# Plastome reference in FASTA
-readinputfile -c "plastome reference sequence input file in FASTA format" $REFERENCECP0
-REFERENCECP0=$CHECKFILEREADOUT
-CHECKFILEREADOUT=""
-
-# Geneious output files are input files here - consensus and unused sequences (TSV)
-readinputfile -x "input file in TSV format (output of Geneious assembly)" $TSVLIST
-TSVLIST=$CHECKFILEREADOUT
-CHECKFILEREADOUT=""
-
-# Geneious output files are input files here - consensus and unused sequences (FASTA)
-readinputfile -z "input file in FASTA format (output of Geneious assembly)" $SEQUENCES0
-SEQUENCES0=$CHECKFILEREADOUT
-CHECKFILEREADOUT=""
-echo
 
 # Input - reference genome - cpDNA
 echo "Input file: $REFERENCECP0"
@@ -405,7 +364,7 @@ if egrep -q "^# Sequences[[:blank:]]+% Pairwise Identity[[:blank:]]+Description[
 			}
 		TSVLIST2="${TSVLIST%.*}.columns.tsv"
 		echo "File with extracted columns was saved as $TSVLIST2 for possible later usage."
-		confirmgo
+		echo
 	fi || {
 		echo
 		echo "Error! Checking of required columns failed. Aborting. Check if file $TSVLIST is correct TSV file correctly exported from Geneious."
@@ -426,7 +385,7 @@ echo
 	echo
 	exit 1
 	}
-confirmgo
+echo
 
 # Check number of contigs
 { echo "Number of contigs longer than $BAITL bp: `cut -f 6 $TSVLIST2 | awk '$1>'"$BAITLN"'' | wc -l`."; } || {
@@ -436,7 +395,7 @@ confirmgo
 	echo
 	exit 1
 	}
-confirmgo
+echo
 
 # Convert FASTA to TAB
 echo "Converting FASTA to TAB"
@@ -479,81 +438,6 @@ for LOCUSLENGTH in 0360 0480 0600 0720 0840 0960 1080 1200 1320 1440 1560 1680 1
 		exit 1
 		}
 echo
-
-# Select the optimal minimum total locus length
-if [ "$STARTINI" == "I" ]; then
-	echo "Select minimum total locus length. Possible values are 360, 480, 600, 720, 840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040."
-	read MINLOCUSLENGTHTEST
-	while :
-		do
-		case "$MINLOCUSLENGTHTEST" in
-			360)
-				MINLOCUSLENGTH=360
-				break
-				;;
-			480)
-				MINLOCUSLENGTH=480
-				break
-				;;
-			600)
-				MINLOCUSLENGTH=600
-				break
-				;;
-			720)
-				MINLOCUSLENGTH=720
-				break
-				;;
-			840)
-				MINLOCUSLENGTH=840
-				break
-				;;
-			960)
-				MINLOCUSLENGTH=960
-				break
-				;;
-			1080)
-				MINLOCUSLENGTH=1080
-				break
-				;;
-			1200)
-				MINLOCUSLENGTH=1200
-				break
-				;;
-			1320)
-				MINLOCUSLENGTH=1320
-				break
-				;;
-			1440)
-				MINLOCUSLENGTH=1440
-				break
-				;;
-			1560)
-				MINLOCUSLENGTH=1560
-				break
-				;;
-			1680)
-				MINLOCUSLENGTH=1680
-				break
-				;;
-			1800)
-				MINLOCUSLENGTH=1800
-				break
-				;;
-			1920)
-				MINLOCUSLENGTH=1920
-				break
-				;;
-			2040)
-				MINLOCUSLENGTH=2040
-				break
-				;;
-			*)
-				echo "Wrong option. Use 360, 480, 600, 720, 840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800, 1920 or 2040."
-				read MINLOCUSLENGTHTEST
-				;;
-			esac
-		done
-	fi
 
 echo "Total locus length is set to $MINLOCUSLENGTH bp."
 echo
@@ -664,7 +548,7 @@ sed 's/^>[^0123456789]*\([[:digit:]]\{12\}\)[^0123456789]*\([[:digit:]]\{1,\}\)[
 	}
 echo
 echo "Preliminary probe sequences saved as $PROBEPRELIM for possible later usage."
-confirmgo
+echo
 
 # Step 9: Make the final quality control of the probe sequences
 
@@ -684,7 +568,7 @@ cd-hit-est -i $PROBEPRELIM -o $PROBEPRELIMCLUSTER100 -d 0 -c 1.0 -p 1 || {
 	}
 echo
 echo "Clustered exons with 100% sequence identity were saved as $PROBEPRELIMCLUSTER100 for possible later usage."
-confirmgo
+echo
 
 # Clustering and removing exons with more than a certain sequence similarity
 echo "Detecting and removing probe sequences (exons) that are similar to each other above a certain threshold"
@@ -705,7 +589,7 @@ python $SCRIPTDIR/grab_singleton_clusters.py -i $PROBEPRELIMCLUSTER90.clstr -o $
 	}
 
 echo "Unclustered exons and clustered exons with 100% identity were saved as $UNIQUEPROBEPRELIMCLUSTER90 for possible later usage."
-confirmgo
+echo
 
 echo "Postprocessing extracted sequences"
 { grep -v '>Cluster' $UNIQUEPROBEPRELIMCLUSTER90 | cut -d ' ' -f 2 | sed -e 's/\.\.\./\\\>/' -e 's/^/^/' > $UNIQUEPROBEPRELIM &&
@@ -717,7 +601,7 @@ grep -A 1 -f $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 | sed '/^--$/d' > $UNIQUE
 	}
 echo
 echo "Postprocessed extracted sequences were saved as $UNIQUEPROBEPRELIMF for possible later usage."
-confirmgo
+echo
 
 # Step 10: Retention of those probe sequences that comprise exons of a certain minimum length (default is 120 bp) and have a certain minimum total locus length
 
@@ -772,17 +656,17 @@ echo
 # Calculation of the total number of base pairs
 echo "Calculating the total number of base pairs"
 echo "  $(awk '{print $1"\t"length($3)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,3 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | awk '{s+=$3;c++}END{print s}') bp make up genes of ≥$MINLOCUSLENGTH bp."
-confirmgo
+echo
 
 # Calculation of the total number of genes
 echo "Calculating the total number of genes"
 echo "  There are $(awk '{print $1"\t"length($3)}' $PROBEPRELIMFIN | sed 's/_/\t/g' | cut -f 2,3 | awk '{a[$1]++;b[$1]+=$2}END{for (i in a) print i,a[i],b[i]}' | awk '$3>'"$MINLOCUSLENGTHN"'' | wc -l) genes in total."
-confirmgo
+echo
 
 # Calculation of the total number of exons
 echo "Calculating the total number of exons"
 echo "  Total number of exons ≥$BAITL bp: $(wc -l $PROBEPRELIMFIN | cut -f 1 -d " ")."
-confirmgo
+echo
 
 # Convert TAB to FASTA
 echo "Converting TAB to FASTA"
@@ -800,7 +684,7 @@ echo "==========================================================================
 echo "Probes with all sequences (including putative plastid genes) are in $PROBESEQUENCES"
 echo "This file contains the probe sequences. In next step, putative plastid sequences will be removed. We STRONGLY RECOMMEND to remove those genes from the final probe set."
 echo "================================================================================"
-confirmgo
+echo
 
 # Step 11 - removal of putative cpDNA sequences in final probe list
 
@@ -820,7 +704,7 @@ echo
 echo "================================================================================"
 echo "File $PROBESEQUENCESCP contains putative plastid genes found in $PROBESEQUENCES set. We STRONGLY RECOMMEND to remove those genes from the final probe set."
 echo "================================================================================"
-confirmgo
+echo
 
 # Extracting names of putative plastid sequence
 echo "Preparing to remove putative plastid genes from final probe set"
@@ -846,14 +730,14 @@ echo "==========================================================================
 echo "Final output file was written as $PROBESEQUENCESNOCP"
 echo "This file contains the probe sequences. Putative plastid genes were removed."
 echo "================================================================================"
-confirmgo
+echo
 
 # Remove temporal files
 echo "Removing unneeded temporal files"
 rm $REFERENCECP $SEQUENCES $SEQUENCESTAB $SEQUENCESTABASSE $SEQUENCESPROBESLOCUSLENGTH $SEQUENCESPROBESLOCUSLENGTHFORJOIN $SEQUENCESTABASSEBAITL $SEQUENCESTABASSEBAITLSORT $SEQUENCESPROBES120600FIN $SEQUENCESPROBES120600MODIF $SEQUENCESPROBES120600ASSEM $SEQUENCESPROBES120600CONTIG $PROBEPRELIM0 $PROBEPRELIMCLUSTER90 $UNIQUEPROBEPRELIM $PROBEPRELIMCLUSTER100 $UNIQUEPROBEPRELIMF $PROBEPRELIMCDHIT $PROBEPRELIMFORJOIN $PROBEPRELIMSORT $PROBEPRELIMFIN $PROBESEQUENCESCPLIST || {
 	echo
 	echo "Error! Removal of temporal files failed. Remove following files manually: \"$REFERENCECP\", \"$SEQUENCES\", \"$SEQUENCESTAB\", \"$SEQUENCESTABASSE\", \"$SEQUENCESPROBESLOCUSLENGTH\",\"$SEQUENCESPROBESLOCUSLENGTHFORJOIN\", \"$SEQUENCESTABASSEBAITL\", \"$SEQUENCESTABASSEBAITLSORT\",\"$SEQUENCESPROBES120600FIN\", \"$SEQUENCESPROBES120600MODIF\", \"$SEQUENCESPROBES120600ASSEM\", \"$SEQUENCESPROBES120600CONTIG\", \"$PROBEPRELIM0\", \"$PROBEPRELIMCLUSTER90\", \"$UNIQUEPROBEPRELIM\", \"$PROBEPRELIMCDHIT\", \"$PROBEPRELIMFORJOIN\", \"$PROBEPRELIMSORT\", \"$PROBEPRELIMFIN\" and \"$PROBESEQUENCESCPLIST\"."
-	confirmgo
+	echo
 	}
 echo
 
@@ -877,7 +761,7 @@ echo "$PROBESEQUENCESCP"
 echo "8) Final probe sequences in FASTA format:"
 echo "$PROBESEQUENCESNOCP"
 echo "================================================================================"
-confirmgo
+echo
 
 echo "Script exited successfully..."
 echo

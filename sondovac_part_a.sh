@@ -3,11 +3,6 @@
 # Determine script's directory
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-# Load aliases to replace Mac OS X outdated tools by those installed by Homebrew
-shopt -s expand_aliases
-unalias -a
-source $SCRIPTDIR/mac_aliases
-
 # Load functions shared by both parts, introductory message
 source $SCRIPTDIR/sondovac_functions || {
 	echo
@@ -21,10 +16,6 @@ echo
 echo "This part is for filtering of raw data and their preparation for assembly in Geneious. Results of Geneious assembly are processed in part B to get the final list of low-copy nuclear probe sequences. See README and/or manual for details."
 
 # Default values
-# Counter if not both -i and -n options are used
-CHECKMODE=0
-# If not specifying explicitly otherwise (using -n), running in interactive mode
-STARTINI="I"
 # flash -M maximum overlap length expected in approximately 90% of read pairs
 FLASHM=65
 # BLAT -minIdentity between the unique transcripts and the genome skim data
@@ -48,7 +39,7 @@ REFERENCEMT=""
 REFERENCEMT0=""
 
 # Parse initial arguments
-while getopts "hvlrpeo:inf:c:m:t:q:a:y:s:g" START; do
+while getopts "hvlrpeo:f:c:m:t:q:a:y:s:g" START; do
 	case "$START" in
 		h|v)
 			generaloptions
@@ -100,16 +91,6 @@ while getopts "hvlrpeo:inf:c:m:t:q:a:y:s:g" START; do
 		o)
 			OUTPUTFILENAME=`realpath $OPTARG`
 			echo "Output files will start name with $OUTPUTFILENAME"
-			;;
-		i)
-			echo "Running in interactive mode..."
-			STARTINI="I"
-			CHECKMODE=$((CHECKMODE+1))
-			;;
-		n)
-			echo "Running in non-interactive mode..."
-			STARTINI="N"
-			CHECKMODE=$((CHECKMODE+1))
 			;;
 		f)
 			INPUTFILE1=$OPTARG
@@ -178,12 +159,6 @@ while getopts "hvlrpeo:inf:c:m:t:q:a:y:s:g" START; do
 			;;
 		esac
 	done
-
-# Check if user didn't use together -n and -i
-checkmodef
-
-# Ensure user reads introductory information
-confirmgo
 
 # Set variables for working directory and PATH
 workdirpath
@@ -266,57 +241,6 @@ checkblat
 	echo
 	exit 1
 	}
-
-echo
-# Input files
-CHECKFILEREADOUT=""
-
-# Input data, transcriptome data in FASTA format
-readinputfile -f "transcriptome input file in FASTA format" $INPUTFILE1
-INPUTFILE1=$CHECKFILEREADOUT
-CHECKFILEREADOUT=""
-
-# Input data, plastome reference in FASTA format
-readinputfile -c "plastome reference sequence input file in FASTA format" $REFERENCECP0
-REFERENCECP0=$CHECKFILEREADOUT
-CHECKFILEREADOUT=""
-
-# Input data, genome skim reads in FASTQ, file 1
-readinputfile -m "paired-end genome skim input file in FASTQ format (first file)" $INPUTFQ1
-INPUTFQ1=$CHECKFILEREADOUT
-CHECKFILEREADOUT=""
-
-# Input data, genome skim reads in FASTQ, file 2
-readinputfile -t "paired-end genome skim input file in FASTQ format (second file)" $INPUTFQ2
-INPUTFQ2=$CHECKFILEREADOUT
-CHECKFILEREADOUT=""
-
-# Input data, mitochondriome reference in FASTA
-if [ "$STARTINI" == "I" ]; then
-	echo
-	echo "Would you like to use mitochondriome reference sequence input file in FASTA format? (Yes/No)"
-	read MTINPUTQ
-	while :
-	do
-		case $MTINPUTQ in
-			Y|y|Yes|yes|YES)
-				readinputfile -q "mitochondriome reference sequence input file in FASTA format" $REFERENCEMT0
-				REFERENCEMT0=$CHECKFILEREADOUT
-				CHECKFILEREADOUT=""
-				break
-				;;
-			N|n|No|no|NO)
-				echo
-				echo "OK, we will not use mitochondriome reference sequence. Continuing."
-				REFERENCEMT0=""
-				REFERENCEMT=""
-				break
-				;;
-			*) echo "Wrong option. Use Y or N." && read $MTINPUTQ;;
-			esac
-		done
-	echo
-	fi
 
 # Notify user if mitochondriome is missing
 if [ -z "$REFERENCEMT0" ]; then
@@ -445,7 +369,7 @@ echo "File $TRANSCRIPTOMEFASTANAMES contains two columns:"
 echo "  1) Old labels in original $INPUTFILE0 and"
 echo "  2) New labels in required format as in $INPUTFILE"
 echo "  The sequences remain intact. This might be needed to trace back some sequences."
-confirmgo
+echo
 
 # Step 1: Obtain unique transcripts.
 
@@ -473,7 +397,7 @@ echo "Filtering for unique transcripts:"
 	}
 echo
 echo "Filtered transcripts saved  for possible later usage as $BLATOUT  for possible later usage."
-confirmgo
+echo
 
 # Make a list of these unique transcripts (names and sequences) and convert this file to FASTA
 echo "Making list of unique transcripts"
@@ -529,7 +453,7 @@ awk '{print ">"$1"\n"$2}' $JOINEDTABS > $JOINEDFA || {
 	exit 1
 	}
 echo "Joined transcripts written in FASTA format as $JOINEDFA for possible later usage."
-confirmgo
+echo
 
 # Step 2: Find genome skim data (only nuclear reads), which align to the unique transcripts
 
@@ -577,7 +501,7 @@ echo
 echo
 echo "Removed reads saved for possible later usage as"
 ls -1 $FASTQNOCP*
-confirmgo
+echo
 
 # Mitochondrial reads - optional step
 
@@ -661,7 +585,7 @@ sed -n '1~4s/^@/>/p;2~4p' $FLASHOUT.extendedFrags.fastq > $FLASHOUT.extendedFrag
 	exit 1
 	}
 echo "Converted FASTA saved as $FLASHOUT.extendedFrags.fa for possible later usage."
-confirmgo
+echo
 
 # BLAT between the unique transcripts and the genome skim data
 echo "BLAT between the unique transcripts and the genome skim data. This may take longer time."
@@ -672,7 +596,7 @@ blat -t=dna -q=dna -minIdentity=$BLATIDENT -out=pslx $JOINEDFA $FLASHOUT.extende
 	exit 1
 	}
 echo " BLAT output saved as $BLATOUTFIN for possible later usage."
-confirmgo
+echo
 
 # Step 6: Assemble the obtained sequences in contigs
 
@@ -689,7 +613,7 @@ echo "Modifying PSLX BLAT output for usage in Geneious"
 	}
 echo
 echo "Modified file saved as $TAB for possible later usage."
-confirmgo
+echo
 
 { awk '{print $1"\t"length($2)"\t"$2}' $TAB | awk '{sum+=$2}END{print sum}'; } || {
 	echo
@@ -762,13 +686,13 @@ if [ -n "$REFERENCEMT0" ]; then
 	rm $INPUTFILE0 $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $REFERENCECP $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $REFERENCEMT2* $REFERENCEMT $BOWTIE2M$FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
 		echo
 		echo "Error! Removal of temporal files failed. Remove following files manually: \"$INPUTFILE0\", \"$UNIQUELIST\", \"$INPUTTAB\", \"$SORTEDINPUT\", \"$REFERENCECP\", \"$JOINEDTS\", \"$JOINEDTABS\", \"$REFERENCECP2*\", \"$REFERENCEMT\", \"$BOWTIE2CP\", \"$REFERENCEMT2*\", \"$BOWTIE2MT\", \"$FLASHOUT.extendedFrags.fastq\", \"$TAB\", \"$TABLIST\",, \"$TABBLAT\" and \"$TABREMOVED\"."
-		confirmgo
+		echo
 		}
 	else
 		rm $UNIQUELIST $INPUTTAB $SORTEDINPUT $JOINEDTS $JOINEDTABS $REFERENCECP2* $BOWTIE2CP $FLASHOUT.extendedFrags.fastq $TAB $TABLIST $TABBLAT $TABREMOVED || {
 			echo
 			echo "Error! Removal of temporal files failed. Remove following files manually: \"$INPUTFILE0\", \"$UNIQUELIST\", \"$INPUTTAB\", \"$SORTEDINPUT\", \"$JOINEDTS\", \"$JOINEDTABS\", \"$REFERENCECP\", \"$REFERENCECP2*\",\"$BOWTIE2CP\", \"$FLASHOUT.extendedFrags.fastq\", \"$TAB\", \"$TABLIST\", \"$TABBLAT\" and \"$TABREMOVED\"."
-			confirmgo
+			echo
 			}
 		fi
 
@@ -814,7 +738,7 @@ if [ -n "$REFERENCEMT" ]; then
 		echo "$FINALA"
 		fi
 echo "================================================================================"
-confirmgo
+echo
 
 echo "Success!"
 echo
@@ -824,7 +748,7 @@ echo "$FINALA"
 echo "for usage in Geneious (step 7 of the pipeline)."
 echo "Use this file in next step of the pipeline. See PDF manual for details."
 echo "================================================================================"
-confirmgo
+echo
 
 echo "================================================================================"
 echo "Run Geneious (tested with versions 6-9), see PDf manual for details"

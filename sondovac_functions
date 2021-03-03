@@ -42,32 +42,6 @@ function generaloptions {
 	echo -e "\t-p\tDisplay INSTALL for detailed installation instructions. Exit viewing by pressing the \"Q\" key. More information is available in the PDF manual."
 	echo -e "\t-e\tDisplay detailed citation information and exit."
 	echo -e "\t-o\tSet name of output files. Output files will start with that name. Do not use spaces or special characters, only letters, numbers, dots, underscores or minuses. See README or PDF manual for details."
-	echo -e "\t-i\tRunning in interactive mode. Script will on-demand ask for required input files, installation of missing software etc. This is the recommended default value (the script runs interactively without explicitly using option -n)."
-	echo -e "\t-n\tRunning in non-interactive mode. The user must provide at least the required input files below. You can use only one of the parameters -i or -n (not both of them). If script fails to find some of the required software packages, it will exit."
-	}
-
-# Check if user didn't use together -n and -i
-function checkmodef {
-	if [ "$CHECKMODE" == 2 ]; then
-		echo
-		echo "Error! You provided both parameters -i (interactive mode) and -n (non-interactive mode). You must use only one of them (either -i or -n)!"
-		echo
-		exit 1
-		fi
-	}
-
-# Sometimes user must read something and confirm continuing...
-function confirmgo {
-	if [ "$STARTINI" == "I" ]; then
-		echo
-		echo "Press any key to continue... (or press Ctrl+C to exit the script)."
-		read -n 1
-		echo
-		echo "Continuing..."
-		echo
-		else
-			echo
-			fi
 	}
 
 # Check availability of basic UNIX binaries
@@ -255,94 +229,6 @@ function checkblat {
 		echo
 		exit 1
 		}
-	}
-
-# Function to check and read input files
-# Parameters: 1) parameter for particular file; 2) name (description) of input file; 3) variable for particular file (written into $CHECKFILEREADOUT)
-function readinputfile {
-	checktools realpath
-	CHECKFILEREAD=$3
-	if [ "$STARTINI" == "I" ]; then
-		if [ -z "$CHECKFILEREAD" ]; then
-			echo "Provide file name for $2:"
-			while :
-				do
-					read CHECKFILEREAD
-					# Test if input file is readable
-					if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
-						echo
-						echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
-						break
-						else
-							echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
-							echo "Provide new one:"
-							fi
-					done
-			else
-				echo "As input $2 file you provided via parameter $1 file \"$CHECKFILEREAD\". Would you like to use it (Yes) or to provide new file (New)?"
-				read CHECKFILE
-				while :
-					do
-						case "$CHECKFILE" in
-							Y|y|YES|Yes|yes)
-								echo "Keeping \"$CHECKFILEREAD\"..."
-								echo
-								if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
-									echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
-									else
-										echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
-										echo "Provide new one:"
-										while :
-											do
-												read CHECKFILEREAD
-												# Test if input file is readable
-												if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
-													echo
-													echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
-													break
-													else
-														echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
-															echo "Provide new one:"
-														fi
-												done
-										fi
-								break
-								;;
-							N|n|NO|No|no|NEW|New|new)
-								echo "Provide file name for new $2:"
-								while :
-									do
-										read CHECKFILEREAD
-										# Test if input file is readable
-										if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
-											echo
-											echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
-											break
-											else
-												echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
-												echo "Provide new one:"
-												fi
-										done
-								break
-								;;
-							*)
-								echo "Wrong option. Use Y or N."
-								read CHECKFILE
-								;;
-							esac
-						done
-				fi
-			else
-				if [[ -f $CHECKFILEREAD && -r $CHECKFILEREAD && -s $CHECKFILEREAD ]]; then
-					echo
-					echo "Input file \"$CHECKFILEREAD\" exists and is readable. Proceeding..."
-					else
-						echo "Error! File \"$CHECKFILEREAD\" does not exist, is empty or is not readable!"
-						exit 1
-						fi
-		fi
-	# Recorded file name
-	CHECKFILEREADOUT=`realpath $CHECKFILEREAD`
 	}
 
 # Function to convert FASTA to TAB
