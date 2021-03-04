@@ -20,11 +20,11 @@ echo " #########################################################################
 echo
 echo -e "\tThis is version ${SCRIPTVERSION} released ${RELEASEDATE}."
 echo -e "\tFor newest version check ${WEB} or \"$0 -u\""
-echo -e "\tIn case of problems not covered in README for user support see ${WEB}"
+echo -e "\tIn case of problems not covered in README.md for user support see ${WEB}"
 echo -e "\tFor basic usage see \"$0 -h\""
-echo -e "\tFor detailed usage instructions see README or \"$0 -r\""
+echo -e "\tFor detailed usage instructions see README.md or \"$0 -r\""
 echo
-echo "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. For more information see LICENSE, https://gnu.org/licenses/gpl.html or \"$0 -l\"."
+echo "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. For more information see LICENSE.md, https://gnu.org/licenses/gpl.html or \"$0 -l\"."
 echo
 echo "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
 echo
@@ -36,11 +36,11 @@ function generaloptions {
 	echo
 	echo "Usage options:"
 	echo -e "\t-h, -v\tPrint this help message and exit."
-	echo -e "\t-l\tDisplay LICENSE for license information (this script is licensed under GNU GPL v.3, other software under variable licenses). Exit viewing by pressing the \"Q\" key."
-	echo -e "\t-r\tDisplay README for detailed usage instructions. Exit viewing by pressing the \"Q\" key. More information is available in the PDF manual."
-	echo -e "\t-p\tDisplay INSTALL for detailed installation instructions. Exit viewing by pressing the \"Q\" key. More information is available in the PDF manual."
+	echo -e "\t-l\tDisplay LICENSE.md for license information (this script is licensed under GNU GPL v.3, other software under variable licenses). Exit viewing by pressing the \"Q\" key."
+	echo -e "\t-r\tDisplay README.md for detailed usage instructions. Exit viewing by pressing the \"Q\" key. More information is available in the PDF manual."
+	echo -e "\t-p\tDisplay INSTALL.md for detailed installation instructions. Exit viewing by pressing the \"Q\" key. More information is available in the PDF manual."
 	echo -e "\t-e\tDisplay detailed citation information and exit."
-	echo -e "\t-o\tSet name of output files. Output files will start with that name. Do not use spaces or special characters, only letters, numbers, dots, underscores or minuses. See README or PDF manual for details."
+	echo -e "\t-o\tSet name of output files. Output files will start with that name. Do not use spaces or special characters, only letters, numbers, dots, underscores or minuses. See README.md or PDF manual for details."
 	}
 
 # Check availability of basic UNIX binaries
@@ -55,8 +55,8 @@ function checktools {
 # Display license information
 function licenser {
 	checktools less
-	less "${SCRIPTDIR}"/LICENSE || {
-		echo "Error! Can not display file ${SCRIPTDIR}/LICENSE! Is your installation correct? See https://gnu.org/licenses/gpl.html for GNU GPL v.3 and ${WEB} to ensure you have all needed files."
+	less "${SCRIPTDIR}"/LICENSE.md || {
+		echo "Error! Can not display file ${SCRIPTDIR}/LICENSE.md! Is your installation correct? See https://gnu.org/licenses/gpl.html for GNU GPL v.3 and ${WEB} to ensure you have all needed files."
 		echo
 		exit 1
 		}
@@ -64,11 +64,11 @@ function licenser {
 	exit
 	}
 
-# Display README
+# Display README.md
 function readmeview {
 	checktools less
-	less "${SCRIPTDIR}"/README || {
-		echo "Error! Can not display file ${SCRIPTDIR}/README! Is your installation correct? See ${WEB} to ensure you have all needed files."
+	less "${SCRIPTDIR}"/README.md || {
+		echo "Error! Can not display file ${SCRIPTDIR}/README.md! Is your installation correct? See ${WEB} to ensure you have all needed files."
 		echo
 		exit 1
 		}
@@ -76,11 +76,11 @@ function readmeview {
 	exit
 	}
 
-# Display INSTALL
+# Display INSTALL.md
 function installview {
 	checktools less
-	less "${SCRIPTDIR}"/INSTALL || {
-		echo "Error! Can not display file ${SCRIPTDIR}/INSTALL! Is your installation correct? See ${WEB} to ensure you have all needed files."
+	less "${SCRIPTDIR}"/INSTALL.md || {
+		echo "Error! Can not display file ${SCRIPTDIR}/INSTALL.md! Is your installation correct? See ${WEB} to ensure you have all needed files."
 		echo
 		exit 1
 		}
@@ -163,7 +163,7 @@ function citationreference {
 	echo "  Bioinformatics (2011) 27(8): 1157-1158."
 	echo "  http://bioinformatics.oxfordjournals.org/content/27/8/1157.short"
 	echo
-	echo "For more information see README, you can do so by \"$0 -r\" and/or PDF manual and/or visit ${WEB}"
+	echo "For more information see README.md, you can do so by \"$0 -r\" and/or PDF manual and/or visit ${WEB}"
 	echo
 	exit
 	}

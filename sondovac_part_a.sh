@@ -13,7 +13,7 @@ source "${SCRIPTDIR}"/sondovac_functions || {
 
 echo "This is part A of the pipeline."
 echo
-echo "This part is for filtering of raw data and their preparation for assembly in Geneious. Results of Geneious assembly are processed in part B to get the final list of low-copy nuclear probe sequences. See README and/or manual for details."
+echo "This part is for filtering of raw data and their preparation for assembly in Geneious. Results of Geneious assembly are processed in part B to get the final list of low-copy nuclear probe sequences. See README.md and/or manual for details."
 
 # Default values
 # flash -M maximum overlap length expected in approximately 90% of read pairs
