@@ -401,7 +401,12 @@ echo
 
 # Make a list of these unique transcripts (names and sequences) and convert this file to FASTA
 echo "Making list of unique transcripts"
-cut -f 10 "${BLATOUT}" | uniq -c | awk '{if($1==1){print $0}}' | awk '{print $2}' | awk '{printf "%012d\n", $0;}' > "${UNIQUELIST}" || {
+{ 
+	cut -f 10 "${BLATOUT}" | uniq -c | awk '{if($1==1){print $0}}' | awk '{print $2}' | awk '{printf "%012d\n", $0;}' > QUNIQUELIST
+  	cut -f 14 "${BLATOUT}" | sort | uniq -c | awk '{if($1>1){print $0}}' | awk '{print $2}' | awk '{printf "%012d\n", $0;}' > TUNIQUELIST
+ 	grep -f TUNIQUELIST -v QUNIQUELIST > "${UNIQUELIST}" 
+	rm QUNIQUELIST TUNIQUELISTDD
+ } || {
 	echo
 	echo "Error! Making list of unique transcripts failed. Aborting. Check if files ${BLATOUT} and ${INPUTFILE} are correct."
 	echo
